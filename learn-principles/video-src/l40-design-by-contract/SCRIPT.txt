@@ -1,0 +1,13 @@
+Maya wrote a small job called box price. It prices a box of cookies. Sam's party screen calls it.
+
+Maya knows a box holds one to one hundred cookies. But that rule lives only in her head.
+
+Then a wedding asks for two hundred and fifty. Back comes one hundred and twenty five dollars. The price of a box of fifty.
+
+Sam says, your function is wrong. Maya says, you were never meant to send that. So whose bug is it? Nobody can say.
+
+So they write the deal down. The caller promises: a count from one to one hundred. The code promises: a price above zero. And a check, called an assert, guards each promise.
+
+Play it again. Two hundred and fifty goes in. It stops at once. The message says whose side broke the deal. The caller's. The wrong price never appears.
+
+That is design by contract. Write down what the code needs, and what it promises back.

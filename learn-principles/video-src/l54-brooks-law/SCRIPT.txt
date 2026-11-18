@@ -1,0 +1,15 @@
+Christmas pre-orders must open in three weeks. But Maya's four developers still have six weeks of work left.
+
+So Maya does the math. Hire four more. Twice the people, half the time. Three weeks.
+
+Week one. The newcomers must learn the code before they can help. And Sam and Tom stop building, to teach them.
+
+Week two. Count who has to talk to whom. Four people make six pairs. Eight people make twenty-eight. Meetings grow. Two people clash in one file. A newcomer breaks the tax.
+
+And some work cannot be split. A cake needs its hour in the oven, however many bakers watch.
+
+Maya's plan said week three. With no new people, week six. With them, week seven.
+
+The better move? Cut the list. Ten tasks are enough to open pre-orders, and four people can finish those in time. And if you add people, add them early, with pieces of their own.
+
+That is Brooks's law. Adding people to a late project makes it later.

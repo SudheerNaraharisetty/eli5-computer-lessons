@@ -1,0 +1,15 @@
+Maya's till has one question. Can this customer have a free cookie?
+
+Here is how it asks. Order, dot, customer, dot, card, dot, balance. Every dot reaches one step deeper. Past the order. Past the customer. Into the card.
+
+So the till has to know how everyone in the line is built.
+
+Then Maya lets a family share one card. The card moves, into a household.
+
+The long arm grabs at the old spot, and finds nothing. The website and the refund job made the same reach. They break too.
+
+The fix. Each one talks only to its neighbour. The till asks the order. The order asks the customer. The customer asks its card. And the answer comes back down the line. Yes.
+
+Now bring the household back. Only the customer gets a new neighbour. The till never notices.
+
+That is the Law of Demeter. Only talk to your close friends.

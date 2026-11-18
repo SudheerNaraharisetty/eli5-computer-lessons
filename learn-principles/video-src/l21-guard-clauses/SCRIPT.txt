@@ -1,0 +1,13 @@
+At Maya's cookie shop, thirty points win a free cookie. One job decides what the till says.
+
+Here it is. A question, inside a question, inside a question. The one line that says yes is pushed far to the right. And the answers that say no trail below, in reverse order.
+
+Then a new rule. No free cookies on Saturdays. Maya squeezes in one more question. But two of the no answers land on the wrong steps.
+
+On Tuesday, the cookies run out. And the till says: not on Saturdays.
+
+The fix. Flip each question, and move it to the top. No card? Leave with that answer. Not enough points? Leave. Saturday? Leave. Sold out? Leave.
+
+Now the yes line stands at the left edge, with nothing in its way. And the next new rule is just one more check at the door.
+
+Those early exits are called guard clauses. Handle the odd cases first, and the main job reads straight down.

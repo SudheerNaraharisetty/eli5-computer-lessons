@@ -1,0 +1,59 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 100px; font: 700 140px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; color: #3b37e6; opacity: 0; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-pyr { left: 110px; top: 360px; width: 760px; height: 560px; }
+    #t-pyr polygon { opacity: 0; }
+    .t-w { position: absolute; left: 930px; font: 700 58px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .t-w span { display: inline-block; opacity: 0; }
+    .t-n { position: absolute; width: 760px; text-align: center; font: 700 64px/1 "Fraunces", serif; opacity: 0; }
+    #t-next { left: 110px; top: 960px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="10.4" data-track-index="1">
+      <div id="t-head" class="t-abs">Testing pyramid.</div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 276 Q560 302 1250 268" /></svg>
+      <svg id="t-pyr" class="t-abs" viewBox="0 0 760 560">
+        <polygon id="t-p3" points="300,20 460,20 545,180 215,180" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <polygon id="t-p2" points="205,198 555,198 645,358 115,358" fill="#fbebd2" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <polygon id="t-p1" points="105,376 655,376 745,536 15,536" fill="#ddefe6" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+      <div class="t-n" id="t-n3" style="left:110px;top:428px;color:#3b37e6">few</div>
+      <div class="t-n" id="t-n2" style="left:110px;top:606px;color:#8a5510">some</div>
+      <div class="t-n" id="t-n1" style="left:110px;top:784px;color:#1f7a5c">many</div>
+      <div class="t-w" id="t-w1" style="top:778px"><span>Many</span> <span>small,</span> <span>fast</span> <span>tests.</span></div>
+      <div class="t-w" id="t-w2" style="top:600px"><span>Some</span> <span>in</span> <span>the</span> <span>middle.</span></div>
+      <div class="t-w" id="t-w3" style="top:422px"><span>A</span> <span>few</span> <span>big,</span> <span>slow</span> <span>ones.</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 50: Technical debt</div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 54.1;
+      const g = { head: 54.865, w1: [56.235, 56.572, 57.164, 57.57], w2: [58.313, 58.557, 58.638, 58.743], w3: [59.474, 60.09, 60.09, 60.484, 60.891], end: 61.6 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-head", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.head - S - 0.25);
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength() + 2;
+      gsap.set(u, { strokeDasharray: L, strokeDashoffset: L });
+      tl.set(u, { opacity: 1 }, g.head - S + 0.55);
+      tl.to(u, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, g.head - S + 0.56);
+      [["#t-p1", "#t-n1", "#t-w1", g.w1], ["#t-p2", "#t-n2", "#t-w2", g.w2], ["#t-p3", "#t-n3", "#t-w3", g.w3]].forEach(([p, n, w, ts]) => {
+        tl.fromTo(p, { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.5, ease: "bounce.out" }, ts[0] - S - 0.1);
+        tl.fromTo(n, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, ts[0] - S + 0.2);
+        gsap.utils.toArray(w + " span").forEach((s, i) => tl.fromTo(s, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, ts[i] - S - 0.05));
+      });
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

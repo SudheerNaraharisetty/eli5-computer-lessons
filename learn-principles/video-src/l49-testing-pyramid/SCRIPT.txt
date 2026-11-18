@@ -1,0 +1,11 @@
+Before every update, Maya and Sam test the shop by hand. Order a cookie. Pay. Check the receipt. Twenty-five minutes of clicking. So they do it less and less.
+
+Then a bug slips into the rule for big orders. Nobody clicks an order that big. A wedding is overcharged. And the wrong total could come from any of twenty places.
+
+There is a better way. A test is a small piece of code. It runs your code, and checks the answer. The computer can rerun it in a blink.
+
+Maya writes forty tiny tests, one rule each. Then six that plug real parts together. And just two that buy a cookie the way a customer would.
+
+Run them all. Now plant the same bug. One tiny test turns red, in under a second. It names the exact function.
+
+That is the testing pyramid. Many small, fast tests. Some in the middle. And only a few big, slow ones.

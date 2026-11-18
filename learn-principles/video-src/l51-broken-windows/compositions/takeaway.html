@@ -1,0 +1,68 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 80px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .t-head span { display: inline-block; opacity: 0; }
+    #t-h1 { top: 64px; }
+    #t-h2 { top: 162px; }
+    #t-h2 .ac { color: #3b37e6; }
+    .t-board { top: 300px; width: 680px; height: 420px; background: #15132b; border-radius: 24px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    .t-board > i { position: absolute; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 0 0 4px #0b0a18; }
+    #t-bA { left: 110px; }
+    #t-bB { left: 1130px; }
+    .t-lab { top: 752px; width: 680px; text-align: center; font-size: 40px; line-height: 1.3; white-space: nowrap; opacity: 0; }
+    #t-lA { left: 110px; color: #b8235a; }
+    #t-lB { left: 1130px; color: #1f7a5c; }
+    #t-face { left: 860px; top: 400px; width: 200px; height: 208px; opacity: 0; }
+    #t-same { left: 820px; top: 630px; width: 280px; text-align: center; font-size: 34px; line-height: 1.25; opacity: 0; }
+    #t-rule { left: 110px; top: 880px; padding: 10px 34px; background: #b8235a; color: #fff; border-radius: 999px; font-size: 44px; line-height: 1.4; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; opacity: 0; }
+    #t-next { left: 1130px; top: 892px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 34px; line-height: 1.4; white-space: nowrap; opacity: 0; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="13.15" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head"><span>Mess</span> <span>does</span> <span>not</span> <span>come</span> <span>from</span> <span>bad</span> <span>people.</span></div>
+      <div id="t-h2" class="t-abs t-head"><span>It</span> <span>comes</span> <span>from</span> <span class="ac">what</span> <span class="ac">looks</span> <span class="ac">normal.</span></div>
+      <div id="t-bA" class="t-abs t-board"><i style="left:60px;top:34px;background:#4bd69b"></i><i style="left:136px;top:34px;background:#ff6b8b"></i><i style="left:212px;top:34px;background:#4bd69b"></i><i style="left:288px;top:34px;background:#4bd69b"></i><i style="left:364px;top:34px;background:#4bd69b"></i><i style="left:440px;top:34px;background:#4bd69b"></i><i style="left:516px;top:34px;background:#4bd69b"></i><i style="left:592px;top:34px;background:#4bd69b"></i><i style="left:60px;top:94px;background:#4bd69b"></i><i style="left:136px;top:94px;background:#4bd69b"></i><i style="left:212px;top:94px;background:#4bd69b"></i><i style="left:288px;top:94px;background:#4bd69b"></i><i style="left:364px;top:94px;background:#4bd69b"></i><i style="left:440px;top:94px;background:#ff6b8b"></i><i style="left:516px;top:94px;background:#4bd69b"></i><i style="left:592px;top:94px;background:#4bd69b"></i><i style="left:60px;top:154px;background:#4bd69b"></i><i style="left:136px;top:154px;background:#4bd69b"></i><i style="left:212px;top:154px;background:#4bd69b"></i><i style="left:288px;top:154px;background:#4bd69b"></i><i style="left:364px;top:154px;background:#4bd69b"></i><i style="left:440px;top:154px;background:#4bd69b"></i><i style="left:516px;top:154px;background:#4bd69b"></i><i style="left:592px;top:154px;background:#ff6b8b"></i><i style="left:60px;top:214px;background:#4bd69b"></i><i style="left:136px;top:214px;background:#4bd69b"></i><i style="left:212px;top:214px;background:#ff6b8b" id="t-a-new"></i><i style="left:288px;top:214px;background:#4bd69b"></i><i style="left:364px;top:214px;background:#4bd69b"></i><i style="left:440px;top:214px;background:#4bd69b"></i><i style="left:516px;top:214px;background:#4bd69b"></i><i style="left:592px;top:214px;background:#4bd69b"></i><i style="left:60px;top:274px;background:#ff6b8b"></i><i style="left:136px;top:274px;background:#4bd69b"></i><i style="left:212px;top:274px;background:#4bd69b"></i><i style="left:288px;top:274px;background:#4bd69b"></i><i style="left:364px;top:274px;background:#4bd69b"></i><i style="left:440px;top:274px;background:#ff6b8b"></i><i style="left:516px;top:274px;background:#4bd69b"></i><i style="left:592px;top:274px;background:#4bd69b"></i><i style="left:60px;top:334px;background:#4bd69b"></i><i style="left:136px;top:334px;background:#4bd69b"></i><i style="left:212px;top:334px;background:#4bd69b"></i><i style="left:288px;top:334px;background:#ff6b8b"></i><i style="left:364px;top:334px;background:#4bd69b"></i><i style="left:440px;top:334px;background:#4bd69b"></i><i style="left:516px;top:334px;background:#4bd69b"></i><i style="left:592px;top:334px;background:#4bd69b"></i></div>
+      <div id="t-bB" class="t-abs t-board"><i style="left:60px;top:34px;background:#4bd69b"></i><i style="left:136px;top:34px;background:#4bd69b"></i><i style="left:212px;top:34px;background:#4bd69b"></i><i style="left:288px;top:34px;background:#4bd69b"></i><i style="left:364px;top:34px;background:#4bd69b"></i><i style="left:440px;top:34px;background:#4bd69b"></i><i style="left:516px;top:34px;background:#4bd69b"></i><i style="left:592px;top:34px;background:#4bd69b"></i><i style="left:60px;top:94px;background:#4bd69b"></i><i style="left:136px;top:94px;background:#4bd69b"></i><i style="left:212px;top:94px;background:#4bd69b"></i><i style="left:288px;top:94px;background:#4bd69b"></i><i style="left:364px;top:94px;background:#4bd69b"></i><i style="left:440px;top:94px;background:#4bd69b"></i><i style="left:516px;top:94px;background:#4bd69b"></i><i style="left:592px;top:94px;background:#4bd69b"></i><i style="left:60px;top:154px;background:#4bd69b"></i><i style="left:136px;top:154px;background:#4bd69b"></i><i style="left:212px;top:154px;background:#4bd69b"></i><i style="left:288px;top:154px;background:#4bd69b"></i><i style="left:364px;top:154px;background:#4bd69b"></i><i style="left:440px;top:154px;background:#4bd69b"></i><i style="left:516px;top:154px;background:#4bd69b"></i><i style="left:592px;top:154px;background:#4bd69b"></i><i style="left:60px;top:214px;background:#4bd69b"></i><i style="left:136px;top:214px;background:#4bd69b"></i><i style="left:212px;top:214px;background:#ff6b8b" id="t-b-new"></i><i style="left:288px;top:214px;background:#4bd69b"></i><i style="left:364px;top:214px;background:#4bd69b"></i><i style="left:440px;top:214px;background:#4bd69b"></i><i style="left:516px;top:214px;background:#4bd69b"></i><i style="left:592px;top:214px;background:#4bd69b"></i><i style="left:60px;top:274px;background:#4bd69b"></i><i style="left:136px;top:274px;background:#4bd69b"></i><i style="left:212px;top:274px;background:#4bd69b"></i><i style="left:288px;top:274px;background:#4bd69b"></i><i style="left:364px;top:274px;background:#4bd69b"></i><i style="left:440px;top:274px;background:#4bd69b"></i><i style="left:516px;top:274px;background:#4bd69b"></i><i style="left:592px;top:274px;background:#4bd69b"></i><i style="left:60px;top:334px;background:#4bd69b"></i><i style="left:136px;top:334px;background:#4bd69b"></i><i style="left:212px;top:334px;background:#4bd69b"></i><i style="left:288px;top:334px;background:#4bd69b"></i><i style="left:364px;top:334px;background:#4bd69b"></i><i style="left:440px;top:334px;background:#4bd69b"></i><i style="left:516px;top:334px;background:#4bd69b"></i><i style="left:592px;top:334px;background:#4bd69b"></i></div>
+      <div id="t-lA" class="t-abs t-lab">&ldquo;Red is normal here.&rdquo;</div>
+      <div id="t-lB" class="t-abs t-lab">&ldquo;Red is an emergency here.&rdquo;</div>
+      <svg id="t-face" class="t-abs" viewBox="86 36 228 236"><circle cx="200" cy="150" r="104" fill="#5a3418" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="162" r="84" fill="#c98d62" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M112 170 Q110 74 200 72 Q292 74 288 170 Q270 118 200 112 Q132 116 112 170 Z" fill="#5a3418" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#e88f7a" />
+            <circle cx="250" cy="198" r="13" fill="#e88f7a" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M174 204 Q200 222 226 204" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" /></svg>
+      <div id="t-same" class="t-abs">same Priya</div>
+      <div id="t-rule" class="t-abs">Don't live with broken windows.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 52: Review: bigger structure</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-face", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.037);
+      tl.fromTo("#t-same", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.408);
+      tl.fromTo("#t-bA", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 1.105);
+      tl.fromTo("#t-bB", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 1.105 + 0.35);
+      tl.fromTo("#t-lA", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 1.535 + 0.2);
+      tl.fromTo("#t-lB", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 1.535 + 0.5);
+      tl.fromTo("#t-b-new", { scale: 1 }, { scale: 1.35, duration: 0.2, yoyo: true, repeat: 3, ease: "power2.out" }, 1.535 + 0.6);
+      const w1 = gsap.utils.toArray("#t-h1 span"), w2 = gsap.utils.toArray("#t-h2 span");
+      [2.905,3.265,3.578,3.857,4.147,4.402,4.762].forEach((at, i) => tl.fromTo(w1[i], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, at - 0.05));
+      [5.587,5.784,6.132,6.33,6.539,6.91].forEach((at, i) => tl.fromTo(w2[i], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, at - 0.05));
+      tl.fromTo("#t-rule", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 8.431 - 0.1);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 9.743 + 0.8);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

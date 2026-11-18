@@ -1,0 +1,17 @@
+Maya opens a file she wrote six months ago. She cannot read it.
+
+A job called calc. Values called x, y and f. The names say nothing.
+
+So she traces every line, and writes a decoder note. X is the number of cookies. Y is the price. F means a loyalty card. And so on.
+
+And there is a bug. Totals come out too low. Maya reads it three times and sees nothing.
+
+So she renames things. Cookie count. Cookie price. Has loyalty card. Subtotal. Total with tax. And the job: order total.
+
+The note goes in the bin. The code explains itself.
+
+Now look at the last line. It hands back the subtotal, not the total with tax. With honest names, the bug is plain to see.
+
+One small fix.
+
+That is the point of meaningful names. A good name says what a thing is, so nobody has to decode it.

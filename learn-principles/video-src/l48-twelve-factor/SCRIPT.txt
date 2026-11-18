@@ -1,0 +1,11 @@
+Maya's website has run on one old computer in her shop for years. It works perfectly.
+
+Then she rents a new computer in a data centre, and copies the code across. It falls over.
+
+Why? The code had grown roots into the old machine. The database address says localhost, meaning this computer. The payment key is typed into the file. A tool she installed by hand is missing. And the log goes to a folder that only existed there.
+
+The cure is a famous checklist, the twelve-factor app. Its heart is simple. Take everything that differs between places out of the code. Give it a name, and let each place hand it in at the start. List the tools you need. And just print what happens.
+
+Now the same code runs on her laptop, on a test machine, and in the real shop. Only a small settings card changes. Three copies for Christmas? Copy, set, start.
+
+That is the twelve-factor app. Code that runs anywhere, with nobody editing it.

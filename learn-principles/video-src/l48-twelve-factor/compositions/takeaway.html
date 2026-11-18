@@ -1,0 +1,76 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 120px; font: 700 116px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; color: #3b37e6; opacity: 0; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    .t-sub { left: 110px; font: 700 64px/1.25 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .t-sub span { display: inline-block; opacity: 0; }
+    #t-sub1 { top: 340px; }
+    #t-sub2 { top: 430px; }
+    #t-note { left: 110px; top: 600px; font-size: 34px; line-height: 1.35; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    #t-card { left: 1290px; top: 96px; width: 534px; height: 888px; background: #fff; border-radius: 24px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-card h3 { position: absolute; left: 30px; top: 18px; font: 700 42px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .t-row { position: absolute; left: 18px; width: 498px; height: 56px; border-radius: 12px; display: flex; align-items: center; gap: 12px; padding: 0 14px; font-size: 30px; white-space: nowrap; opacity: 0; }
+    .t-row > i { font-style: normal; width: 44px; color: #3b37e6; text-align: right; }
+    .t-row.on { background: #ddefe6; }
+    .t-tick { position: absolute; right: 14px; top: 4px; width: 48px; height: 48px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 3px #0e0c1d; opacity: 0; }
+    .t-tick > svg { position: absolute; left: 0; top: 0; width: 48px; height: 48px; }
+    #t-next { left: 110px; top: 900px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.8" data-track-index="1">
+      <div id="t-head" class="t-abs">Twelve-factor app.</div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 278 Q560 302 1120 270" /></svg>
+      <div id="t-sub1" class="t-abs t-sub"><span>Code</span> <span>that</span> <span>runs</span> <span>anywhere,</span></div>
+      <div id="t-sub2" class="t-abs t-sub"><span>with</span> <span>nobody</span> <span>editing</span> <span>it.</span></div>
+      <div id="t-note" class="t-abs">A checklist for web services, not a law.</div>
+      <div id="t-card" class="t-abs">
+        <h3>The twelve</h3>
+        <div class="t-row" style="top:90px"><i>1</i>Codebase</div>
+        <div class="t-row" style="top:154px"><i>2</i>Dependencies</div>
+        <div class="t-row on" style="top:218px"><i>3</i>Config<div class="t-tick"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="t-row on" style="top:282px"><i>4</i>Backing services<div class="t-tick"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="t-row" style="top:346px"><i>5</i>Build, release, run</div>
+        <div class="t-row on" style="top:410px"><i>6</i>Processes<div class="t-tick"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="t-row" style="top:474px"><i>7</i>Port binding</div>
+        <div class="t-row" style="top:538px"><i>8</i>Concurrency</div>
+        <div class="t-row" style="top:602px"><i>9</i>Disposability</div>
+        <div class="t-row" style="top:666px"><i>10</i>Dev/prod parity</div>
+        <div class="t-row on" style="top:730px"><i>11</i>Logs<div class="t-tick"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="t-row" style="top:794px"><i>12</i>Admin processes</div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 49: Testing pyramid</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 62;
+      const g = { head: 62.388, s1: [64.873, 65.186, 65.349, 65.674], s2: [66.405, 66.672, 67.23, 67.764], end: 68.31 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-card", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 0.05);
+      tl.fromTo("#t-head", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.head - S - 0.1);
+      tl.fromTo("#t-card .t-row", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.11 }, g.head - S + 0.1);
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength() + 2;
+      gsap.set(u, { strokeDasharray: L, strokeDashoffset: L });
+      tl.set(u, { opacity: 1 }, 1.7);
+      tl.to(u, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 1.71);
+      gsap.utils.toArray("#t-sub1 span").forEach((w, i) => tl.fromTo(w, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, g.s1[i] - S - 0.05));
+      tl.fromTo("#t-card .t-tick", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)", stagger: 0.18 }, g.s1[3] - S);
+      gsap.utils.toArray("#t-sub2 span").forEach((w, i) => tl.fromTo(w, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, g.s2[i] - S - 0.05));
+      tl.fromTo("#t-note", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.end - S + 0.1);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.3);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

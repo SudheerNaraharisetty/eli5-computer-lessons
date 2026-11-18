@@ -1,0 +1,13 @@
+Maya's shop takes orders online. One loop runs it all, and Maya's code is in charge.
+
+An order arrives. The loop calls the ticket. Then the text. Then the stock. Then the points. Always in that order.
+
+Then Sam wants a kitchen bell. The accountant wants a tax log. Each new idea means opening the one loop that every order runs through.
+
+So Maya flips it. A small board owns the loop now. Each job leaves its name, and says: call me when an order arrives.
+
+An order drops in. The board calls every job on its list.
+
+The kitchen bell? One new job, and one new line. The next order rings it too. And the loop stays shut.
+
+That is inversion of control. Your code stops calling. It gets called. Don't call us, we'll call you. Ask: who decides when this code runs?

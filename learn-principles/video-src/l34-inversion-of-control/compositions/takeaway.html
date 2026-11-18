@@ -1,0 +1,105 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 110px; top: 84px; padding: 0 36px; height: 88px; line-height: 88px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 50px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #t-def { left: 110px; top: 212px; font: 700 78px/1.2 "Fraunces", serif; letter-spacing: -0.025em; white-space: nowrap; }
+    #t-def span { display: inline-block; opacity: 0; }
+    #t-def .ac { color: #3b37e6; }
+    #t-quote { left: 110px; top: 428px; padding: 20px 40px 26px; background: #ffc24b; border-radius: 24px; font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-quote span { display: inline-block; opacity: 0; }
+    #t-q { left: 110px; top: 612px; padding: 22px 36px 28px; background: #fff; border-radius: 24px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-q small { display: block; font-size: 28px; letter-spacing: 0.08em; color: #6f6b80; line-height: 1.3; }
+    #t-q b { display: block; font: 700 58px/1.25 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    /* who calls whom */
+    .t-box { position: absolute; top: 210px; width: 230px; height: 104px; border-radius: 18px; font-size: 34px; line-height: 104px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; opacity: 0; }
+    #t-b1 { left: 1230px; background: #e6e3ff; }
+    #t-b2 { left: 1590px; background: #fbf8f4; }
+    #t-arr { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-arr path, #t-arr polygon { opacity: 0; }
+    #t-cap { left: 1230px; top: 350px; width: 590px; height: 48px; font-size: 34px; line-height: 48px; text-align: center; }
+    #t-cap b { position: absolute; left: 0; top: 0; width: 590px; opacity: 0; }
+    #t-maya { left: 1440px; top: 520px; width: 440px; height: 572px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="14.1" data-track-index="1">
+      <div id="t-kick" class="t-abs">Inversion of control</div>
+      <div id="t-def" class="t-abs">
+        <span>Your code stops calling.</span><br />
+        <span class="ac">It gets called.</span>
+      </div>
+      <div id="t-quote" class="t-abs"><span>"Don't call us,</span> <span>we'll call you."</span></div>
+      <div id="t-q" class="t-abs"><small>THE TEST</small><b>Who decides <span id="t-e1">when</span> this code runs?</b></div>
+
+      <div id="t-b1" class="t-box">your code</div>
+      <div id="t-b2" class="t-box">the board</div>
+      <svg id="t-arr" class="t-abs" viewBox="0 0 1920 1080">
+        <path id="t-a1" d="M1470 240 H1566" fill="none" stroke="#b8235a" stroke-width="9" stroke-linecap="round" />
+        <polygon id="t-h1" points="1584,240 1560,226 1560,254" fill="#b8235a" />
+        <path id="t-x" d="M1502 216 L1546 264 M1546 216 L1502 264" fill="none" stroke="#0e0c1d" stroke-width="9" stroke-linecap="round" />
+        <path id="t-a2" d="M1584 286 H1488" fill="none" stroke="#1f7a5c" stroke-width="9" stroke-linecap="round" />
+        <polygon id="t-h2" points="1470,286 1494,272 1494,300" fill="#1f7a5c" />
+      </svg>
+      <div id="t-cap" class="t-abs"><b id="t-c1" style="color:#b8235a">you call it</b><b id="t-c2" style="color:#1f7a5c">it calls you</b></div>
+
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 35: Review: SOLID and friends</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 43.8;
+      const g = { that: 43.93, inversion: 44.5, your: 46.63, stops: 47.25, calling: 47.67, it: 48.33, called: 48.93, dont: 50.0, well: 51.02, ask: 52.28, who: 53.04, when: 53.77, end: 55.6 };
+      const tl = gsap.timeline({ paused: true });
+      const d = gsap.utils.toArray("#t-def span"), q = gsap.utils.toArray("#t-quote span");
+
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-kick", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.inversion - S - 0.2);
+      tl.fromTo(["#t-b1", "#t-b2"], { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)", stagger: 0.15 }, g.inversion - S + 0.05);
+      // your code stops calling
+      tl.fromTo(d[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.your - S - 0.05);
+      tl.fromTo(["#t-a1", "#t-h1"], { opacity: 0 }, { opacity: 1, duration: 0.2 }, g.your - S);
+      tl.fromTo("#t-c1", { opacity: 0 }, { opacity: 1, duration: 0.2 }, g.your - S + 0.1);
+      tl.fromTo("#t-x", { opacity: 0, scale: 2, svgOrigin: "1524 240" }, { opacity: 1, scale: 1, duration: 0.22, ease: "power4.in" }, g.stops - S);
+      tl.to(["#t-a1", "#t-h1"], { opacity: 0.35, duration: 0.2 }, g.stops - S + 0.22);
+      // it gets called
+      tl.to(["#t-a1", "#t-h1", "#t-x", "#t-c1"], { opacity: 0, duration: 0.2 }, g.it - S - 0.15);
+      tl.fromTo(d[1], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.it - S - 0.05);
+      tl.fromTo(["#t-a2", "#t-h2"], { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, g.it - S + 0.1);
+      tl.fromTo("#t-c2", { opacity: 0 }, { opacity: 1, duration: 0.2 }, g.it - S + 0.2);
+      tl.fromTo("#t-b1", { scale: 1 }, { scale: 1.1, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, g.called - S);
+      // don't call us, we'll call you
+      tl.fromTo("#t-quote", { opacity: 0, y: 40, rotation: -2 }, { opacity: 1, y: 0, rotation: -1, duration: 0.45, ease: "back.out(1.4)" }, g.dont - S - 0.15);
+      tl.fromTo(q[0], { opacity: 0 }, { opacity: 1, duration: 0.2 }, g.dont - S);
+      tl.fromTo(q[1], { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, g.well - S);
+      // the test
+      tl.fromTo("#t-q", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, g.ask - S);
+      tl.to("#t-e1", { color: "#3b37e6", duration: 0.25 }, g.when - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

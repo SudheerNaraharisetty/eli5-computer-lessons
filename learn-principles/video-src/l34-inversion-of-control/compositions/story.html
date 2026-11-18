@@ -1,0 +1,424 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap, #s-shop { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* shop */
+    #s-counter { left: 96px; top: 740px; width: 920px; height: 244px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 740px; width: 920px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-maya { left: 150px; top: 236px; width: 420px; height: 546px; }
+    #s-sign { left: 520px; top: 150px; padding: 20px 38px; background: #fff; border-radius: 22px; font: 700 64px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-name { left: 506px; top: 388px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-web { left: 1160px; top: 330px; width: 520px; height: 250px; background: #fff; border-radius: 26px; padding: 30px 40px; }
+    #s-web small { display: block; font-size: 30px; letter-spacing: 0.08em; color: #3b37e6; line-height: 1.3; }
+    #s-web b { display: block; font: 700 66px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-web span { display: block; font-size: 34px; color: #3e3b52; line-height: 1.4; }
+
+    /* code panel: the loop */
+    #s-code { left: 96px; top: 96px; width: 760px; height: 540px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 760px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-bar > i { position: absolute; top: 24px; width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    .s-tab { position: absolute; top: 10px; left: 108px; height: 44px; padding: 0 16px; border-radius: 10px; font: 700 28px/44px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; color: #a9a5d6; white-space: nowrap; }
+    #s-play { left: 14px; top: 156px; width: 732px; height: 52px; border-radius: 12px; background: #2e2a58; }
+    #s-lines { left: 36px; top: 104px; width: 700px; height: 420px; font: 500 30px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-gut { position: absolute; left: 0; top: 0; width: 60px; color: #8480b8; }
+    #s-gut i { display: block; height: 52px; font-style: normal; }
+    .s-ln { position: absolute; left: 60px; height: 52px; white-space: pre; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .nw { color: #ffc24b; font-weight: 700; }
+    .s-pill { position: absolute; padding: 0 18px; height: 48px; border-radius: 999px; font-size: 28px; line-height: 48px; white-space: nowrap; }
+    #s-every { left: 500px; top: 202px; background: #b8235a; color: #fff; }
+    #s-badge { left: 500px; top: 54px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 12px; background: #ffc24b; font-size: 30px; letter-spacing: 0.08em; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+
+    /* jobs */
+    .s-job { position: absolute; left: 1400px; width: 400px; height: 84px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-job > u { position: absolute; left: 18px; top: 22px; width: 40px; height: 40px; border-radius: 50%; background: #3e3b52; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-job > span { position: absolute; left: 78px; top: 0; font-size: 32px; line-height: 84px; white-space: nowrap; }
+    .s-ok { position: absolute; right: -22px; top: 18px; width: 48px; height: 48px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 48px; height: 48px; }
+    .s-num { position: absolute; left: 1106px; width: 44px; height: 44px; border-radius: 50%; background: #e6e3ff; font-size: 28px; line-height: 44px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-dot { position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; border-radius: 50%; background: #ffc24b; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ord { position: absolute; width: 130px; height: 96px; background: #fbebd2; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; font-size: 28px; line-height: 44px; text-align: center; letter-spacing: 0.06em; }
+    .s-ord i { display: block; margin: 4px auto 0; width: 86px; height: 8px; border-radius: 4px; background: #b9741a; }
+    .s-ord i + i { width: 60px; margin-top: 8px; }
+
+    /* requests and the count */
+    .s-memo { position: absolute; left: 96px; width: 490px; height: 120px; background: #fbebd2; border-radius: 18px; padding: 14px 26px 0; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    .s-memo small { display: block; font-size: 28px; letter-spacing: 0.06em; color: #8a5510; line-height: 1.3; }
+    .s-memo b { display: block; font-size: 36px; line-height: 1.35; white-space: nowrap; }
+    #s-count { left: 616px; top: 690px; width: 240px; height: 270px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; text-align: center; }
+    #s-count > span { display: block; margin-top: 18px; font-size: 30px; line-height: 38px; }
+    #s-cbox { position: relative; margin: 14px auto 0; width: 120px; height: 110px; border-radius: 16px; background: #fbe0ea; font: 700 84px/110px "Fraunces", serif; color: #b8235a; }
+    #s-cbox b { position: absolute; left: 0; top: 0; width: 120px; }
+
+    /* the board */
+    #s-board { left: 96px; top: 96px; width: 760px; height: 580px; background: #fbf8f4; border-radius: 24px; }
+    #s-btitle { left: 36px; top: 30px; font: 700 50px/1.3 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-blabel { left: 36px; top: 108px; font-size: 28px; letter-spacing: 0.05em; color: #3e3b52; white-space: nowrap; }
+    .s-slot { position: absolute; left: 36px; width: 440px; height: 64px; border-radius: 16px; background: #ece7df; }
+    .s-slot > i { position: absolute; left: 12px; top: 20px; width: 24px; height: 24px; border-radius: 50%; background: #0e0c1d; }
+    #s-tray { left: 510px; top: 160px; width: 214px; height: 220px; border-radius: 18px; background: #ece7df; }
+    #s-tray > span { position: absolute; left: 0; top: 168px; width: 214px; text-align: center; font-size: 28px; letter-spacing: 0.06em; color: #3e3b52; }
+    #s-loop { left: 648px; top: 30px; width: 84px; height: 84px; }
+    #s-lock { left: 644px; top: 18px; width: 92px; height: 112px; }
+    #s-shut { left: 584px; top: 506px; padding: 0 20px; height: 56px; line-height: 56px; border-radius: 12px; background: #1f7a5c; color: #fff; font-size: 28px; letter-spacing: 0.08em; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tag { position: absolute; left: 172px; height: 56px; padding: 0 22px; border-radius: 12px; background: #fff; font: 700 28px/56px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-say { left: 880px; top: 92px; height: 60px; line-height: 60px; padding: 0 26px; font-size: 30px; background: #3b37e6; color: #fff; border-radius: 30px 30px 6px 30px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-newjob { left: 1190px; top: 634px; background: #7cf0b5; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-ding { left: 1650px; top: 668px; background: #ffc24b; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; font-size: 32px; }
+
+    /* the wiring code */
+    #s-strip { left: 96px; top: 706px; width: 760px; height: 278px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-kgreen { left: 12px; top: 210px; width: 736px; height: 48px; border-radius: 10px; background: #173f36; }
+    .s-k { position: absolute; left: 30px; height: 48px; font: 500 30px/48px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+    .s-k .fn { color: #7cf0b5; }
+    #s-newline { left: 640px; top: 916px; background: #7cf0b5; color: #0e0c1d; }
+
+    .s-cap { position: absolute; font: 700 60px/1.25 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-cap1 { left: 96px; top: 716px; }
+    #s-cap2 { left: 900px; top: 770px; width: 900px; height: 160px; }
+    #s-cap2 b { position: absolute; left: 0; top: 0; }
+    .s-cap .ac { color: #3b37e6; }
+
+    /* wires */
+    #s-wires { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-wires path { opacity: 0; fill: none; stroke-linecap: round; }
+    .s-wire { stroke: #0e0c1d; stroke-width: 6; }
+    .s-line2 { stroke: #6f6b80; stroke-width: 5; }
+    #s-dash { stroke: #ff6b8b; stroke-width: 5; stroke-dasharray: 14 12; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="43.8" data-track-index="1">
+      <div id="s-wrap">
+        <!-- the shop -->
+        <div id="s-shop">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-name" class="s-abs s-hide">Maya</div>
+          <div id="s-sign" class="s-abs s-ol s-hide">Maya's Cookies</div>
+          <div id="s-web" class="s-abs s-ol s-hide"><small>ONLINE ORDER</small><b>6 cookies</b><span>ordered on the website</span></div>
+        </div>
+
+        <!-- before: one loop that Maya's code steers -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-play" class="s-abs s-hide"></div>
+          <div id="s-bar" class="s-abs">
+            <i style="left:26px"></i><i style="left:52px;background:#ffc24b"></i><i style="left:78px;background:#4bd69b"></i>
+            <span class="s-tab">online.py</span>
+          </div>
+          <div id="s-lines" class="s-abs">
+            <div id="s-gut"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i id="s-g7" class="s-hide">7</i><i id="s-g8" class="s-hide">8</i></div>
+            <div class="s-ln s-old" style="top:0"><span class="kw">while</span> <span class="kw">True</span>:</div>
+            <div class="s-ln s-old" style="top:52px">    order = wait_for_order()</div>
+            <div class="s-ln s-old" style="top:104px">    <span class="fn">print_kitchen_ticket</span>(order)</div>
+            <div class="s-ln s-old" style="top:156px">    <span class="fn">send_confirmation</span>(order)</div>
+            <div class="s-ln s-old" style="top:208px">    <span class="fn">update_stock</span>(order)</div>
+            <div class="s-ln s-old" style="top:260px">    <span class="fn">add_points</span>(order)</div>
+            <div class="s-ln s-hide" id="s-l7" style="top:312px">    <span class="nw">ring_bell</span>(order)</div>
+            <div class="s-ln s-hide" id="s-l8" style="top:364px">    <span class="nw">log_for_tax</span>(order)</div>
+          </div>
+        </div>
+        <div id="s-every" class="s-pill s-hide">every order runs here</div>
+
+        <!-- after: the board -->
+        <div id="s-board" class="s-abs s-ol s-hide">
+          <div id="s-btitle" class="s-abs">The orders board</div>
+          <div id="s-blabel" class="s-abs">WHEN A NEW ORDER ARRIVES, CALL:</div>
+          <div class="s-slot" style="top:160px"><i></i></div>
+          <div class="s-slot" style="top:240px"><i></i></div>
+          <div class="s-slot" style="top:320px"><i></i></div>
+          <div class="s-slot" style="top:400px"><i></i></div>
+          <div class="s-slot" style="top:480px"><i></i></div>
+          <div id="s-tray" class="s-abs"><span>NEW ORDER</span></div>
+          <svg id="s-loop" class="s-abs s-hide" viewBox="0 0 84 84">
+            <circle cx="42" cy="42" r="38" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M24 42 A18 18 0 0 1 56 30" fill="none" stroke="#3b37e6" stroke-width="7" stroke-linecap="round" />
+            <path d="M60 42 A18 18 0 0 1 28 54" fill="none" stroke="#3b37e6" stroke-width="7" stroke-linecap="round" />
+            <path d="M50 20 L60 32 L45 35 Z" fill="#3b37e6" />
+            <path d="M34 64 L24 52 L39 49 Z" fill="#3b37e6" />
+          </svg>
+          <svg id="s-lock" class="s-abs s-hide" data-layout-allow-occlusion viewBox="0 0 140 170">
+            <path d="M34 78 V52 C34 4 106 4 106 52 V78" fill="none" stroke="#0e0c1d" stroke-width="16" stroke-linecap="round" />
+            <rect x="8" y="74" width="124" height="90" rx="18" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="70" cy="110" r="12" fill="#fff" />
+            <rect x="64" y="112" width="12" height="28" rx="5" fill="#fff" />
+          </svg>
+        </div>
+        <div id="s-shut" class="s-abs s-hide">NOT OPENED</div>
+        <div id="s-badge" class="s-abs s-hide" data-layout-allow-occlusion>IN CHARGE</div>
+
+        <div id="s-strip" class="s-abs s-ol s-hide">
+          <div id="s-kgreen" class="s-abs s-hide"></div>
+          <div class="s-k s-hide" id="s-k1" style="top:18px">orders.when_new(<span class="fn">print_kitchen_ticket</span>)</div>
+          <div class="s-k s-hide" id="s-k2" style="top:66px">orders.when_new(<span class="fn">send_confirmation</span>)</div>
+          <div class="s-k s-hide" id="s-k3" style="top:114px">orders.when_new(<span class="fn">update_stock</span>)</div>
+          <div class="s-k s-hide" id="s-k4" style="top:162px">orders.when_new(<span class="fn">add_points</span>)</div>
+          <div class="s-k s-hide" id="s-k5" style="top:210px">orders.when_new(<span class="fn">ring_bell</span>)</div>
+        </div>
+        <div id="s-newline" class="s-pill s-hide">1 new line</div>
+
+        <!-- requests, and the count -->
+        <div class="s-memo s-hide" id="s-m1" style="top:690px"><small>SAM ASKS</small><b>Ring a kitchen bell</b></div>
+        <div class="s-memo s-hide" id="s-m2" style="top:840px"><small>THE ACCOUNTANT ASKS</small><b>Log it for tax</b></div>
+        <div id="s-count" class="s-abs s-hide"><span>Loop<br />opened</span><div id="s-cbox"><b id="s-c1">1</b><b id="s-c2" class="s-hide">2</b></div></div>
+
+        <div id="s-cap1" class="s-cap"><span id="s-ca" class="s-hide" style="display:block">The loop calls each job.</span><span id="s-cb" class="s-hide" style="display:block">Always in the <span class="ac">same order.</span></span></div>
+        <div id="s-cap2" class="s-cap"><b id="s-cc" class="s-hide">The board owns the loop.</b><b id="s-cd" class="s-hide">The board calls.<br /><span class="ac">The jobs get called.</span></b></div>
+
+        <!-- wires -->
+        <svg id="s-wires" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-w1" class="s-wire" d="M861 330 L1395 190" />
+          <path id="s-w2" class="s-wire" d="M861 382 L1395 294" />
+          <path id="s-w3" class="s-wire" d="M861 434 L1395 398" />
+          <path id="s-w4" class="s-wire" d="M861 486 L1395 502" />
+          <path id="s-w5" class="s-wire" d="M861 538 L1395 606" />
+          <path id="s-w6" class="s-wire" d="M861 590 L1395 710" />
+          <path id="s-v1" class="s-line2" d="M1395 190 L861 288" />
+          <path id="s-v2" class="s-line2" d="M1395 294 L861 368" />
+          <path id="s-v3" class="s-line2" d="M1395 398 L861 448" />
+          <path id="s-v4" class="s-line2" d="M1395 502 L861 528" />
+          <path id="s-v5" class="s-line2" d="M1395 606 L861 608" />
+          <path id="s-dash" d="M190 204 H834 Q846 204 846 216 V612 Q846 624 834 624 H190 Q178 624 178 612 V216 Q178 204 190 204 Z" />
+        </svg>
+        <div class="s-num s-hide" id="s-n1" style="top:238px">1</div>
+        <div class="s-num s-hide" id="s-n2" style="top:316px">2</div>
+        <div class="s-num s-hide" id="s-n3" style="top:394px">3</div>
+        <div class="s-num s-hide" id="s-n4" style="top:472px">4</div>
+
+        <!-- the jobs -->
+        <div class="s-job s-hide" id="s-j1" style="top:148px"><u></u><span>Kitchen ticket</span><div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-job s-hide" id="s-j2" style="top:252px"><u></u><span>Confirmation text</span><div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-job s-hide" id="s-j3" style="top:356px"><u></u><span>Stock count</span><div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-job s-hide" id="s-j4" style="top:460px"><u></u><span>Loyalty points</span><div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-job s-hide" id="s-j5" style="top:564px"><u></u><span>Kitchen bell</span><div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-job s-hide" id="s-j6" style="top:668px"><u></u><span>Tax log</span></div>
+        <div id="s-newjob" class="s-pill s-hide" data-layout-allow-occlusion>1 new job</div>
+        <div id="s-ding" class="s-pill s-hide">ding!</div>
+        <div id="s-say" class="s-abs s-hide">call me when an order arrives</div>
+
+        <!-- name tags that get hung on the board -->
+        <div class="s-tag s-hide" id="s-tg1" style="top:260px">print_kitchen_ticket</div>
+        <div class="s-tag s-hide" id="s-tg2" style="top:340px">send_confirmation</div>
+        <div class="s-tag s-hide" id="s-tg3" style="top:420px">update_stock</div>
+        <div class="s-tag s-hide" id="s-tg4" style="top:500px">add_points</div>
+        <div class="s-tag s-hide" id="s-tg5" style="top:580px">ring_bell</div>
+
+        <!-- orders and call signals -->
+        <div class="s-ord s-hide" id="s-o1" style="left:900px;top:104px">ORDER<i></i><i></i></div>
+        <div class="s-ord s-hide" id="s-o2" style="left:648px;top:268px">ORDER<i></i><i></i></div>
+        <div class="s-ord s-hide" id="s-o3" style="left:648px;top:268px">ORDER<i></i><i></i></div>
+        <div class="s-dot s-hide" id="s-d1"></div>
+        <div class="s-dot s-hide" id="s-d2"></div>
+        <div class="s-dot s-hide" id="s-d3"></div>
+        <div class="s-dot s-hide" id="s-d4"></div>
+        <div class="s-dot s-hide" id="s-d5"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.418, 0.708, 1.045, 1.44, 2.38, 2.659, 2.937, 3.216, 3.355, 3.901, 4.11, 4.481, 4.83, 4.981, 5.155, 6.118, 6.316, 6.641, 7.372, 7.546, 7.814, 8.185, 8.301, 9.067, 9.288, 9.404, 10.089, 10.321, 10.437, 10.96, 11.192, 11.32, 12.504, 13.108, 13.317, 13.572, 14.35, 14.675, 14.988, 15.29, 15.453, 15.883, 16.568, 16.73, 17.334, 17.624, 17.752, 18.193, 19.006, 19.343, 19.586, 19.981, 20.353, 20.84, 20.991, 21.27, 21.618, 21.839, 22.222, 22.605, 22.953, 23.789, 24.01, 24.289, 24.695, 25.333, 25.484, 25.775, 26.111, 26.343, 26.46, 26.703, 27.354, 27.748, 28.108, 28.445, 28.654, 29.06, 29.316, 30.012, 30.268, 30.384, 30.546, 30.686, 31.011, 31.719, 31.916, 32.195, 32.613, 33.251, 33.402, 33.704, 34.076, 34.366, 34.656, 34.784, 35.004, 35.701, 35.864, 36.247, 36.966, 37.21, 37.419, 37.791, 38.023, 38.244, 38.464, 39.138, 39.312, 39.625, 39.927, 40.24, 40.391, 41.1, 41.309, 41.46, 41.796, 42.226, 43.329, 43.642, 43.898, 44.617, 44.757, 46.034, 46.289, 46.649, 47.067, 47.729, 47.961, 48.332, 49.4, 49.737, 50.097, 50.422, 50.689, 51.037, 51.676, 52.442, 52.686, 53.174, 53.406, 53.638, 53.986];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const ON = "#ffc24b", OFF = "#3e3b52";
+      // where each wire starts and ends
+      const LY = [330, 382, 434, 486, 538, 590];     // code lines 3 to 8
+      const JY = [190, 294, 398, 502, 606, 710];     // job cards
+      const BY = [288, 368, 448, 528, 608];          // board rows
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const LEN = {};
+      document.querySelectorAll("#s-wires path.s-wire, #s-wires path.s-line2").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 560;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.4, ease: "power2.out", immediateRender: false }, at);
+      };
+      const type = (sel, at, d, steps) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "steps(" + steps + ")" }, at);
+      const light = (id, col, at) => {
+        tl.to(id + " > u", { backgroundColor: col, duration: 0.16, ease: "power2.out" }, at);
+        if (col === ON) tl.fromTo(id + " > u", { scale: 1 }, { scale: 1.45, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      };
+      // a call: a signal runs from (x1,y1) to (x2,y2)
+      const call = (dot, x1, y1, x2, y2, at, d) => {
+        tl.fromTo(dot, { opacity: 1, x: x1, y: y1, scale: 1 }, { x: x2, y: y2, duration: d, ease: "power2.in", immediateRender: false }, at);
+        tl.to(dot, { opacity: 0, scale: 1.8, duration: 0.14, ease: "power2.out" }, at + d);
+      };
+
+      /* ---- 1. Maya's shop takes orders online ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 3 }, 0.3);
+      pop("#s-name", t(0), { from: 0.4 });
+      tl.fromTo("#s-sign", { opacity: 0, y: -150, rotation: -9 }, { opacity: 1, y: 0, rotation: -3, duration: 0.6, ease: "back.out(1.3)" }, t(0) + 0.2);
+      tl.fromTo("#s-web", { opacity: 0, x: 160, rotation: 5 }, { opacity: 1, x: 0, rotation: 2, duration: 0.55, ease: "back.out(1.4)" }, t(3) - 0.1);
+
+      /* ---- 2. One loop runs it all, and Maya's code is in charge ---- */
+      tl.to("#s-shop", { opacity: 0, x: -90, duration: 0.35, ease: "power3.in" }, t(5) - 0.4);
+      tl.fromTo("#s-code", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(5) - 0.1);
+      tl.fromTo(".s-old", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.06 }, t(5) + 0.1);
+      ["#s-j1", "#s-j2", "#s-j3", "#s-j4"].forEach((j, i) => tl.fromTo(j, { opacity: 0, x: 70 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(7) + i * 0.12));
+      tl.fromTo("#s-badge", { opacity: 0, scale: 2.2, rotation: 6 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.3, ease: "power4.in" }, t(14) - 0.2);
+      tl.to(".s-tab", { color: "#ffc24b", duration: 0.2, yoyo: true, repeat: 1, repeatDelay: 0.5 }, t(11));
+
+      /* ---- 3. An order arrives. The loop calls each job, in order ---- */
+      tl.fromTo("#s-o1", { opacity: 0, y: -220, rotation: -14 }, { opacity: 1, y: 0, rotation: -5, duration: 0.5, ease: "back.out(1.3)" }, t(17) - 0.15);
+      tl.set("#s-play", { y: 0 }, 0);
+      tl.to("#s-play", { opacity: 1, duration: 0.2 }, t(18) - 0.1);
+      [23, 26, 29, 32].forEach((w, i) => {
+        const at = t(w) - 0.1, id = "#s-j" + (i + 1);
+        tl.to("#s-play", { y: (i + 1) * 52, duration: 0.22, ease: "power3.inOut" }, at - 0.15);
+        draw("#s-w" + (i + 1), at, 0.3);
+        call("#s-d" + (i + 1), 861, LY[i], 1395, JY[i], at, 0.32);
+        light(id, ON, at + 0.32);
+        tl.fromTo(id, { scale: 1 }, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at + 0.32);
+      });
+      tl.fromTo("#s-ca", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(20) - 0.1);
+      tl.fromTo("#s-cb", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(33) - 0.1);
+      out(["#s-ca", "#s-cb"], t(37) - 0.25, 0.25);
+      [33, 34, 35, 36].forEach((w, i) => pop("#s-n" + (i + 1), t(w) - 0.05, { from: 0.3, d: 0.3 }));
+      tl.to("#s-play", { opacity: 0, duration: 0.25 }, t(36));
+
+      /* ---- 4. Sam wants a bell. The accountant wants a tax log ---- */
+      out("#s-o1", t(37) - 0.2, 0.25);
+      tl.fromTo("#s-m1", { opacity: 0, x: -80, rotation: -4 }, { opacity: 1, x: 0, rotation: -1.5, duration: 0.5, ease: "back.out(1.5)" }, t(38) - 0.1);
+      tl.to("#s-g7", { opacity: 1, duration: 0.2 }, t(41) - 0.1);
+      type("#s-l7", t(41), 0.4, 10);
+      tl.fromTo("#s-j5", { opacity: 0, x: 70 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(42) - 0.1);
+      draw("#s-w5", t(42) + 0.05, 0.35);
+      pop("#s-count", t(42) + 0.35, { from: 0.5 });
+      tl.fromTo("#s-m2", { opacity: 0, x: -80, rotation: 4 }, { opacity: 1, x: 0, rotation: 1.5, duration: 0.5, ease: "back.out(1.5)" }, t(44) - 0.1);
+      tl.to("#s-g8", { opacity: 1, duration: 0.2 }, t(47) - 0.1);
+      type("#s-l8", t(47), 0.4, 10);
+      tl.fromTo("#s-j6", { opacity: 0, x: 70 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(48) - 0.1);
+      draw("#s-w6", t(48) + 0.05, 0.35);
+      swap("#s-c1", "#s-c2", t(48) + 0.4);
+      // each new idea means opening the one loop
+      tl.to(["#s-m1", "#s-m2"], { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.18 }, t(50));
+      tl.fromTo("#s-dash", { opacity: 0, scale: 1.05, svgOrigin: "512 414" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(53) - 0.1);
+      tl.to("#s-count", { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, t(53) + 0.2);
+      pop("#s-every", t(58) - 0.1, { from: 0.4 });
+      tl.fromTo("#s-play", { opacity: 0, y: 0 }, { opacity: 1, y: 312, duration: 0.9, ease: "none", immediateRender: false }, t(59));
+      tl.to("#s-play", { opacity: 0, duration: 0.2 }, t(59) + 0.9);
+
+      /* ---- 5. Maya flips it: a small board owns the loop ---- */
+      out(["#s-m1", "#s-m2", "#s-count", "#s-dash", "#s-every", "#s-j5", "#s-j6", "#s-w1", "#s-w2", "#s-w3", "#s-w4", "#s-w5", "#s-w6", ".s-num"], t(62), 0.3);
+      ["#s-j1", "#s-j2", "#s-j3", "#s-j4"].forEach((j) => light(j, OFF, t(62)));
+      tl.to("#s-badge", { opacity: 0, y: -40, duration: 0.2, ease: "power2.in" }, t(64) - 0.3);
+      tl.to("#s-code", { scaleX: 0, duration: 0.26, ease: "power2.in" }, t(64) - 0.2);
+      tl.set("#s-code", { opacity: 0 }, t(64) + 0.06);
+      tl.fromTo("#s-board", { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.42, ease: "back.out(1.5)" }, t(64) + 0.06);
+      tl.fromTo("#s-btitle", { scale: 1 }, { scale: 1.08, transformOrigin: "0% 50%", duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(68));
+      tl.fromTo("#s-badge", { opacity: 0, y: -160, rotation: 6 }, { opacity: 1, y: 0, rotation: -4, duration: 0.4, ease: "bounce.out", immediateRender: false }, t(69) - 0.1);
+      pop("#s-loop", t(71) - 0.1, { from: 0.3, d: 0.35 });
+      tl.fromTo("#s-loop", { rotation: 0 }, { rotation: 360, duration: 0.9, ease: "power2.inOut", immediateRender: false }, t(71) + 0.1);
+
+      tl.fromTo("#s-cc", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(69) - 0.1);
+      out("#s-cc", t(90) - 0.2, 0.2);
+      tl.fromTo("#s-cd", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(91) - 0.1);
+
+      /* ---- each job leaves its name ---- */
+      tl.fromTo("#s-strip", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(73) - 0.4);
+      [0, 1, 2, 3].forEach((i) => {
+        const at = t(73) + 0.05 + i * 0.42, tg = "#s-tg" + (i + 1);
+        const dy = (148 + i * 104 + 14) - (260 + i * 80);
+        tl.fromTo("#s-j" + (i + 1), { scale: 1 }, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+        tl.fromTo(tg, { opacity: 0, x: 1238, y: dy, scale: 0.7 }, { opacity: 1, x: 1180, y: dy, scale: 1, duration: 0.16, ease: "power2.out" }, at);
+        tl.to(tg, { x: 0, y: 0, duration: 0.5, ease: "power3.inOut" }, at + 0.16);
+        type("#s-k" + (i + 1), at + 0.3, 0.32, 12);
+      });
+      // "call me when an order arrives": the line runs from the job to the board
+      pop("#s-say", t(80) - 0.15, { from: 0.5 });
+      ["#s-v1", "#s-v2", "#s-v3", "#s-v4"].forEach((v, i) => draw(v, t(80) + i * 0.1, 0.45));
+
+      /* ---- 6. An order drops in. The board calls every job on its list ---- */
+      out("#s-say", t(86) - 0.25, 0.2);
+      tl.fromTo("#s-o2", { opacity: 1, y: -420, rotation: 12 }, { opacity: 1, y: 0, rotation: -4, duration: 0.5, ease: "power3.in" }, t(87) - 0.1);
+      tl.to("#s-board", { y: 7, duration: 0.07, ease: "power1.out", yoyo: true, repeat: 1 }, t(87) + 0.4);
+      tl.to("#s-loop", { rotation: 720, duration: 0.8, ease: "power2.inOut" }, t(87) + 0.4);
+      tl.to("#s-tray", { backgroundColor: "#ffc24b", duration: 0.15, yoyo: true, repeat: 1, repeatDelay: 0.3 }, t(87) + 0.4);
+      [0, 1, 2, 3].forEach((i) => {
+        const at = t(92) - 0.15 + i * 0.32, id = "#s-j" + (i + 1), tg = "#s-tg" + (i + 1);
+        tl.to(tg, { backgroundColor: ON, duration: 0.12, yoyo: true, repeat: 1, repeatDelay: 0.2 }, at);
+        tl.fromTo(tg, { scale: 1 }, { scale: 1.07, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+        call("#s-d" + (i + 1), 861, BY[i], 1395, JY[i], at + 0.05, 0.3);
+        light(id, ON, at + 0.35);
+        pop(id + " .s-ok", at + 0.4, { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      });
+
+      /* ---- 7. The kitchen bell: one new job, one new line ---- */
+      out(["#s-o2", ".s-ok"], t(98) - 0.2, 0.25);
+      ["#s-j1", "#s-j2", "#s-j3", "#s-j4"].forEach((j) => light(j, OFF, t(98) - 0.2));
+      tl.set("#s-j5 > u", { backgroundColor: OFF }, t(98));
+      tl.fromTo("#s-j5", { opacity: 0, x: 70, scale: 1 }, { opacity: 1, x: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(99) - 0.1);
+      pop("#s-newjob", t(102) - 0.1, { from: 0.4 });
+      tl.to("#s-kgreen", { opacity: 1, duration: 0.25 }, t(105) - 0.1);
+      type("#s-k5", t(105), 0.4, 12);
+      tl.fromTo("#s-tg5", { opacity: 0, x: 1238, y: -2, scale: 0.7 }, { opacity: 1, x: 1180, y: -2, scale: 1, duration: 0.16, ease: "power2.out" }, t(105));
+      tl.to("#s-tg5", { x: 0, y: 0, duration: 0.5, ease: "power3.inOut" }, t(105) + 0.16);
+      pop("#s-newline", t(107) - 0.1, { from: 0.4 });
+      draw("#s-v5", t(107) + 0.2, 0.4);
+      // the next order rings it too
+      tl.fromTo("#s-o3", { opacity: 1, y: -420, rotation: -12 }, { opacity: 1, y: 0, rotation: 4, duration: 0.42, ease: "power3.in" }, t(109) - 0.05);
+      tl.to("#s-board", { y: 7, duration: 0.07, ease: "power1.out", yoyo: true, repeat: 1 }, t(109) + 0.37);
+      tl.to("#s-loop", { rotation: 1080, duration: 0.8, ease: "power2.inOut" }, t(109) + 0.37);
+      [0, 1, 2, 3, 4].forEach((i) => {
+        const at = t(110) - 0.1 + i * 0.06, id = "#s-j" + (i + 1);
+        tl.to("#s-tg" + (i + 1), { backgroundColor: ON, duration: 0.1, yoyo: true, repeat: 1, repeatDelay: 0.15 }, at);
+        call("#s-d" + (i + 1), 861, BY[i], 1395, JY[i], at, 0.22);
+        light(id, ON, at + 0.22);
+      });
+      tl.to("#s-j5", { rotation: 5, duration: 0.07, ease: "power1.inOut", yoyo: true, repeat: 7 }, t(111) + 0.05);
+      tl.fromTo("#s-ding", { opacity: 0, scale: 0.4, rotation: -20 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.3, ease: "back.out(2.4)" }, t(111) + 0.05);
+      // and the loop stays shut
+      out("#s-newjob", t(114), 0.2);
+      tl.fromTo("#s-lock", { opacity: 0, scale: 2, y: -40 }, { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power4.in" }, t(116) - 0.1);
+      tl.fromTo("#s-shut", { opacity: 0, scale: 2.2, rotation: 4 }, { opacity: 1, scale: 1, rotation: -5, duration: 0.28, ease: "power4.in" }, t(117) - 0.05);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 43.48);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

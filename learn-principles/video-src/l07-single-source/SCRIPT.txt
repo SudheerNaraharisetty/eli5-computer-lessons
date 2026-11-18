@@ -1,0 +1,15 @@
+Maya's cookie shop now sells online too.
+
+So the price of a cookie is written down in three places. The shop menu. The website. And the loyalty app. Three dollars, three times.
+
+Then Maya raises the price to four dollars. She changes the menu. But the website and the app still say three.
+
+A customer orders online for three dollars. At pickup, the shop charges four. Two answers to one question, and nobody can say which is right.
+
+The fix. Pick one owner. The menu owns the price. The website and the app stop keeping their own copy. They read it from the menu.
+
+Next time the price changes, Maya changes one place, and every screen follows.
+
+You saw this in lesson one, with the tax rate. Now it has a name.
+
+Single source of truth. Every fact lives in one place.

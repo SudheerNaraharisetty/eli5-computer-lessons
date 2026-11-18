@@ -1,0 +1,17 @@
+Maya's cookie shop has a sign in the window. Her program decides when it says open.
+
+Here is the code. Maya is proud of it. Three short lines, packed with clever tricks.
+
+And it works. Weekdays, eight to six. Weekends, ten to four.
+
+Then a simple request arrives. On Sundays, close two hours early.
+
+Maya stares at her own code. Where does Sunday go? She guesses, and changes one number.
+
+Sunday is right. But Saturday closes early too. Saturday afternoon, the shop is full of cookies, and the sign says closed.
+
+So Maya writes it again, in plain steps. Opening time. Closing time. Weekend hours. Anyone can read it out loud.
+
+Now the Sunday rule is two new lines. Nothing else is touched.
+
+That is kiss. Keep it simple. Clever code is fun to write. Simple code is easy to change.

@@ -1,0 +1,15 @@
+Maya's company now offers an orders API. Three partner programs use it to ask, where is my order?
+
+The written promise is short. Status answers received, baking, or ready. That is only the tip of the iceberg.
+
+Under the water is everything else people can see. The answers come in capital letters. Today's orders come back in time order. And one error message has a typo.
+
+Nobody promised any of that. But the delivery app checks for BAKING, in capitals. The party planner trusts the list order. And the wedding planner looks for the typo.
+
+One morning, Sam tidies up. Lower case, like the docs. A faster list. A fixed typo. Every change keeps the promise. And all three programs break.
+
+That is Hyrum's law. With enough users, every behaviour they can see is depended on by somebody. One user, one string. Three hundred users, strings everywhere.
+
+So change on purpose. Announce it. Keep the old way working for a while. Then switch.
+
+Someone depends on every behaviour. So nothing should change by surprise.

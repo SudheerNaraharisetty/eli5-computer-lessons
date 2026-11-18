@@ -1,0 +1,15 @@
+Maya sorts everything she sells into a family tree.
+
+At the top, Item. Under it, two branches. Baked items, which go half price at closing. And gift items, which can be wrapped.
+
+A cake is a kind of baked item, so it gets the half price rule for free. That is inheritance.
+
+Then comes the gift cookie box. It is baked. It is also a gift. But a tree gives it only one branch. So Maya copies the wrapping code across.
+
+Then delivery arrives. Three features, and every mix needs its own class. That is up to eight classes.
+
+The fix. One plain item, and three small parts. Freshness. Gift wrap. Delivery. Snap on the ones you need.
+
+A gift cookie box? Freshness and gift wrap. A delivered cake? Freshness and delivery. No new classes.
+
+That is composition over inheritance. Build from parts, not family trees.

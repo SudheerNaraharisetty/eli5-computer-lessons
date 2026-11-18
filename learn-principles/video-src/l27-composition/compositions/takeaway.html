@@ -1,0 +1,75 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 110px; top: 104px; padding: 6px 30px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 44px; line-height: 1.4; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-head { left: 110px; top: 220px; font: 700 150px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 110px; top: 640px; font: 700 76px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub span { display: inline-block; opacity: 0; }
+    .t-part { top: 650px; width: 170px; height: 170px; border-radius: 24px; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-part > svg { position: absolute; left: 35px; top: 35px; width: 100px; height: 100px; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.8" data-track-index="1">
+      <div id="t-kick" class="t-abs">Composition over inheritance</div>
+      <div id="t-head" class="t-abs">
+        <span>Build</span> <span>from</span> <span class="ac">parts,</span><br />
+        <span>not</span> <span>family</span> <span>trees.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M852 392 Q1040 420 1262 386" /></svg>
+      <div class="t-abs t-part" id="t-p0" style="left:116px;background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="t-abs t-part" id="t-p1" style="left:322px;background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></div>
+      <div class="t-abs t-part" id="t-p2" style="left:528px;background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 28: Program to an interface</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 55.1;
+      const g = { comp: 55.34, build: 57.72, from: 58.08, parts: 58.34, not: 58.88, family: 59.16, trees: 59.58, end: 60.7 };
+      const tl = gsap.timeline({ paused: true });
+      const head = gsap.utils.toArray("#t-head span");
+      const u = document.querySelector("#t-under");
+      const L = Math.ceil(u.getTotalLength()) || 600;
+      u.style.strokeDasharray = L + " " + (L + 40);
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-kick", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.comp - S - 0.05);
+      [g.build, g.from, g.parts, g.not, g.family, g.trees].forEach((at, i) => {
+        tl.fromTo(head[i], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, at - S - 0.05);
+      });
+      tl.set("#t-under", { opacity: 1 }, g.parts - S + 0.25);
+      tl.fromTo("#t-under", { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.45, ease: "power2.out" }, g.parts - S + 0.25);
+      tl.fromTo(".t-part", { opacity: 0, y: -60, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)", stagger: 0.14 }, g.parts - S + 0.15);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S - 0.1);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,412 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap, #s-tree, #s-mixes, #s-fix { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-disc { display: inline-block; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 0 0 4px #0e0c1d; flex: none; }
+    .s-disc > svg { display: block; width: 40px; height: 40px; margin: 8px; }
+    .s-disc.off { background: #ece7df !important; box-shadow: 0 0 0 4px #a9a39a; }
+    .s-disc.off > svg { opacity: 0.18; }
+
+    /* tree */
+    #s-title { left: 96px; top: 72px; font: 700 60px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-kind { left: 96px; top: 166px; padding: 4px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 34px; line-height: 1.45; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-maya { left: 40px; top: 600px; width: 312px; height: 406px; }
+    #s-name { left: 250px; top: 668px; padding: 2px 22px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 32px; line-height: 1.4; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-node { height: 92px; border-radius: 20px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; font: 700 34px/92px "JetBrains Mono", monospace; font-variant-ligatures: none; text-align: center; white-space: nowrap; }
+    .s-ghost { height: 92px; border-radius: 20px; box-shadow: inset 0 0 0 4px #b3aca1; background: #f6f1eb; }
+    .s-node .s-disc { position: absolute; top: -30px; }
+    .s-tag { height: 64px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; display: flex; align-items: center; gap: 14px; padding: 0 22px 0 4px; font-size: 30px; white-space: nowrap; }
+    #s-lines, #s-lines2 { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-lines > path { fill: none; stroke: #0e0c1d; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-lines > path.sk { stroke: #b3aca1; stroke-width: 5; stroke-dasharray: 4 14; }
+    #s-lines > path.dz { stroke: #b9741a; stroke-dasharray: 14 12; }
+    #s-lines2 > path { fill: none; stroke-linecap: round; opacity: 0; }
+    #s-chip { left: 528px; top: 726px; width: 505px; height: 76px; border-radius: 16px; background: #15132b; color: #fff; font: 500 34px/76px "JetBrains Mono", monospace; font-variant-ligatures: none; text-align: center; white-space: pre; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    #s-chip .kw { color: #c9c6ff; } #s-chip .par { color: #ffc24b; font-weight: 700; }
+    #s-kindof { left: 800px; top: 478px; padding: 0 22px; height: 54px; line-height: 54px; border-radius: 999px; background: #e6e3ff; color: #0e0c1d; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-inh { left: 1076px; top: 720px; padding: 6px 30px; background: #3b37e6; color: #fff; border-radius: 18px; font: 700 54px/1.3 "Fraunces", serif; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    #s-free { left: 880px; top: 610px; padding: 0 18px; height: 50px; line-height: 50px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-box { left: 925px; top: 462px; width: 330px; background: #fff; }
+    #s-x { left: 1196px; top: 412px; width: 56px; height: 56px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-x > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    #s-onebranch { left: 1262px; top: 446px; padding: 0 18px; height: 50px; line-height: 50px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-copied { left: 885px; top: 716px; width: 410px; height: 56px; line-height: 56px; text-align: center; border-radius: 12px; background: #b8235a; color: #fff; font-size: 30px; letter-spacing: 0.04em; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-van { left: 1560px; top: 130px; }
+    #s-van.s-tag { background: #e6e3ff; }
+
+    /* mixes */
+    #s-feat { left: 0; top: 104px; width: 1920px; display: flex; justify-content: center; gap: 28px; }
+    #s-feat > .s-tag { position: relative; height: 84px; font-size: 36px; padding: 0 30px 0 14px; }
+    .s-mix { width: 410px; height: 170px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-mrow { position: absolute; left: 0; top: 22px; width: 410px; display: flex; justify-content: center; gap: 22px; }
+    .s-mname { position: absolute; left: 0; top: 98px; width: 410px; text-align: center; font: 700 28px/1.6 "JetBrains Mono", monospace; font-variant-ligatures: none; white-space: nowrap; }
+    .s-mnum { position: absolute; left: -22px; top: -24px; width: 54px; height: 54px; border-radius: 50%; background: #ff6b8b; font-size: 32px; line-height: 54px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-mlines { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-mlines > path { fill: none; stroke: #0e0c1d; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-count { left: 0; top: 790px; width: 1920px; text-align: center; font: 700 112px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-count > span { display: inline-block; }
+    #s-count .bad { color: #b8235a; }
+
+    /* fix */
+    #s-fixpill { left: 120px; top: 28px; padding: 2px 26px; background: #1f7a5c; color: #fff; border-radius: 999px; font-size: 34px; line-height: 1.5; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-item { left: 120px; top: 110px; width: 700px; height: 440px; border-radius: 30px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 12px 0 5px #0e0c1d; }
+    #s-iname { position: absolute; left: 0; top: 44px; width: 700px; height: 96px; }
+    #s-iname > span { position: absolute; left: 0; top: 0; width: 700px; text-align: center; font: 700 68px/96px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-iname > span.s-mono { font: 700 64px/96px "JetBrains Mono", monospace; letter-spacing: 0; }
+    .s-sock { position: absolute; top: 230px; width: 200px; height: 170px; border-radius: 22px; background: #f6f1eb; box-shadow: inset 0 0 0 4px #b3aca1; }
+    #s-tray { left: 980px; top: 110px; width: 820px; height: 284px; border-radius: 30px; background: #fbf8f4; box-shadow: 0 0 0 5px #0e0c1d, 0 12px 0 5px #0e0c1d; }
+    #s-ttl { position: absolute; left: 44px; top: 12px; font: 700 46px/1.3 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-part { top: 196px; width: 200px; height: 170px; border-radius: 22px; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    .s-part > svg { position: absolute; left: 58px; top: 16px; width: 84px; height: 84px; }
+    .s-part > b { position: absolute; left: 0; top: 108px; width: 200px; text-align: center; font: 700 30px/1.5 "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-code { left: 980px; top: 444px; width: 820px; height: 346px; border-radius: 24px; background: #15132b; color: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #s-cbar { position: absolute; left: 0; top: 0; width: 820px; height: 60px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 24px; gap: 10px; }
+    #s-cbar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-cbar > i:nth-child(2) { background: #ffc24b; }
+    #s-cbar > i:nth-child(3) { background: #4bd69b; }
+    #s-cbar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-cl { position: absolute; left: 34px; width: 760px; height: 44px; font: 500 28px/44px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+    .s-cl > span { position: absolute; left: 0; top: 0; opacity: 0; }
+    .s-cl > span > span { position: static; opacity: 1; }
+    .s-cl .fn { color: #7cf0b5; font-weight: 700; } .s-cl .at { color: #ffc24b; }
+    #s-zero { left: 150px; top: 628px; padding: 6px 34px; background: #1f7a5c; color: #fff; border-radius: 18px; font: 700 68px/1.3 "Fraunces", serif; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-mini { top: 836px; width: 320px; height: 150px; border-radius: 20px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    .s-mini > b { position: absolute; left: 0; top: 14px; width: 320px; text-align: center; font-size: 30px; line-height: 1.4; white-space: nowrap; }
+    .s-mini > div { position: absolute; left: 0; top: 74px; width: 320px; display: flex; justify-content: center; gap: 18px; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.1" data-track-index="1">
+      <div id="s-wrap">
+        <!-- A. the family tree -->
+        <div id="s-tree">
+          <div id="s-title" class="s-abs">What Maya sells</div>
+          <div id="s-kind" class="s-abs s-hide">a family tree</div>
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-name" class="s-abs s-hide">Maya</div>
+          <svg id="s-lines" class="s-abs" viewBox="0 0 1920 1080">
+            <path class="sk" id="s-k-e-ib" d="M1090 202 L780 330" />
+            <path class="sk" id="s-k-e-ig" d="M1090 202 L1400 330" />
+            <path class="sk" id="s-k-e-bc" d="M780 422 L520 590" />
+            <path class="sk" id="s-k-e-bk" d="M780 422 L780 590" />
+            <path class="sk" id="s-k-e-gm" d="M1400 422 L1400 590" />
+            <path class="so" id="s-e-ib" d="M1090 202 L780 330" />
+            <path class="so" id="s-e-ig" d="M1090 202 L1400 330" />
+            <path class="so" id="s-e-bc" d="M780 422 L520 590" />
+            <path class="so" id="s-e-bk" d="M780 422 L780 590" />
+            <path class="so" id="s-e-gm" d="M1400 422 L1400 590" />
+            <path class="so" id="s-e-bb" d="M780 422 L1090 590" />
+            <path class="dz" id="s-h-b" d="M1030 450 L900 432" />
+            <path class="dz" id="s-h-g" d="M1150 450 L1290 432" />
+          </svg>
+          <div class="s-abs s-ghost s-hide" style="left:980px;top:110px;width:220px"></div>
+          <div class="s-abs s-ghost s-hide" style="left:630px;top:330px;width:300px"></div>
+          <div class="s-abs s-ghost s-hide" style="left:1260px;top:330px;width:280px"></div>
+          <div id="s-n-item" class="s-abs s-node s-hide" style="left:980px;top:110px;width:220px;background:#e6e3ff">Item</div>
+          <div id="s-n-baked" class="s-abs s-node s-hide" style="left:630px;top:330px;width:300px;background:#fbebd2">BakedItem</div>
+          <div id="s-n-gift" class="s-abs s-node s-hide" style="left:1260px;top:330px;width:280px;background:#fbe0ea">GiftItem</div>
+          <div id="s-n-cookie" class="s-abs s-node s-hide" style="left:410px;top:590px;width:220px;background:#fff">Cookie<span data-layout-allow-overflow class="s-disc s-hide" style="background:#fbebd2;right:-26px"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div id="s-n-cake" class="s-abs s-node s-hide" style="left:680px;top:590px;width:200px;background:#fff">Cake</div>
+          <div id="s-n-mug" class="s-abs s-node s-hide" style="left:1305px;top:590px;width:190px;background:#fff">Mug<span data-layout-allow-overflow class="s-disc s-hide" style="background:#fbe0ea;right:-26px"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span></div>
+          <div id="s-t-baked" class="s-abs s-tag s-hide" style="left:206px;top:344px"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>half price at closing</div>
+          <div id="s-t-gift" class="s-abs s-tag s-hide" style="left:1566px;top:344px"><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span>gift wrap</div>
+          <div id="s-fly" class="s-abs s-hide" style="left:850px;top:560px;width:56px;height:56px"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div id="s-chip" class="s-abs s-hide"><span class="kw">class</span> Cake<span class="par" id="s-par">(BakedItem)</span>:</div>
+          <div id="s-kindof" class="s-abs s-hide">is a kind of</div>
+          <div id="s-free" class="s-abs s-hide">for free</div>
+          <div id="s-inh" class="s-abs s-hide">inheritance</div>
+
+          <div id="s-box" class="s-abs s-node s-hide">GiftCookieBox<span data-layout-allow-overflow class="s-disc s-hide" style="background:#fbebd2;left:34px"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc s-hide" style="background:#fbe0ea;right:-26px"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span></div>
+          <div id="s-x" class="s-abs s-hide"><svg viewBox="0 0 56 56"><path d="M18 18 L38 38 M38 18 L18 38" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" /></svg></div>
+          <div id="s-onebranch" class="s-abs s-hide">one branch only</div>
+          <svg id="s-lines2" class="s-abs" viewBox="0 0 1920 1080">
+            <path id="s-trail" d="M1590 420 C1540 560 1380 500 1255 582" stroke="#b8235a" stroke-width="6" stroke-dasharray="4 16" />
+            <path id="s-ring" d="M672 640 C664 566 892 562 894 636 C896 708 668 714 664 626" stroke="#ff6b8b" stroke-width="7" />
+            <path id="s-pring" d="M758 768 C752 722 986 716 990 764 C994 812 754 816 754 760" stroke="#ff6b8b" stroke-width="6" />
+          </svg>
+          <div id="s-copy" class="s-abs s-hide" style="left:1225px;top:560px;width:56px;height:56px"><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span></div>
+          <div id="s-copied" class="s-abs s-hide">wrapping code, COPIED</div>
+          <div id="s-van" class="s-abs s-tag s-hide"><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span>delivery</div>
+        </div>
+
+        <!-- A2. one class per mix -->
+        <div id="s-mixes">
+          <div id="s-feat" class="s-abs">
+            <div class="s-tag s-hide" id="s-f1"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>half price</div>
+            <div class="s-tag s-hide" id="s-f2"><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span>gift wrap</div>
+            <div class="s-tag s-hide" id="s-f3" style="background:#e6e3ff"><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span>delivery</div>
+          </div>
+          <svg id="s-mlines" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-ml-t" d="M960 196 V270" />
+          <path id="s-ml-r" d="M305 270 H1616" />
+          <path id="s-ml-a0" d="M305 270 V330" />
+          <path id="s-ml-a1" d="M742 270 V330" />
+          <path id="s-ml-a2" d="M1179 270 V330" />
+          <path id="s-ml-a3" d="M1616 270 V330" />
+          <path id="s-ml-b0" d="M305 510 V560" />
+          <path id="s-ml-b1" d="M742 510 V560" />
+          <path id="s-ml-b2" d="M1179 510 V560" />
+          <path id="s-ml-b3" d="M1616 510 V560" />
+          </svg>
+          <div id="s-m0" class="s-abs s-mix s-hide" style="left:100px;top:330px">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc off" style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">Item</div>
+            <div class="s-mnum s-hide" id="s-mn0">1</div>
+          </div>
+          <div id="s-m1" class="s-abs s-mix s-hide" style="left:537px;top:330px">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">BakedItem</div>
+            <div class="s-mnum s-hide" id="s-mn1">2</div>
+          </div>
+          <div id="s-m2" class="s-abs s-mix s-hide" style="left:974px;top:330px">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc off" style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">GiftItem</div>
+            <div class="s-mnum s-hide" id="s-mn2">3</div>
+          </div>
+          <div id="s-m3" class="s-abs s-mix s-hide" style="left:1411px;top:330px">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc off" style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">DeliveredItem</div>
+            <div class="s-mnum s-hide" id="s-mn3">4</div>
+          </div>
+          <div id="s-m4" class="s-abs s-mix s-hide" style="left:100px;top:560px;background:#fbe0ea">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">BakedGiftItem</div>
+            <div class="s-mnum s-hide" id="s-mn4">5</div>
+          </div>
+          <div id="s-m5" class="s-abs s-mix s-hide" style="left:537px;top:560px;background:#fbe0ea">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc off" style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">DeliveredBakedItem</div>
+            <div class="s-mnum s-hide" id="s-mn5">6</div>
+          </div>
+          <div id="s-m6" class="s-abs s-mix s-hide" style="left:974px;top:560px;background:#fbe0ea">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc off" style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">DeliveredGiftItem</div>
+            <div class="s-mnum s-hide" id="s-mn6">7</div>
+          </div>
+          <div id="s-m7" class="s-abs s-mix s-hide" style="left:1411px;top:560px;background:#fbe0ea">
+            <div class="s-mrow"><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div>
+            <div class="s-mname">DeliveredBakedGiftItem</div>
+            <div class="s-mnum s-hide" id="s-mn7">8</div>
+          </div>
+          <div id="s-count" class="s-abs"><span class="s-hide" id="s-c1">2 × 2 × 2 =&nbsp;</span><span class="s-hide bad" id="s-c2">8 classes</span></div>
+        </div>
+
+        <!-- B. one Item that has parts -->
+        <div id="s-fix">
+          <div id="s-fixpill" class="s-abs s-hide">The fix</div>
+          <div id="s-item" class="s-abs s-hide">
+            <div id="s-iname"><span class="s-mono" id="s-in0">Item</span><span class="s-hide" id="s-in1">gift cookie box</span><span class="s-hide" id="s-in2">delivered cake</span></div>
+            <div class="s-sock" style="left:30px"></div><div class="s-sock" style="left:250px"></div><div class="s-sock" style="left:470px"></div>
+          </div>
+          <div id="s-tray" class="s-abs s-hide"><div id="s-ttl">3 small parts</div></div>
+          <div id="s-p0" class="s-abs s-part s-hide" style="left:1030px;background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Freshness</b></div>
+          <div id="s-p1" class="s-abs s-part s-hide" style="left:1290px;background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg><b>GiftWrap</b></div>
+          <div id="s-p2" class="s-abs s-part s-hide" style="left:1550px;background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg><b>Delivery</b></div>
+          <div id="s-code" class="s-abs s-hide">
+            <div id="s-cbar"><i></i><i></i><i></i><span>shop.py</span></div>
+            <div class="s-cl" style="top:74px"><span id="s-l1a">box = <span class="fn">Item</span>()</span></div>
+            <div class="s-cl" style="top:118px"><span id="s-l2a">box<span class="at">.freshness</span> = <span class="fn">Freshness</span>()</span></div>
+            <div class="s-cl" style="top:162px"><span id="s-l3a">box<span class="at">.gift_wrap</span> = <span class="fn">GiftWrap</span>()</span></div>
+            <div class="s-cl" style="top:206px"><span id="s-l1b">cake = <span class="fn">Item</span>()</span></div>
+            <div class="s-cl" style="top:250px"><span id="s-l2b">cake<span class="at">.freshness</span> = <span class="fn">Freshness</span>()</span></div>
+            <div class="s-cl" style="top:294px"><span id="s-l3b">cake<span class="at">.delivery</span> = <span class="fn">Delivery</span>()</span></div>
+          </div>
+          <div id="s-s0" class="s-abs s-mini s-hide" style="left:120px"><b>gift cookie box</b><div><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span></div></div>
+          <div id="s-s1" class="s-abs s-mini s-hide" style="left:460px"><b>delivered cake</b><div><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div></div>
+          <div id="s-s2" class="s-abs s-mini s-hide" style="left:800px"><b>mug</b><div><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span></div></div>
+          <div id="s-s3" class="s-abs s-mini s-hide" style="left:1140px"><b>cookie</b><div><span data-layout-allow-overflow class="s-disc " style="background:#fbebd2"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#fff" stroke="#0e0c1d" stroke-width="4"/><path d="M24 14 V24 H32" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+          <div id="s-s4" class="s-abs s-mini s-hide" style="left:1480px"><b>gift mug, delivered</b><div><span data-layout-allow-overflow class="s-disc " style="background:#fbe0ea"><svg viewBox="0 0 48 48"><path d="M24 26 L16 42 M24 26 L32 42" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"/><path d="M24 24 L7 12 V36 Z M24 24 L41 12 V36 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="24" r="6" fill="#fff" stroke="#0e0c1d" stroke-width="4"/></svg></span><span data-layout-allow-overflow class="s-disc " style="background:#e6e3ff"><svg viewBox="0 0 48 48"><path d="M4 12 H28 V33 H4 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><path d="M28 19 H37 L44 27 V33 H28 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/><circle cx="13" cy="35" r="5.5" fill="#0e0c1d"/><circle cx="35" cy="35" r="5.5" fill="#0e0c1d"/></svg></span></div></div>
+          <div id="s-zero" class="s-abs s-hide">0 new classes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds); t(i) adds the 0.6 s lead-in.
+      const W = [0,0.406,0.766,1.219,1.393,1.776,2.032,2.136,2.577,3.402,3.611,3.738,4.284,5.422,5.747,5.991,6.316,7.233,7.686,8.301,8.557,8.766,9.033,9.369,9.497,10.507,10.89,11.262,11.9,12.214,12.516,12.666,13.816,13.99,14.42,14.582,14.675,14.965,15.163,15.639,16.417,16.637,16.742,16.997,17.16,17.461,17.821,18.1,18.297,19.075,19.47,19.725,20.863,21.188,21.594,21.815,22.21,22.558,23.092,23.313,23.498,24.183,24.369,24.497,24.903,25.089,26.018,26.215,26.296,26.598,26.877,27.028,27.422,27.724,28.502,28.734,29.048,29.489,29.605,29.965,30.232,30.998,31.3,31.927,32.705,33.065,33.715,33.959,34.284,34.644,34.946,35.178,35.492,36.374,36.722,36.873,37.047,37.28,37.616,38.499,38.708,39.393,39.66,39.985,40.426,40.704,41.099,41.54,42.295,43.085,43.421,43.851,44.629,45.093,45.209,45.348,45.592,45.755,46.533,46.753,47.078,47.427,47.996,48.576,48.797,49.11,49.609,49.772,50.213,50.922,51.583,51.827,52.698,53.046,53.29,54.277,54.555,54.741,55.461,55.844,57.121,57.481,57.737,58.282,58.561,58.979];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      // stroke drawing from the real path length
+      document.querySelectorAll("#s-lines > path.so, #s-mlines > path, #s-ring, #s-pring").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 600;
+        p.dataset.len = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+        p.style.strokeDashoffset = L;
+      });
+      const draw = (sel, at, d, ease) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: (i, el) => +el.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: ease || "power2.out" }, at);
+      };
+      const type = (sel, at, d, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.5, ease: "steps(" + (n || 14) + ")" }, at);
+
+      /* ---- 1. Maya sorts everything into a family tree ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.3);
+      pop("#s-name", t(0) - 0.05, { from: 0.4 });
+      pop("#s-n-cookie", t(2), { from: 0.5 });
+      pop("#s-n-cake", t(2) + 0.22, { from: 0.5 });
+      pop("#s-n-mug", t(2) + 0.44, { from: 0.5 });
+      pop("#s-kind", t(7) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-lines > path.sk", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.09 }, t(7) + 0.1);
+      tl.fromTo(".s-ghost", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", stagger: 0.12 }, t(7) + 0.2);
+
+      /* ---- 2. Item, two branches, what each branch gives ---- */
+      pop("#s-n-item", t(12) - 0.05, { from: 0.5 });
+      draw("#s-e-ib", t(15), 0.5);
+      draw("#s-e-ig", t(15) + 0.15, 0.5);
+      pop("#s-n-baked", t(17) - 0.05, { from: 0.5 });
+      draw("#s-e-bc", t(17) + 0.3, 0.4);
+      draw("#s-e-bk", t(17) + 0.4, 0.4);
+      tl.fromTo("#s-t-baked", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.45, ease: "back.out(1.5)" }, t(21) - 0.05);
+      pop("#s-n-gift", t(26) - 0.05, { from: 0.5 });
+      draw("#s-e-gm", t(26) + 0.3, 0.4);
+      tl.fromTo("#s-t-gift", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.45, ease: "back.out(1.5)" }, t(31) - 0.05);
+
+      /* ---- 3. A cake is a kind of baked item: inheritance ---- */
+      draw("#s-ring", t(33) - 0.05, 0.5);
+      tl.fromTo("#s-chip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(33) + 0.25);
+      pop("#s-kindof", t(36) - 0.05, { from: 0.4 });
+      draw("#s-pring", t(38) - 0.05, 0.5);
+      tl.fromTo("#s-n-baked", { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(38));
+      tl.fromTo("#s-t-baked .s-disc", { scale: 1 }, { scale: 1.35, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, t(44) - 0.3);
+      tl.set("#s-fly", { opacity: 1 }, t(44));
+      tl.fromTo("#s-fly", { x: -640, y: -212 }, { x: 0, y: 0, duration: 0.75, ease: "power2.inOut", immediateRender: false }, t(44));
+      out("#s-ring", t(44), 0.2);
+      pop("#s-free", t(47) - 0.05, { from: 0.4 });
+      pop("#s-n-cookie .s-disc", t(48), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-n-mug .s-disc", t(48) + 0.2, { from: 0.2, ease: "back.out(2.4)" });
+      tl.fromTo("#s-inh", { opacity: 0, scale: 1.6, rotation: 3 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.35, ease: "back.out(1.8)" }, t(51) - 0.05);
+
+      /* ---- 4. The gift cookie box fits two branches ---- */
+      out(["#s-chip", "#s-kindof", "#s-pring", "#s-inh", "#s-free", "#s-kind"], t(52) - 0.1, 0.25);
+      tl.fromTo("#s-box", { opacity: 0, y: -200, rotation: -6 }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.4)" }, t(55) - 0.15);
+      tl.to("#s-box", { y: -12, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, t(57) + 0.1);
+      tl.to("#s-box", { x: -26, rotation: -3, duration: 0.3, ease: "power2.out" }, t(60) - 0.1);
+      tl.fromTo("#s-h-b", { opacity: 0 }, { opacity: 1, duration: 0.25 }, t(60));
+      pop("#s-box .s-disc:nth-of-type(1)", t(60) + 0.1, { from: 0.2, ease: "back.out(2.4)" });
+      tl.fromTo("#s-n-baked", { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(60));
+      tl.to("#s-box", { x: 26, rotation: 3, duration: 0.4, ease: "power2.inOut" }, t(65) - 0.2);
+      tl.fromTo("#s-h-g", { opacity: 0 }, { opacity: 1, duration: 0.25 }, t(65));
+      pop("#s-box .s-disc:nth-of-type(2)", t(65) + 0.1, { from: 0.2, ease: "back.out(2.4)" });
+      tl.fromTo("#s-n-gift", { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(65));
+      tl.to("#s-box", { x: 0, rotation: 0, duration: 0.35, ease: "power2.inOut" }, t(66) + 0.1);
+      tl.to("#s-box", { x: -14, duration: 0.16, ease: "sine.inOut", yoyo: true, repeat: 3 }, t(68));
+      pop("#s-x", t(72) - 0.05, { from: 2.2, ease: "power4.in", d: 0.22 });
+      pop("#s-onebranch", t(71), { from: 0.4 });
+      out("#s-h-g", t(72) + 0.1, 0.2);
+      tl.to("#s-box .s-disc:nth-of-type(2)", { opacity: 0, y: 90, rotation: 40, duration: 0.45, ease: "power2.in" }, t(72) + 0.15);
+      out("#s-h-b", t(73) + 0.3, 0.2);
+      tl.to("#s-box", { x: 0, y: 128, duration: 0.5, ease: "back.out(1.2)" }, t(73) + 0.3);
+      draw("#s-e-bb", t(73) + 0.45, 0.4);
+      out(["#s-x", "#s-onebranch"], t(76) - 0.35, 0.2);
+
+      /* ---- 5. So Maya copies the wrapping code ---- */
+      tl.fromTo("#s-t-gift .s-disc", { scale: 1 }, { scale: 1.35, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, t(76) - 0.25);
+      tl.fromTo("#s-trail", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(76) + 0.1);
+      tl.set("#s-copy", { opacity: 1 }, t(76));
+      tl.fromTo("#s-copy", { x: 345, y: -212 }, { x: 0, y: 0, duration: 0.8, ease: "power2.inOut", immediateRender: false }, t(76));
+      tl.fromTo("#s-copied", { opacity: 0, scale: 2, rotation: 4 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.3, ease: "power4.in" }, t(78));
+
+      /* ---- 6. Delivery arrives: one class per mix ---- */
+      tl.fromTo("#s-van", { opacity: 0, x: 340 }, { opacity: 1, x: 0, duration: 0.5, ease: "back.out(1.3)" }, t(82) - 0.15);
+      tl.to("#s-van", { rotation: -5, duration: 0.14, ease: "sine.inOut", yoyo: true, repeat: 3 }, t(83));
+      tl.to("#s-tree", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, t(84) - 0.38);
+      pop("#s-f1", t(84) - 0.05, { from: 0.4 });
+      pop("#s-f2", t(84) + 0.16, { from: 0.4 });
+      pop("#s-f3", t(84) + 0.32, { from: 0.4 });
+      draw("#s-ml-t", t(87) - 0.1, 0.2);
+      draw("#s-ml-r", t(87) + 0.05, 0.4);
+      const mixAt = (i) => t(87) + 0.15 + i * 0.2;
+      for (let i = 0; i < 8; i++) {
+        draw(i < 4 ? "#s-ml-a" + i : "#s-ml-b" + (i - 4), mixAt(i) - 0.1, 0.2);
+        tl.fromTo("#s-m" + i, { opacity: 0, y: -40, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, mixAt(i));
+      }
+      for (let i = 0; i < 8; i++) pop("#s-mn" + i, t(93) - 0.2 + i * 0.13, { from: 0.2, d: 0.25, ease: "back.out(2.4)" });
+      tl.fromTo("#s-c1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(95) - 0.1);
+      tl.fromTo("#s-c2", { opacity: 0, scale: 1.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, t(97) - 0.05);
+
+      /* ---- 7. The fix: one plain item and three small parts ---- */
+      tl.to("#s-mixes", { opacity: 0, y: -40, duration: 0.25, ease: "power2.in" }, t(99) - 0.05);
+      pop("#s-fixpill", t(100) + 0.05, { from: 0.4 });
+      tl.fromTo("#s-item", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" }, t(102) - 0.1);
+      tl.fromTo("#s-tray", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(105) - 0.1);
+      pop("#s-p0", t(108) - 0.05, { from: 0.4 });
+      pop("#s-p1", t(109) - 0.05, { from: 0.4 });
+      pop("#s-p2", t(111) - 0.05, { from: 0.4 });
+      const dx = [-880, -920, -960], dy = 144;
+      const snap = (i, at) => {
+        tl.to("#s-p" + i, { x: dx[i], y: dy, duration: 0.38, ease: "power3.in" }, at - 0.38);
+        tl.fromTo("#s-p" + i, { scaleX: 1.12, scaleY: 0.86 }, { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)" }, at);
+        tl.fromTo("#s-item", { y: 0 }, { y: 7, duration: 0.07, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      };
+      const back = (i, at) => tl.to("#s-p" + i, { x: 0, y: 0, duration: 0.4, ease: "back.out(1.3)" }, at);
+      snap(0, t(112) + 0.1); snap(1, t(113) + 0.3); snap(2, t(115) + 0.2);
+      back(0, t(117) + 0.25); back(1, t(117) + 0.33); back(2, t(117) + 0.41);
+
+      /* ---- 8. Two products from the same parts ---- */
+      swap("#s-in0", "#s-in1", t(119) - 0.05);
+      tl.fromTo("#s-code", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(119));
+      type("#s-l1a", t(119) + 0.3, 0.35, 12);
+      snap(0, t(122) + 0.3);
+      type("#s-l2a", t(122) + 0.3, 0.45, 20);
+      snap(1, t(124) + 0.35);
+      type("#s-l3a", t(124) + 0.35, 0.45, 20);
+      pop("#s-s0", t(125) + 0.25, { from: 0.4 });
+
+      swap("#s-in1", "#s-in2", t(127) - 0.05);
+      back(0, t(127) - 0.05); back(1, t(127) + 0.03);
+      type("#s-l1b", t(127) + 0.2, 0.35, 12);
+      snap(0, t(129) + 0.3);
+      type("#s-l2b", t(129) + 0.3, 0.45, 20);
+      snap(2, t(131) + 0.35);
+      type("#s-l3b", t(131) + 0.35, 0.45, 20);
+      pop("#s-s1", t(131) + 0.75, { from: 0.4, d: 0.35 });
+      pop("#s-s2", t(132) + 0.02, { from: 0.4, d: 0.3 });
+      pop("#s-s3", t(132) + 0.16, { from: 0.4, d: 0.3 });
+      pop("#s-s4", t(132) + 0.3, { from: 0.4, d: 0.3 });
+      tl.fromTo("#s-zero", { opacity: 0, scale: 2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.25, ease: "power4.in" }, t(132) + 0.15);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 55.1 - 0.28);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

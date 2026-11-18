@@ -1,0 +1,444 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-ol4 { box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+
+    /* top row */
+    #s-sign { left: 720px; top: 96px; width: 480px; height: 84px; background: #fff; border-radius: 22px; font: 700 56px/84px "Fraunces", serif; letter-spacing: -0.02em; text-align: center; white-space: nowrap; }
+    .s-progs { position: absolute; top: 110px; width: 600px; height: 56px; display: flex; gap: 16px; }
+    #s-from { left: 96px; }
+    #s-to { left: 1224px; justify-content: flex-end; }
+    .s-progs > span { height: 56px; padding: 0 22px; background: #e6e3ff; border-radius: 999px; font-size: 28px; line-height: 56px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+
+    /* Maya, between the two windows */
+    #s-maya { left: 825px; top: 318px; width: 270px; height: 351px; }
+    #s-ctr { left: 826px; top: 640px; width: 268px; height: 116px; background: #ece7df; border-radius: 18px; }
+    #s-ctrlip { left: 826px; top: 640px; width: 268px; height: 24px; background: #fbf8f4; border-radius: 18px 18px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    .s-mid { position: absolute; left: 826px; top: 232px; width: 268px; height: 60px; border-radius: 999px; font-size: 32px; line-height: 60px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-back { background: #fbe0ea; color: #b8235a; }
+    #s-noguess { background: #0e0c1d; color: #fff; }
+
+    /* the two windows */
+    .s-win { position: absolute; top: 236px; width: 710px; height: 520px; background: #fff; border-radius: 28px; }
+    #s-in { left: 96px; }
+    #s-out { left: 1114px; }
+    .s-wt { position: absolute; left: 30px; top: 10px; font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-ws { position: absolute; top: 40px; font-size: 30px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    .s-tag { position: absolute; top: 204px; height: 58px; padding: 0 22px; color: #fff; font-size: 32px; line-height: 58px; letter-spacing: 0.08em; border-radius: 10px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tstrict { left: 594px; background: #b8235a; }
+    #s-tsloppy { left: 1610px; background: #b8235a; }
+    #s-tforg { left: 522px; background: #1f7a5c; }
+
+    /* letters on the IN desk */
+    .s-let { position: absolute; left: 40px; top: 118px; width: 630px; height: 84px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    .s-let > .s-mono { position: absolute; left: 26px; top: 0; font-size: 34px; line-height: 84px; }
+    .s-let i { font-style: normal; display: inline-block; }
+    .s-let .sp { width: 1ch; height: 44px; vertical-align: middle; border-radius: 6px; }
+    .s-let .hot { color: #b8235a; }
+    .s-let .sp.hot { background: #fbe0ea; box-shadow: inset 0 -5px 0 0 #b8235a; }
+    .s-let > .s-neat { opacity: 0; color: #1f7a5c; }
+    .s-let > svg { position: absolute; left: 0; top: 0; width: 630px; height: 84px; overflow: visible; }
+    .s-let > svg > path { fill: none; stroke: #b8235a; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    .s-rej { position: absolute; left: 404px; top: -20px; height: 52px; padding: 0 18px; background: #b8235a; color: #fff; font-size: 32px; line-height: 52px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; white-space: nowrap; }
+    .s-ask { position: absolute; left: 380px; top: 14px; height: 56px; padding: 0 22px; background: #fbebd2; font-size: 30px; line-height: 56px; border-radius: 999px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; white-space: nowrap; }
+    .s-fmt { position: absolute; left: 296px; top: 14px; height: 56px; padding: 0 22px; background: #e6e3ff; font-size: 30px; line-height: 56px; border-radius: 999px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; white-space: nowrap; }
+    .s-okb { position: absolute; right: -20px; top: -22px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-okb > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+
+    /* the hatch into the shop, and its shutter */
+    #s-hatch { left: 40px; top: 236px; width: 630px; height: 250px; background: #15132b; border-radius: 18px; box-shadow: 0 0 0 4px #0e0c1d; color: #eceaff; }
+    #s-hlab { left: 24px; top: 12px; font-size: 28px; line-height: 1.3; color: #a9a5d6; white-space: nowrap; }
+    #s-neat { left: 24px; top: 64px; width: 290px; height: 72px; background: #ddefe6; border-radius: 12px; color: #0e0c1d; font-size: 32px; line-height: 72px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-pile { left: 24px; top: 158px; width: 290px; height: 50px; font-size: 32px; line-height: 50px; color: #7cf0b5; }
+    #s-pile > b { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+    #s-tray { left: 346px; top: 50px; width: 260px; height: 190px; background: #fbebd2; border-radius: 14px; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; }
+    #s-tray > small { display: block; margin-top: 10px; font-size: 28px; line-height: 1.2; letter-spacing: 0.04em; }
+    #s-trayn { position: relative; margin: 2px auto 0; width: 120px; height: 56px; font: 700 48px/56px "Fraunces", serif; color: #b8235a; }
+    #s-trayn > b { position: absolute; left: 0; top: 0; width: 120px; opacity: 0; }
+    #s-note { margin: 2px auto 0; width: 216px; height: 46px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 28px; line-height: 46px; white-space: nowrap; }
+    #s-shut { left: 40px; top: 236px; width: 630px; height: 250px; background: #ece7df; border-radius: 18px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-shut > i { position: absolute; left: 0; width: 630px; height: 4px; background: #d6cfc4; }
+    #s-shut > u { position: absolute; left: 255px; top: 222px; width: 120px; height: 12px; border-radius: 6px; background: #0e0c1d; }
+    #s-fri { left: 36px; top: 16px; font-size: 30px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    #s-cnt { left: 36px; top: 52px; width: 230px; height: 150px; font: 700 132px/150px "Fraunces", serif; color: #b8235a; }
+    #s-cnt > b { position: absolute; left: 0; top: 0; opacity: 0; }
+    #s-cntlab { left: 250px; top: 96px; font-size: 44px; line-height: 1.3; white-space: nowrap; }
+
+    /* OUT window */
+    .s-msg { position: absolute; height: 70px; padding: 0 24px; border-radius: 14px; font-size: 30px; line-height: 70px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #s-m1 { left: 40px; top: 122px; background: #fbebd2; }
+    #s-m2 { left: 190px; top: 238px; background: #fbe0ea; }
+    #s-press { left: 40px; top: 104px; width: 630px; height: 56px; background: #0e0c1d; border-radius: 12px; color: #fff; font-size: 28px; line-height: 56px; text-align: center; }
+    #s-press > b { color: #7cf0b5; }
+    .s-row { position: absolute; left: 40px; width: 470px; height: 56px; background: #ddefe6; border-radius: 12px; font-size: 30px; line-height: 56px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-rok { position: absolute; left: 540px; width: 48px; height: 48px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-rok > svg { position: absolute; left: 0; top: 0; width: 48px; height: 48px; }
+    #s-recv { left: 40px; top: 372px; width: 630px; height: 120px; background: #15132b; border-radius: 16px; color: #eceaff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-recv > small { position: absolute; left: 22px; top: 12px; font-size: 28px; line-height: 1.3; color: #a9a5d6; white-space: nowrap; }
+    #s-rres { left: 22px; top: 56px; width: 580px; height: 52px; font-size: 34px; line-height: 52px; }
+    #s-rres > b { position: absolute; left: 0; top: 0; opacity: 0; }
+    #s-rq { color: #ff6b8b; }
+    #s-rgood { color: #7cf0b5; }
+    #s-rwait { color: #a9a5d6; }
+    .s-rp { position: absolute; right: 16px; top: 10px; height: 46px; padding: 0 18px; border-radius: 999px; font-size: 28px; line-height: 46px; white-space: nowrap; opacity: 0; }
+    #s-rpbad { background: #fbe0ea; color: #b8235a; }
+    #s-rpok { background: #ddefe6; color: #1f7a5c; }
+
+    /* bottom row: the reader's code, and the agreed formats */
+    #s-code { left: 96px; top: 790px; width: 710px; height: 194px; background: #15132b; border-radius: 22px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 710px; height: 50px; background: #211e40; border-radius: 22px 22px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 22px; gap: 10px; }
+    #s-bar > i { width: 14px; height: 14px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 12px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-lines { left: 28px; top: 62px; width: 670px; font: 500 28px/42px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-ln { height: 42px; white-space: pre; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .st { color: #ffc24b; }
+    .s-slot { position: relative; display: inline-block; width: 8ch; height: 42px; vertical-align: top; }
+    .s-slot > u { position: absolute; left: 2px; top: 5px; width: 130px; height: 32px; border-radius: 6px; box-shadow: inset 0 0 0 3px #6a66a8; opacity: 0; }
+    .s-slot > b { position: absolute; left: 0; top: 0; color: #7cf0b5; opacity: 0; }
+    #s-deal { left: 1114px; top: 790px; width: 710px; height: 194px; background: #fbf8f4; border-radius: 22px; }
+    #s-dealt { left: 30px; top: 10px; font: 700 40px/1.3 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-drow { position: absolute; left: 30px; width: 650px; height: 48px; display: flex; align-items: center; gap: 18px; font-size: 30px; }
+    .s-drow > small { width: 84px; height: 44px; flex: none; border-radius: 10px; background: #0e0c1d; color: #fff; font-size: 28px; line-height: 44px; text-align: center; }
+    .s-drow > span { padding: 0 10px; border-radius: 8px; line-height: 44px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke: #7cf0b5; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.3" data-track-index="1">
+      <div id="s-wrap">
+        <!-- top row: who sends, the shop sign, who receives -->
+        <div id="s-from" class="s-progs"><span>delivery app</span><span>party planner</span></div>
+        <div id="s-sign" class="s-abs s-ol s-hide">Maya's Cookies</div>
+        <div id="s-to" class="s-progs"><span>delivery app</span><span>party planner</span></div>
+
+        <!-- Maya -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <g id="s-arm">
+            <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+            <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+          </g>
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-ctr" class="s-abs s-ol"></div>
+        <div id="s-ctrlip" class="s-abs"></div>
+        <div id="s-back" class="s-mid s-hide">backwards</div>
+        <div id="s-noguess" class="s-mid s-hide">never guess</div>
+
+        <!-- OUT window -->
+        <div id="s-out" class="s-win s-ol">
+          <div class="s-wt" id="s-outt">OUT</div>
+          <div class="s-ws" style="left:186px">replies leave</div>
+          <div class="s-msg s-mono" id="s-m1">ready: 3 choc chip</div>
+          <div class="s-msg s-mono" id="s-m2">choc chip x3 READY! $9</div>
+          <div id="s-press" class="s-abs s-mono s-hide">one stamp: <b>confirmation()</b></div>
+          <div class="s-row s-mono" id="s-o1" style="top:176px">ready,choc chip,3,900</div>
+          <div class="s-row s-mono" id="s-o2" style="top:242px">ready,choc chip,3,900</div>
+          <div class="s-row s-mono" id="s-o3" style="top:308px">ready,choc chip,3,900</div>
+          <div class="s-rok" id="s-k1" style="top:180px"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-rok" id="s-k2" style="top:246px"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-rok" id="s-k3" style="top:312px"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div id="s-recv" class="s-abs s-hide">
+            <small>delivery app reads</small>
+            <div id="s-rres" class="s-abs s-mono"><b id="s-rq">? ? ?</b><b id="s-rwait">still waiting...</b><b id="s-rgood">3 choc chip, 900 cents</b></div>
+            <div class="s-rp" id="s-rpbad">cannot read</div>
+            <div class="s-rp" id="s-rpok">every one</div>
+          </div>
+        </div>
+
+        <!-- IN window -->
+        <div id="s-in" class="s-win s-ol">
+          <div class="s-wt" id="s-int">IN</div>
+          <div class="s-ws" style="left:122px">orders arrive</div>
+          <div id="s-hatch" class="s-abs">
+            <div id="s-hlab" class="s-abs">inside the shop</div>
+            <div id="s-neat" class="s-abs s-mono s-hide">choc chip,3</div>
+            <div id="s-pile" class="s-abs"><b id="s-p1">1 order</b><b id="s-p2">2 orders</b><b id="s-p3">3 orders</b></div>
+            <div id="s-tray" class="s-abs s-hide">
+              <small>RETURN TO<br />SENDER</small>
+              <div id="s-trayn"><b id="s-t1">x1</b><b id="s-t2">x2</b></div>
+              <div id="s-note" class="s-hide">with a note</div>
+            </div>
+          </div>
+          <div id="s-shut" class="s-abs s-hide">
+            <i style="top:62px"></i><i style="top:124px"></i><i style="top:186px"></i><u></u>
+            <div id="s-fri" class="s-abs s-hide">Friday night</div>
+            <div id="s-cnt" class="s-abs"><b id="s-c1">1</b><b id="s-c2">2</b><b id="s-c3">3</b><b id="s-c40">40</b></div>
+            <div id="s-cntlab" class="s-abs">bounced</div>
+          </div>
+
+          <!-- the sample order -->
+          <div class="s-let" id="s-l0">
+            <span class="s-mono"><i id="s-l0a">choc chip</i><i id="s-l0b">,</i><i id="s-l0c">3</i></span>
+            <div class="s-fmt" id="s-l0f">one line of text</div>
+            <div class="s-okb" id="s-l0k"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <!-- the three that bounce -->
+          <div class="s-let" id="s-la">
+            <span class="s-mono"><i class="cap">C</i>hoc <i class="cap">C</i>hip,3</span>
+            <svg viewBox="0 0 630 84"><path d="M16 42 C16 5 56 5 56 42 C56 79 16 79 12 34" /><path d="M118 42 C118 5 158 5 158 42 C158 79 118 79 114 34" /></svg>
+            <div class="s-rej">REJECTED</div>
+          </div>
+          <div class="s-let" id="s-lb">
+            <span class="s-mono">choc chip<i class="sp"> </i>,3</span>
+            <svg viewBox="0 0 630 84"><path d="M200 42 C200 5 240 5 240 42 C240 79 200 79 196 34" /></svg>
+            <div class="s-rej">REJECTED</div>
+          </div>
+          <div class="s-let" id="s-lc">
+            <span class="s-mono">choc chip,3<i class="xt">,gift</i></span>
+            <svg viewBox="0 0 630 84"><path d="M239 42 C239 3 363 3 363 42 C363 81 239 81 235 34" /></svg>
+            <div class="s-rej">REJECTED</div>
+          </div>
+          <!-- the same three, read by the forgiving reader -->
+          <div class="s-let" id="s-la2">
+            <span class="s-mono s-raw"><i class="hot">C</i>hoc <i class="hot">C</i>hip,3</span>
+            <span class="s-mono s-neat">choc chip,3</span>
+          </div>
+          <div class="s-let" id="s-lb2">
+            <span class="s-mono s-raw">choc chip<i class="sp hot"> </i>,3</span>
+            <span class="s-mono s-neat">choc chip,3</span>
+          </div>
+          <div class="s-let" id="s-lc2">
+            <span class="s-mono s-raw">choc chip,3<i class="xt hot">,gift</i></span>
+            <span class="s-mono s-neat">choc chip,3</span>
+          </div>
+          <!-- two that have no clear meaning -->
+          <div class="s-let" id="s-ld">
+            <span class="s-mono">choc chip,<i class="hot">a few</i></span>
+            <svg viewBox="0 0 630 84"><path d="M227 42 C227 3 345 3 345 42 C345 81 227 81 223 34" /></svg>
+            <div class="s-ask">how many?</div>
+          </div>
+          <div class="s-let" id="s-le">
+            <span class="s-mono">choc chip,<i class="hot">-5</i></span>
+            <svg viewBox="0 0 630 84"><path d="M227 42 C227 3 284 3 284 42 C284 81 227 81 223 34" /></svg>
+            <div class="s-ask">not 1 to 100</div>
+          </div>
+        </div>
+
+        <!-- the reader's code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>read_order(line)</span></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln">name = parts[0]<span class="s-slot" id="s-ss"><u></u><b>.strip()</b></span><span class="s-slot" id="s-sl"><u></u><b>.lower()</b></span></div>
+            <div class="s-ln"><span class="kw">if</span> name <span class="kw">not in</span> COOKIES:</div>
+            <div class="s-ln">    <span class="kw">raise</span> ValueError(<span class="st">"unknown cookie"</span>)</div>
+          </div>
+        </div>
+
+        <!-- what both sides agreed -->
+        <div id="s-deal" class="s-abs s-ol s-hide">
+          <div id="s-dealt" class="s-abs">Agreed on day one</div>
+          <div class="s-drow" style="top:74px"><small>in</small><span class="s-mono" id="s-din">cookie,count</span></div>
+          <div class="s-drow" style="top:130px"><small>out</small><span class="s-mono" id="s-dout">ready,cookie,count,cents</span></div>
+        </div>
+
+        <!-- mode tags, drawn over both windows so one can travel across -->
+        <div class="s-tag s-hide" id="s-tsloppy">SLOPPY</div>
+        <div class="s-tag s-hide" id="s-tforg">FORGIVING</div>
+        <div class="s-tag s-hide" id="s-tstrict">STRICT</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rneat" d="M140 572 C140 506 470 506 470 572 C470 638 140 638 136 562" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.464, 0.778, 0.975, 1.312, 1.66, 1.892, 2.171, 3.332, 3.646, 4.075, 4.389, 4.679, 4.946, 5.074, 6.13, 6.502, 6.954, 7.523, 8.464, 8.696, 9.102, 9.369, 9.741, 10.681, 10.832, 11.32, 11.819, 12.806, 12.968, 13.386, 13.978, 15.07, 15.267, 15.592, 15.859, 15.964, 16.091, 16.509, 18.054, 18.344, 18.878, 19.598, 20.178, 20.561, 21.037, 21.943, 22.129, 22.303, 22.5, 22.791, 23.058, 24.114, 24.369, 24.613, 25.089, 25.298, 25.449, 26.355, 26.494, 26.842, 27.179, 27.446, 28.212, 28.375, 28.572, 29.083, 29.455, 29.71, 30.372, 30.558, 30.755, 30.906, 31.73, 32.531, 32.891, 33.112, 33.541, 34.261, 34.459, 34.609, 34.993, 35.225, 35.329, 35.794, 36.328, 36.618, 36.746, 37.106, 37.837, 38.162, 38.267, 39.149, 39.59, 39.753, 40.182, 41.158, 41.529, 41.959, 42.586, 42.853, 43.131, 43.932, 44.223, 44.443, 44.757, 46.069, 46.231, 46.452, 47.055, 47.52, 48.611, 48.913, 49.041, 49.18, 49.726, 49.97, 50.132, 50.898, 51.072, 51.235, 51.583, 51.908, 52.222, 53.151, 53.569, 54.079, 54.509, 54.683, 55.531, 55.891, 56.819, 57.214, 57.435, 57.562, 58.329, 59.408, 59.652, 60.128, 60.244, 60.43, 60.581, 61.208, 61.44, 62.125, 62.334, 62.543, 62.682];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        if (a) tl.to(a, { opacity: 0, duration: 0.1, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, at + 0.07);
+      };
+      const stamp = (sel, at, rot) => tl.fromTo(sel, { opacity: 0, scale: 2.4, rotation: 5 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.26, ease: "power4.in" }, at - 0.2);
+      const draw = (sel, at, d) => {
+        document.querySelectorAll(sel).forEach((p, i) => {
+          const L = p.getTotalLength() + 2;
+          gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+          tl.set(p, { strokeDashoffset: L, opacity: 1 }, at + i * 0.18);
+          tl.to(p, { strokeDashoffset: 0, duration: d || 0.4, ease: "power2.out" }, at + i * 0.18 + 0.01);
+        });
+      };
+      const pulse = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.15, transformOrigin: "0% 50%", duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      // a letter flies in from the left and lands crooked on the desk
+      const arrive = (sel, at, rot) => tl.fromTo(sel, { opacity: 0, x: -820, y: -24, rotation: -14 }, { opacity: 1, x: 0, y: 0, rotation: rot, duration: 0.4, ease: "power3.out" }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "sine.inOut", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. Orders arrive from other programs, one line of text each ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.5);
+      tl.fromTo("#s-sign", { opacity: 0, y: -120, rotation: -6 }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.3)" }, t(0) - 0.1);
+      tl.fromTo("#s-from > span", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.35, ease: "back.out(1.6)", stagger: 0.18 }, t(6) - 0.05);
+      arrive("#s-l0", t(8) + 0.05, 0);
+      pop("#s-l0f", t(11), { from: 0.5 });
+      [["#s-l0a", 15], ["#s-l0b", 17], ["#s-l0c", 18]].forEach(([s, i]) => {
+        tl.fromTo(s, { scale: 1, color: "#0e0c1d" }, { scale: 1.3, color: "#3b37e6", duration: 0.16, ease: "power2.out", immediateRender: false }, t(i));
+        tl.to(s, { scale: 1, duration: 0.22, ease: "power2.inOut" }, t(i) + 0.18);
+      });
+      tl.fromTo("#s-deal", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(11) + 0.3);
+      tl.fromTo("#s-din", { backgroundColor: "rgba(230,227,255,0)" }, { backgroundColor: "#e6e3ff", duration: 0.25 }, t(15));
+
+      /* ---- 2. A very strict reader ---- */
+      out("#s-l0f", t(19) - 0.1, 0.2);
+      pop("#s-l0k", t(19), { from: 0.2, ease: "back.out(2.4)" });
+      tl.fromTo("#s-code", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(20) - 0.1);
+      tl.to("#s-l0", { y: 180, scale: 0.5, opacity: 0, transformOrigin: "0% 0%", duration: 0.4, ease: "power2.in" }, t(21));
+      stamp("#s-tstrict", t(23) + 0.1, -6);
+
+      const reject = (sel, cnt, prev, o) => {
+        arrive(sel, o.in, o.rot);
+        if (o.hot) tl.to(sel + " " + o.hot, o.hotTo, o.ring);
+        draw(sel + " > svg > path", o.ring, 0.35);
+        stamp(sel + " .s-rej", o.rej, -8);
+        if (!prev) {
+          tl.set("#s-c1", { opacity: 1 }, o.rej - 0.05);
+          out("#s-hlab", o.rej - 0.3, 0.15);
+          tl.fromTo("#s-shut", { opacity: 1, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: 0.3, ease: "bounce.out" }, o.rej - 0.05);
+        } else {
+          shake("#s-shut", o.rej);
+          swap(prev, cnt, o.rej);
+        }
+        tl.to(sel, { x: -860, y: 30, rotation: -18, opacity: 0, duration: 0.4, ease: "power2.in" }, o.rej + 0.5);
+      };
+      reject("#s-la", "#s-c1", null, { in: t(24) - 0.4, rot: -4, ring: t(25), rej: t(27), hot: ".cap", hotTo: { color: "#b8235a", duration: 0.2 } });
+      reject("#s-lb", "#s-c2", "#s-c1", { in: t(28) - 0.3, rot: 3, ring: t(29) + 0.05, rej: t(31), hot: ".sp", hotTo: { backgroundColor: "#fbe0ea", boxShadow: "inset 0 -5px 0 0 #b8235a", duration: 0.2 } });
+      reject("#s-lc", "#s-c3", "#s-c2", { in: t(32) - 0.35, rot: -3, ring: t(33), rej: t(38), hot: ".xt", hotTo: { color: "#b8235a", duration: 0.2 } });
+      tl.fromTo("#s-fri", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, t(40));
+      swap("#s-c3", "#s-c40", t(42));
+      shake("#s-shut", t(42) + 0.1);
+      pulse("#s-cntlab", t(45), 1.12);
+
+      /* ---- 3. And what Maya sends back is a mess ---- */
+      pulse("#s-outt", t(50), 1.2);
+      tl.fromTo("#s-m1", { opacity: 0, x: -160, scale: 0.6, rotation: 0 }, { opacity: 1, x: 0, scale: 1, rotation: -5, duration: 0.45, ease: "back.out(1.6)" }, t(54) - 0.05);
+      stamp("#s-tsloppy", t(57) + 0.1, 5);
+      tl.fromTo("#s-m2", { opacity: 0, x: -200, scale: 0.6, rotation: 0 }, { opacity: 1, x: 0, scale: 1, rotation: 4, duration: 0.45, ease: "back.out(1.6)" }, t(59) - 0.05);
+      tl.to("#s-m1", { rotation: -8, duration: 0.14, ease: "sine.inOut", yoyo: true, repeat: 3 }, t(61));
+      tl.to("#s-m2", { rotation: 7, duration: 0.14, ease: "sine.inOut", yoyo: true, repeat: 3 }, t(61) + 0.07);
+      tl.fromTo("#s-to > span", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.35, ease: "back.out(1.6)", stagger: 0.15 }, t(64) - 0.05);
+      tl.fromTo("#s-recv", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(64) + 0.1);
+      swap(null, "#s-rq", t(66));
+      pop("#s-rpbad", t(66) + 0.25, { from: 0.4 });
+      tl.to("#s-dout", { backgroundColor: "#fbe0ea", duration: 0.25 }, t(67));
+
+      /* ---- 4. Backwards. So she flips it ---- */
+      pulse("#s-tstrict", t(70), 1.12);
+      pulse("#s-tsloppy", t(72), 1.12);
+      pop("#s-back", t(73), { from: 0.4 });
+      tl.to("#s-tsloppy", { y: 90, rotation: 28, opacity: 0, duration: 0.35, ease: "power2.in" }, t(76) - 0.05);
+      tl.to("#s-tstrict", { x: 1018, rotation: 5, backgroundColor: "#1f7a5c", duration: 0.7, ease: "power3.inOut" }, t(76));
+      tl.to("#s-tstrict", { y: -18, duration: 0.35, ease: "power2.out", yoyo: true, repeat: 1 }, t(76));
+      pop("#s-tforg", t(76) + 0.55, { from: 0.4 });
+      tl.set("#s-tforg", { rotation: -6 }, 0);
+      out("#s-back", t(76) + 0.2, 0.3);
+      tl.to("#s-m1", { x: 700, rotation: 20, opacity: 0, duration: 0.45, ease: "power2.in" }, t(76) + 0.1);
+      tl.to("#s-m2", { x: 600, rotation: -20, opacity: 0, duration: 0.45, ease: "power2.in" }, t(76) + 0.2);
+      out(["#s-rq", "#s-rpbad"], t(76) + 0.2, 0.3);
+      tl.fromTo("#s-rwait", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(76) + 0.5);
+      tl.to("#s-dout", { backgroundColor: "rgba(251,224,234,0)", duration: 0.3 }, t(76) + 0.2);
+      tl.to("#s-shut", { scaleY: 0, duration: 0.5, ease: "power3.inOut" }, t(77) + 0.1);
+      tl.to("#s-hlab", { opacity: 1, duration: 0.3 }, t(77) + 0.5);
+
+      /* ---- 5. A patient reader: forgive the form ---- */
+      pulse("#s-int", t(79), 1.2);
+      tl.fromTo(".s-slot > u", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.12 }, t(83));
+      const forgive = (sel, slot, pile, prev, o) => {
+        arrive(sel, o.in, o.rot);
+        if (slot) {
+          out(slot + " > u", o.code - 0.05, 0.12);
+          tl.fromTo(slot + " > b", { opacity: 0, y: -18 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, o.code);
+        }
+        if (o.dim) tl.to(sel + " " + o.dim, { opacity: 0.25, duration: 0.25 }, o.code);
+        tl.to(sel + " .s-raw", { opacity: 0, duration: 0.12, ease: "power2.in" }, o.fix);
+        tl.fromTo(sel + " .s-neat", { opacity: 0, scale: 1.25, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, o.fix + 0.08);
+        tl.to(sel, { rotation: 0, backgroundColor: "#ddefe6", duration: 0.3, ease: "back.out(2)" }, o.fix);
+        tl.to(sel, { x: 24, y: 182, scale: 0.46, transformOrigin: "0% 0%", duration: 0.32, ease: "power2.in" }, o.drop);
+        tl.to(sel, { opacity: 0, duration: 0.1 }, o.drop + 0.3);
+        if (!prev) tl.fromTo("#s-neat", { opacity: 0 }, { opacity: 1, duration: 0.1 }, o.drop + 0.28);
+        else pulse("#s-neat", o.drop + 0.3, 1.06);
+        swap(prev, pile, o.drop + 0.3);
+      };
+      forgive("#s-la2", "#s-sl", "#s-p1", null, { in: t(85) - 0.45, rot: -4, code: t(86), fix: t(87), drop: t(89) - 0.25 });
+      forgive("#s-lb2", "#s-ss", "#s-p2", "#s-p1", { in: t(89) - 0.3, rot: 3, code: t(89) + 0.1, fix: t(90) + 0.05, drop: t(92) - 0.3 });
+      forgive("#s-lc2", null, "#s-p3", "#s-p2", { in: t(92) - 0.25, rot: -3, code: t(92) + 0.2, dim: ".xt", fix: t(94) + 0.1, drop: t(95) + 0.5 });
+      pulse("#s-pile", t(96), 1.15);
+      draw("#s-rneat", t(99), 0.55);
+
+      /* ---- 6. But it never guesses ---- */
+      out("#s-rneat", t(102) - 0.1, 0.25);
+      tl.fromTo("#s-tray", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(102));
+      pop("#s-noguess", t(104), { from: 0.4 });
+      out("#s-hlab", t(105), 0.25);
+      const sendBack = (sel, cnt, prev, o) => {
+        tl.fromTo(sel, { opacity: 0, x: -820, y: o.y - 24, rotation: -14 }, { opacity: 1, x: 0, y: o.y, rotation: o.rot, duration: 0.4, ease: "power3.out" }, o.in);
+        draw(sel + " > svg > path", o.ring, 0.35);
+        pop(sel + " .s-ask", o.ask, { from: 0.4 });
+        tl.to(sel, { x: 346, y: 180, scale: 0.4, rotation: 8, transformOrigin: "0% 0%", duration: 0.4, ease: "power2.in" }, o.back);
+        tl.to(sel, { opacity: 0, duration: 0.12 }, o.back + 0.36);
+        swap(prev, cnt, o.back + 0.38);
+      };
+      sendBack("#s-ld", "#s-t1", null, { in: t(106) - 0.4, y: -18, rot: -3, ring: t(107), ask: t(108) + 0.2, back: t(111) });
+      sendBack("#s-le", "#s-t2", "#s-t1", { in: t(109) - 0.3, y: 76, rot: -3, ring: t(110) - 0.1, ask: t(110) + 0.25, back: t(111) + 0.7 });
+      pop("#s-note", t(115), { from: 0.4 });
+      out("#s-noguess", t(118) - 0.2, 0.3);
+
+      /* ---- 7. One stamp on the way out ---- */
+      pulse("#s-outt", t(119), 1.2);
+      tl.fromTo("#s-press", { opacity: 0, y: -70 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out" }, t(122) - 0.1);
+      const print = (row, ok, at, dy) => {
+        tl.to("#s-press", { y: 12, duration: 0.07, ease: "power2.in" }, at);
+        tl.to("#s-press", { y: 0, duration: 0.22, ease: "back.out(3)" }, at + 0.07);
+        tl.fromTo(row, { opacity: 0, y: -dy, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.32, ease: "back.out(1.4)" }, at + 0.08);
+        pop(ok, at + 0.38, { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      };
+      print("#s-o1", "#s-k1", t(123) + 0.25, 60);
+      print("#s-o2", "#s-k2", t(125), 126);
+      print("#s-o3", "#s-k3", t(126) + 0.25, 192);
+      tl.fromTo("#s-tstrict", { scale: 1 }, { scale: 1.2, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, t(128));
+      swap("#s-rwait", "#s-rgood", t(127));
+      pop("#s-rpok", t(129), { from: 0.4 });
+      tl.to("#s-dout", { backgroundColor: "#ddefe6", duration: 0.25 }, t(129) + 0.1);
+      tl.to("#s-to > span", { backgroundColor: "#ddefe6", duration: 0.25 }, t(130));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 57.02);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

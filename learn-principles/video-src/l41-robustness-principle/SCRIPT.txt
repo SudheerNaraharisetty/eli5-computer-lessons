@@ -1,0 +1,15 @@
+Maya's shop now takes orders from other programs. Each order is one line of text. Choc chip, comma, three.
+
+Her reader is very strict. A capital letter? Rejected. A stray space? Rejected. An extra word on the end? Rejected. On Friday night, forty real orders bounce.
+
+And what does Maya send back? Her own replies are a mess. A different shape every time. The other programs cannot read them.
+
+She has it exactly backwards. So she flips it.
+
+The in window gets a patient reader. Make the letters small. Trim the spaces. Ignore the extra word. Three crooked lines, one neat order.
+
+But it never guesses. A few cookies? Minus five? Back to the sender, with a note.
+
+The out window gets one stamp. Every reply leaves in exactly one shape.
+
+That is the robustness principle. Be strict in what you send. Be forgiving in what you accept.

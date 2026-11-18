@@ -1,0 +1,79 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 110px; font: 700 124px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; color: #3b37e6; opacity: 0; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    .t-row { position: absolute; left: 110px; height: 120px; display: flex; align-items: center; gap: 34px; white-space: nowrap; }
+    .t-chip { width: 170px; height: 104px; flex: none; border-radius: 22px; background: #fff; font: 700 60px/104px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    .t-say { font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .t-say span { display: inline-block; opacity: 0; }
+    #t-r1 { top: 350px; }
+    #t-r2 { top: 520px; }
+    #t-r1 .ac { color: #b8235a; }
+    #t-r2 .ac { color: #1f7a5c; }
+    #t-post { left: 110px; top: 716px; padding: 6px 26px; background: #fff; border-radius: 999px; font-size: 34px; line-height: 1.4; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.4" data-track-index="1">
+      <div id="t-head" class="t-abs">Robustness principle.</div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 268 Q640 296 1290 258" /></svg>
+      <div class="t-row" id="t-r1">
+        <div class="t-chip" id="t-c1">OUT</div>
+        <div class="t-say"><span>Be</span> <span class="ac">strict</span> <span>in</span> <span>what</span> <span>you</span> <span>send.</span></div>
+      </div>
+      <div class="t-row" id="t-r2">
+        <div class="t-chip" id="t-c2">IN</div>
+        <div class="t-say"><span>Be</span> <span class="ac">forgiving</span> <span>in</span> <span>what</span> <span>you</span> <span>accept.</span></div>
+      </div>
+      <div id="t-post" class="t-abs">Also called Postel's law</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 42: Statelessness</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 57.3;
+      const g = { head: 58.16, r1: [60.008, 60.252, 60.728, 60.844, 61.03, 61.181], r2: [61.808, 62.04, 62.725, 62.934, 63.143, 63.282], post: 63.95, end: 64.5 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-head", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.head - S - 0.05);
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength() + 2;
+      gsap.set(u, { strokeDasharray: L, strokeDashoffset: L });
+      tl.set(u, { opacity: 1 }, g.head - S + 0.7);
+      tl.to(u, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, g.head - S + 0.71);
+      [["#t-r1", "#t-c1", g.r1], ["#t-r2", "#t-c2", g.r2]].forEach(([row, chip, ws]) => {
+        tl.fromTo(chip, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, ws[0] - S - 0.2);
+        gsap.utils.toArray(row + " .t-say span").forEach((w, i) => tl.fromTo(w, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, ws[i] - S - 0.05));
+      });
+      tl.fromTo("#t-post", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.post - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

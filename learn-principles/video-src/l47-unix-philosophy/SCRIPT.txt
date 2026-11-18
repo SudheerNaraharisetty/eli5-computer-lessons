@@ -1,0 +1,13 @@
+Maya asks one question. What were today's three best sellers?
+
+Sam starts building one big program to answer it. Three weeks later it has forty options. Then Maya asks, how many ginger? There is no button for that.
+
+The accountant grew up with Unix. She builds nothing. She lines up four small tools, joined by pipes.
+
+In goes the pile of sales. Sort puts them in order. Count squashes each bunch into one line with a number. Rank puts the biggest first. And top three keeps three. There is Maya's answer.
+
+Each tool does one job. Each one hands plain lines of text to the next, through the same simple pipe.
+
+So for the ginger question, she just unclips them. Find ginger. Count the lines. Two. Nothing new was built.
+
+That is the Unix philosophy. Small tools that do one thing well, made to be combined.

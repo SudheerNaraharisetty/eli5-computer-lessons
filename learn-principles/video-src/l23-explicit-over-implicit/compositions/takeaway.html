@@ -1,0 +1,85 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-kick { left: 114px; font: 700 58px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    #t-k1 { top: 80px; }
+    #t-k2 { top: 150px; }
+    #t-head { left: 110px; top: 250px; font: 700 150px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-zen { left: 114px; top: 590px; padding: 4px 26px; background: #fff; border-radius: 999px; font-size: 32px; line-height: 1.5; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    .t-chip { position: absolute; top: 686px; height: 196px; border-radius: 26px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; background: #15132b; color: #fff; }
+    .t-chip code { position: absolute; left: 0; top: 30px; width: 100%; text-align: center; font: 700 40px/1.4 "JetBrains Mono", monospace; font-variant-ligatures: none; white-space: nowrap; }
+    .t-chip code i { font-style: normal; color: #7cf0b5; }
+    .t-chip small { position: absolute; left: 0; top: 108px; width: 100%; text-align: center; font-size: 34px; line-height: 1.4; white-space: nowrap; }
+    #t-ex { left: 110px; width: 700px; }
+    #t-ex small { color: #7cf0b5; }
+    #t-im { left: 860px; width: 460px; }
+    #t-im small { color: #ff9db3; }
+    #t-next { left: 110px; top: 922px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.8" data-track-index="1">
+      <div id="t-k1" class="t-abs t-kick">Say what your code depends on,</div>
+      <div id="t-k2" class="t-abs t-kick">right where it is used.</div>
+      <div id="t-head" class="t-abs">
+        <span class="ac">Explicit</span> <span>is</span> <span>better</span><br />
+        <span>than</span> <span>implicit.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M118 418 Q380 440 668 410" /></svg>
+      <div id="t-zen" class="t-abs">from the Zen of Python</div>
+      <div class="t-chip" id="t-ex"><code>sale_price(3<i>, "Tuesday"</i>)</code><small>the day is on the line</small></div>
+      <div class="t-chip" id="t-im"><code>sale_price(3)</code><small>the day is hidden</small></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 24: Review: one piece of code</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 47.2;
+      const g = { say: 47.4, right: 49.48, explicit: 51.29, is: 52.03, better: 52.21, than: 52.58, implicit: 52.84, end: 54.1 };
+      const tl = gsap.timeline({ paused: true });
+      const under = document.querySelector("#t-under");
+      const L = Math.ceil(under.getTotalLength()) || 600;
+      under.style.strokeDasharray = L + " " + (L + 40);
+      const w = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-k1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, g.say - S);
+      tl.fromTo("#t-k2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, g.right - S);
+      [g.explicit, g.is, g.better, g.than, g.implicit].forEach((at, i) => tl.fromTo(w[i], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, at - S - 0.05));
+      tl.fromTo("#t-ex", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, g.explicit - S + 0.2);
+      tl.fromTo("#t-im", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, g.implicit - S + 0.2);
+      tl.set(under, { opacity: 1 }, g.implicit - S + 0.6);
+      tl.fromTo(under, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, g.implicit - S + 0.6);
+      tl.fromTo("#t-zen", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, g.end - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.6);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

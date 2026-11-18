@@ -1,0 +1,13 @@
+Tuesday is sale day at Maya's cookie shop. Ten percent off.
+
+Sam writes the job that works out the price. Picture a machine with one slot on the front. A price goes in. A price comes out.
+
+On Tuesday, Sam tries it. Three dollars in. Two seventy out.
+
+On Monday night, he prints the tags for tomorrow's sale. Three dollars in. Three dollars out. Same input, different answer.
+
+Look behind the machine. A hidden pipe runs in from the computer's clock. The job quietly asks what day it is today.
+
+The fix: bring that pipe round to the front. Now the job takes the price, and the day. Sam asks for Tuesday, and gets two seventy on any day.
+
+Say what your code depends on, right where it is used. Explicit is better than implicit.

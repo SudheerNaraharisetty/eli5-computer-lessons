@@ -1,0 +1,470 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #s-all, #s-wrap, #s-intro { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; }
+
+    /* intro: the shop and its flyer */
+    #s-counter { left: 96px; top: 740px; width: 620px; height: 244px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 740px; width: 620px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-maya { left: 150px; top: 236px; width: 420px; height: 546px; }
+    #s-sign { left: 110px; top: 96px; padding: 16px 34px; background: #fff; border-radius: 22px; font: 700 60px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-flyer { left: 830px; top: 250px; width: 800px; height: 470px; background: #fff; border-radius: 28px; }
+    #s-fl1 { left: 0; top: 46px; width: 800px; text-align: center; font-size: 50px; letter-spacing: 0.12em; line-height: 1.2; }
+    #s-fl2 { left: 0; top: 112px; width: 800px; text-align: center; font: 700 210px/1.1 "Fraunces", serif; letter-spacing: -0.03em; color: #3b37e6; white-space: nowrap; }
+    #s-fl3 { left: 0; top: 356px; width: 800px; text-align: center; font-size: 44px; line-height: 1.2; color: #3e3b52; }
+    #s-saleday { left: 1384px; top: 200px; padding: 6px 30px; background: #b8235a; color: #fff; border-radius: 999px; font-size: 44px; line-height: 1.4; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 7px 0 5px #0e0c1d; }
+    #s-pin { left: 1210px; top: 232px; width: 40px; height: 40px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* Sam and the day */
+    #s-sam { left: 96px; top: 96px; width: 420px; height: 120px; background: #e6e3ff; border-radius: 22px; }
+    #s-sam > svg { position: absolute; left: 14px; top: 10px; width: 100px; height: 100px; }
+    #s-sam small { position: absolute; left: 130px; top: 18px; font-size: 28px; letter-spacing: 0.06em; color: #3b37e6; line-height: 1.2; white-space: nowrap; }
+    #s-sam b { position: absolute; left: 130px; top: 56px; font-size: 34px; line-height: 1.3; white-space: nowrap; }
+    #s-today { left: 560px; top: 116px; width: 530px; height: 84px; background: #fff; border-radius: 20px; }
+    #s-tlabel { left: 14px; top: 14px; height: 56px; padding: 0 20px; border-radius: 12px; background: #3b37e6; color: #fff; font-size: 30px; line-height: 56px; letter-spacing: 0.08em; }
+    #s-tval { left: 170px; top: 14px; width: 350px; height: 56px; font-size: 40px; line-height: 56px; white-space: nowrap; }
+    #s-tval b { position: absolute; left: 0; top: 0; opacity: 0; }
+
+    /* behind the wall: the clock and its pipe */
+    #s-clock { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 1; }
+    #s-face { left: 1630px; top: 196px; width: 150px; height: 150px; }
+    #s-dcard { left: 1590px; top: 380px; width: 214px; height: 70px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 5px #0e0c1d; text-align: center; font-size: 38px; line-height: 70px; }
+    #s-clabel { left: 1432px; top: 124px; padding: 0 20px; height: 50px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 30px; line-height: 50px; white-space: nowrap; z-index: 4; }
+    .s-pipe { width: 290px; height: 72px; background: #fbe0ea; box-shadow: 0 0 0 5px #0e0c1d; text-align: center; font: 700 30px/72px "JetBrains Mono", monospace; font-variant-ligatures: none; color: #b8235a; }
+    #s-bpipe { left: 1300px; top: 379px; z-index: 1; }
+    #s-fpipe { left: 270px; top: 454px; z-index: 6; }
+    #s-mon { left: 1410px; top: 389px; width: 170px; height: 52px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 30px; line-height: 52px; text-align: center; z-index: 3; }
+    #s-hid { left: 1336px; top: 474px; padding: 0 20px; height: 52px; border-radius: 999px; background: #b8235a; color: #fff; font-size: 30px; line-height: 52px; letter-spacing: 0.06em; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 4; }
+
+    /* the wall */
+    #s-wall { left: 1316px; top: 96px; width: 508px; height: 514px; background: #ece7df; border-radius: 10px; z-index: 2; overflow: hidden; }
+    #s-wall > svg { position: absolute; left: 0; top: 0; width: 508px; height: 514px; }
+    #s-wghost { left: 1306px; top: 86px; width: 528px; height: 534px; z-index: 2; }
+    #s-mini { left: 1356px; top: 150px; width: 250px; height: 196px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; z-index: 3; text-align: center; }
+    #s-mini small { display: block; margin-top: 30px; font-size: 30px; letter-spacing: 0.1em; line-height: 1.2; }
+    #s-mini b { display: block; font: 700 56px/1.3 "Fraunces", serif; color: #3b37e6; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-mini i { position: absolute; left: 111px; top: -12px; width: 28px; height: 28px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* front chutes */
+    .s-chpipe { left: 270px; width: 290px; height: 72px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; z-index: 3; }
+    #s-p1 { top: 314px; }
+    .s-mouth { left: 204px; width: 72px; height: 116px; z-index: 7; }
+    #s-m1 { top: 292px; }
+    #s-m2 { top: 432px; }
+    .s-chlab { left: 330px; height: 52px; padding: 0 22px; border-radius: 999px; background: #fff; font: 700 32px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; box-shadow: 0 0 0 4px #0e0c1d, 0 5px 0 4px #0e0c1d; z-index: 7; }
+    #s-l1 { top: 240px; }
+    #s-l2 { top: 546px; background: #ddefe6; color: #1f7a5c; }
+    #s-inclip { left: 0; top: 0; width: 555px; height: 1080px; overflow: hidden; z-index: 8; }
+    .s-chip { left: 60px; height: 56px; border-radius: 999px; background: #fff; text-align: center; font: 700 34px/56px "JetBrains Mono", monospace; font-variant-ligatures: none; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; opacity: 0; }
+    .s-c1 { top: 322px; width: 150px; }
+    #s-cg { background: #ece7df; font: 800 30px/56px "Manrope", sans-serif; width: 150px; }
+    #s-ct { top: 462px; width: 190px; background: #3b37e6; color: #fff; }
+
+    /* the machine */
+    #s-mach { left: 560px; top: 250px; width: 740px; height: 324px; background: #15132b; border-radius: 22px; color: #fff; z-index: 5; }
+    #s-mbar { left: 0; top: 0; width: 740px; height: 60px; background: #211e40; border-radius: 22px 22px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 24px; gap: 10px; }
+    #s-mbar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-mbar > i:nth-child(2) { background: #ffc24b; }
+    #s-mbar > i:nth-child(3) { background: #4bd69b; }
+    #s-mbar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-body { left: 0; top: 65px; width: 740px; height: 259px; overflow: hidden; border-radius: 0 0 22px 22px; }
+    #s-lines { left: 30px; top: 19px; width: 700px; font: 500 30px/54px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    .s-ln { height: 54px; display: flex; white-space: pre; }
+    .s-ln > i { width: 54px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .st { color: #ffc24b; }
+    .s-ln .hot { color: #ff9db3; font-weight: 700; }
+    .s-ln .new { color: #7cf0b5; font-weight: 700; }
+    .s-sw { position: relative; display: block; width: 640px; height: 54px; }
+    .s-sw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+    #s-flash { left: 14px; top: 73px; width: 712px; height: 54px; border-radius: 10px; background: #2c2857; opacity: 0; }
+    #s-cover { left: 0; top: 0; width: 740px; height: 259px; background: #211e40; }
+    #s-cname { left: 44px; top: 56px; font: 700 62px/1.2 "JetBrains Mono", monospace; font-variant-ligatures: none; color: #7cf0b5; white-space: nowrap; }
+    #s-csub { left: 46px; top: 150px; font-size: 32px; line-height: 1.3; color: #c9c6ff; white-space: nowrap; }
+    #s-g1 { left: 530px; top: 26px; width: 130px; height: 130px; }
+    #s-g2 { left: 618px; top: 134px; width: 96px; height: 96px; }
+    #s-spout { left: 320px; top: 324px; width: 100px; height: 24px; background: #0e0c1d; border-radius: 0 0 10px 10px; }
+
+    /* the call */
+    #s-call { left: 96px; top: 700px; width: 744px; height: 190px; background: #15132b; border-radius: 22px; color: #fff; z-index: 4; }
+    #s-callbar { left: 0; top: 0; width: 744px; height: 54px; background: #211e40; border-radius: 22px 22px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; padding: 0 26px; font-size: 28px; line-height: 54px; letter-spacing: 0.08em; color: #c9c6ff; }
+    #s-callsw { left: 36px; top: 92px; width: 680px; height: 62px; font: 700 44px/62px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-callsw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+    #s-callsw .fn { color: #7cf0b5; }
+    #s-callsw .st { color: #ffc24b; }
+    #s-same { left: 536px; top: 797px; padding: 0 22px; height: 54px; border-radius: 999px; background: #fbebd2; color: #0e0c1d; font-size: 30px; line-height: 54px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 9; }
+
+    /* results */
+    .s-res { top: 664px; width: 440px; height: 296px; background: #fbf8f4; border-radius: 24px; z-index: 2; }
+    #s-r1 { left: 900px; }
+    #s-r2 { left: 1384px; }
+    #s-r3 { left: 900px; width: 924px; }
+    .s-res > small { position: absolute; left: 0; top: 30px; width: 440px; text-align: center; font-size: 32px; letter-spacing: 0.06em; line-height: 1.3; white-space: nowrap; }
+    #s-r1 > small { color: #1f7a5c; }
+    #s-r2 > small { color: #b8235a; }
+    #s-r3 > small { left: 60px; width: auto; text-align: left; color: #3b37e6; }
+    .s-mark { position: absolute; right: -22px; top: -22px; width: 64px; height: 64px; border-radius: 50%; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-mark > svg { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+    .s-yes { background: #1f7a5c; }
+    .s-no { background: #b8235a; }
+    .s-dchip { position: absolute; top: 140px; width: 164px; height: 88px; border-radius: 18px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; font-size: 34px; line-height: 88px; text-align: center; white-space: nowrap; }
+    #s-outclip { left: 0; top: 598px; width: 1920px; height: 482px; overflow: hidden; z-index: 3; }
+    .s-tag { top: 196px; width: 260px; height: 110px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; text-align: center; font: 700 52px/110px "JetBrains Mono", monospace; font-variant-ligatures: none; padding-left: 26px; opacity: 0; }
+    .s-tag > i { position: absolute; left: 16px; top: 43px; width: 24px; height: 24px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tg { left: 800px; top: 30px; background: #ece7df; font: 800 34px/110px "Manrope", sans-serif; }
+    #s-t1 { left: 990px; }
+    #s-t2 { left: 1474px; }
+    #s-t3 { left: 960px; }
+    #s-neq { left: 1324px; top: 786px; width: 76px; height: 76px; border-radius: 50%; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 5px #0e0c1d; font: 700 60px/70px "Fraunces", serif; text-align: center; z-index: 9; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 9; }
+    #s-marks path { opacity: 0; fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="47.2" data-track-index="1">
+      <div id="s-wrap">
+        <!-- the shop and the sale flyer -->
+        <div id="s-intro">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-sign" class="s-abs s-ol">Maya's Cookies</div>
+          <div id="s-flyer" class="s-abs s-ol">
+            <div id="s-fl1" class="s-abs">EVERY TUESDAY</div>
+            <div id="s-fl2" class="s-abs s-hide">10% off</div>
+            <div id="s-fl3" class="s-abs s-hide">all cookies</div>
+          </div>
+          <div id="s-pin" class="s-abs"></div>
+          <div id="s-saleday" class="s-abs s-hide">sale day</div>
+        </div>
+
+        <!-- Sam, and what day it is -->
+        <div id="s-sam" class="s-abs s-ol s-hide">
+          <svg viewBox="100 62 200 200">
+            <circle cx="200" cy="162" r="84" fill="#f7d9bd" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 152 Q112 72 200 72 Q288 72 283 152 Q268 116 238 110 Q200 102 162 110 Q132 116 117 152 Z" fill="#c8642a" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="168" cy="176" r="22" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <circle cx="232" cy="176" r="22" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M190 176 H210" stroke="#0e0c1d" stroke-width="5" />
+            <circle cx="168" cy="177" r="7" fill="#0e0c1d" />
+            <circle cx="232" cy="177" r="7" fill="#0e0c1d" />
+            <path d="M178 214 Q200 232 222 214" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <small>SAM, THE HELPER</small>
+          <b id="s-sb1" data-layout-allow-overlap>writes the job</b>
+          <b id="s-sb2" class="s-hide" data-layout-allow-overlap>tries it</b>
+          <b id="s-sb3" class="s-hide" data-layout-allow-overlap>prints the tags</b>
+          <b id="s-sb4" class="s-hide" data-layout-allow-overlap>asks for Tuesday</b>
+        </div>
+        <div id="s-today" class="s-abs s-ol s-hide">
+          <div id="s-tlabel" class="s-abs">TODAY</div>
+          <div id="s-tval" class="s-abs">
+            <b id="s-tv1" data-layout-allow-overlap>TUESDAY</b>
+            <b id="s-tv2" data-layout-allow-overlap>MONDAY NIGHT</b>
+            <b id="s-tv3" data-layout-allow-overlap>WEDNESDAY</b>
+            <b id="s-tv4" data-layout-allow-overlap>FRIDAY</b>
+          </div>
+        </div>
+
+        <!-- behind the wall -->
+        <div id="s-clock" class="s-abs s-hide">
+          <svg id="s-face" class="s-abs" viewBox="0 0 150 150">
+            <circle cx="75" cy="80" r="66" fill="#0e0c1d" />
+            <circle cx="75" cy="72" r="66" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M75 18 V30 M75 114 V126 M21 72 H33 M117 72 H129" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <path id="s-hand" d="M75 72 V34" stroke="#b8235a" stroke-width="7" stroke-linecap="round" />
+            <path d="M75 72 L100 86" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+            <circle cx="75" cy="72" r="7" fill="#0e0c1d" />
+          </svg>
+          <div id="s-dcard" class="s-abs">MONDAY</div>
+        </div>
+        <div id="s-clabel" class="s-abs s-hide">the computer's clock</div>
+        <div id="s-bpipe" class="s-abs s-pipe s-hide"><span id="s-bptxt">today()</span></div>
+        <div id="s-mon" class="s-abs s-hide">Monday</div>
+        <div id="s-hid" class="s-abs s-hide">HIDDEN INPUT</div>
+
+        <div id="s-wall" class="s-abs s-ol s-hide">
+          <svg viewBox="0 0 508 514">
+            <g stroke="#c7bdae" stroke-width="4">
+              <path d="M0 64 H508 M0 128 H508 M0 192 H508 M0 256 H508 M0 320 H508 M0 384 H508 M0 448 H508" />
+              <path d="M127 0 V64 M381 0 V64 M254 64 V128 M127 128 V192 M381 128 V192 M254 192 V256 M127 256 V320 M381 256 V320 M254 320 V384 M127 384 V448 M381 384 V448 M254 448 V514" />
+            </g>
+          </svg>
+        </div>
+        <svg id="s-wghost" class="s-abs s-hide" viewBox="0 0 528 534"><rect x="5" y="5" width="518" height="524" rx="12" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-dasharray="18 14" /></svg>
+        <div id="s-mini" class="s-abs s-hide" style="transform: rotate(-4deg)"><i></i><small>TUESDAYS</small><b>10% off</b></div>
+
+        <!-- the front of the machine -->
+        <div id="s-p1" class="s-abs s-chpipe s-hide"></div>
+        <svg id="s-m1" class="s-abs s-mouth s-hide" viewBox="0 0 72 116"><polygon points="5,5 67,24 67,92 5,111" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+        <div id="s-l1" class="s-abs s-chlab s-hide">price</div>
+        <div id="s-fpipe" class="s-abs s-pipe s-hide"></div>
+        <svg id="s-m2" class="s-abs s-mouth s-hide" viewBox="0 0 72 116"><polygon points="5,5 67,24 67,92 5,111" fill="#ddefe6" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+        <div id="s-l2" class="s-abs s-chlab s-hide">day</div>
+        <div id="s-inclip" class="s-abs" data-layout-allow-overflow>
+          <div id="s-cg" class="s-abs s-chip s-c1">a price</div>
+          <div id="s-ca" class="s-abs s-chip s-c1">$3.00</div>
+          <div id="s-cb" class="s-abs s-chip s-c1">$3.00</div>
+          <div id="s-cc" class="s-abs s-chip s-c1">$3.00</div>
+          <div id="s-ct" class="s-abs s-chip">Tuesday</div>
+        </div>
+
+        <div id="s-mach" class="s-abs s-ol s-hide">
+          <div id="s-mbar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-body" class="s-abs">
+            <div id="s-flash" class="s-abs"></div>
+            <div id="s-lines" class="s-abs s-mono s-hide">
+              <div class="s-ln" id="s-ln1"><i>1</i><span class="s-sw"><span id="s-1a"><span class="kw">def</span> <span class="fn">sale_price</span>(price):</span><span id="s-1b" class="s-hide"><span class="kw">def</span> <span class="fn">sale_price</span>(price<span class="new">, day</span>):</span></span></div>
+              <div class="s-ln" id="s-ln2"><i>2</i><span class="s-sw"><span id="s-2a">    <span class="kw">if</span> <span class="hot">today()</span> == <span class="st">"Tuesday"</span>:</span><span id="s-2b" class="s-hide">    <span class="kw">if</span> <span class="new">day</span> == <span class="st">"Tuesday"</span>:</span></span></div>
+              <div class="s-ln" id="s-ln3"><i>3</i><span>        <span class="kw">return</span> price - price * 0.10</span></div>
+              <div class="s-ln" id="s-ln4"><i>4</i><span>    <span class="kw">return</span> price</span></div>
+            </div>
+            <div id="s-cover" class="s-abs">
+              <div id="s-cname" class="s-abs">sale_price</div>
+              <div id="s-csub" class="s-abs">a price in, a price out</div>
+              <svg id="s-g1" class="s-abs" viewBox="0 0 130 130"><circle cx="65" cy="65" r="46" fill="none" stroke="#c9c6ff" stroke-width="22" stroke-dasharray="18.06 18.06" /><circle cx="65" cy="65" r="40" fill="#211e40" stroke="#c9c6ff" stroke-width="10" /><circle cx="65" cy="65" r="10" fill="#c9c6ff" /></svg>
+              <svg id="s-g2" class="s-abs" viewBox="0 0 96 96"><circle cx="48" cy="48" r="33" fill="none" stroke="#7cf0b5" stroke-width="18" stroke-dasharray="12.96 12.96" /><circle cx="48" cy="48" r="28" fill="#211e40" stroke="#7cf0b5" stroke-width="8" /><circle cx="48" cy="48" r="7" fill="#7cf0b5" /></svg>
+            </div>
+          </div>
+          <div id="s-spout" class="s-abs"></div>
+        </div>
+
+        <!-- the call -->
+        <div id="s-call" class="s-abs s-ol s-hide">
+          <div id="s-callbar" class="s-abs">THE CALL</div>
+          <div id="s-callsw" class="s-abs">
+            <span id="s-ka" data-layout-allow-overlap><span class="fn">sale_price</span>(3)</span>
+            <span id="s-kb" class="s-hide" data-layout-allow-overlap><span class="fn">sale_price</span>(3, <span class="st">"Tuesday"</span>)</span>
+          </div>
+        </div>
+        <div id="s-same" class="s-abs s-hide">same call</div>
+
+        <!-- what comes out -->
+        <div id="s-r1" class="s-abs s-res s-ol s-hide"><small>ON TUESDAY</small><div class="s-mark s-yes s-hide" id="s-k1"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div id="s-r2" class="s-abs s-res s-ol s-hide"><small>ON MONDAY NIGHT</small><div class="s-mark s-no s-hide" id="s-k2"><svg viewBox="0 0 64 64"><path d="M21 21 L43 43 M43 21 L21 43" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" /></svg></div></div>
+        <div id="s-r3" class="s-abs s-res s-ol s-hide">
+          <small>ASKED FOR TUESDAY. TRIED ON:</small>
+          <div class="s-dchip s-hide" id="s-d1" style="left:376px">MON</div>
+          <div class="s-dchip s-hide" id="s-d2" style="left:560px">WED</div>
+          <div class="s-dchip s-hide" id="s-d3" style="left:744px">FRI</div>
+          <div class="s-mark s-yes s-hide" id="s-k3"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+        <div id="s-outclip" class="s-abs" data-layout-allow-overflow>
+          <div id="s-tg" class="s-abs s-tag"><i></i>a price</div>
+          <div id="s-t1" class="s-abs s-tag"><i></i>$2.70</div>
+          <div id="s-t2" class="s-abs s-tag"><i></i>$3.00</div>
+          <div id="s-t3" class="s-abs s-tag"><i></i>$2.70</div>
+        </div>
+        <div id="s-neq" class="s-abs s-hide">≠</div>
+
+        <!-- rings and wires -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rcall" data-ring="304 823 204 46" />
+          <path id="s-rtoday" data-ring="833 415 78 29" />
+          <path id="s-wire" d="M912 440 C1030 456 1180 452 1294 424" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.522, 0.65, 0.987, 1.277, 1.509, 1.904, 2.241, 2.833, 3.158, 3.622, 4.447, 4.795, 5.108, 5.236, 5.503, 5.7, 6.049, 6.235, 6.362, 7.198, 7.581, 7.651, 8.092, 8.336, 8.638, 9.056, 9.195, 9.323, 10.008, 10.182, 10.553, 10.855, 11.366, 11.587, 11.981, 12.318, 13.328, 13.584, 14.466, 14.849, 15.244, 15.662, 16.01, 16.358, 16.73, 17.066, 17.658, 18.703, 18.935, 19.295, 19.876, 20.038, 20.387, 20.503, 20.886, 21.048, 21.571, 22.279, 22.581, 22.929, 23.37, 23.719, 24.067, 24.775, 25.135, 25.762, 26.203, 27.318, 27.643, 28.061, 28.177, 29.164, 29.338, 29.675, 30.093, 30.429, 30.603, 30.778, 30.882, 31.556, 32.345, 32.531, 32.832, 33.355, 33.819, 34.075, 34.353, 34.504, 34.702, 35.7, 35.874, 36.408, 36.722, 36.942, 37.349, 37.662, 37.79, 37.906, 38.846, 39.113, 39.264, 39.543, 39.88, 40.007, 40.53, 40.774, 40.924, 41.981, 42.399, 42.852, 43.003, 43.722, 43.931, 44.21, 44.477, 45.069, 45.394, 45.789, 46.799, 47.113, 47.31, 47.531, 47.879, 48.39, 48.877, 49.179, 49.446, 49.597, 49.794, 50.688, 51.431, 51.606, 51.977, 52.244];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, at + 0.08);
+      };
+
+      /* hand-drawn strokes: draw by real length */
+      const LEN = {};
+      document.querySelectorAll("#s-marks path[data-ring]").forEach((p) => {
+        const [cx, cy, rx, ry] = p.dataset.ring.split(" ").map(Number);
+        const k = ry * 1.34;
+        p.setAttribute("d", `M${cx - rx} ${cy + 1} C${cx - rx - 2} ${cy - k} ${cx + rx} ${cy - k - 2} ${cx + rx} ${cy - 1} C${cx + rx} ${cy + k} ${cx - rx - 6} ${cy + k + 2} ${cx - rx - 4} ${cy - 7}`);
+      });
+      document.querySelectorAll("#s-marks path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 600;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at);
+      };
+
+      /* something goes in at the front, the gears turn */
+      const feed = (sel, at, d) => {
+        pop(sel, at - 0.35, { from: 0.5, d: 0.3 });
+        tl.fromTo(sel, { x: 0 }, { x: 510, duration: d || 0.7, ease: "power2.in" }, at);
+        tl.set(sel, { opacity: 0 }, at + (d || 0.7));
+      };
+      let turn = 0;
+      const gears = (at) => {
+        turn += 150;
+        tl.to("#s-g1", { rotation: turn, transformOrigin: "50% 50%", duration: 0.7, ease: "power2.inOut" }, at);
+        tl.to("#s-g2", { rotation: -turn * 1.4, transformOrigin: "50% 50%", duration: 0.7, ease: "power2.inOut" }, at);
+      };
+      /* a tag drops out of the bottom and lands in its place */
+      const drop = (sel, at, fromLeft, left, top) => {
+        const dx = fromLeft - left, dy = -150 - top;
+        tl.set(sel, { opacity: 1, x: dx, y: dy }, at);
+        tl.to(sel, { y: dy + 170, duration: 0.3, ease: "power2.out" }, at);
+        tl.to(sel, { x: 0, y: 0, duration: 0.45, ease: "back.out(1.3)" }, at + 0.3);
+      };
+
+      /* ---- 1. Tuesday is sale day ---- */
+      tl.set("#s-sign", { rotation: -3 }, 0);
+      tl.fromTo("#s-flyer", { rotation: -9, y: -60 }, { rotation: -3, y: 0, duration: 0.6, ease: "back.out(1.4)" }, 0.05);
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 3 }, 0.4);
+      tl.fromTo("#s-fl1", { scale: 1 }, { scale: 1.12, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(0));
+      tl.fromTo("#s-saleday", { opacity: 0, scale: 2.2, rotation: 14 }, { opacity: 1, scale: 1, rotation: 8, duration: 0.3, ease: "power4.in" }, t(2) - 0.1);
+      tl.fromTo("#s-fl2", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, t(8) - 0.05);
+      tl.fromTo("#s-fl3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(10));
+
+      /* ---- 2. Sam writes the job: a machine with one slot ---- */
+      tl.to("#s-intro", { opacity: 0, x: -90, duration: 0.35, ease: "power3.in" }, t(11) - 0.5);
+      tl.fromTo("#s-sam", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(11) - 0.15);
+      tl.fromTo("#s-mach", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(14) - 0.15);
+      gears(t(16));
+      tl.fromTo("#s-wall", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(22) - 0.1);
+      tl.fromTo("#s-mini", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(22) + 0.05);
+      tl.fromTo("#s-p1", { opacity: 1, scaleX: 0, transformOrigin: "100% 50%" }, { opacity: 1, scaleX: 1, duration: 0.45, ease: "power3.out" }, t(24) - 0.05);
+      pop("#s-m1", t(25) + 0.05, { from: 0.3, d: 0.35 });
+      pop("#s-l1", t(28) - 0.05, { from: 0.4 });
+      feed("#s-cg", t(30), 0.7);
+      gears(t(32));
+      drop("#s-tg", t(34), 800, 800, 30);
+      out(["#s-tg"], t(37) - 0.15, 0.25);
+
+      /* ---- 3. On Tuesday, Sam tries it ---- */
+      tl.set("#s-tv1", { opacity: 1 }, 0);
+      tl.fromTo("#s-today", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, t(38) - 0.15);
+      swap("#s-sb1", "#s-sb2", t(39));
+      tl.fromTo("#s-call", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(40) - 0.1);
+      feed("#s-ca", t(42) + 0.25, 0.6);
+      gears(t(44) - 0.1);
+      tl.fromTo("#s-r1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(45) - 0.2);
+      drop("#s-t1", t(45) + 0.1, 800, 990, 196);
+      pop("#s-k1", t(47) + 0.15, { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 4. Monday night: the same call ---- */
+      tl.to("#s-tv1", { opacity: 0, duration: 0.12 }, t(49) - 0.1);
+      tl.fromTo("#s-tv2", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, t(49));
+      tl.to("#s-today", { backgroundColor: "#211e40", color: "#ffffff", duration: 0.3, ease: "power2.inOut" }, t(49) - 0.05);
+      swap("#s-sb2", "#s-sb3", t(52));
+      tl.to("#s-call", { scale: 1.04, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(56));
+      feed("#s-cb", t(58) + 0.25, 0.6);
+      gears(t(60) - 0.1);
+      tl.fromTo("#s-r2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(61) - 0.2);
+      drop("#s-t2", t(61) + 0.1, 800, 1474, 196);
+      pop("#s-k2", t(63) + 0.25, { from: 0.2, ease: "back.out(2.4)" });
+      draw("#s-rcall", t(64), 0.5);
+      pop("#s-same", t(65), { from: 0.4 });
+      pop("#s-neq", t(66), { from: 0.2, ease: "back.out(2.4)" });
+      tl.to(["#s-t1", "#s-t2"], { rotation: 4, duration: 0.1, ease: "power1.inOut", yoyo: true, repeat: 3 }, t(67));
+
+      /* ---- 5. Look behind the machine ---- */
+      out(["#s-rcall", "#s-same"], t(68) - 0.25, 0.25);
+      out("#s-mini", t(69) - 0.1, 0.35);
+      tl.to("#s-wall", { opacity: 0.1, duration: 0.6, ease: "power2.inOut" }, t(69) - 0.1);
+      tl.fromTo("#s-wghost", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, t(69));
+      tl.fromTo("#s-clock", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, t(69));
+      tl.fromTo("#s-bpipe", { opacity: 1, scaleX: 0, transformOrigin: "100% 50%" }, { opacity: 1, scaleX: 1, duration: 0.7, ease: "power3.out" }, t(73) - 0.05);
+      pop("#s-hid", t(74) + 0.15, { from: 0.4 });
+      pop("#s-clabel", t(79) - 0.05, { from: 0.4 });
+      tl.to("#s-hand", { rotation: 360, svgOrigin: "75 72", duration: 0.9, ease: "power2.inOut" }, t(79));
+      tl.set("#s-lines", { opacity: 1 }, t(82) - 0.15);
+      tl.to("#s-cover", { yPercent: -102, duration: 0.55, ease: "power3.inOut" }, t(82) - 0.15);
+      tl.set("#s-cover", { opacity: 0 }, t(82) + 0.42);
+      tl.to(["#s-ln1", "#s-ln3", "#s-ln4"], { opacity: 0.5, duration: 0.4, ease: "power2.inOut" }, t(83));
+      draw("#s-rtoday", t(84) - 0.05, 0.45);
+      draw("#s-wire", t(85) + 0.05, 0.5);
+      tl.to("#s-dcard", { scale: 1.14, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(86));
+      out("#s-bptxt", t(87) - 0.2, 0.2);
+      pop("#s-mon", t(87), { from: 0.5, d: 0.25 });
+      tl.fromTo("#s-mon", { x: 0 }, { x: -300, duration: 0.6, ease: "power2.in" }, t(88) + 0.05);
+      tl.set("#s-mon", { opacity: 0 }, t(88) + 0.66);
+      tl.fromTo("#s-flash", { opacity: 0 }, { opacity: 1, duration: 0.15, yoyo: true, repeat: 1 }, t(89) + 0.15);
+      tl.to("#s-t2", { rotation: -4, duration: 0.1, ease: "power1.inOut", yoyo: true, repeat: 3 }, t(89) + 0.25);
+
+      /* ---- 6. The fix: bring the pipe round to the front ---- */
+      out(["#s-r1", "#s-r2", "#s-t1", "#s-t2", "#s-neq"], t(90) + 0.05, 0.3);
+      out(["#s-rtoday", "#s-wire", "#s-hid"], t(92) - 0.15, 0.2);
+      tl.set("#s-bpipe", { opacity: 0 }, t(92) + 0.3);
+      tl.fromTo("#s-fpipe", { opacity: 1, x: 1030, y: -75 }, { opacity: 1, x: 0, duration: 1.1, ease: "power2.inOut", immediateRender: false }, t(92) + 0.3);
+      tl.to("#s-fpipe", { y: -400, duration: 0.5, ease: "power2.out" }, t(92) + 0.3);
+      tl.to("#s-fpipe", { y: 0, duration: 0.6, ease: "power2.in" }, t(92) + 0.8);
+      tl.to("#s-fpipe", { backgroundColor: "#ddefe6", duration: 0.3, ease: "power2.inOut" }, t(98) - 0.15);
+      pop("#s-m2", t(98) + 0.05, { from: 0.3, d: 0.35 });
+      tl.to("#s-wall", { opacity: 1, duration: 0.45, ease: "power2.inOut" }, t(95));
+      out(["#s-wghost", "#s-clock"], t(95), 0.4);
+      out("#s-clabel", t(95) - 0.25, 0.2);
+      tl.to("#s-mini", { opacity: 1, duration: 0.4, ease: "power2.out" }, t(96));
+      tl.to(["#s-ln1", "#s-ln3", "#s-ln4"], { opacity: 1, duration: 0.35, ease: "power2.inOut" }, t(99));
+      tl.to("#s-l1", { scale: 1.18, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(104) - 0.05);
+      pop("#s-l2", t(107) - 0.1, { from: 0.4 });
+      swap("#s-1a", "#s-1b", t(107));
+      swap("#s-2a", "#s-2b", t(107) + 0.35);
+      swap("#s-sb3", "#s-sb4", t(108));
+      swap("#s-ka", "#s-kb", t(111) - 0.15);
+      feed("#s-cc", t(111) + 0.15, 0.55);
+      feed("#s-ct", t(111) + 0.3, 0.55);
+      tl.fromTo("#s-flash", { opacity: 0 }, { opacity: 1, duration: 0.15, yoyo: true, repeat: 1 }, t(112) + 0.1);
+      tl.fromTo("#s-r3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(113) - 0.15);
+      drop("#s-t3", t(114), 800, 960, 196);
+      pop("#s-k3", t(115) + 0.45, { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-d1", t(116) - 0.05, { from: 0.4, d: 0.3 });
+      tl.to("#s-tv2", { opacity: 0, duration: 0.1 }, t(117) - 0.15);
+      tl.fromTo("#s-tv3", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.25, ease: "back.out(2)" }, t(117) - 0.1);
+      tl.to("#s-today", { backgroundColor: "#ffffff", color: "#0e0c1d", duration: 0.2 }, t(117) - 0.15);
+      pop("#s-d2", t(117), { from: 0.4, d: 0.3 });
+      tl.to("#s-tv3", { opacity: 0, duration: 0.1 }, t(118) - 0.2);
+      tl.fromTo("#s-tv4", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.25, ease: "back.out(2)" }, t(118) - 0.15);
+      pop("#s-d3", t(118) - 0.05, { from: 0.4, d: 0.3 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.26, ease: "power2.in" }, 46.92);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,15 @@
+Maya wants to text her customers when their order is ready.
+
+Here is the code. Open a line to the phone company. Add the country code. Cut the message to one hundred and sixty characters. Send it. Check the reply. Try again if it failed.
+
+Five jobs in her shop send a text. Every one of them repeats all those fiddly steps.
+
+Sam, her helper, only wants to add one more message. Your cake is ready. But first, he has to learn how phone networks work.
+
+So Maya builds one handle, called notify. You give it a customer and a message. All the fiddly steps move behind it, into one place.
+
+Now each job just says what it wants. Sam adds his message in one line.
+
+Later, Maya switches from texts to email. She swaps what is behind the handle. The six jobs in front do not change at all.
+
+That is abstraction. Hide the how. Show the what.

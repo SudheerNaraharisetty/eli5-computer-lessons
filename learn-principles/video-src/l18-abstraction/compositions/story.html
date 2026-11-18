@@ -1,0 +1,469 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #s-all, #s-wrap, #s-intro { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; }
+
+    /* 1. Maya and the customer's phone */
+    #s-maya { left: 250px; top: 330px; width: 420px; height: 546px; }
+    #s-floor { left: 130px; top: 872px; width: 660px; height: 8px; border-radius: 4px; background: #0e0c1d; }
+    #s-name { left: 590px; top: 470px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-phone { left: 1060px; top: 150px; width: 420px; height: 780px; background: #fff; border-radius: 56px; }
+    #s-notch { left: 140px; top: 22px; width: 140px; height: 18px; border-radius: 9px; background: #0e0c1d; }
+    #s-from { left: 36px; top: 76px; font-size: 32px; line-height: 1.3; white-space: nowrap; }
+    #s-rule { left: 36px; top: 136px; width: 348px; height: 4px; background: #ece7df; }
+    #s-bub { left: 36px; top: 180px; width: 348px; padding: 22px 26px; background: #3b37e6; color: #fff; border-radius: 28px 28px 28px 6px; font-size: 42px; line-height: 1.22; }
+    #s-now { left: 40px; top: 334px; font-size: 28px; font-weight: 600; color: #6f6b80; }
+    #s-cust { left: 1530px; top: 250px; padding: 4px 22px; background: #fbebd2; border-radius: 999px; font-size: 32px; line-height: 1.4; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tick { left: 1420px; top: 300px; width: 84px; height: 84px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-tick > svg { position: absolute; left: 0; top: 0; width: 84px; height: 84px; }
+
+    /* 2. the low-level code */
+    #s-code { left: 96px; top: 200px; width: 1054px; height: 620px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-strip { position: absolute; left: 14px; width: 1026px; height: 56px; border-radius: 12px; background: #2f2a63; opacity: 0; }
+    #s-lines { left: 36px; top: 100px; width: 1000px; font: 500 32px/60px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    .s-ln { height: 60px; display: flex; white-space: pre; }
+    .s-ln > i { width: 60px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .st { color: #ffc24b; }
+    .s-num { position: absolute; width: 50px; height: 50px; border-radius: 50%; background: #ff6b8b; color: #0e0c1d; font-size: 30px; line-height: 50px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    #s-how { left: 1210px; top: 200px; width: 614px; height: 620px; background: #fbf8f4; border-radius: 28px; }
+    #s-htitle { left: 40px; top: 28px; font: 700 50px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-row { position: absolute; left: 40px; height: 56px; display: flex; align-items: center; gap: 22px; font-size: 34px; white-space: nowrap; opacity: 0; }
+    .s-row > i { width: 50px; height: 50px; flex: none; border-radius: 50%; background: #ff6b8b; font-style: normal; font-size: 30px; line-height: 50px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-hfoot { left: 40px; top: 546px; padding: 0 22px; height: 50px; line-height: 50px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; white-space: nowrap; }
+
+    /* 3. the jobs, each carrying its own copy of the how */
+    .s-job { position: absolute; left: 96px; width: 400px; height: 84px; background: #fff; border-radius: 20px; font: 700 30px/84px "JetBrains Mono", monospace; text-align: center; opacity: 0; }
+    #s-j5d { box-shadow: none; background: #fbf8f4; border: 5px dashed #3e3b52; line-height: 74px; color: #3e3b52; }
+    .s-link { position: absolute; left: 501px; width: 59px; height: 6px; background: #0e0c1d; opacity: 0; }
+    .s-blob { position: absolute; left: 560px; width: 280px; height: 84px; background: #fbe0ea; border-radius: 20px; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; color: #b8235a; font-size: 30px; line-height: 84px; padding-left: 112px; white-space: nowrap; opacity: 0; z-index: 6; }
+    .s-blob > svg { position: absolute; left: 18px; top: 12px; width: 80px; height: 60px; }
+    #s-b5 { box-shadow: none; background: #fbf8f4; border: 5px dashed #b8235a; line-height: 74px; padding-left: 0; text-align: center; font-size: 44px; }
+    .s-ok { position: absolute; left: 60px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; z-index: 7; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    #s-count { left: 1010px; top: 250px; width: 770px; height: 330px; background: #fff; border-radius: 28px; }
+    #s-count b { position: absolute; left: 0; width: 770px; text-align: center; font: 700 76px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    #s-c1 { top: 56px; }
+    #s-c2 { top: 176px; color: #b8235a; }
+
+    /* Sam */
+    #s-sam { left: 1010px; top: 150px; width: 400px; height: 124px; background: #e6e3ff; border-radius: 22px; }
+    #s-sam > svg { position: absolute; left: 18px; top: 12px; width: 100px; height: 100px; }
+    #s-sam small { position: absolute; left: 138px; top: 20px; font-size: 28px; letter-spacing: 0.06em; color: #3b37e6; white-space: nowrap; }
+    #s-sam b { position: absolute; left: 138px; top: 54px; font: 700 46px/1.2 "Fraunces", serif; }
+    #s-say { left: 1010px; top: 326px; padding: 20px 36px; background: #3b37e6; color: #fff; border-radius: 34px 34px 34px 8px; font-size: 48px; line-height: 1.25; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    #s-net { left: 1010px; top: 486px; width: 780px; height: 400px; background: #fbe0ea; border-radius: 28px; }
+    #s-ntitle { left: 36px; top: 24px; font: 700 46px/1.2 "Fraunces", serif; letter-spacing: -0.02em; color: #b8235a; white-space: nowrap; }
+    .s-chip { position: absolute; height: 60px; padding: 0 22px; background: #fff; border-radius: 14px; font-size: 30px; line-height: 60px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    #s-q { right: -26px; top: -40px; width: 96px; height: 96px; border-radius: 50%; background: #b8235a; color: #fff; font: 700 68px/96px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* 4. the handle */
+    #s-mach { left: 940px; top: 170px; width: 884px; height: 520px; background: #fff; border-radius: 28px; }
+    #s-comp { left: 500px; top: 0; width: 384px; height: 520px; background: #ece7df; border-radius: 0 28px 28px 0; box-shadow: -5px 0 0 0 #0e0c1d; }
+    #s-behind { left: 0; top: 226px; width: 384px; text-align: center; font-size: 30px; line-height: 1.3; color: #3e3b52; }
+    #s-htag { left: 40px; top: 26px; font-size: 30px; letter-spacing: 0.1em; color: #3b37e6; white-space: nowrap; }
+    #s-btn { left: 130px; top: 98px; width: 240px; height: 240px; border-radius: 50%; background: #3b37e6; box-shadow: 0 0 0 5px #0e0c1d, 0 14px 0 5px #0e0c1d; }
+    #s-btxt { left: 0; top: 78px; width: 240px; text-align: center; color: #fff; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-sig { left: 0; top: 408px; width: 500px; text-align: center; font: 700 28px/1.5 "JetBrains Mono", monospace; font-variant-ligatures: none; color: #3e3b52; white-space: pre; }
+    #s-sig span { display: inline-block; }
+    .s-mech { position: absolute; left: 1482px; top: 240px; width: 300px; height: 380px; border-radius: 22px; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; opacity: 0; z-index: 2; }
+    .s-mech > svg { position: absolute; left: 60px; top: 26px; width: 180px; height: 180px; }
+    .s-mech b { position: absolute; left: 0; top: 214px; width: 300px; text-align: center; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-mech small { position: absolute; left: 0; top: 288px; width: 300px; text-align: center; font-size: 30px; line-height: 1.3; }
+    #s-mtext { background: #fff; }
+    #s-mtext small { color: #b8235a; }
+    #s-mmail { background: #e6e3ff; }
+    #s-mmail small { color: #3b37e6; }
+    #s-doorclip { left: 1445px; top: 170px; width: 379px; height: 520px; overflow: hidden; border-radius: 0 28px 28px 0; z-index: 3; }
+    #s-door { left: 0; top: 0; width: 379px; height: 520px; background: #211e40; color: #fff; }
+    #s-door b { position: absolute; left: 0; top: 150px; width: 379px; text-align: center; font: 700 110px/1.1 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-door small { position: absolute; left: 0; top: 292px; width: 379px; text-align: center; font-size: 32px; line-height: 1.3; color: #c9c6ff; }
+    #s-what { left: 96px; top: 70px; height: 56px; padding: 0 26px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 32px; line-height: 56px; letter-spacing: 0.08em; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-wires { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-wires path { fill: none; stroke: #0e0c1d; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    .s-dot { position: absolute; left: -13px; top: -13px; width: 26px; height: 26px; border-radius: 50%; background: #3b37e6; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; z-index: 5; }
+    #s-one { left: 940px; top: 760px; width: 884px; height: 170px; background: #15132b; border-radius: 22px; color: #fff; }
+    #s-ostrip { left: 12px; top: 86px; width: 860px; height: 60px; border-radius: 12px; background: #2f2a63; }
+    #s-olines { left: 40px; top: 28px; font: 500 30px/58px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-olines > div { height: 58px; white-space: pre; }
+    #s-olines .kw { color: #c9c6ff; }
+    #s-olines .fn { color: #7cf0b5; }
+    #s-olines .st { color: #ffc24b; }
+    #s-o2 { display: inline-block; height: 58px; }
+    #s-oneline { left: 1668px; top: 734px; height: 52px; padding: 0 22px; border-radius: 999px; background: #1f7a5c; color: #fff; font-size: 30px; line-height: 52px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 4; }
+
+    /* 5. the swap */
+    #s-switch { left: 940px; top: 760px; width: 500px; height: 170px; background: #fbebd2; border-radius: 22px; }
+    #s-switch small { position: absolute; left: 32px; top: 20px; font-size: 28px; letter-spacing: 0.06em; color: #8a5510; white-space: nowrap; }
+    #s-swline { left: 32px; top: 64px; font: 700 60px/1.3 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-swline span { display: inline-block; }
+    #s-swline i { font-style: normal; color: #3b37e6; }
+    #s-zero { left: 1500px; top: 790px; padding: 8px 30px; background: #1f7a5c; color: #fff; border-radius: 14px; font-size: 52px; line-height: 1.3; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 8; }
+    #s-marks path { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.85" data-track-index="1">
+      <div id="s-wrap">
+        <!-- 1. Maya wants to text her customers -->
+        <div id="s-intro">
+          <div id="s-floor" class="s-abs"></div>
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-name" class="s-abs s-hide">Maya</div>
+          <div id="s-phone" class="s-abs s-ol">
+            <div id="s-notch" class="s-abs"></div>
+            <div id="s-from" class="s-abs">Maya's Cookies</div>
+            <div id="s-rule" class="s-abs"></div>
+            <div id="s-bub" class="s-abs s-hide">Your order is ready!</div>
+            <div id="s-now" class="s-abs s-hide">just now</div>
+          </div>
+          <div id="s-cust" class="s-abs s-hide">a customer</div>
+          <div id="s-tick" class="s-abs s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+
+        <!-- 2. the code, at the lowest level -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div class="s-strip" id="s-st1" style="top:162px"></div>
+          <div class="s-strip" id="s-st2" style="top:222px"></div>
+          <div class="s-strip" id="s-st3" style="top:342px"></div>
+          <div class="s-strip" id="s-st4" style="top:402px"></div>
+          <div class="s-strip" id="s-st5" style="top:462px"></div>
+          <div class="s-strip" id="s-st6" style="top:522px"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i>1</i><span><span class="kw">def</span> <span class="fn">order_ready</span>(customer):</span></div>
+            <div class="s-ln"><i>2</i><span>    line = phone_company.connect()</span></div>
+            <div class="s-ln"><i>3</i><span>    number = <span class="st">"+1"</span> + customer.phone</span></div>
+            <div class="s-ln"><i>4</i><span>    message = <span class="st">"Your order is ready!"</span></span></div>
+            <div class="s-ln"><i>5</i><span>    message = message[:160]</span></div>
+            <div class="s-ln"><i>6</i><span>    reply = line.send(number, message)</span></div>
+            <div class="s-ln"><i>7</i><span>    <span class="kw">if</span> reply != <span class="st">"OK"</span>:</span></div>
+            <div class="s-ln"><i>8</i><span>        line.send(number, message)</span></div>
+          </div>
+          <div class="s-num" id="s-n1" style="left:968px;top:165px">1</div>
+          <div class="s-num" id="s-n2" style="left:968px;top:225px">2</div>
+          <div class="s-num" id="s-n3" style="left:968px;top:345px">3</div>
+          <div class="s-num" id="s-n4" style="left:968px;top:405px">4</div>
+          <div class="s-num" id="s-n5" style="left:968px;top:465px">5</div>
+          <div class="s-num" id="s-n6" style="left:968px;top:525px">6</div>
+        </div>
+        <div id="s-how" class="s-abs s-ol s-hide">
+          <div id="s-htitle" class="s-abs">To send one text</div>
+          <div class="s-row" id="s-r1" style="top:116px"><i>1</i>open a phone line</div>
+          <div class="s-row" id="s-r2" style="top:186px"><i>2</i>add the country code</div>
+          <div class="s-row" id="s-r3" style="top:256px"><i>3</i>cut to 160 characters</div>
+          <div class="s-row" id="s-r4" style="top:326px"><i>4</i>send it</div>
+          <div class="s-row" id="s-r5" style="top:396px"><i>5</i>check the reply</div>
+          <div class="s-row" id="s-r6" style="top:466px"><i>6</i>try again</div>
+          <div id="s-hfoot" class="s-abs s-hide">6 fiddly steps</div>
+        </div>
+
+        <!-- 3. five jobs, each with its own copy of the steps -->
+        <div class="s-job s-ol" id="s-j0" style="top:150px">order_ready</div>
+        <div class="s-job s-ol" id="s-j1" style="top:278px">order_late</div>
+        <div class="s-job s-ol" id="s-j2" style="top:406px">delivery_sent</div>
+        <div class="s-job s-ol" id="s-j3" style="top:534px">refund_sent</div>
+        <div class="s-job s-ol" id="s-j4" style="top:662px">birthday_treat</div>
+        <div class="s-job" id="s-j5d" style="top:790px">cake_ready</div>
+        <div class="s-job s-ol" id="s-j5" style="top:790px">cake_ready</div>
+        <div class="s-link" id="s-l0" style="top:189px"></div>
+        <div class="s-link" id="s-l1" style="top:317px"></div>
+        <div class="s-link" id="s-l2" style="top:445px"></div>
+        <div class="s-link" id="s-l3" style="top:573px"></div>
+        <div class="s-link" id="s-l4" style="top:701px"></div>
+        <div class="s-blob" id="s-b0" style="top:150px"><svg viewBox="0 0 80 60"><path d="M6 30 C18 2 30 58 42 28 S62 4 72 32 S50 58 34 42 S20 12 54 16" fill="none" stroke="#b8235a" stroke-width="5" stroke-linecap="round" /></svg>6 steps</div>
+        <div class="s-blob" id="s-b1" style="top:278px"><svg viewBox="0 0 80 60"><path d="M6 30 C18 2 30 58 42 28 S62 4 72 32 S50 58 34 42 S20 12 54 16" fill="none" stroke="#b8235a" stroke-width="5" stroke-linecap="round" /></svg>6 steps</div>
+        <div class="s-blob" id="s-b2" style="top:406px"><svg viewBox="0 0 80 60"><path d="M6 30 C18 2 30 58 42 28 S62 4 72 32 S50 58 34 42 S20 12 54 16" fill="none" stroke="#b8235a" stroke-width="5" stroke-linecap="round" /></svg>6 steps</div>
+        <div class="s-blob" id="s-b3" style="top:534px"><svg viewBox="0 0 80 60"><path d="M6 30 C18 2 30 58 42 28 S62 4 72 32 S50 58 34 42 S20 12 54 16" fill="none" stroke="#b8235a" stroke-width="5" stroke-linecap="round" /></svg>6 steps</div>
+        <div class="s-blob" id="s-b4" style="top:662px"><svg viewBox="0 0 80 60"><path d="M6 30 C18 2 30 58 42 28 S62 4 72 32 S50 58 34 42 S20 12 54 16" fill="none" stroke="#b8235a" stroke-width="5" stroke-linecap="round" /></svg>6 steps</div>
+        <div class="s-blob" id="s-b5" style="top:790px">?</div>
+        <div id="s-count" class="s-abs s-ol s-hide">
+          <b id="s-c1">5 jobs × 6 steps</b>
+          <b id="s-c2">= 30 fiddly lines</b>
+        </div>
+
+        <!-- Sam -->
+        <div id="s-sam" class="s-abs s-ol s-hide">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M18 100 C18 76 34 68 50 68 C66 68 82 76 82 100 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" />
+            <circle cx="50" cy="44" r="24" fill="#e0a878" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M26 40 Q28 16 50 16 Q72 16 74 40 Q60 28 26 40 Z" fill="#7a4a1e" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="42" cy="46" r="3.5" fill="#0e0c1d" /><circle cx="58" cy="46" r="3.5" fill="#0e0c1d" />
+            <path d="M42 56 Q50 62 58 56" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" />
+          </svg>
+          <small>THE HELPER</small><b>Sam</b>
+        </div>
+        <div id="s-say" class="s-abs s-hide">Your cake is ready!</div>
+        <div id="s-net" class="s-abs s-ol s-hide">
+          <div id="s-ntitle" class="s-abs">First, learn all of this</div>
+          <div class="s-chip" style="left:36px;top:110px">open a phone line</div>
+          <div class="s-chip" style="left:372px;top:110px">add the country code</div>
+          <div class="s-chip" style="left:36px;top:200px">cut to 160 characters</div>
+          <div class="s-chip" style="left:440px;top:200px">send it</div>
+          <div class="s-chip" style="left:36px;top:290px">check the reply</div>
+          <div class="s-chip" style="left:340px;top:290px">try again</div>
+          <div id="s-q" class="s-abs s-hide">?</div>
+        </div>
+
+        <!-- 4. one handle -->
+        <div id="s-mach" class="s-abs s-ol s-hide">
+          <div id="s-comp" class="s-abs"><div id="s-behind" class="s-abs">behind<br />the handle</div></div>
+          <div id="s-htag" class="s-abs s-hide">THE HANDLE</div>
+          <div id="s-btn" class="s-abs s-hide"><div id="s-btxt" class="s-abs s-hide">notify</div></div>
+          <div id="s-sig" class="s-abs s-hide"><span>notify(</span><span id="s-sg1">customer</span><span>, </span><span id="s-sg2">message</span><span>)</span></div>
+        </div>
+        <div class="s-mech" id="s-mtext">
+          <svg viewBox="0 0 180 180">
+            <path d="M90 62 L52 168 M90 62 L128 168 M66 128 H114 M76 100 H104 M62 150 L118 128 M118 150 L62 128" fill="none" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="90" cy="52" r="13" fill="#b8235a" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M54 26 Q36 52 54 78 M126 26 Q144 52 126 78 M32 10 Q4 52 32 94 M148 10 Q176 52 148 94" fill="none" stroke="#b8235a" stroke-width="7" stroke-linecap="round" />
+          </svg>
+          <b>texts</b><small>6 fiddly steps</small>
+        </div>
+        <div class="s-mech" id="s-mmail">
+          <svg viewBox="0 0 180 180">
+            <rect x="14" y="40" width="152" height="108" rx="14" fill="#fff" stroke="#0e0c1d" stroke-width="7" />
+            <path d="M18 50 L90 106 L162 50" fill="none" stroke="#3b37e6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <b>email</b><small>different steps</small>
+        </div>
+        <div id="s-doorclip" class="s-abs" data-layout-allow-overflow>
+          <div id="s-door" class="s-abs"><b>HOW</b><small>hidden, in one place</small></div>
+        </div>
+        <svg id="s-wires" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-w0" d="M506 192 C720 192 720 330 935 330" />
+          <path id="s-w1" d="M506 320 C720 320 720 370 935 370" />
+          <path id="s-w2" d="M506 448 C720 448 720 410 935 410" />
+          <path id="s-w3" d="M506 576 C720 576 720 450 935 450" />
+          <path id="s-w4" d="M506 704 C720 704 720 490 935 490" />
+          <path id="s-w5" d="M506 832 C720 832 720 530 935 530" />
+        </svg>
+        <div class="s-dot" id="s-d0"></div><div class="s-dot" id="s-d1"></div><div class="s-dot" id="s-d2"></div>
+        <div class="s-dot" id="s-d3"></div><div class="s-dot" id="s-d4"></div><div class="s-dot" id="s-d5"></div>
+        <div id="s-what" class="s-abs s-hide">WHAT each job wants</div>
+        <div id="s-one" class="s-abs s-ol s-hide">
+          <div id="s-ostrip" class="s-abs s-hide"></div>
+          <div id="s-olines" class="s-abs">
+            <div><span class="kw">def</span> <span class="fn">cake_ready</span>(customer):</div>
+            <div><span id="s-o2">    notify(customer, <span class="st">"Your cake is ready!"</span>)</span></div>
+          </div>
+        </div>
+        <div id="s-oneline" class="s-abs s-hide">1 line</div>
+
+        <!-- 5. texts become email -->
+        <div id="s-switch" class="s-abs s-ol s-hide">
+          <small>MAYA'S NEW PLAN</small>
+          <div id="s-swline" class="s-abs"><span id="s-sw1">texts</span> <span id="s-sw2"><i>→ email</i></span></div>
+        </div>
+        <div class="s-ok" id="s-k0" style="top:164px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div class="s-ok" id="s-k1" style="top:292px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div class="s-ok" id="s-k2" style="top:420px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div class="s-ok" id="s-k3" style="top:548px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div class="s-ok" id="s-k4" style="top:676px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div class="s-ok" id="s-k5" style="top:804px"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        <div id="s-zero" class="s-abs s-hide">0 changes</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-send" style="stroke:#0e0c1d" d="M690 470 C800 330 930 300 1040 340" />
+          <path id="s-r160" data-ring="653 570 76 30" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.348, 0.604, 0.743, 1.08, 1.219, 1.776, 1.974, 2.218, 2.554, 2.717, 3.657, 3.924, 4.052, 4.18, 5.132, 5.468, 5.561, 5.863, 5.979, 6.095, 6.42, 7.338, 7.605, 7.744, 8.173, 8.94, 9.23, 9.346, 9.764, 9.938, 10.136, 10.449, 10.588, 11.006, 11.97, 12.365, 12.829, 13.177, 13.317, 14.106, 14.466, 14.896, 15.093, 15.244, 16.486, 16.881, 17.241, 17.38, 17.531, 17.833, 18.1, 18.216, 19.238, 19.586, 19.749, 19.853, 20.085, 20.573, 20.759, 21.049, 21.49, 22.744, 23.29, 23.522, 23.963, 24.219, 24.486, 24.637, 24.869, 25.055, 25.24, 26.088, 26.366, 26.692, 26.842, 27.725, 27.969, 28.456, 28.607, 28.816, 28.944, 29.246, 29.501, 29.815, 30.384, 31.312, 31.544, 31.858, 32.264, 32.554, 33.286, 33.878, 35.109, 35.306, 35.492, 35.608, 35.724, 36.328, 36.537, 36.629, 37.639, 37.918, 38.046, 38.417, 38.835, 39.126, 39.567, 39.869, 40.298, 40.6, 41.61, 42.016, 42.318, 42.643, 42.876, 43.131, 43.363, 43.514, 44.745, 45.14, 45.407, 45.581, 45.987, 46.161, 46.428, 47.38, 47.949, 48.332, 48.843, 49.11, 49.714, 49.911, 50.851, 51.072, 51.467, 51.699, 51.85, 52.326, 52.488, 53.359, 53.557, 53.905, 54.195, 54.334, 54.636, 54.868, 55.124, 55.565, 55.867, 56.482, 56.726, 56.865, 57.875, 58.224, 58.375, 58.909, 59.211, 59.373];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+
+      /* hand-drawn strokes: draw by real length */
+      const LEN = {};
+      document.querySelectorAll("#s-marks path[data-ring]").forEach((p) => {
+        const [cx, cy, rx, ry] = p.dataset.ring.split(" ").map(Number);
+        const k = ry * 1.34;
+        p.setAttribute("d", `M${cx - rx} ${cy + 1} C${cx - rx - 2} ${cy - k} ${cx + rx} ${cy - k - 2} ${cx + rx} ${cy - 1} C${cx + rx} ${cy + k} ${cx - rx - 6} ${cy + k + 2} ${cx - rx - 4} ${cy - 7}`);
+      });
+      document.querySelectorAll("#s-marks path, #s-wires path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 600;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at);
+      };
+
+      /* ---- 1. Maya wants to text her customers ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 3 }, 0.3);
+      pop("#s-name", t(0), { from: 0.4 });
+      tl.fromTo("#s-phone", { x: 160, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 0.25);
+      draw("#s-send", t(3) - 0.15, 0.5);
+      tl.fromTo("#s-bub", { opacity: 0, scale: 0.4, transformOrigin: "0% 100%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, t(3) + 0.25);
+      pop("#s-cust", t(5), { from: 0.4 });
+      tl.fromTo("#s-now", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(8));
+      pop("#s-tick", t(10), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 2. the code, step by fiddly step ---- */
+      tl.to("#s-intro", { opacity: 0, x: -90, duration: 0.35, ease: "power3.in" }, t(11) - 0.5);
+      out("#s-send", t(11) - 0.5, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(11) - 0.15);
+      tl.fromTo("#s-lines .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.07 }, t(11) + 0.1);
+      tl.fromTo("#s-how", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(15) - 0.45);
+      [t(15), t(22), t(26), t(35), t(37), t(40)].forEach((at, i) => {
+        const n = i + 1;
+        tl.fromTo("#s-st" + n, { opacity: 0, scaleX: 0.2, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power3.out" }, at - 0.05);
+        pop("#s-n" + n, at + 0.1, { from: 0.3 });
+        tl.fromTo("#s-r" + n, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, at + 0.2);
+      });
+      draw("#s-r160", t(30) - 0.05, 0.5);
+      pop("#s-hfoot", t(42), { from: 0.4 });
+
+      /* ---- 3. five jobs, five copies ---- */
+      out("#s-r160", t(45) - 0.5, 0.2);
+      tl.to("#s-code", { x: -327, y: -318, scale: 0.3, opacity: 0, duration: 0.5, ease: "power3.in" }, t(45) - 0.45);
+      tl.to("#s-how", { x: -817, y: -318, scale: 0.3, opacity: 0, duration: 0.5, ease: "power3.in" }, t(45) - 0.45);
+      const jobAt = [t(45), t(46), t(47) + 0.1, t(50), t(52)];
+      jobAt.forEach((at, i) => {
+        pop("#s-j" + i, at, { from: 0.5 });
+        tl.fromTo("#s-l" + i, { opacity: 0 }, { opacity: 1, duration: 0.15 }, at + 0.2);
+        pop("#s-b" + i, at + 0.2, { from: 0.5 });
+      });
+      tl.to(".s-blob:not(#s-b5)", { scale: 1.12, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.13 }, t(53));
+      tl.fromTo("#s-count", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, t(57) - 0.3);
+      pop("#s-c1", t(57), { from: 0.7 });
+      pop("#s-c2", t(60), { from: 0.5, ease: "back.out(2)" });
+
+      /* ---- Sam only wants one more message ---- */
+      tl.to("#s-count", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, t(62) - 0.4);
+      tl.fromTo("#s-sam", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(62) - 0.1);
+      pop("#s-j5d", t(68), { from: 0.6 });
+      tl.fromTo("#s-say", { opacity: 0, scale: 0.4, transformOrigin: "0% 100%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, t(72) - 0.05);
+      tl.fromTo("#s-net", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(76));
+      pop("#s-b5", t(78), { from: 0.5 });
+      tl.fromTo("#s-net .s-chip", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)", stagger: 0.22 }, t(81));
+      pop("#s-q", t(85), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 4. one handle, called notify ---- */
+      tl.to(["#s-sam", "#s-say", "#s-net"], { opacity: 0, x: 60, duration: 0.3, ease: "power2.in" }, t(86) - 0.35);
+      tl.fromTo("#s-mach", { opacity: 0, x: 110 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(88) - 0.15);
+      pop("#s-btn", t(89), { from: 0.4 });
+      pop("#s-htag", t(90), { from: 0.5 });
+      pop("#s-btxt", t(92), { from: 0.3, ease: "back.out(2.2)" });
+      tl.fromTo("#s-sig", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(93));
+      [["#s-sg1", t(97)], ["#s-sg2", t(100)]].forEach(([s, at]) => {
+        tl.to(s, { color: "#3b37e6", duration: 0.15 }, at);
+        tl.fromTo(s, { scale: 1 }, { scale: 1.22, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      });
+      // every copy of the steps leaves its job and goes behind the handle
+      tl.set("#s-door", { yPercent: -102 }, 0);
+      tl.to(".s-blob:not(#s-b5)", { scale: 1.1, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.06 }, t(101));
+      out(".s-link", t(104) - 0.15, 0.2);
+      out("#s-b5", t(104), 0.3);
+      [0, 1, 2, 3, 4].forEach((i) => {
+        tl.to("#s-b" + i, { x: 932, y: 430 - (192 + i * 128), scale: 0.45, duration: 0.6, ease: "power3.in" }, t(104) + i * 0.12);
+        tl.to("#s-b" + i, { opacity: 0, duration: 0.12 }, t(104) + i * 0.12 + 0.52);
+      });
+      out("#s-behind", t(105) + 0.1, 0.3);
+      tl.fromTo("#s-mtext", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, t(106) + 0.05);
+      tl.to("#s-mtext", { scale: 1.06, duration: 0.12, yoyo: true, repeat: 5, ease: "power1.inOut" }, t(106) + 0.6);
+      tl.to("#s-door", { yPercent: 0, duration: 0.5, ease: "power3.out" }, t(109) - 0.1);
+      tl.set("#s-mtext", { opacity: 0 }, t(109) + 0.45);
+
+      /* ---- each job just says what it wants ---- */
+      [0, 1, 2, 3, 4].forEach((i) => draw("#s-w" + i, t(111) - 0.35 + i * 0.09, 0.4));
+      const bez = (i, u) => {
+        const y0 = 192 + i * 128, y1 = 330 + i * 40, v = 1 - u;
+        return { x: v * v * v * 506 + 3 * v * v * u * 720 + 3 * v * u * u * 720 + u * u * u * 935, y: v * v * v * y0 + 3 * v * v * u * y0 + 3 * v * u * u * y1 + u * u * u * y1 };
+      };
+      const pulse = (i, at) => {
+        const N = 10, kf = [];
+        for (let k = 1; k <= N; k++) kf.push(Object.assign(bez(i, k / N), { duration: 0.55 / N, ease: "none" }));
+        tl.set("#s-d" + i, Object.assign(bez(i, 0), { opacity: 1 }), at);
+        tl.to("#s-d" + i, { keyframes: kf }, at);
+        tl.set("#s-d" + i, { opacity: 0 }, at + 0.56);
+        tl.to("#s-j" + i, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, at - 0.05);
+        tl.to("#s-btn", { scale: 0.93, duration: 0.08, ease: "power2.out", yoyo: true, repeat: 1 }, at + 0.52);
+      };
+      [0, 1, 2, 3, 4].forEach((i) => pulse(i, t(112) + i * 0.22));
+      pop("#s-what", t(116) - 0.05, { from: 0.4 });
+
+      /* ---- Sam adds his message in one line ---- */
+      out("#s-j5d", t(119) + 0.1, 0.15);
+      pop("#s-j5", t(119), { from: 0.7 });
+      draw("#s-w5", t(120), 0.4);
+      tl.fromTo("#s-one", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(120) - 0.1);
+      tl.fromTo("#s-o2", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "steps(20)" }, t(122) - 0.15);
+      tl.fromTo("#s-ostrip", { opacity: 0 }, { opacity: 1, duration: 0.25 }, t(124) - 0.05);
+      pop("#s-oneline", t(124), { from: 0.3, ease: "back.out(2.2)" });
+      pulse(5, t(125) + 0.25);
+
+      /* ---- 5. texts become email; the front never moves ---- */
+      tl.to(["#s-one", "#s-oneline"], { opacity: 0, y: 30, duration: 0.25, ease: "power2.in" }, t(126) - 0.4);
+      tl.fromTo("#s-switch", { opacity: 0, y: 40, rotation: -3 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.5)" }, t(126) - 0.1);
+      tl.set(["#s-sw1", "#s-sw2"], { opacity: 0 }, 0);
+      pop("#s-sw1", t(130), { from: 0.5 });
+      pop("#s-sw2", t(132) - 0.1, { from: 0.5, ease: "back.out(2)" });
+      tl.set("#s-mtext", { opacity: 1 }, t(133) - 0.12);
+      tl.to("#s-door", { yPercent: -102, duration: 0.4, ease: "power3.inOut" }, t(133) - 0.1);
+      tl.to("#s-mtext", { y: 560, rotation: 14, opacity: 0, duration: 0.55, ease: "power3.in" }, t(134));
+      tl.fromTo("#s-mmail", { opacity: 1, y: -640, rotation: -8 }, { opacity: 1, y: 0, rotation: 0, duration: 0.6, ease: "back.out(1.2)", immediateRender: false }, t(135));
+      tl.to("#s-door", { yPercent: 0, duration: 0.45, ease: "power3.out" }, t(139) - 0.1);
+      tl.set("#s-mmail", { opacity: 0 }, t(139) + 0.4);
+      [0, 1, 2, 3, 4, 5].forEach((i) => {
+        const at = t(141) + i * 0.2;
+        tl.to("#s-j" + i, { scale: 1.06, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+        pop("#s-k" + i, t(145) + i * 0.13, { from: 0.2, ease: "back.out(2.4)", d: 0.35 });
+      });
+      tl.fromTo("#s-zero", { opacity: 0, scale: 2.2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -5, duration: 0.3, ease: "power4.in" }, t(148) - 0.1);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 56.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

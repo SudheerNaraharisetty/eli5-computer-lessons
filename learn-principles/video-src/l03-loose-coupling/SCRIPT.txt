@@ -1,0 +1,13 @@
+Meet Maya again. Her cookie shop has a receipt printer, the X two hundred.
+
+Three parts of her program use it. The receipt, the kitchen ticket, and the loyalty coupon.
+
+Here is the code. Look closely. Every part reaches right inside the printer. Into its memory, and into its motor. Six lines that know this printer's insides.
+
+Then the printer breaks. Maya buys a different brand. Inside, nothing has the same name. So every line snaps. One. Two. Three. Four. Five. Six. All she did was swap a printer.
+
+The fix is one small job, called print line. Only it knows the printer's insides. Every other part just asks it to print.
+
+Next time the printer changes, Maya fixes one place. The other parts never notice.
+
+That is loose coupling. Parts that know as little as possible about each other.

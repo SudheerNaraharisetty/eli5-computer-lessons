@@ -1,0 +1,558 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-pill { position: absolute; height: 52px; line-height: 52px; padding: 0 22px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-lab { position: absolute; font-size: 30px; line-height: 40px; color: #3e3b52; white-space: nowrap; letter-spacing: 0.04em; }
+
+    /* people, right column */
+    #s-maya { left: 1535px; top: 110px; width: 250px; height: 325px; }
+    .s-fig { position: absolute; left: 1550px; top: 150px; width: 220px; height: 242px; opacity: 0; }
+    .s-fig > svg { width: 220px; height: 242px; }
+    .s-nm { position: absolute; left: 1500px; top: 446px; width: 320px; text-align: center; opacity: 0; }
+    .s-nm > span { display: inline-block; height: 52px; line-height: 52px; padding: 0 26px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 32px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-res { left: 1500px; top: 560px; width: 320px; height: 250px; background: #fff; border-radius: 22px; }
+    #s-res small { position: absolute; left: 26px; top: 20px; font-size: 28px; letter-spacing: 0.06em; color: #3e3b52; white-space: nowrap; }
+    .s-row { position: absolute; left: 26px; width: 270px; height: 70px; display: flex; align-items: baseline; justify-content: space-between; opacity: 0; }
+    .s-row span { font-size: 30px; white-space: nowrap; }
+    .s-row b { font: 700 54px/1 "Fraunces", serif; }
+
+    /* counters and plan headers */
+    #s-head1, #s-head2 { left: 130px; top: 56px; }
+    #s-count { left: 130px; top: 112px; height: 60px; width: 470px; }
+    #s-count > span { position: absolute; left: 0; top: 0; height: 60px; line-height: 60px; padding: 0 26px; border-radius: 999px; background: #fff; font-size: 36px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-cnt2 { opacity: 0; color: #1f7a5c; }
+    #s-p1 { left: 130px; top: 206px; background: #fff; }
+    #s-p2 { left: 130px; top: 278px; background: #fff; }
+
+    /* cards and stacks */
+    .s-k { position: absolute; left: 0; top: 0; width: 80px; height: 50px; border-radius: 6px; box-shadow: 0 0 0 3px #0e0c1d; opacity: 0; }
+    .s-k > i { position: absolute; left: 12px; height: 6px; border-radius: 3px; background: #3e3b52; opacity: 0.55; }
+    .s-k > i:nth-child(1) { top: 14px; width: 52px; }
+    .s-k > i:nth-child(2) { top: 28px; width: 34px; }
+    .s-out { position: absolute; left: 0; width: 96px; border-radius: 4px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; z-index: 500; }
+    .s-n { position: absolute; left: 0; width: 96px; text-align: center; font: 700 34px/44px "Fraunces", serif; opacity: 0; z-index: 501; }
+    .s-ghost { position: absolute; width: 96px; border-radius: 4px; border: 4px dashed #6f6b80; opacity: 0; }
+    #s-axis { left: 110px; top: 932px; width: 1368px; height: 6px; border-radius: 3px; background: #0e0c1d; opacity: 0; }
+    #s-chart { position: absolute; inset: 0; }
+    #s-l1 { left: 250px; top: 296px; background: #e6e3ff; color: #2a26b8; z-index: 600; }
+    #s-l2 { left: 404px; top: 556px; background: #ffe7b0; color: #7a4a00; z-index: 600; }
+    #s-q3 { left: 700px; top: 200px; background: #fff; font-size: 34px; height: 60px; line-height: 60px; z-index: 600; }
+    #s-q { left: 420px; top: 200px; background: #3b37e6; color: #fff; font-size: 34px; height: 60px; line-height: 60px; z-index: 600; }
+    #s-lines { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 700; }
+    #s-lines > path { fill: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    .s-cl { stroke: #3b37e6; stroke-width: 8; }
+    .s-ring { stroke: #b8235a; stroke-width: 7; }
+    .s-brk { stroke: #0e0c1d; stroke-width: 5; }
+    #s-dots circle { fill: #fff; stroke: #3b37e6; stroke-width: 5; opacity: 0; }
+    .s-pc { position: absolute; font: 700 40px/48px "Fraunces", serif; color: #3b37e6; opacity: 0; z-index: 701; white-space: nowrap; }
+    .s-bt { position: absolute; top: 958px; font-size: 30px; line-height: 40px; text-align: center; white-space: nowrap; opacity: 0; }
+    #s-fixed { left: 128px; top: 420px; padding: 2px 22px; background: #1f7a5c; color: #fff; font-size: 44px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; z-index: 800; }
+
+    /* the slow page */
+    #s-page { left: 130px; top: 260px; width: 1328px; height: 520px; background: #fff; border-radius: 26px; }
+    #s-page h2 { position: absolute; left: 50px; top: 36px; font: 700 54px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-page h2 b { color: #b8235a; font-weight: 700; }
+    #s-track { left: 50px; top: 190px; width: 1228px; height: 130px; border-radius: 16px; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; overflow: hidden; }
+    #s-fill { left: 0; top: 0; width: 1228px; height: 130px; background: #d8d4e8; }
+    #s-big { left: 0; top: 0; width: 1105px; height: 130px; background: #ffc24b; opacity: 0; box-shadow: 4px 0 0 0 #0e0c1d; }
+    #s-big90 { left: 50px; top: 220px; width: 1105px; text-align: center; font: 700 64px/70px "Fraunces", serif; opacity: 0; }
+    #s-rest { left: 1155px; top: 340px; width: 123px; text-align: center; font-size: 30px; line-height: 38px; opacity: 0; }
+    #s-job { left: 50px; top: 346px; height: 60px; line-height: 60px; background: #fbebd2; color: #7a4a00; font-size: 34px; opacity: 0; }
+    #s-job b { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; font-weight: 700; }
+    #s-secs { left: 50px; top: 430px; font-size: 30px; color: #3e3b52; opacity: 0; white-space: nowrap; }
+
+    /* the limits */
+    #s-8020 { left: 640px; top: 160px; height: 60px; line-height: 60px; background: #fff; font-size: 36px; z-index: 600; }
+    #s-here { left: 880px; top: 160px; height: 60px; line-height: 60px; background: #ddefe6; color: #1f7a5c; font-size: 30px; z-index: 600; }
+    #s-sline { left: 630px; top: 186px; width: 180px; height: 7px; border-radius: 4px; background: #b8235a; z-index: 601; opacity: 0; transform: rotate(-8deg); }
+    #s-ct { position: absolute; left: 1036px; top: 760px; width: 300px; text-align: center; z-index: 650; opacity: 0; }
+    #s-ct > span { display: inline-block; height: 52px; line-height: 52px; padding: 0 22px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="66.6" data-track-index="1">
+      <div id="s-wrap">
+        <!-- right column: who is speaking -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-sam" class="s-fig"><svg viewBox="0 0 100 110">
+            <path d="M12 108 Q12 62 50 62 Q88 62 88 108 Z" fill="#a9dcc4" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="50" cy="34" r="22" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M28 32 Q30 10 50 10 Q70 10 72 32 Q60 22 44 22 Q34 24 28 32 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          </svg></div>
+        <div id="s-priya" class="s-fig"><svg viewBox="0 0 100 110">
+            <path d="M12 108 Q12 62 50 62 Q88 62 88 108 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="50" cy="34" r="22" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M28 32 Q30 10 50 10 Q70 10 72 32 Q60 22 44 22 Q34 24 28 32 Z" fill="#6b3b1f" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          </svg></div>
+        <div id="s-nmM" class="s-nm"><span>Maya</span></div>
+        <div id="s-nmS" class="s-nm"><span style="background:#1f7a5c">Sam</span></div>
+        <div id="s-nmP" class="s-nm"><span>Priya</span></div>
+        <div id="s-res" class="s-abs s-ol s-hide">
+          <small>AFTER 1 WEEK</small>
+          <div id="s-rM" class="s-row" style="top:76px"><span>Maya's way</span><b>14</b></div>
+          <div id="s-rS" class="s-row" style="top:156px"><span>Sam's way</span><b style="color:#1f7a5c">150</b></div>
+        </div>
+
+        <!-- plan headers and counter -->
+        <div id="s-head1" class="s-lab s-hide">MAYA'S PLAN: OLDEST FIRST</div>
+        <div id="s-head2" class="s-lab s-hide">SAM'S PLAN: COUNT FIRST</div>
+        <div id="s-wk" class="s-pill s-hide" style="left:660px;top:48px;background:#fbebd2;color:#7a4a00">week 1</div>
+        <div id="s-count" class="s-abs s-hide"><span id="s-cnt1">200 complaints</span><span id="s-cnt2">about 50 next month</span></div>
+        <div id="s-p1" class="s-pill s-hide">box crushed · 11</div>
+        <div id="s-p2" class="s-pill s-hide">menu typo · 3</div>
+
+        <div id="s-chart">
+          <div id="s-axis" class="s-abs"></div>
+          <div id="s-g0" class="s-ghost" style="left:126px;top:374px;height:560px"></div>
+          <div id="s-g1" class="s-ghost" style="left:238px;top:578px;height:356px"></div>
+          <div id="s-o0" class="s-out" style="top:378px;height:552px"></div>
+          <div id="s-o1" class="s-out" style="top:582px;height:348px"></div>
+          <div id="s-o2" class="s-out" style="top:864px;height:66px"></div>
+          <div id="s-o3" class="s-out" style="top:876px;height:54px"></div>
+          <div id="s-o4" class="s-out" style="top:888px;height:42px"></div>
+          <div id="s-o5" class="s-out" style="top:894px;height:36px"></div>
+          <div id="s-o6" class="s-out" style="top:900px;height:30px"></div>
+          <div id="s-o7" class="s-out" style="top:906px;height:24px"></div>
+          <div id="s-o8" class="s-out" style="top:912px;height:18px"></div>
+          <div id="s-o9" class="s-out" style="top:918px;height:12px"></div>
+          <div id="s-o10" class="s-out" style="top:918px;height:12px"></div>
+          <div id="s-o11" class="s-out" style="top:924px;height:6px"></div>
+          <div id="s-n0" class="s-n" style="top:328px">92</div>
+          <div id="s-n1" class="s-n" style="top:532px">58</div>
+          <div id="s-n2" class="s-n" style="top:814px">11</div>
+          <div id="s-n3" class="s-n" style="top:826px">9</div>
+          <div id="s-n4" class="s-n" style="top:838px">7</div>
+          <div id="s-n5" class="s-n" style="top:844px">6</div>
+          <div id="s-n6" class="s-n" style="top:850px">5</div>
+          <div id="s-n7" class="s-n" style="top:856px">4</div>
+          <div id="s-n8" class="s-n" style="top:862px">3</div>
+          <div id="s-n9" class="s-n" style="top:868px">2</div>
+          <div id="s-n10" class="s-n" style="top:868px">2</div>
+          <div id="s-n11" class="s-n" style="top:874px">1</div>
+          <div id="s-k0" class="s-k" style="z-index:246;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k1" class="s-k" style="z-index:384;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k2" class="s-k" style="z-index:313;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k3" class="s-k" style="z-index:206;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k4" class="s-k" style="z-index:378;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k5" class="s-k" style="z-index:157;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k6" class="s-k" style="z-index:139;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k7" class="s-k" style="z-index:83;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k8" class="s-k" style="z-index:128;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k9" class="s-k" style="z-index:45;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k10" class="s-k" style="z-index:335;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k11" class="s-k" style="z-index:37;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k12" class="s-k" style="z-index:51;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k13" class="s-k" style="z-index:315;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k14" class="s-k" style="z-index:80;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k15" class="s-k" style="z-index:297;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k16" class="s-k" style="z-index:262;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k17" class="s-k" style="z-index:32;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k18" class="s-k" style="z-index:263;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k19" class="s-k" style="z-index:295;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k20" class="s-k" style="z-index:281;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k21" class="s-k" style="z-index:245;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k22" class="s-k" style="z-index:34;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k23" class="s-k" style="z-index:373;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k24" class="s-k" style="z-index:292;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k25" class="s-k" style="z-index:86;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k26" class="s-k" style="z-index:111;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k27" class="s-k" style="z-index:238;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k28" class="s-k" style="z-index:304;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k29" class="s-k" style="z-index:328;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k30" class="s-k" style="z-index:98;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k31" class="s-k" style="z-index:93;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k32" class="s-k" style="z-index:360;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k33" class="s-k" style="z-index:210;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k34" class="s-k" style="z-index:136;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k35" class="s-k" style="z-index:243;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k36" class="s-k" style="z-index:32;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k37" class="s-k" style="z-index:128;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k38" class="s-k" style="z-index:26;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k39" class="s-k" style="z-index:290;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k40" class="s-k" style="z-index:201;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k41" class="s-k" style="z-index:333;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k42" class="s-k" style="z-index:141;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k43" class="s-k" style="z-index:159;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k44" class="s-k" style="z-index:272;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k45" class="s-k" style="z-index:408;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k46" class="s-k" style="z-index:96;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k47" class="s-k" style="z-index:105;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k48" class="s-k" style="z-index:64;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k49" class="s-k" style="z-index:158;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k50" class="s-k" style="z-index:139;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k51" class="s-k" style="z-index:223;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k52" class="s-k" style="z-index:307;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k53" class="s-k" style="z-index:31;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k54" class="s-k" style="z-index:92;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k55" class="s-k" style="z-index:178;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k56" class="s-k" style="z-index:93;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k57" class="s-k" style="z-index:171;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k58" class="s-k" style="z-index:68;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k59" class="s-k" style="z-index:255;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k60" class="s-k" style="z-index:251;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k61" class="s-k" style="z-index:259;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k62" class="s-k" style="z-index:351;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k63" class="s-k" style="z-index:314;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k64" class="s-k" style="z-index:40;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k65" class="s-k" style="z-index:346;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k66" class="s-k" style="z-index:160;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k67" class="s-k" style="z-index:85;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k68" class="s-k" style="z-index:234;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k69" class="s-k" style="z-index:41;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k70" class="s-k" style="z-index:363;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k71" class="s-k" style="z-index:214;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k72" class="s-k" style="z-index:296;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k73" class="s-k" style="z-index:332;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k74" class="s-k" style="z-index:36;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k75" class="s-k" style="z-index:395;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k76" class="s-k" style="z-index:17;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k77" class="s-k" style="z-index:401;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k78" class="s-k" style="z-index:386;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k79" class="s-k" style="z-index:125;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k80" class="s-k" style="z-index:281;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k81" class="s-k" style="z-index:338;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k82" class="s-k" style="z-index:309;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k83" class="s-k" style="z-index:294;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k84" class="s-k" style="z-index:133;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k85" class="s-k" style="z-index:185;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k86" class="s-k" style="z-index:384;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k87" class="s-k" style="z-index:43;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k88" class="s-k" style="z-index:126;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k89" class="s-k" style="z-index:181;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k90" class="s-k" style="z-index:110;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k91" class="s-k" style="z-index:345;background:#8f8bff"><i></i><i></i></div>
+          <div id="s-k92" class="s-k" style="z-index:120;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k93" class="s-k" style="z-index:240;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k94" class="s-k" style="z-index:43;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k95" class="s-k" style="z-index:201;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k96" class="s-k" style="z-index:171;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k97" class="s-k" style="z-index:393;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k98" class="s-k" style="z-index:28;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k99" class="s-k" style="z-index:182;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k100" class="s-k" style="z-index:140;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k101" class="s-k" style="z-index:304;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k102" class="s-k" style="z-index:256;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k103" class="s-k" style="z-index:312;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k104" class="s-k" style="z-index:108;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k105" class="s-k" style="z-index:189;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k106" class="s-k" style="z-index:132;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k107" class="s-k" style="z-index:177;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k108" class="s-k" style="z-index:287;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k109" class="s-k" style="z-index:51;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k110" class="s-k" style="z-index:233;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k111" class="s-k" style="z-index:185;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k112" class="s-k" style="z-index:190;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k113" class="s-k" style="z-index:103;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k114" class="s-k" style="z-index:155;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k115" class="s-k" style="z-index:105;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k116" class="s-k" style="z-index:366;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k117" class="s-k" style="z-index:41;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k118" class="s-k" style="z-index:168;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k119" class="s-k" style="z-index:145;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k120" class="s-k" style="z-index:124;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k121" class="s-k" style="z-index:136;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k122" class="s-k" style="z-index:149;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k123" class="s-k" style="z-index:34;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k124" class="s-k" style="z-index:385;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k125" class="s-k" style="z-index:197;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k126" class="s-k" style="z-index:232;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k127" class="s-k" style="z-index:209;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k128" class="s-k" style="z-index:344;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k129" class="s-k" style="z-index:184;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k130" class="s-k" style="z-index:376;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k131" class="s-k" style="z-index:275;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k132" class="s-k" style="z-index:143;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k133" class="s-k" style="z-index:104;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k134" class="s-k" style="z-index:113;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k135" class="s-k" style="z-index:244;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k136" class="s-k" style="z-index:119;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k137" class="s-k" style="z-index:409;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k138" class="s-k" style="z-index:95;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k139" class="s-k" style="z-index:115;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k140" class="s-k" style="z-index:365;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k141" class="s-k" style="z-index:263;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k142" class="s-k" style="z-index:326;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k143" class="s-k" style="z-index:321;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k144" class="s-k" style="z-index:109;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k145" class="s-k" style="z-index:14;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k146" class="s-k" style="z-index:92;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k147" class="s-k" style="z-index:156;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k148" class="s-k" style="z-index:292;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k149" class="s-k" style="z-index:59;background:#ffc24b"><i></i><i></i></div>
+          <div id="s-k150" class="s-k" style="z-index:131;background:#fff"><i></i><i></i></div>
+          <div id="s-k151" class="s-k" style="z-index:151;background:#fff"><i></i><i></i></div>
+          <div id="s-k152" class="s-k" style="z-index:33;background:#fff"><i></i><i></i></div>
+          <div id="s-k153" class="s-k" style="z-index:25;background:#fff"><i></i><i></i></div>
+          <div id="s-k154" class="s-k" style="z-index:279;background:#fff"><i></i><i></i></div>
+          <div id="s-k155" class="s-k" style="z-index:254;background:#fff"><i></i><i></i></div>
+          <div id="s-k156" class="s-k" style="z-index:221;background:#fff"><i></i><i></i></div>
+          <div id="s-k157" class="s-k" style="z-index:187;background:#fff"><i></i><i></i></div>
+          <div id="s-k158" class="s-k" style="z-index:173;background:#fff"><i></i><i></i></div>
+          <div id="s-k159" class="s-k" style="z-index:245;background:#fff"><i></i><i></i></div>
+          <div id="s-k160" class="s-k" style="z-index:160;background:#fff"><i></i><i></i></div>
+          <div id="s-k161" class="s-k" style="z-index:128;background:#fff"><i></i><i></i></div>
+          <div id="s-k162" class="s-k" style="z-index:280;background:#fff"><i></i><i></i></div>
+          <div id="s-k163" class="s-k" style="z-index:120;background:#fff"><i></i><i></i></div>
+          <div id="s-k164" class="s-k" style="z-index:130;background:#fff"><i></i><i></i></div>
+          <div id="s-k165" class="s-k" style="z-index:131;background:#fff"><i></i><i></i></div>
+          <div id="s-k166" class="s-k" style="z-index:173;background:#fff"><i></i><i></i></div>
+          <div id="s-k167" class="s-k" style="z-index:282;background:#fff"><i></i><i></i></div>
+          <div id="s-k168" class="s-k" style="z-index:149;background:#fff"><i></i><i></i></div>
+          <div id="s-k169" class="s-k" style="z-index:96;background:#fff"><i></i><i></i></div>
+          <div id="s-k170" class="s-k" style="z-index:114;background:#fff"><i></i><i></i></div>
+          <div id="s-k171" class="s-k" style="z-index:83;background:#fff"><i></i><i></i></div>
+          <div id="s-k172" class="s-k" style="z-index:249;background:#fff"><i></i><i></i></div>
+          <div id="s-k173" class="s-k" style="z-index:290;background:#fff"><i></i><i></i></div>
+          <div id="s-k174" class="s-k" style="z-index:285;background:#fff"><i></i><i></i></div>
+          <div id="s-k175" class="s-k" style="z-index:69;background:#fff"><i></i><i></i></div>
+          <div id="s-k176" class="s-k" style="z-index:204;background:#fff"><i></i><i></i></div>
+          <div id="s-k177" class="s-k" style="z-index:176;background:#fff"><i></i><i></i></div>
+          <div id="s-k178" class="s-k" style="z-index:160;background:#fff"><i></i><i></i></div>
+          <div id="s-k179" class="s-k" style="z-index:263;background:#fff"><i></i><i></i></div>
+          <div id="s-k180" class="s-k" style="z-index:171;background:#fff"><i></i><i></i></div>
+          <div id="s-k181" class="s-k" style="z-index:35;background:#fff"><i></i><i></i></div>
+          <div id="s-k182" class="s-k" style="z-index:15;background:#fff"><i></i><i></i></div>
+          <div id="s-k183" class="s-k" style="z-index:60;background:#fff"><i></i><i></i></div>
+          <div id="s-k184" class="s-k" style="z-index:53;background:#fff"><i></i><i></i></div>
+          <div id="s-k185" class="s-k" style="z-index:330;background:#fff"><i></i><i></i></div>
+          <div id="s-k186" class="s-k" style="z-index:26;background:#fff"><i></i><i></i></div>
+          <div id="s-k187" class="s-k" style="z-index:382;background:#fff"><i></i><i></i></div>
+          <div id="s-k188" class="s-k" style="z-index:377;background:#fff"><i></i><i></i></div>
+          <div id="s-k189" class="s-k" style="z-index:379;background:#fff"><i></i><i></i></div>
+          <div id="s-k190" class="s-k" style="z-index:318;background:#fff"><i></i><i></i></div>
+          <div id="s-k191" class="s-k" style="z-index:116;background:#fff"><i></i><i></i></div>
+          <div id="s-k192" class="s-k" style="z-index:274;background:#fff"><i></i><i></i></div>
+          <div id="s-k193" class="s-k" style="z-index:90;background:#fff"><i></i><i></i></div>
+          <div id="s-k194" class="s-k" style="z-index:46;background:#fff"><i></i><i></i></div>
+          <div id="s-k195" class="s-k" style="z-index:328;background:#fff"><i></i><i></i></div>
+          <div id="s-k196" class="s-k" style="z-index:111;background:#fff"><i></i><i></i></div>
+          <div id="s-k197" class="s-k" style="z-index:220;background:#fff"><i></i><i></i></div>
+          <div id="s-k198" class="s-k" style="z-index:294;background:#fff"><i></i><i></i></div>
+          <div id="s-k199" class="s-k" style="z-index:315;background:#fff"><i></i><i></i></div>
+          <div id="s-l1" class="s-pill s-hide">delivery time wrong · 92</div>
+          <div id="s-l2" class="s-pill s-hide">discount code refused · 58</div>
+          <div id="s-q" class="s-pill s-hide">150 of 200</div>
+          <div id="s-q3" class="s-pill s-hide">three quarters</div>
+          <div id="s-fixed" class="s-abs s-hide">FIXED</div>
+          <div id="s-pc75" class="s-pc" style="left:308px;top:490px">75%</div>
+          <div id="s-pc100" class="s-pc" style="left:1350px;top:268px">100%</div>
+          <div id="s-bt1" class="s-bt" style="left:100px;width:268px">2 causes · 1 week</div>
+          <div id="s-bt2" class="s-bt" style="left:354px;width:1104px">10 causes · about a month · 50 complaints</div>
+          <div id="s-ct"><span>charged twice · 2</span></div>
+          <svg id="s-lines" class="s-abs" viewBox="0 0 1920 1080">
+            <path id="s-ca" class="s-cl" d="M130 930 L178 654 L290 480" />
+            <path id="s-cb" class="s-cl" d="M290 480 L402 447 L514 420 L626 399 L738 381 L850 366 L962 354 L1074 345 L1186 339 L1298 333 L1410 330" />
+            <path id="s-ring" class="s-ring" d="M88 642 C82 304 384 302 384 640 C384 974 78 976 84 632" />
+            <path id="s-ring2" class="s-ring" stroke-dasharray="14 12" d="M1120 907 C1114 853 1256 851 1256 905 C1256 955 1110 957 1116 897" />
+            <path id="s-b1" class="s-brk" d="M130 948 V956 H338 V948" />
+            <path id="s-b2" class="s-brk" d="M354 948 V956 H1458 V948" />
+            <g id="s-dots"><circle id="s-d0" cx="178" cy="654" r="9" /><circle id="s-d1" cx="290" cy="480" r="9" /><circle id="s-d2" cx="402" cy="447" r="9" /><circle id="s-d3" cx="514" cy="420" r="9" /><circle id="s-d4" cx="626" cy="399" r="9" /><circle id="s-d5" cx="738" cy="381" r="9" /><circle id="s-d6" cx="850" cy="366" r="9" /><circle id="s-d7" cx="962" cy="354" r="9" /><circle id="s-d8" cx="1074" cy="345" r="9" /><circle id="s-d9" cx="1186" cy="339" r="9" /><circle id="s-d10" cx="1298" cy="333" r="9" /><circle id="s-d11" cx="1410" cy="330" r="9" /></g>
+          </svg>
+        </div>
+
+        <!-- 80/20 is rough -->
+        <div id="s-8020" class="s-pill s-hide">80 / 20</div>
+        <div id="s-sline" class="s-abs"></div>
+        <div id="s-here" class="s-pill s-hide">here: 2 of 12 causes made 75%</div>
+
+        <!-- the slow page -->
+        <div id="s-page" class="s-abs s-ol s-hide">
+          <h2>The menu page takes <b>5 seconds</b> to load</h2>
+          <div id="s-track" class="s-abs"><div id="s-fill" class="s-abs"></div><div id="s-big" class="s-abs"></div></div>
+          <div id="s-big90" class="s-abs">90%</div>
+          <div id="s-rest" class="s-abs">the rest</div>
+          <div id="s-job" class="s-pill">one job: <b>resize_photos</b> · 4.5 s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0,0.36,0.697,1.045,1.451,1.683,1.95,2.287,3.425,3.831,4.598,4.969,5.143,5.236,5.375,5.666,5.84,6.92,7.314,7.523,8.162,8.487,8.963,9.195,10.124,10.658,10.902,11.355,11.773,13.061,13.468,13.839,14.617,14.814,15.139,15.256,15.894,16.138,16.486,16.777,17.543,17.973,18.948,19.284,19.47,19.807,20.004,20.399,20.921,21.664,21.885,21.966,22.082,22.408,23.081,23.545,23.812,24.265,24.706,25.496,26.03,26.367,27.249,27.725,28.387,28.561,28.886,29.037,29.594,29.85,30.233,30.976,31.359,32.241,32.531,32.659,33.135,33.344,33.484,34.424,34.598,34.9,35.353,35.748,36.05,37.373,37.64,37.954,38.395,38.65,39.37,39.916,40.206,41.1,41.437,41.773,42.075,42.412,42.551,42.818,42.934,43.944,44.084,44.316,44.595,44.78,45.012,45.117,46.011,46.324,46.452,46.603,47.694,48.054,48.472,48.623,48.971,49.32,50.191,50.608,50.991,51.084,51.2,51.525,51.816,52.106,52.768,53.453,54.741,54.985,55.392,55.67,56.657,56.831,57.156,57.33,57.876,58.085,58.41,58.7,59.513,59.838,60.175,61.197,61.475,61.974,62.137,62.555,63.693,64.134,64.401,64.575,64.97,65.144,66.154,66.514,66.7,66.827,67.42,68.476,68.639,68.871,69.335,69.602,69.892,69.997,70.113,70.995,71.262,71.553,71.913,72.11];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const K = [[0,0,692,747,-9,0.57],[0,1,844,662,6,0.77],[0,2,1092,525,-9,0.25],[0,3,1029,675,-27,0.36],[0,4,781,824,-10,0.45],[0,5,712,743,6,0.8],[0,6,878,530,-15,0.6],[0,7,945,671,-25,0.7],[0,8,417,667,20,0.51],[0,9,443,747,25,0.47],[0,10,812,585,27,0.07],[0,11,818,705,-5,0.23],[0,12,988,559,-29,0.18],[0,13,567,513,-8,0.91],[0,14,741,627,12,0.24],[0,15,560,569,12,0.77],[0,16,1036,747,0,0.5],[0,17,1112,762,-9,0.3],[0,18,859,549,-14,0.62],[0,19,1105,586,13,0.26],[0,20,912,685,-13,0.56],[0,21,685,545,-10,0.12],[0,22,1117,627,27,0.53],[0,23,773,490,-27,0.29],[0,24,970,676,-13,0.42],[0,25,657,638,28,0.07],[0,26,695,738,11,0.68],[0,27,801,749,-6,0.74],[0,28,959,648,13,0.42],[0,29,459,705,-27,0.68],[0,30,928,787,-3,0.32],[0,31,1219,612,6,0.19],[0,32,810,616,18,0.96],[0,33,824,688,-1,0.74],[0,34,949,676,-10,0.66],[0,35,495,532,9,0.11],[0,36,1009,642,-5,0.32],[0,37,839,732,-26,0.59],[0,38,1009,756,-20,0.29],[0,39,807,554,15,0.03],[0,40,448,704,21,0.61],[0,41,668,660,-18,0.47],[0,42,404,614,27,0.21],[0,43,396,680,-16,0.56],[0,44,568,503,-16,0.4],[0,45,711,762,-2,0.3],[0,46,916,498,16,0.05],[0,47,772,653,8,0.46],[0,48,1071,610,30,0.87],[0,49,712,790,9,0.19],[0,50,755,802,-12,0.43],[0,51,1058,581,30,0.55],[0,52,1109,529,17,0.11],[0,53,985,519,-1,0.95],[0,54,571,695,24,0.85],[0,55,1108,579,-16,0.36],[0,56,1116,689,24,0.65],[0,57,855,692,9,0.23],[0,58,640,676,13,0.81],[0,59,964,695,17,0.27],[0,60,550,578,2,0.53],[0,61,594,793,24,0.47],[0,62,1065,565,4,0.72],[0,63,863,688,-12,0.54],[0,64,952,533,20,0.61],[0,65,611,639,29,0.73],[0,66,1028,703,-24,0.26],[0,67,978,765,-24,0.34],[0,68,816,520,4,0.75],[0,69,1049,636,16,0.21],[0,70,1164,733,-1,0.58],[0,71,935,614,-8,0.65],[0,72,755,592,2,0.66],[0,73,914,572,19,0.03],[0,74,390,666,28,0.22],[0,75,934,676,9,0.36],[0,76,739,569,22,0.8],[0,77,1034,732,10,0.49],[0,78,485,629,29,0.56],[0,79,544,787,16,0.34],[0,80,670,724,-26,0.76],[0,81,1169,570,-26,0.24],[0,82,829,658,-27,0.98],[0,83,846,799,-25,0.97],[0,84,901,496,3,0.54],[0,85,830,733,1,0.14],[0,86,535,517,3,0.67],[0,87,884,625,-7,0.48],[0,88,776,623,-21,0.72],[0,89,1077,538,6,0.8],[0,90,497,613,24,0.2],[0,91,543,746,19,0.95],[1,0,1038,560,28,0.96],[1,1,440,569,-3,0.77],[1,2,1089,534,-4,0.04],[1,3,1054,610,18,0.69],[1,4,570,796,-24,0.53],[1,5,633,647,6,0.47],[1,6,436,651,-4,0.03],[1,7,530,519,12,0.28],[1,8,800,580,16,0.48],[1,9,502,617,-29,0.71],[1,10,700,629,28,0.26],[1,11,963,576,7,0.21],[1,12,1153,692,10,0.19],[1,13,413,647,13,0.95],[1,14,660,768,-9,0.56],[1,15,597,728,-19,0.64],[1,16,673,626,28,0.69],[1,17,958,509,8,0.66],[1,18,858,805,4,0.69],[1,19,535,560,-27,0.36],[1,20,879,505,-22,0.9],[1,21,1118,670,-3,0],[1,22,570,798,19,0.51],[1,23,1140,681,2,0.69],[1,24,1075,654,2,0.31],[1,25,586,798,14,0.58],[1,26,720,776,3,0.6],[1,27,670,575,7,0.44],[1,28,809,821,17,0.25],[1,29,768,699,-2,0.5],[1,30,508,538,-5,0.37],[1,31,716,801,11,0.04],[1,32,664,574,-12,0.54],[1,33,388,633,7,0.63],[1,34,780,809,28,1],[1,35,609,611,0,0.39],[1,36,540,700,-14,0.04],[1,37,663,561,-3,0.96],[1,38,810,720,-16,0.65],[1,39,573,561,-29,0.21],[1,40,1024,585,7,0.43],[1,41,475,625,14,0.3],[1,42,586,631,-21,0.67],[1,43,910,550,-5,0.45],[1,44,903,701,8,0.6],[1,45,782,771,5,0.99],[1,46,572,570,-30,0.84],[1,47,737,513,-25,0.83],[1,48,1210,635,-19,0.35],[1,49,612,777,17,0.54],[1,50,483,566,20,0.25],[1,51,595,573,2,0.16],[1,52,609,780,-6,0.67],[1,53,702,570,-20,0.03],[1,54,768,480,-18,0.61],[1,55,1180,727,5,0.01],[1,56,671,712,10,0.42],[1,57,399,601,1,0.9],[2,0,426,638,-22,0.57],[2,1,771,720,6,0.05],[2,2,963,578,-14,0.12],[2,3,996,798,16,0.29],[2,4,433,559,-13,0.41],[2,5,656,678,27,0.6],[2,6,726,781,-25,0.83],[2,7,782,529,-23,0.53],[2,8,957,552,28,0.89],[2,9,1055,623,24,0.87],[2,10,545,706,-8,0.12],[3,0,738,573,25,0.35],[3,1,962,757,-29,1],[3,2,521,540,-7,0.61],[3,3,490,667,-27,0.43],[3,4,511,543,-15,0.87],[3,5,1027,620,-6,0.65],[3,6,653,549,-11,0.23],[3,7,1049,538,0,0.22],[3,8,444,699,-6,0.54],[4,0,677,649,-28,0.05],[4,1,790,592,28,0.54],[4,2,863,601,-25,0.68],[4,3,1046,745,-8,0.09],[4,4,667,793,5,0.68],[4,5,789,723,29,0.48],[4,6,587,700,-2,0.21],[5,0,380,645,23,0.08],[5,1,1017,676,-8,0.61],[5,2,982,778,-28,0.2],[5,3,766,534,-28,0.17],[5,4,580,603,20,0.77],[5,5,1188,642,-18,0.67],[6,0,541,558,21,0.78],[6,1,692,566,10,0.95],[6,2,887,811,-11,0.49],[6,3,991,624,27,0.76],[6,4,502,528,6,0.41],[7,0,588,668,-4,0.14],[7,1,789,637,-25,0.49],[7,2,1018,690,-18,0.93],[7,3,796,540,3,0.42],[8,0,1031,714,6,0.41],[8,1,852,752,20,0.79],[8,2,767,723,22,0.19],[9,0,746,693,2,0.66],[9,1,581,558,10,0.5],[10,0,771,605,26,0.68],[10,1,904,529,28,0.18],[11,0,784,686,-7,0.36]];
+      const SX = [130,242,354,466,578,690,802,914,1026,1138,1250,1362];
+      const UX = [914,1250,130,354,578,1362,1026,690,242,1138,802,466];
+      const card = (n) => "#s-k" + n;
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const fade = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, at);
+      const draw = (sel, at, d, ease) => {
+        const p = document.querySelector(sel);
+        const L = p.getTotalLength() + 2;
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+        tl.set(p, { strokeDashoffset: L, opacity: 1 }, at);
+        tl.to(p, { strokeDashoffset: 0, duration: d || 0.45, ease: ease || "power2.out" }, at + 0.01);
+      };
+      const swapTxt = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      // where a card sits in a stack whose left edge is x
+      const slot = (k, x) => ({ x: x + 8, y: 902 - 6 * k[1], rotation: 0, scaleX: 1.2, scaleY: 0.12 });
+      const ofCause = (c) => K.map((k, n) => (k[0] === c ? card(n) : null)).filter(Boolean);
+
+      /* ---- 1. 200 complaints fall into a heap ---- */
+      tl.fromTo("#s-maya", { opacity: 1, y: 0 }, { opacity: 1, y: 0, duration: 0.01 }, 0);
+      pop("#s-nmM", 0.2, { from: 0.4 });
+      K.forEach((k, n) => {
+        tl.fromTo(card(n), { x: k[2] - 40, y: k[3] - 25 - 700, rotation: k[4] - 40, opacity: 0 },
+          { x: k[2] - 40, y: k[3] - 25, rotation: k[4], opacity: 1, duration: 0.5, ease: "power2.in" }, 0.15 + k[5] * 2.4);
+      });
+      tl.fromTo("#s-count", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, t(5) - 0.05);
+
+      /* ---- 2. Maya's plan: oldest first ---- */
+      fade("#s-head1", t(9) - 0.1);
+      const crushed = ofCause(2), typo = ofCause(8);
+      tl.to(crushed[0], { scale: 1.25, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, t(14));
+      pop("#s-wk", t(18) - 0.1, { from: 0.4 });
+      tl.to(crushed, { y: "-=40", scale: 1.12, duration: 0.35, ease: "back.out(2)" }, t(20) - 0.05);
+      tl.to(typo, { y: "-=40", scale: 1.12, duration: 0.35, ease: "back.out(2)" }, t(21));
+      pop("#s-p1", t(20) + 0.2, { from: 0.4 });
+      pop("#s-p2", t(21) + 0.25, { from: 0.4 });
+      tl.fromTo("#s-res", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(24) - 0.1);
+      tl.to(crushed.concat(typo), { x: 1620, y: 640, rotation: 0, scale: 0.4, opacity: 0, duration: 0.6, ease: "power2.in", stagger: 0.02 }, t(26));
+      pop("#s-rM", t(28) - 0.05, { from: 0.5 });
+
+      /* ---- 3. Sam counts first ---- */
+      out(["#s-maya", "#s-nmM", "#s-head1", "#s-p1", "#s-p2", "#s-wk"], t(29) - 0.3, 0.25);
+      tl.fromTo("#s-sam", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, t(29) - 0.05);
+      pop("#s-nmS", t(29) + 0.15, { from: 0.4 });
+      fade("#s-head2", t(30));
+      // the 14 cards come back into the heap
+      crushed.concat(typo).forEach((sel) => {
+        const n = +sel.slice(5), k = K[n];
+        tl.fromTo(sel, { x: k[2] - 40, y: k[3] - 25, rotation: k[4], scale: 0.5, opacity: 0 }, { x: k[2] - 40, y: k[3] - 25, rotation: k[4], scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.6)" }, t(30) + 0.2 + (n % 7) * 0.03);
+      });
+      // into twelve stacks, in the order the causes first arrived
+      K.forEach((k, n) => {
+        tl.to(card(n), Object.assign(slot(k, UX[k[0]]), { duration: 0.7, ease: "power3.inOut" }), t(33) + (ARR_POS(k[0]) * 0.11) + (k[1] % 9) * 0.012);
+      });
+      function ARR_POS(c) { return [2,8,3,11,4,7,10,0,6,9,1,5].indexOf(c); }
+      tl.set("#s-o0", { x: UX[0] }, 0); tl.set("#s-n0", { x: UX[0] }, 0);
+      tl.set("#s-o1", { x: UX[1] }, 0); tl.set("#s-n1", { x: UX[1] }, 0);
+      tl.set("#s-o2", { x: UX[2] }, 0); tl.set("#s-n2", { x: UX[2] }, 0);
+      tl.set("#s-o3", { x: UX[3] }, 0); tl.set("#s-n3", { x: UX[3] }, 0);
+      tl.set("#s-o4", { x: UX[4] }, 0); tl.set("#s-n4", { x: UX[4] }, 0);
+      tl.set("#s-o5", { x: UX[5] }, 0); tl.set("#s-n5", { x: UX[5] }, 0);
+      tl.set("#s-o6", { x: UX[6] }, 0); tl.set("#s-n6", { x: UX[6] }, 0);
+      tl.set("#s-o7", { x: UX[7] }, 0); tl.set("#s-n7", { x: UX[7] }, 0);
+      tl.set("#s-o8", { x: UX[8] }, 0); tl.set("#s-n8", { x: UX[8] }, 0);
+      tl.set("#s-o9", { x: UX[9] }, 0); tl.set("#s-n9", { x: UX[9] }, 0);
+      tl.set("#s-o10", { x: UX[10] }, 0); tl.set("#s-n10", { x: UX[10] }, 0);
+      tl.set("#s-o11", { x: UX[11] }, 0); tl.set("#s-n11", { x: UX[11] }, 0);
+      tl.fromTo("#s-axis", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, t(33));
+      tl.fromTo(".s-out", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(33) + 2.0);
+      tl.fromTo(".s-n", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)", stagger: 0.06 }, t(40) - 0.1);
+
+      /* ---- 4. Line them up, biggest first ---- */
+      K.forEach((k, n) => tl.to(card(n), { x: SX[k[0]] + 8, duration: 1.0, ease: "power3.inOut" }, t(44) + 0.1));
+      SX.forEach((x, i) => tl.to(["#s-o" + i, "#s-n" + i], { x: x, duration: 1.0, ease: "power3.inOut" }, t(44) + 0.1));
+
+      /* ---- 5. The first two ---- */
+      const rest = [];
+      for (let i = 2; i < 12; i++) rest.push("#s-o" + i, "#s-n" + i);
+      const restCards = K.map((k, n) => (k[0] >= 2 ? card(n) : null)).filter(Boolean);
+      tl.to(rest.concat(restCards), { opacity: 0.3, duration: 0.4, ease: "power2.inOut" }, t(49));
+      pop("#s-l1", t(54) - 0.05, { from: 0.4 });
+      pop("#s-l2", t(59) - 0.05, { from: 0.4 });
+      draw("#s-ring", t(64) - 0.1, 0.6);
+      pop("#s-q", t(65), { from: 0.4 });
+      pop("#s-q3", t(71) - 0.05, { from: 0.4 });
+
+      /* ---- 6. Add them up from the left ---- */
+      out(["#s-ring", "#s-l1", "#s-l2", "#s-q", "#s-q3"], t(73) - 0.2, 0.25);
+      tl.to(rest.concat(restCards), { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(73));
+      draw("#s-ca", t(78) + 0.1, 1.0, "power1.in");
+      pop("#s-d0", t(78) + 0.55, { from: 0.2, d: 0.3 });
+      pop("#s-d1", t(81), { from: 0.2, d: 0.3 });
+      pop("#s-pc75", t(82), { from: 0.4 });
+      draw("#s-cb", t(83) - 0.1, 1.8, "power1.out");
+      for (let i = 2; i < 12; i++) tl.fromTo("#s-d" + i, { opacity: 0 }, { opacity: 1, duration: 0.15 }, t(83) + (i - 1) * 0.15);
+      pop("#s-pc100", t(83) + 1.8, { from: 0.4 });
+
+      /* ---- 7. Fix those two first ---- */
+      tl.fromTo("#s-fixed", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.3, ease: "power4.in" }, t(87) - 0.1);
+      const big = K.map((k, n) => (k[0] < 2 ? card(n) : null)).filter(Boolean).reverse();
+      tl.to(big, { y: "-=260", opacity: 0, duration: 0.5, ease: "power2.in", stagger: 0.006 }, t(88) + 0.2);
+      out(["#s-o0", "#s-o1", "#s-n0", "#s-n1"], t(88) + 0.4, 0.3);
+      tl.fromTo(["#s-g0", "#s-g1"], { opacity: 0 }, { opacity: 1, duration: 0.4 }, t(88) + 1.1);
+      draw("#s-b1", t(90) - 0.1, 0.35);
+      fade("#s-bt1", t(90) + 0.1);
+      pop("#s-rS", t(90) + 0.3, { from: 0.5 });
+      out("#s-fixed", t(93) - 0.3, 0.2);
+      swapTxt("#s-cnt1", "#s-cnt2", t(96));
+      draw("#s-b2", t(101) - 0.1, 0.5);
+      fade("#s-bt2", t(102));
+
+      /* ---- 8. Code is the same: Priya's slow page ---- */
+      tl.to("#s-chart", { opacity: 0, duration: 0.3, ease: "power2.in" }, t(109) - 0.2);
+      out(["#s-head2", "#s-count", "#s-sam", "#s-nmS"], t(109) - 0.2, 0.25);
+      tl.fromTo("#s-page", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(109) + 0.1);
+      tl.fromTo("#s-priya", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, t(112) - 0.05);
+      pop("#s-nmP", t(112) + 0.15, { from: 0.4 });
+      tl.fromTo("#s-fill", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 1.4, ease: "none" }, t(113));
+      tl.fromTo("#s-big", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.7, ease: "power3.out" }, t(118) - 0.05);
+      pop("#s-big90", t(118) + 0.25, { from: 0.4 });
+      fade("#s-rest", t(118) + 0.5);
+      pop("#s-job", t(126) - 0.05, { from: 0.5 });
+
+      /* ---- 9. Count, don't guess. Weigh harm. ---- */
+      out(["#s-page", "#s-priya", "#s-nmP"], t(128) - 0.3, 0.25);
+      tl.to("#s-chart", { opacity: 1, duration: 0.4, ease: "power2.out" }, t(128));
+      tl.to(["#s-head2", "#s-count", "#s-sam", "#s-nmS"], { opacity: 1, duration: 0.3 }, t(128));
+      out(["#s-bt1", "#s-bt2", "#s-b1", "#s-b2"], t(128), 0.01);
+      tl.to(".s-n", { scale: 1.3, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.08 }, t(129) + 0.4);
+      pop("#s-8020", t(138) - 0.1, { from: 0.4 });
+      tl.fromTo("#s-sline", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power2.out" }, t(139) + 0.15);
+      pop("#s-here", t(139) + 0.5, { from: 0.4 });
+      out(["#s-g0", "#s-g1"], t(141), 0.3);
+      const twice = ofCause(9);
+      tl.to(twice, { backgroundColor: "#ff6b8b", duration: 0.3 }, t(146));
+      draw("#s-ring2", t(146) - 0.05, 0.45);
+      fade("#s-ct", t(146) + 0.2);
+      // it jumps the queue: arcs over the others to the front
+      const dx = SX[1] - SX[9];
+      const hop = twice.concat(["#s-o9", "#s-n9", "#s-ct"]);
+      out("#s-ring2", t(149) - 0.2, 0.2);
+      tl.to(hop, { x: "+=" + dx, duration: 1.0, ease: "power2.inOut" }, t(149));
+      tl.to(hop, { y: "-=220", duration: 0.5, ease: "power2.out" }, t(149));
+      tl.to(hop, { y: "+=220", duration: 0.5, ease: "power2.in" }, t(149) + 0.5);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, 66.6 - 0.35);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

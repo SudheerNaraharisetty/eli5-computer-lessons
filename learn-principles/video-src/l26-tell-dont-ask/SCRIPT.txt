@@ -1,0 +1,15 @@
+Maya's loyalty card holds a customer's points. A free cookie costs thirty points.
+
+Three places hand out free cookies. The till, the website, and phone orders.
+
+Each one does the same thing. It asks the card, how many points? Then it decides for itself. Then it takes the points.
+
+It looks polite. But count the rule. It lives in three places, and none of them is the card.
+
+Then Maya starts a Tuesday offer. Twenty points. She updates the till and the website. She misses the phone.
+
+It is Tuesday. Ana has twenty four points. At the till, she gets her cookie. On the phone, she is told no. Same card, same day, two answers.
+
+The fix. Move the rule inside the card. Now nobody asks and decides. Each place just tells the card: redeem a free cookie. The card checks its own points, and answers yes or no.
+
+That is tell, don't ask. Let the one who holds the data make the decision.

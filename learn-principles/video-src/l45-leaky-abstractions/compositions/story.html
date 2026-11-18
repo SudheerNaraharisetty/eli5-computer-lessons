@@ -1,0 +1,427 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* the wall between the front and the insides */
+    #s-wall { left: 1000px; top: 60px; width: 56px; height: 960px; background: #ece7df; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-wall > svg { position: absolute; left: 0; top: 0; width: 56px; height: 960px; }
+    .s-stain { position: absolute; left: 1006px; width: 44px; height: 44px; border-radius: 50%; background: #ff6b8b; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* behind the wall: the machine room */
+    #s-room { left: 1066px; top: 96px; width: 758px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-rtitle { left: 44px; top: 30px; font-size: 28px; letter-spacing: 0.08em; color: #a9a5d6; white-space: nowrap; }
+    #s-gears { left: 600px; top: 14px; width: 130px; height: 84px; }
+    #s-pipes, #s-pipes2 { left: 0; top: 0; width: 758px; height: 888px; }
+    #s-pipes path, #s-pipes2 path { fill: none; stroke: #8480b8; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+    .s-step { position: absolute; width: 300px; height: 84px; border-radius: 16px; background: #211e40; box-shadow: 0 0 0 4px #c9c6ff; font-size: 30px; line-height: 84px; text-align: center; white-space: nowrap; }
+    #s-socket { left: 44px; top: 429px; width: 60px; height: 80px; border-radius: 12px; background: #211e40; box-shadow: 0 0 0 4px #c9c6ff; }
+    #s-socket i { position: absolute; right: 8px; width: 16px; height: 10px; border-radius: 4px; background: #0e0c1d; }
+    .s-plug { position: absolute; left: 124px; top: 429px; width: 330px; height: 80px; border-radius: 16px; background: #fff; color: #0e0c1d; font-weight: 700; font-size: 30px; line-height: 80px; text-align: center; box-shadow: 0 0 0 4px #c9c6ff; }
+    .s-plug i { position: absolute; left: -22px; width: 22px; height: 10px; background: #c9c6ff; }
+    #s-wire { left: 0; top: 0; width: 758px; height: 888px; }
+    #s-wire path { fill: none; stroke: #c9c6ff; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    #s-cloud { left: 500px; top: 712px; width: 220px; height: 156px; }
+    #s-cloudtxt { left: 500px; top: 782px; width: 220px; text-align: center; font-size: 30px; line-height: 40px; color: #0e0c1d; }
+    #s-dot { left: -13px; top: -13px; width: 26px; height: 26px; border-radius: 50%; background: #ffc24b; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-gap { left: 336px; top: 778px; width: 64px; height: 24px; background: #15132b; }
+    #s-x { left: 336px; top: 758px; width: 64px; height: 64px; }
+
+    /* the hatch that hides the room */
+    #s-cover { left: 1066px; top: 96px; width: 758px; height: 888px; background: #fbf8f4; border-radius: 24px; }
+    #s-cover b { position: absolute; left: 0; top: 250px; width: 758px; text-align: center; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-cover small { position: absolute; left: 0; top: 480px; width: 758px; text-align: center; font-size: 34px; color: #3e3b52; }
+    #s-cover > svg { position: absolute; left: 319px; top: 560px; width: 120px; height: 140px; }
+
+    /* the front panel */
+    #s-panel { left: 650px; top: 316px; width: 350px; height: 440px; background: #fff; border-radius: 24px 0 0 24px; }
+    .s-btn { position: absolute; left: 30px; width: 290px; height: 90px; border-radius: 20px; background: #3b37e6; color: #fff; font-weight: 700; font-size: 44px; line-height: 90px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    .s-plate { position: absolute; left: 20px; width: 310px; height: 48px; border-radius: 12px; background: #ddefe6; color: #1f7a5c; font-size: 28px; line-height: 48px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* Sam's code */
+    #s-l18 { left: 96px; top: 110px; padding: 8px 28px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 34px; line-height: 1.4; white-space: nowrap; }
+    #s-l18 b { color: #c9c6ff; }
+    #s-strip { left: 96px; top: 96px; width: 860px; height: 100px; background: #15132b; border-radius: 22px; color: #fff; }
+    #s-strip > svg { position: absolute; left: 14px; top: 12px; width: 76px; height: 76px; }
+    #s-sam { left: 22px; top: -30px; padding: 0 20px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 28px; line-height: 44px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-call { position: absolute; left: 112px; top: 0; font-weight: 700; font-size: 34px; line-height: 100px; white-space: pre; }
+    .s-call .fn { color: #7cf0b5; }
+    #s-noerr { right: 18px; top: 26px; padding: 0 20px; height: 48px; border-radius: 999px; background: #1f7a5c; color: #fff; font-size: 28px; line-height: 48px; white-space: nowrap; }
+    #s-tape { left: 96px; top: 222px; width: 860px; height: 68px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; display: flex; align-items: center; padding: 0 12px 0 22px; font: 600 28px/1 "Manrope", sans-serif; white-space: nowrap; }
+    #s-tail { margin-left: 8px; padding: 8px 10px; border-radius: 10px; font-weight: 800; }
+    #s-count { margin-left: auto; padding: 0 18px; height: 48px; border-radius: 999px; background: #fbebd2; color: #8a5510; font-weight: 800; line-height: 48px; }
+    #s-title { left: 96px; top: 84px; font: 700 88px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-title span { display: inline-block; opacity: 0; }
+    #s-title .ac { color: #b8235a; }
+
+    /* the customer's phone */
+    #s-phone { left: 116px; top: 316px; width: 444px; height: 668px; background: #fbf8f4; border-radius: 44px; }
+    #s-phead { left: 0; top: 30px; width: 444px; text-align: center; font-size: 28px; letter-spacing: 0.06em; color: #6f6b80; }
+    .s-bub { position: absolute; left: 24px; top: 96px; padding: 18px 22px; background: #e6e3ff; border-radius: 22px 22px 22px 6px; font: 600 28px/38px "Manrope", sans-serif; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-bubA { font-weight: 800; font-size: 30px; }
+    #s-tick { left: 344px; top: 72px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tick > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    #s-stops { left: 150px; top: 376px; padding: 0 18px; height: 46px; line-height: 46px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-nocode { left: 24px; top: 478px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 14px; background: #b8235a; color: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* the till */
+    #s-till { left: 116px; top: 316px; width: 444px; height: 668px; }
+    #s-tscreen { left: 0; top: 0; width: 444px; height: 300px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-tlabel { left: 28px; top: 18px; font-size: 28px; letter-spacing: 0.08em; color: #a9a5d6; }
+    #s-saving { left: 28px; top: 58px; font-size: 34px; line-height: 46px; white-space: nowrap; }
+    #s-spin { left: 30px; top: 118px; width: 70px; height: 70px; }
+    #s-sec { left: 130px; top: 112px; width: 220px; height: 82px; font-weight: 700; font-size: 64px; line-height: 82px; color: #ffc24b; }
+    #s-sec b { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+    .s-msg { position: absolute; left: 22px; top: 204px; width: 400px; height: 84px; border-radius: 14px; background: #fff; text-align: center; white-space: nowrap; }
+    #s-err { color: #b8235a; font-weight: 700; font-size: 34px; line-height: 84px; box-shadow: 0 0 0 5px #ff6b8b; }
+    #s-plain { color: #1f7a5c; font-size: 28px; line-height: 36px; padding-top: 6px; box-shadow: 0 0 0 5px #4bd69b; }
+    #s-frozen { left: 258px; top: 126px; padding: 2px 18px; background: #b8235a; color: #fff; font-size: 34px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tbase { left: 40px; top: 322px; width: 364px; height: 104px; background: #fff; border-radius: 16px; }
+    #s-tbase i { position: absolute; left: 30px; top: 46px; width: 304px; height: 8px; border-radius: 4px; background: #0e0c1d; }
+    #s-queue { left: 30px; top: 468px; width: 400px; height: 110px; }
+    #s-qlabel { left: 30px; top: 590px; font-size: 30px; color: #b8235a; white-space: nowrap; }
+
+    /* leaks */
+    .s-drip { position: absolute; left: 660px; width: 330px; height: 56px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; line-height: 56px; padding-left: 62px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-drip > svg { position: absolute; left: 16px; top: 8px; width: 32px; height: 40px; }
+    #s-dr3 { font-weight: 700; font-size: 28px; }
+    #s-plaster { left: 978px; top: 426px; width: 100px; height: 100px; }
+    #s-plaster i { position: absolute; left: 0; top: 36px; width: 100px; height: 28px; border-radius: 8px; background: #ffc24b; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-plaster i:first-child { transform: rotate(38deg); }
+    #s-plaster i:last-child { transform: rotate(-38deg); }
+    #s-drop { left: 1012px; top: 500px; width: 32px; height: 40px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="66.1" data-track-index="1">
+      <div id="s-wrap">
+        <!-- behind the wall -->
+        <div id="s-room" class="s-abs s-ol">
+          <div id="s-rin" class="s-abs s-hide" style="left:0;top:0;width:758px;height:888px">
+          <div id="s-rtitle" class="s-abs">BEHIND THE HANDLE</div>
+          <svg id="s-gears" class="s-abs" viewBox="0 0 130 84">
+            <g id="s-g1"><circle cx="40" cy="40" r="28" fill="none" stroke="#c9c6ff" stroke-width="12" stroke-dasharray="11 11" /><circle cx="40" cy="40" r="22" fill="#211e40" stroke="#c9c6ff" stroke-width="4" /><circle cx="40" cy="40" r="6" fill="#c9c6ff" /></g>
+            <g id="s-g2"><circle cx="96" cy="56" r="19" fill="none" stroke="#7cf0b5" stroke-width="10" stroke-dasharray="10 10" /><circle cx="96" cy="56" r="14" fill="#211e40" stroke="#7cf0b5" stroke-width="4" /><circle cx="96" cy="56" r="5" fill="#7cf0b5" /></g>
+          </svg>
+          <div id="s-notifyhow" class="s-abs" style="left:0;top:0;width:758px;height:888px">
+            <svg id="s-pipes" class="s-abs s-hide" viewBox="0 0 758 888">
+              <path d="M0 289 H22 V152 H44" />
+              <path d="M194 194 V224 M194 308 V338 M344 380 H379 V152 H414 M564 194 V224 M564 308 V338" />
+            </svg>
+            <div class="s-step s-hide" id="s-st-1" style="left:44px;top:110px">open a line</div>
+            <div class="s-step s-hide" id="s-st-2" style="left:44px;top:224px">add "+1"</div>
+            <div class="s-step s-hide" id="s-st-3" style="left:44px;top:338px">cut at 160</div>
+            <div class="s-step s-hide" id="s-st-4" style="left:414px;top:110px">send</div>
+            <div class="s-step s-hide" id="s-st-5" style="left:414px;top:224px">check reply</div>
+            <div class="s-step s-hide" id="s-st-6" style="left:414px;top:338px">try again</div>
+          </div>
+          </div>
+          <div id="s-savehow" class="s-abs s-hide" style="left:0;top:0;width:758px;height:888px">
+            <svg id="s-pipes2" class="s-abs" viewBox="0 0 758 888"><path d="M0 469 H44" /></svg>
+            <div id="s-socket" class="s-abs"><i style="top:20px"></i><i style="top:50px"></i></div>
+            <svg id="s-wire" class="s-abs s-hide" viewBox="0 0 758 888"><path id="s-wirep" d="M454 469 H600 V640 H250 V790 H506" /></svg>
+            <div id="s-gap" class="s-abs s-hide"></div>
+            <svg id="s-cloud" class="s-abs s-hide" viewBox="0 0 220 156"><path d="M54 134 C20 134 8 106 24 86 C14 56 46 34 72 48 C82 16 138 12 150 48 C186 40 214 70 198 100 C212 122 194 136 172 134 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" /></svg>
+            <div id="s-cloudtxt" class="s-abs s-hide">internet</div>
+            <div class="s-plug s-mono s-hide" id="s-plugdb"><i style="top:20px"></i><i style="top:50px"></i>DatabaseBook</div>
+            <div class="s-plug s-mono s-hide" id="s-plugon"><i style="top:20px"></i><i style="top:50px"></i>OnlineBook</div>
+            <div id="s-dot" class="s-abs s-hide"></div>
+            <svg id="s-x" class="s-abs s-hide" viewBox="0 0 64 64"><path d="M12 12 L52 52 M52 12 L12 52" fill="none" stroke="#ff6b8b" stroke-width="10" stroke-linecap="round" /></svg>
+          </div>
+        </div>
+        <div id="s-cover" class="s-abs s-ol">
+          <b>Behind<br />the handle</b>
+          <small>the how, out of sight</small>
+          <svg viewBox="0 0 120 140"><rect x="14" y="60" width="92" height="72" rx="14" fill="#0e0c1d" /><path d="M34 62 V40 C34 12 86 12 86 40 V62" fill="none" stroke="#0e0c1d" stroke-width="12" stroke-linecap="round" /><circle cx="60" cy="94" r="10" fill="#fbf8f4" /></svg>
+        </div>
+
+        <!-- the front panel, mounted on the wall -->
+        <div id="s-panel" class="s-abs s-ol">
+          <div class="s-btn s-mono s-hide" id="s-btn1" style="top:24px">notify</div>
+          <div class="s-plate s-hide" id="s-pl1" style="top:128px">max 160 characters</div>
+          <div class="s-btn s-mono s-hide" id="s-btn2" style="top:204px">save</div>
+          <div class="s-plate s-hide" id="s-pl2" style="top:308px">needs internet</div>
+          <div class="s-plate s-hide" id="s-pl3" style="top:368px">can take 3 s</div>
+        </div>
+        <div id="s-wall" class="s-abs">
+          <svg viewBox="0 0 56 960"><path d="M0 80 H56 M0 160 H56 M0 240 H56 M0 320 H56 M0 400 H56 M0 480 H56 M0 560 H56 M0 640 H56 M0 720 H56 M0 800 H56 M0 880 H56 M28 0 V80 M28 160 V240 M28 320 V400 M28 480 V560 M28 640 V720 M28 800 V880" fill="none" stroke="#0e0c1d" stroke-width="3" /></svg>
+        </div>
+        <div class="s-stain s-hide" id="s-stn1" style="top:454px"></div>
+        <div class="s-stain s-hide" id="s-stn2" style="top:543px"></div>
+        <div class="s-stain s-hide" id="s-stn3" style="top:844px"></div>
+
+        <!-- Sam's side -->
+        <div id="s-l18" class="s-abs s-hide">Lesson 18 <b>·</b> Abstraction</div>
+        <div id="s-strip" class="s-abs s-ol s-hide">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M18 100 C18 76 34 68 50 68 C66 68 82 76 82 100 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" />
+            <circle cx="50" cy="44" r="24" fill="#e0a878" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M26 40 Q28 16 50 16 Q72 16 74 40 Q60 28 26 40 Z" fill="#7a4a1e" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="42" cy="46" r="3.5" fill="#0e0c1d" /><circle cx="58" cy="46" r="3.5" fill="#0e0c1d" />
+            <path d="M42 56 Q50 62 58 56" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" />
+          </svg>
+          <div id="s-sam" class="s-abs">Sam</div>
+          <div class="s-call s-mono" id="s-call1"><span class="fn">notify</span>(customer, message)</div>
+          <div class="s-call s-mono s-hide" id="s-call2">sales_book.<span class="fn">save</span>(sale)</div>
+          <div id="s-noerr" class="s-abs s-hide">no error</div>
+        </div>
+        <div id="s-tape" class="s-abs s-hide">
+          <span>Your cake is ready! Come to …</span><span id="s-tail">code is 4471.</span>
+          <span id="s-count">190 characters</span>
+        </div>
+        <div id="s-title" class="s-abs"><span>A</span> <span class="ac">leaky</span> <span>abstraction</span></div>
+
+        <div id="s-phone" class="s-abs s-ol">
+          <div id="s-phead" class="s-abs">CUSTOMER'S PHONE</div>
+          <div class="s-bub s-hide" id="s-bubA">Your cake is ready!</div>
+          <div id="s-tick" class="s-abs s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-bub s-hide" id="s-bubB">Your cake is ready!<br />Come to the side door<br />on Baker Street and<br />ring the bell twice. We<br />are open until 6 pm<br />tonight, so there is no<br />need to rush. Show this<br />code a</div>
+          <div id="s-stops" class="s-abs s-hide">stops here</div>
+          <div id="s-nocode" class="s-abs s-hide">code 4471: missing</div>
+        </div>
+
+        <div id="s-till" class="s-abs s-hide">
+          <div id="s-tscreen" class="s-abs s-ol">
+            <div id="s-tlabel" class="s-abs">THE TILL</div>
+            <div id="s-saving" class="s-abs s-hide">Saving the sale</div>
+            <svg id="s-spin" class="s-abs s-hide" viewBox="0 0 70 70"><circle cx="35" cy="35" r="26" fill="none" stroke="#3e3b52" stroke-width="10" /><path id="s-arc" d="M35 9 A26 26 0 0 1 61 35" fill="none" stroke="#ffc24b" stroke-width="10" stroke-linecap="round" /></svg>
+            <div id="s-sec" class="s-abs s-mono"><b class="c1">1 s</b><b class="c2">2 s</b><b class="c3">3 s</b></div>
+            <div class="s-msg s-mono s-hide" id="s-err">ConnectionError</div>
+            <div class="s-msg s-hide" id="s-plain">Could not save.<br />Will retry.</div>
+            <div id="s-frozen" class="s-abs s-hide">FROZEN</div>
+          </div>
+          <div id="s-tbase" class="s-abs s-ol"><i></i></div>
+          <svg id="s-queue" class="s-abs" viewBox="0 0 400 110">
+            <g class="s-q" opacity="0"><circle cx="60" cy="40" r="30" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" /><path d="M12 110 C12 84 36 76 60 76 C84 76 108 84 108 110 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" /></g>
+            <g class="s-q" opacity="0"><circle cx="190" cy="40" r="30" fill="#e0a878" stroke="#0e0c1d" stroke-width="5" /><path d="M142 110 C142 84 166 76 190 76 C214 76 238 84 238 110 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="5" /></g>
+            <g class="s-q" opacity="0"><circle cx="320" cy="40" r="30" fill="#c98f62" stroke="#0e0c1d" stroke-width="5" /><path d="M272 110 C272 84 296 76 320 76 C344 76 368 84 368 110 Z" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" /></g>
+          </svg>
+          <div id="s-qlabel" class="s-abs s-hide">a queue at the counter</div>
+        </div>
+
+        <!-- the leaks -->
+        <div id="s-plaster" class="s-abs s-hide"><i></i><i></i></div>
+        <svg id="s-drop" class="s-abs s-hide" viewBox="0 0 32 40"><path d="M16 3 C16 3 4 18 4 26 A12 12 0 0 0 28 26 C28 18 16 3 16 3 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+        <div class="s-drip s-hide" id="s-dr1" style="top:786px"><svg viewBox="0 0 32 40"><path d="M16 3 C16 3 4 18 4 26 A12 12 0 0 0 28 26 C28 18 16 3 16 3 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>cut at 160</div>
+        <div class="s-drip s-hide" id="s-dr2" style="top:856px"><svg viewBox="0 0 32 40"><path d="M16 3 C16 3 4 18 4 26 A12 12 0 0 0 28 26 C28 18 16 3 16 3 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>takes 3 seconds</div>
+        <div class="s-drip s-mono s-hide" id="s-dr3" style="top:926px"><svg viewBox="0 0 32 40"><path d="M16 3 C16 3 4 18 4 26 A12 12 0 0 0 28 26 C28 18 16 3 16 3 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>ConnectionError</div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rbtn1" class="s-ring" d="M652 387 C650 313 996 311 996 385 C996 461 646 463 648 379" />
+          <path id="s-rbtn2" class="s-ring" d="M652 565 C650 491 996 489 996 563 C996 639 646 641 648 557" />
+          <path id="s-rstep" class="s-ring" d="M1086 476 C1084 408 1434 406 1434 474 C1434 544 1080 546 1082 468" />
+          <path id="s-rcut" class="s-ring" style="stroke:#b8235a" d="M146 716 C144 690 262 688 262 714 C262 744 140 746 142 710" />
+          <path id="s-rerr" class="s-ring" style="stroke:#b8235a" d="M118 562 C116 500 558 498 558 560 C558 624 112 626 114 554" />
+          <path id="s-under" class="s-ring" style="stroke:#b8235a;stroke-width:8" d="M178 196 Q290 212 410 192" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.221, 0.65, 1.509, 1.881, 2.218, 3.495, 3.831, 4.319, 5.259, 5.759, 6.165, 6.444, 6.583, 6.989, 7.396, 7.546, 7.941, 8.046, 9.242, 9.439, 9.532, 9.892, 10.356, 10.728, 11.157, 11.413, 11.668, 11.796, 12.771, 13.177, 13.491, 13.804, 13.932, 14.211, 14.942, 15.139, 15.244, 15.685, 16.057, 16.277, 16.44, 17.485, 17.996, 18.553, 18.785, 19.691, 19.865, 19.981, 20.538, 20.956, 21.432, 21.722, 22.64, 22.86, 23.29, 23.603, 24.613, 25.322, 25.751, 26.169, 26.308, 26.61, 26.75, 27.005, 27.353, 27.504, 28.003, 29.083, 29.373, 29.664, 30.116, 30.372, 30.709, 31.428, 31.893, 32.067, 32.171, 32.647, 33.762, 34.122, 34.505, 34.784, 35.051, 35.643, 36.061, 36.862, 37.268, 37.617, 37.953, 38.278, 39.323, 39.509, 39.683, 39.834, 40.345, 41.111, 41.285, 41.668, 42.678, 42.887, 43.015, 43.34, 43.468, 43.805, 44.49, 44.85, 46.161, 46.533, 46.719, 46.881, 47.404, 48.727, 48.913, 49.029, 49.412, 49.923, 50.097, 50.376, 50.933, 51.281, 52.338, 52.582, 53.139, 53.673, 54.184, 54.811, 55.252, 55.426, 56.053, 56.39, 56.517, 56.901, 57.017, 57.144, 57.783, 58.224, 58.468, 58.839, 59.014, 59.548, 60.476, 60.929, 61.986, 62.334, 62.717, 63.263, 63.692, 64.052, 64.563, 65.875, 66.026, 66.235, 66.723, 66.955, 67.454, 67.628, 67.744, 68.035, 68.487, 68.847, 69.347, 69.521, 69.648, 70.031];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      // Stroke drawing from the real path length.
+      const draw = (sel, at, d) => {
+        const p = document.querySelector(sel);
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        tl.fromTo(sel, { strokeDashoffset: len, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const press = (btn, at) => {
+        tl.to(btn, { y: 7, scale: 0.96, duration: 0.1, ease: "power2.in" }, at);
+        tl.to(btn, { y: 0, scale: 1, duration: 0.25, ease: "back.out(3)" }, at + 0.12);
+      };
+      const spinGears = (at, d) => {
+        tl.to("#s-g1", { rotation: "+=200", svgOrigin: "40 40", duration: d, ease: "power1.inOut" }, at);
+        tl.to("#s-g2", { rotation: "-=290", svgOrigin: "96 56", duration: d, ease: "power1.inOut" }, at);
+      };
+      // A leak: starts at its source behind the wall, comes through, drops into place.
+      const drip = (sel, dx, dy, at, land) => {
+        tl.fromTo(sel, { opacity: 0, scale: 0.5, x: dx, y: dy }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, at);
+        tl.to(sel, { x: 40, duration: land - at - 0.25, ease: "power2.inOut" }, at + 0.25);
+        tl.to(sel, { x: 0, duration: 0.5, ease: "power1.out" }, land);
+        tl.to(sel, { y: 0, duration: 0.5, ease: "bounce.out" }, land);
+      };
+
+
+      /* ---- 1. Lesson 18: notify, one simple handle ---- */
+      tl.fromTo("#s-l18", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, t(1) - 0.1);
+      pop("#s-btn1", t(5) - 0.05, { from: 0.4 });
+      draw("#s-rbtn1", t(7) - 0.05, 0.55);
+      // Behind it: the hatch slides away and shows the six steps.
+      tl.to("#s-rin", { opacity: 1, duration: 0.05 }, t(9) - 0.15);
+      tl.to("#s-cover", { x: 900, duration: 0.6, ease: "power3.inOut" }, t(9) - 0.15);
+      tl.to("#s-pipes", { opacity: 1, duration: 0.4 }, t(11) - 0.1);
+      ["#s-st-1", "#s-st-2", "#s-st-3", "#s-st-4", "#s-st-5", "#s-st-6"].forEach((s, i) => pop(s, t(11) + i * 0.34, { from: 0.7, d: 0.35 }));
+      spinGears(t(11), 2.2);
+
+      /* ---- 2. A normal day: press, works ---- */
+      out("#s-rbtn1", t(19) - 0.2, 0.25);
+      out("#s-l18", t(19) - 0.2, 0.25);
+      tl.to("#s-cover", { x: 0, duration: 0.6, ease: "power3.inOut" }, t(19));
+      tl.to("#s-rin", { opacity: 0, duration: 0.05 }, t(19) + 0.6);
+      tl.fromTo("#s-strip", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, t(23) - 0.25);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 560, y: 1000 }, { opacity: 1, x: 820, y: 392, duration: 0.6, ease: "power3.out" }, t(24) - 0.45);
+      press("#s-btn1", t(24) + 0.2);
+      tl.to("#s-cursor", { opacity: 0, x: 900, y: 560, duration: 0.4, ease: "power2.in" }, t(26));
+      pop("#s-bubA", t(28) - 0.2, { from: 0.5 });
+      pop("#s-tick", t(28) + 0.2, { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 3. A long message, with the pickup code at the end ---- */
+      out(["#s-bubA", "#s-tick"], t(31) - 0.4, 0.25);
+      tl.fromTo("#s-tape", { opacity: 1, clipPath: "inset(-12% 100% -30% -2%)" }, { opacity: 1, clipPath: "inset(-12% -2% -30% -2%)", duration: 0.9, ease: "power2.out", immediateRender: false }, t(31) - 0.1);
+      tl.fromTo("#s-count", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(33) + 0.35);
+      tl.to("#s-tail", { backgroundColor: "#e6e3ff", duration: 0.3 }, t(37));
+      tl.fromTo("#s-tail", { scale: 1 }, { scale: 1.18, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(38));
+      // Notify reports no problem.
+      tl.set("#s-cursor", { x: 560, y: 1000 }, t(41));
+      tl.to("#s-cursor", { opacity: 1, x: 820, y: 392, duration: 0.55, ease: "power3.out" }, t(42) - 0.5);
+      press("#s-btn1", t(42) + 0.1);
+      tl.to("#s-cursor", { opacity: 0, x: 900, y: 560, duration: 0.4, ease: "power2.in" }, t(43) + 0.2);
+      tl.fromTo("#s-noerr", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(44) - 0.1);
+      // But the customer's text stops mid sentence.
+      tl.fromTo("#s-bubB", { opacity: 1, clipPath: "inset(-4% -4% 104% -4%)" }, { opacity: 1, clipPath: "inset(-4% -4% -4% -4%)", duration: 0.9, ease: "power1.out", immediateRender: false }, t(48) - 0.1);
+      draw("#s-rcut", t(50) - 0.05, 0.45);
+      pop("#s-stops", t(51), { from: 0.4 });
+      tl.fromTo("#s-nocode", { opacity: 0, scale: 2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.3, ease: "power4.in" }, t(56) - 0.3);
+      tl.to("#s-tail", { backgroundColor: "#fbe0ea", color: "#b8235a", duration: 0.3 }, t(54));
+      // Inside: the hatch opens on the step that cuts.
+      tl.to("#s-rin", { opacity: 1, duration: 0.05 }, t(57) - 0.1);
+      tl.to("#s-cover", { x: 900, duration: 0.6, ease: "power3.inOut" }, t(57) - 0.1);
+      tl.to(["#s-st-1", "#s-st-2", "#s-st-4", "#s-st-5", "#s-st-6"], { opacity: 0.45, duration: 0.4 }, t(58));
+      tl.to("#s-st-3", { backgroundColor: "#b8235a", scale: 1.06, duration: 0.3, ease: "back.out(2)" }, t(61) - 0.05);
+      draw("#s-rstep", t(61) + 0.1, 0.5);
+      // That hidden detail just leaked out.
+      out("#s-rstep", t(68), 0.25);
+      pop("#s-stn1", t(71) + 0.1, { from: 0.2 });
+      drip("#s-dr1", 450, -338, t(69), t(72));
+
+      /* ---- 4. Save is a handle too ---- */
+      out(["#s-tape", "#s-noerr", "#s-rcut"], t(74) - 0.35, 0.25);
+      tl.to("#s-phone", { opacity: 0, x: -120, duration: 0.35, ease: "power2.in" }, t(74) - 0.35);
+      tl.to("#s-st-3", { backgroundColor: "#6b1f43", scale: 1, opacity: 0.8, duration: 0.3 }, t(74) - 0.3);
+      swap("#s-call1", "#s-call2", t(74) - 0.05);
+      pop("#s-btn2", t(74), { from: 0.4 });
+      draw("#s-rbtn2", t(77) - 0.1, 0.5);
+      tl.to("#s-savehow", { opacity: 1, duration: 0.3 }, t(77));
+      pop("#s-plugdb", t(77) + 0.1, { from: 0.7 });
+      // Maya plugs in an online sales book.
+      out("#s-rbtn2", t(79) - 0.2, 0.25);
+      tl.to("#s-plugdb", { opacity: 0, x: 380, y: 150, rotation: 14, duration: 0.4, ease: "power2.in" }, t(79));
+      tl.fromTo("#s-plugon", { opacity: 0, x: 420 }, { opacity: 1, x: 0, duration: 0.5, ease: "back.out(1.5)" }, t(80));
+      tl.set("#s-wire", { opacity: 1 }, t(83) - 0.1);
+      draw("#s-wirep", t(83) - 0.05, 0.8);
+      pop("#s-cloud", t(83) + 0.55, { from: 0.5 });
+      pop("#s-cloudtxt", t(83) + 0.7, { from: 0.5 });
+      // Now save takes three seconds.
+      tl.fromTo("#s-till", { opacity: 0, x: -120 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(86) - 0.3);
+      tl.set("#s-cursor", { x: 560, y: 1000 }, t(85));
+      tl.to("#s-cursor", { opacity: 1, x: 820, y: 572, duration: 0.5, ease: "power3.out" }, t(87) - 0.5);
+      press("#s-btn2", t(87));
+      tl.to("#s-cursor", { opacity: 0, x: 900, y: 700, duration: 0.4, ease: "power2.in" }, t(88));
+      tl.to(["#s-saving", "#s-spin"], { opacity: 1, duration: 0.2 }, t(87) + 0.15);
+      tl.to("#s-arc", { rotation: 1080, svgOrigin: "35 35", duration: 2.4, ease: "none" }, t(87) + 0.15);
+      spinGears(t(87) + 0.15, 2.2);
+      tl.set("#s-dot", { opacity: 1, x: 454, y: 469 }, t(87) + 0.2);
+      tl.to("#s-dot", { x: 600, duration: 0.22, ease: "none" }, t(87) + 0.2);
+      tl.to("#s-dot", { y: 640, duration: 0.26, ease: "none" }, t(87) + 0.42);
+      tl.to("#s-dot", { x: 250, duration: 0.52, ease: "none" }, t(87) + 0.68);
+      tl.to("#s-dot", { y: 790, duration: 0.23, ease: "none" }, t(87) + 1.2);
+      tl.to("#s-dot", { x: 506, duration: 0.38, ease: "none" }, t(87) + 1.43);
+      out("#s-dot", t(87) + 1.85, 0.15);
+      const tick = (a, b, at) => {
+        if (a) tl.to(a, { opacity: 0, duration: 0.06 }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.18, ease: "back.out(2)" }, at + 0.06);
+      };
+      tick(null, "#s-sec .c1", t(88) - 0.1);
+      tick("#s-sec .c1", "#s-sec .c2", t(89) - 0.05);
+      tick("#s-sec .c2", "#s-sec .c3", t(90) - 0.05);
+      pop("#s-stn2", t(90) + 0.75, { from: 0.2 });
+      drip("#s-dr2", 530, -319, t(90) + 0.3, t(91) + 0.1);
+      // When the internet drops, the till freezes.
+      pop("#s-gap", t(95) - 0.05, { from: 1, d: 0.1 });
+      pop("#s-x", t(95), { from: 0.2, ease: "back.out(2.4)" });
+      tl.to(["#s-cloud", "#s-cloudtxt"], { opacity: 0.4, duration: 0.3 }, t(95) + 0.1);
+      tl.fromTo("#s-frozen", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(98) - 0.25);
+      tl.fromTo(".s-q", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.8)", stagger: 0.18 }, t(98) + 0.25);
+      pop("#s-qlabel", t(98) + 0.8, { from: 0.6, d: 0.3 });
+      // An error the word save never mentioned.
+      pop("#s-err", t(101) - 0.05, { from: 0.5 });
+      draw("#s-rbtn2", t(104) - 0.1, 0.5);
+      pop("#s-stn3", t(105) + 0.35, { from: 0.2 });
+      drip("#s-dr3", 760, -70, t(105) - 0.1, t(106) + 0.1);
+
+      /* ---- 5. That is a leaky abstraction ---- */
+      out("#s-rbtn2", t(107) - 0.3, 0.25);
+      tl.to("#s-strip", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, t(107) - 0.3);
+      const words = gsap.utils.toArray("#s-title span");
+      tl.fromTo(words[0], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, t(109) - 0.05);
+      tl.fromTo(words[1], { opacity: 0, y: 40, scale: 1.3 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(110) - 0.05);
+      tl.fromTo(words[2], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(111) - 0.05);
+      draw("#s-under", t(111) + 0.5, 0.45);
+      // On a bad day, the hidden machinery shows through.
+      tl.to("#s-st-3", { opacity: 1, backgroundColor: "#b8235a", scale: 1.06, duration: 0.25, ease: "back.out(2)" }, t(117));
+      tl.fromTo("#s-plugon", { scale: 1 }, { scale: 1.08, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }, t(118));
+      tl.fromTo("#s-x", { scale: 1 }, { scale: 1.4, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }, t(118) + 0.2);
+      spinGears(t(117), 1.6);
+      tl.fromTo([".s-stain"], { scale: 1 }, { scale: 1.5, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", stagger: 0.12 }, t(119));
+      tl.fromTo(["#s-dr1", "#s-dr2", "#s-dr3"], { scale: 1 }, { scale: 1.12, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", stagger: 0.15 }, t(120) - 0.1);
+
+      /* ---- 6. You cannot seal every leak. So be honest. ---- */
+      tl.fromTo("#s-plaster", { opacity: 0, scale: 2, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.3, ease: "power4.in" }, t(123) - 0.25);
+      tl.to("#s-plaster", { y: 420, rotation: 120, opacity: 0, duration: 0.7, ease: "power2.in" }, t(125) - 0.1);
+      tl.fromTo("#s-drop", { opacity: 0, y: -20, scale: 0.4 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(2)" }, t(125));
+      tl.to("#s-drop", { y: 240, opacity: 0, duration: 0.6, ease: "power2.in" }, t(125) + 0.3);
+      // Write the limits on the front.
+      tl.fromTo("#s-panel", { scale: 1 }, { scale: 1.05, transformOrigin: "100% 50%", duration: 0.22, yoyo: true, repeat: 1, ease: "power2.out" }, t(134) - 0.1);
+      tl.to("#s-dr1", { y: -330, x: 0, scale: 0.9, opacity: 0, duration: 0.45, ease: "power3.in" }, t(135) - 0.3);
+      pop("#s-pl1", t(135) + 0.1, { from: 0.5, ease: "back.out(2)" });
+      pop("#s-pl2", t(141), { from: 0.5, ease: "back.out(2)" });
+      tl.to("#s-dr2", { y: -172, x: 0, scale: 0.9, opacity: 0, duration: 0.45, ease: "power3.in" }, t(142) + 0.45);
+      pop("#s-pl3", t(142) + 0.85, { from: 0.5, ease: "back.out(2)" });
+      // Turn strange errors into plain words.
+      draw("#s-rerr", t(145) - 0.05, 0.5);
+      out("#s-rerr", t(146), 0.2);
+      tl.to("#s-dr3", { x: -420, y: -390, scale: 0.8, opacity: 0, duration: 0.45, ease: "power3.in" }, t(146) - 0.2);
+      swap("#s-err", "#s-plain", t(146) + 0.2);
+      tl.to("#s-frozen", { opacity: 0, scale: 0.6, duration: 0.25, ease: "power2.in" }, t(146) + 0.3);
+      out(["#s-sec", "#s-spin", "#s-saving"], t(146) + 0.3, 0.25);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 65.75);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+In lesson eighteen, Maya built notify. One simple handle. Behind it, all the fiddly steps of sending a text.
+
+On a normal day, Sam presses it, and it works.
+
+Then Sam writes a long message, with the pickup code at the end. Notify reports no problem. But the customer's text stops mid sentence. The code is missing. Inside, every text is cut at one hundred and sixty characters. That hidden detail just leaked out.
+
+Save is a handle too. Maya plugs in an online sales book. Now save takes three seconds. And when the internet drops, the till freezes, with an error the word save never mentioned.
+
+That is a leaky abstraction. On a bad day, the hidden machinery shows through.
+
+You cannot seal every leak. So be honest. Write the limits on the front. Max one hundred and sixty characters. Needs internet. And turn strange errors into plain words.
+
+A good handle is simple on a good day, and honest on a bad day.

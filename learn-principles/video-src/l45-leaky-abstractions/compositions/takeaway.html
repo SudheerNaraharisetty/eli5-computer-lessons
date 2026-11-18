@@ -1,0 +1,77 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-chip { left: 110px; top: 96px; padding: 8px 28px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 34px; line-height: 1.4; white-space: nowrap; opacity: 0; }
+    #t-chip b { color: #c9c6ff; }
+    #t-kick { left: 110px; top: 236px; font-size: 48px; line-height: 1.2; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    #t-head { left: 110px; top: 310px; font: 700 112px/1.14 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ok { color: #1f7a5c; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-plates { left: 110px; top: 660px; display: flex; gap: 26px; }
+    #t-plates span { opacity: 0; padding: 6px 26px; background: #ddefe6; color: #1f7a5c; border-radius: 14px; font-size: 34px; line-height: 1.4; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-panel { left: 1420px; top: 250px; width: 390px; height: 400px; background: #fff; border-radius: 28px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-btn { left: 40px; top: 34px; width: 310px; height: 96px; border-radius: 20px; background: #3b37e6; color: #fff; font: 700 46px/96px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; text-align: center; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    #t-gauge { left: 75px; top: 160px; width: 240px; height: 150px; }
+    #t-glabel { left: 0; top: 318px; width: 390px; text-align: center; font-size: 30px; color: #1f7a5c; white-space: nowrap; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.7" data-track-index="1">
+      <div id="t-chip" class="t-abs">Lesson 45 <b>·</b> Leaky abstractions</div>
+      <div id="t-kick" class="t-abs">A good handle is</div>
+      <div id="t-head" class="t-abs">
+        <span class="ok">simple</span> <span>on</span> <span>a</span> <span>good</span> <span>day,</span><br />
+        <span class="ac">honest</span> <span>on</span> <span>a</span> <span>bad</span> <span>day.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 572 Q280 596 452 566" /></svg>
+      <div id="t-plates" class="t-abs"><span>max 160 characters</span><span>needs internet</span><span>can take 3 s</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 46: Convention over configuration</div>
+      <div id="t-panel" class="t-abs">
+        <div id="t-btn" class="t-abs">notify</div>
+        <svg id="t-gauge" class="t-abs" viewBox="0 0 240 150">
+          <path d="M20 130 A100 100 0 0 1 220 130" fill="none" stroke="#0e0c1d" stroke-width="22" stroke-linecap="round" />
+          <path d="M20 130 A100 100 0 0 1 170 43" fill="none" stroke="#4bd69b" stroke-width="12" stroke-linecap="round" />
+          <path d="M184 53 A100 100 0 0 1 220 130" fill="none" stroke="#ff6b8b" stroke-width="12" stroke-linecap="round" />
+          <g id="t-needle"><path d="M120 130 L120 46" stroke="#0e0c1d" stroke-width="9" stroke-linecap="round" /></g>
+          <circle cx="120" cy="130" r="13" fill="#0e0c1d" />
+        </svg>
+        <div id="t-glabel" class="t-abs">max 160 characters</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 66.1;
+      const g = { a: 66.475, simple: 67.555, honest: 69.447, end: 71.33 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      const under = document.querySelector("#t-under");
+      const len = under.getTotalLength();
+      under.style.strokeDasharray = len;
+      tl.fromTo("#t-chip", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.05);
+      tl.fromTo("#t-panel", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-needle", { rotation: -78, svgOrigin: "120 130" }, { rotation: -78, svgOrigin: "120 130", duration: 0.01 }, 0);
+      tl.fromTo("#t-kick", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, g.a - S - 0.05);
+      tl.fromTo(words.slice(0, 5), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.16 }, g.simple - S - 0.05);
+      tl.to("#t-needle", { rotation: -20, svgOrigin: "120 130", duration: 0.9, ease: "power2.inOut" }, g.simple - S);
+      tl.fromTo(words.slice(5), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.16 }, g.honest - S - 0.05);
+      tl.to("#t-needle", { rotation: 62, svgOrigin: "120 130", duration: 0.7, ease: "back.out(2)" }, g.honest - S + 0.5);
+      tl.fromTo("#t-under", { strokeDashoffset: len, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.out", immediateRender: false }, g.honest - S + 0.9);
+      tl.fromTo("#t-plates span", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", stagger: 0.2 }, g.end - S - 0.2);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.3);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

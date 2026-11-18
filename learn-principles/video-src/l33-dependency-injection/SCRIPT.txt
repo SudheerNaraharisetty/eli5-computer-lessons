@@ -1,0 +1,11 @@
+Maya's checkout needs four helpers. A card machine. A sales book. A printer. And the clock.
+
+Today it goes and gets them itself. Four arms reach under the counter, where nobody looks. From the front, it seems to need only a price.
+
+So to try it out, Maya has to charge a real card, write in the real sales book, and print real paper. She buys a cookie from herself, for one cent. One day, that cent lands in her tax report.
+
+The fix. Pull the arms in. Cut four slots in the front. Now one small file, the wiring, hands checkout its parts.
+
+For the shop, the real ones. For a try-out, pretend ones. Nothing real is touched. For shop two, a different printer. Lines changed in checkout: zero.
+
+That is dependency injection. Do not let code fetch its own parts. Hand it what it needs.

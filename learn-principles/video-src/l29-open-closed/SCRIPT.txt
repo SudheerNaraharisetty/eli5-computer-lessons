@@ -1,0 +1,17 @@
+Maya's checkout gives discounts. Student. Coupon. Staff.
+
+In the code, they share one function. A chain of ifs.
+
+Every month, marketing invents a new one. This month, a birthday treat.
+
+So Maya opens the function that every sale runs through, and adds a branch. The receipt and the report have the same chain. Three functions to open.
+
+And she slips. She types if, where else if belonged.
+
+The birthday treat works. But the student and coupon discounts quietly stop. She broke code she never meant to touch.
+
+The fix. Each promotion becomes its own small class, like a cartridge. The checkout loops over whatever is plugged in. Then the lid goes on.
+
+Next month, a new promotion. Maya writes one new class and plugs it in. A new light comes on. Every old light stays lit. Functions opened: zero.
+
+That is the open closed principle. Open for adding. Closed for editing. Ask: to add the next one, must I edit code that already works?

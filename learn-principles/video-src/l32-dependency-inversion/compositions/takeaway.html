@@ -1,0 +1,85 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 110px; top: 100px; padding: 6px 30px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 44px; line-height: 1.4; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-head { left: 110px; top: 220px; font: 700 124px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-under { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-solid { left: 110px; top: 610px; display: flex; gap: 18px; }
+    #t-solid div { width: 170px; height: 150px; border-radius: 20px; background: #fff; text-align: center; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    #t-solid b { display: block; font: 700 76px/1 "Fraunces", serif; padding-top: 14px; }
+    #t-solid small { display: block; font-size: 28px; line-height: 1.5; color: #3e3b52; }
+    #t-solid div.d { background: #3b37e6; color: #fff; }
+    #t-solid div.d small { color: #fff; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    /* diagram */
+    #t-rules { left: 1290px; top: 200px; width: 400px; height: 190px; border-radius: 26px; background: #fff; text-align: center; font: 700 60px/120px "Fraunces", serif; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #t-idea { left: 1370px; top: 340px; width: 240px; height: 76px; border-radius: 20px; background: #e6e3ff; color: #3b37e6; text-align: center; font-size: 38px; line-height: 76px; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 7px 0 5px #0e0c1d; }
+    .t-det { position: absolute; top: 650px; width: 210px; height: 84px; border-radius: 20px; background: #ddefe6; text-align: center; font-size: 30px; line-height: 84px; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; white-space: nowrap; }
+    #t-arrs > g { opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="10.4" data-track-index="1">
+      <div id="t-kick" class="t-abs">Dependency inversion</div>
+      <div id="t-head" class="t-abs">
+        <span>Depend</span> <span>on</span> <span class="ac">ideas,</span><br />
+        <span>not</span> <span>details.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080">
+        <path id="t-under" d="M690 362 Q850 386 1040 356" />
+        <g id="t-arrs" stroke="#1f7a5c" stroke-width="12" stroke-linecap="round" fill="#1f7a5c">
+          <g id="t-a1"><line x1="1245" y1="636" x2="1392" y2="468" /><polygon points="1414,442 1410,486 1376,456" stroke="none" /></g>
+          <g id="t-a2"><line x1="1490" y1="636" x2="1490" y2="476" /><polygon points="1490,442 1466,480 1514,480" stroke="none" /></g>
+          <g id="t-a3"><line x1="1735" y1="636" x2="1588" y2="468" /><polygon points="1566,442 1570,486 1604,456" stroke="none" /></g>
+        </g>
+      </svg>
+      <div id="t-rules" class="t-abs">Rules</div>
+      <div id="t-idea" class="t-abs">the idea</div>
+      <div class="t-det" id="t-d1" style="left:1140px">spreadsheet</div>
+      <div class="t-det" id="t-d2" style="left:1385px">database</div>
+      <div class="t-det" id="t-d3" style="left:1630px">online</div>
+      <div id="t-solid" class="t-abs">
+        <div><b>S</b><small>lesson 16</small></div>
+        <div><b>O</b><small>lesson 29</small></div>
+        <div><b>L</b><small>lesson 30</small></div>
+        <div><b>I</b><small>lesson 31</small></div>
+        <div class="d"><b>D</b><small>lesson 32</small></div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 33: Dependency injection</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 54.6;
+      const g = { dep: 55.11, rules: 57.05, middle: 57.58, details: 58.26, point: 58.85, depend: 59.71, ideas: 60.44, not: 61.22, end: 62.5 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      const pop = (sel, at, o) => tl.fromTo(sel, { opacity: 0, scale: 0.6 }, Object.assign({ opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, o || {}), at);
+      tl.fromTo("#t-kick", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.dep - S - 0.1);
+      pop("#t-rules", g.rules - S - 0.05);
+      pop("#t-idea", g.middle - S);
+      pop(".t-det", g.details - S - 0.05, { stagger: 0.12 });
+      tl.fromTo("#t-arrs > g", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.1 }, g.point - S);
+      tl.fromTo(words.slice(0, 3), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.3 }, g.depend - S - 0.05);
+      tl.fromTo(words.slice(3), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.26 }, g.not - S - 0.05);
+      const u = document.querySelector("#t-under"), L = u.getTotalLength() + 2;
+      gsap.set(u, { strokeDasharray: L, strokeDashoffset: L });
+      tl.set(u, { opacity: 1 }, g.ideas - S + 0.3);
+      tl.to(u, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, g.ideas - S + 0.31);
+      tl.fromTo("#t-solid div", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", stagger: 0.14 }, g.end - S - 0.3);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.35);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,15 @@
+Maya's shop runs on rules. How a total is worked out. How points are earned. It is the most valuable code she has.
+
+But look inside. The rules name the spreadsheet tool. So the rules depend on a detail. The arrow points down.
+
+Then the accountant wants a database. To swap it, Maya has to rewrite the rules file. And while she is in there, she breaks the points. One three dollar cookie now earns three hundred points.
+
+The rules never changed. Only the supplier did.
+
+The fix. The rules say what they need, in their own words. A sales book I can save to. That idea belongs to the rules.
+
+Now the spreadsheet has to fit the idea. The arrow turns around.
+
+Swap in a database. Then an online service. Lines changed in the rules: zero.
+
+That is dependency inversion. Rules in the middle. Details point in. Depend on ideas, not details.

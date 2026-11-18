@@ -1,0 +1,17 @@
+Sam is proud of one line of code. It works out loyalty points. A point per dollar, double on Tuesdays, and 10 extra on your birthday. All in one clever line.
+
+He tries a Monday, a Tuesday and a birthday. All correct. Written in 20 minutes.
+
+6 months later, Ana complains. Her birthday fell on a Tuesday, and her bonus never came.
+
+Sam stares at his own line. Which part decides that? Priya cannot even start. 3 hours go by.
+
+Brian Kernighan warned about this in the 1970s. Debugging is twice as hard as writing a program. So if you're as clever as you can be when you write it, how will you ever debug it?
+
+Sam used all his cleverness to write that line. Fixing it needs twice as much.
+
+So they write it again, in plain steps. One rule per line. And there it is. Else if. On a Tuesday, the birthday line never runs. Found in 5 minutes.
+
+Change one word. Add one test. Done.
+
+That is Kernighan's law. Write code less clever than you can, and leave room to debug it.

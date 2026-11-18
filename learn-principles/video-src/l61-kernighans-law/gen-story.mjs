@@ -1,0 +1,449 @@
+// Generates compositions/story.html for lesson 61, Kernighan's law.
+// Stage 1: Sam's clever one-liner, his three checks, Ana's complaint, three hours of staring.
+// Stage 2: Kernighan's quote and the brain-power gauges (writing 100%, debugging 200%: it overflows and cracks).
+// Stage 3: the plain rewrite, the elif found in 5 minutes, one word changed, one test added.
+// Run: node gen-story.mjs
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const words = JSON.parse(fs.readFileSync(path.join(here, "assets/voice/words.json"), "utf8"));
+const W = words.map((w) => w.start);
+const END = 66.4;
+const INK = "#0e0c1d";
+
+// A person, as in lesson 53. viewBox 100 x 110.
+const personSvg = (shirt, hair) => `<svg viewBox="0 0 100 110" data-layout-allow-overflow>
+            <path d="M12 108 Q12 62 50 62 Q88 62 88 108 Z" fill="${shirt}" stroke="${INK}" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="50" cy="34" r="22" fill="#f2c9a5" stroke="${INK}" stroke-width="5" />
+            <path d="M28 32 Q30 10 50 10 Q70 10 72 32 Q60 22 44 22 Q34 24 28 32 Z" fill="${hair}" stroke="${INK}" stroke-width="5" stroke-linejoin="round" />
+            <circle cx="42" cy="38" r="3" fill="${INK}" /><circle cx="58" cy="38" r="3" fill="${INK}" />
+          </svg>`;
+
+const hand = (cx, cy, rx, ry) =>
+  `M${cx - rx + 4} ${cy + 2} C${cx - rx - 2} ${cy - ry - 6} ${cx + rx} ${cy - ry - 8} ${cx + rx} ${cy} C${cx + rx} ${cy + ry + 4} ${cx - rx - 6} ${cy + ry + 6} ${cx - rx} ${cy - 8}`;
+const CHECK = `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#1f7a5c" stroke="${INK}" stroke-width="5" /><path d="M19 33 L28 42 L46 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+
+// mono geometry: text starts at x=192, 18px per character (30px JetBrains Mono)
+const CX = (col) => 192 + col * 18;
+// stage 1 clever line is row 2 of a panel at top 96: rows start at 96+92
+const ROW1 = (r) => 188 + (r - 1) * 52; // top of row r, stage 1
+const SEG = { d: [11, 17], t: [18, 38], b: [51, 59] };
+const segMid = (k) => (CX(SEG[k][0]) + CX(SEG[k][1])) / 2;
+const LINE_Y = ROW1(2) + 26;
+
+// stage 3: plain code panel at top 96, rows start at 96+104
+const ROW3 = (r) => 200 + (r - 1) * 52;
+
+// time bars: 180 minutes = full track
+const TRACK1 = 960, TRACK3 = 534;
+
+const kw = (s) => `<span class="kw">${s}</span>`;
+const st = (s) => `<span class="st">${s}</span>`;
+const nm = (s) => `<span class="nm">${s}</span>`;
+
+const html = `<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; }
+    #s-all, #s-wrap, #s-st1, #s-st2, #s-st3 { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-pill { position: absolute; height: 52px; line-height: 52px; padding: 0 22px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-lab { position: absolute; font-size: 30px; line-height: 40px; color: #3e3b52; white-space: nowrap; }
+
+    /* code panels */
+    .s-code { background: #15132b; border-radius: 24px; color: #fff; }
+    .s-bar { position: absolute; left: 0; top: 0; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    .s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    .s-bar > i:nth-child(2) { background: #ffc24b; }
+    .s-bar > i:nth-child(3) { background: #4bd69b; }
+    .s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; font-variant-ligatures: none; }
+    .s-lines { position: absolute; left: 36px; font: 500 30px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    .s-ln { height: 52px; display: flex; white-space: pre; }
+    .s-ln > i { width: 60px; flex: none; font-style: normal; color: #8480b8; }
+    .kw { color: #c9c6ff; }
+    .fn { color: #7cf0b5; }
+    .st { color: #ffc24b; }
+    .nm { color: #ffb38a; }
+    #s-code1 { left: 96px; top: 96px; width: 1728px; height: 236px; }
+    #s-code1 .s-bar { width: 1728px; }
+    #s-code1 .s-lines { top: 92px; }
+    .s-u { position: absolute; height: 8px; border-radius: 4px; top: ${LINE_Y + 24}px; }
+
+    /* people */
+    .s-who { position: absolute; width: 200px; height: 220px; }
+    .s-who > svg { position: absolute; left: 0; top: 0; width: 200px; height: 220px; }
+    .s-name { position: absolute; top: 900px; height: 50px; line-height: 50px; padding: 0 22px; border-radius: 999px; font-size: 30px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    .s-bub { position: absolute; width: 96px; height: 80px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; font: 700 52px/80px "Fraunces", serif; text-align: center; color: #b8235a; }
+
+    /* stage 1 cards */
+    .s-chip { position: absolute; top: 410px; height: 64px; line-height: 64px; padding: 0 28px; border-radius: 18px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    .s-test { position: absolute; top: 410px; width: 380px; height: 170px; background: #fff; border-radius: 22px; padding: 22px 28px; }
+    .s-test small { display: block; font-size: 30px; line-height: 40px; color: #3e3b52; }
+    .s-test b { display: block; font: 700 30px/1.2 "JetBrains Mono", monospace; font-size: 48px; margin-top: 18px; }
+    .s-chk { position: absolute; width: 64px; height: 64px; }
+    .s-chk > svg { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+    #s-mail { left: 560px; top: 410px; width: 760px; height: 280px; background: #fff; border-radius: 22px; }
+    #s-mailh { position: absolute; left: 0; top: 0; width: 760px; height: 62px; border-radius: 22px 22px 0 0; background: #fbebd2; box-shadow: 0 4px 0 0 #0e0c1d; padding: 0 28px; font-size: 30px; line-height: 62px; color: #b9741a; }
+    #s-mail p { position: absolute; left: 28px; font-size: 32px; line-height: 44px; white-space: nowrap; }
+    #s-got { left: 1370px; top: 410px; width: 430px; height: 280px; background: #fff; border-radius: 22px; }
+    .s-gx { position: absolute; left: 30px; width: 370px; display: flex; justify-content: space-between; align-items: baseline; }
+    .s-gx small { font-size: 30px; color: #3e3b52; }
+    .s-gx b { font: 700 60px/1.1 "JetBrains Mono", monospace; }
+
+    /* time bars */
+    .s-trk { position: absolute; height: 48px; background: #fff; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; overflow: hidden; }
+    .s-fill { position: absolute; left: 0; top: 0; height: 48px; transform-origin: 0 50%; }
+    .s-val { position: absolute; font-size: 30px; line-height: 48px; white-space: nowrap; }
+
+    /* stage 2 */
+    #s-quote { left: 96px; top: 200px; width: 1000px; height: 560px; background: #fff; border-radius: 28px; }
+    #s-qwho { left: 44px; top: 44px; background: #3b37e6; color: #fff; }
+    #s-qsrc { left: 44px; top: 122px; font-size: 30px; color: #3e3b52; }
+    #s-qtext { left: 44px; top: 200px; width: 910px; font: 700 50px/1.32 "Fraunces", serif; letter-spacing: -0.01em; }
+    #s-qtext span { opacity: 0; }
+    #s-qtext em { font-style: normal; display: inline; }
+    .s-tube { position: absolute; top: 560px; width: 170px; height: 360px; border-radius: 0 0 26px 26px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; overflow: hidden; }
+    .s-tfill { position: absolute; left: 0; bottom: 0; width: 170px; height: 360px; transform-origin: 50% 100%; }
+    #s-ghost { left: 1560px; top: 200px; width: 170px; height: 360px; border-radius: 26px 26px 0 0; border: 5px dashed #b8235a; }
+    #s-spill { left: 1560px; top: 200px; width: 170px; height: 360px; border-radius: 26px 26px 0 0; background: repeating-linear-gradient(135deg, #f7b5cb 0 16px, #fbe0ea 16px 32px); transform-origin: 50% 100%; box-shadow: 0 0 0 5px #b8235a; }
+    #s-limit { left: 1200px; top: 557px; width: 600px; height: 6px; background: #0e0c1d; }
+    .s-pct { position: absolute; width: 170px; text-align: center; font: 700 44px/1 "Fraunces", serif; }
+    .s-tlab { position: absolute; top: 950px; width: 240px; text-align: center; font-size: 30px; line-height: 40px; color: #3e3b52; }
+    #s-marks2 { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks2 path { fill: none; opacity: 0; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* stage 3 */
+    #s-code3 { left: 96px; top: 96px; width: 1054px; height: 888px; }
+    #s-code3 .s-bar { width: 1054px; }
+    #s-code3 .s-lines { top: 104px; }
+    #s-el, #s-rest { display: inline-block; }
+    .s-tag { position: absolute; left: 740px; height: 48px; line-height: 48px; padding: 0 20px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-rt1, #s-rt2 { left: 40px; font: 700 48px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-ana { left: 40px; top: 100px; width: 534px; height: 190px; background: #fff; border-radius: 20px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    #s-ana small { position: absolute; left: 28px; top: 22px; font-size: 30px; color: #3e3b52; white-space: nowrap; }
+    #s-pts { position: absolute; left: 28px; top: 82px; width: 420px; height: 80px; }
+    #s-pts b { position: absolute; left: 0; top: 0; font: 700 64px/80px "JetBrains Mono", monospace; white-space: nowrap; }
+    .s-row3 { position: absolute; left: 40px; }
+    .s-row3 > small { display: block; font-size: 30px; line-height: 40px; color: #3e3b52; white-space: nowrap; margin-bottom: 12px; }
+    #s-pass { right: 22px; top: 6px; height: 50px; line-height: 50px; background: #1f7a5c; color: #fff; box-shadow: none; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; opacity: 0; stroke-linecap: round; stroke-linejoin: round; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="${END}" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- ============ STAGE 1: the clever line ============ -->
+        <div id="s-st1">
+          <div id="s-code1" class="s-abs s-code s-ol s-hide">
+            <div class="s-bar"><i></i><i></i><i></i><span>loyalty.py</span></div>
+            <div class="s-lines">
+              <div class="s-ln"><i>1</i><span>${kw("def")} <span class="fn">pts</span>(t, d, b):</span></div>
+              <div class="s-ln"><i>2</i><span>    ${kw("return")} <span id="s-sd">int(t)</span> <span id="s-stu">* ${nm("2")} ${kw("if")} d[:${nm("2")}] == ${st('"Tu"')}</span> ${kw("else")} int(t) <span id="s-sb">+ ${nm("10")} * b</span></span></div>
+            </div>
+          </div>
+          <div id="s-u1" class="s-u s-hide" style="left:${CX(SEG.d[0])}px;width:${CX(SEG.d[1]) - CX(SEG.d[0])}px;background:#8f8cff"></div>
+          <div id="s-u2" class="s-u s-hide" style="left:${CX(SEG.t[0])}px;width:${CX(SEG.t[1]) - CX(SEG.t[0])}px;background:#ffc24b"></div>
+          <div id="s-u3" class="s-u s-hide" style="left:${CX(SEG.b[0])}px;width:${CX(SEG.b[1]) - CX(SEG.b[0])}px;background:#4bd69b"></div>
+          <div id="s-oneline" class="s-pill s-hide" style="left:1300px;top:${LINE_Y - 26}px;background:#ffc24b">3 rules, 1 line</div>
+
+          <div id="s-c1" class="s-chip s-hide" style="left:560px;background:#e6e3ff">1 point per dollar</div>
+          <div id="s-c2" class="s-chip s-hide" style="left:960px;background:#fbebd2">double on Tuesdays</div>
+          <div id="s-c3" class="s-chip s-hide" style="left:1360px;background:#ddefe6">+10 on your birthday</div>
+
+          <div id="s-tcap" class="s-lab s-hide" style="left:560px;top:352px">Sam's checks, each order $23.50</div>
+          <div id="s-t1" class="s-test s-ol s-hide" style="left:560px"><small>Monday</small><b>23 points</b><div class="s-chk s-hide" style="right:-22px;top:-24px">${CHECK}</div></div>
+          <div id="s-t2" class="s-test s-ol s-hide" style="left:990px"><small>Tuesday</small><b>46 points</b><div class="s-chk s-hide" style="right:-22px;top:-24px">${CHECK}</div></div>
+          <div id="s-t3" class="s-test s-ol s-hide" style="left:1420px"><small>Monday, birthday</small><b>33 points</b><div class="s-chk s-hide" style="right:-22px;top:-24px">${CHECK}</div></div>
+
+          <div id="s-later" class="s-pill s-hide" style="left:560px;top:334px;background:#0e0c1d;color:#fff">6 months later</div>
+          <div id="s-mail" class="s-abs s-ol s-hide">
+            <div id="s-mailh">A complaint from Ana</div>
+            <p style="top:88px">"My birthday was on a Tuesday.</p>
+            <p style="top:136px">&nbsp;I spent $23.50 and got 46 points.</p>
+            <p style="top:184px">&nbsp;Where is my birthday bonus?"</p>
+          </div>
+          <div id="s-got" class="s-abs s-ol s-hide">
+            <div class="s-gx" style="top:52px"><small>she got</small><b style="color:#b8235a">46</b></div>
+            <div class="s-gx" style="top:160px"><small>she should get</small><b style="color:#1f7a5c">56</b></div>
+          </div>
+
+          <div id="s-times" class="s-hide">
+            <div class="s-lab" style="left:560px;top:790px">writing</div>
+            <div class="s-trk" style="left:820px;top:786px;width:${TRACK1}px"><div id="s-f1" class="s-fill" style="width:${TRACK1}px;background:#3b37e6"></div></div>
+            <div id="s-v1" class="s-val" style="left:${820 + (TRACK1 * 20) / 180 + 18}px;top:786px">20 min</div>
+            <div id="s-dbg" class="s-hide">
+              <div class="s-lab" style="left:560px;top:880px">debugging</div>
+              <div class="s-trk" style="left:820px;top:876px;width:${TRACK1}px"><div id="s-f2" class="s-fill" style="width:${TRACK1}px;background:#b8235a"></div></div>
+              <div id="s-v2" class="s-val s-hide" style="left:${820 + TRACK1 - 150}px;top:876px;color:#fff">3 hours</div>
+            </div>
+          </div>
+          <div id="s-notfound" class="s-pill s-hide" style="left:1500px;top:726px;background:#fbe0ea;color:#b8235a">still not found</div>
+
+          <div id="s-sam" class="s-who" style="left:100px;top:660px">${personSvg("#a9dcc4", "#3e3b52")}</div>
+          <div id="s-samn" class="s-name" style="left:150px">Sam</div>
+          <div id="s-priya" class="s-who s-hide" style="left:330px;top:660px">${personSvg("#c9c6ff", "#2a2140")}</div>
+          <div id="s-priyan" class="s-name s-hide" style="left:370px">Priya</div>
+          <div id="s-bs" class="s-bub s-hide" style="left:150px;top:560px">?</div>
+          <div id="s-bp" class="s-bub s-hide" style="left:380px;top:560px">?</div>
+          <div id="s-proud" class="s-bub s-hide" style="left:150px;top:560px;color:#1f7a5c">!</div>
+        </div>
+
+        <!-- ============ STAGE 2: the quote and the gauges ============ -->
+        <div id="s-st2">
+          <div id="s-quote" class="s-abs s-ol s-hide">
+            <div id="s-qwho" class="s-pill">Brian Kernighan</div>
+            <div id="s-qsrc" class="s-abs s-hide">The Elements of Programming Style, 1978</div>
+            <div id="s-qtext" class="s-abs"><span id="s-q1">"Everyone knows that debugging is <em id="s-qh1">twice as hard</em> as writing a program in the first place.</span> <span id="s-q2">So if you're <em id="s-qh2">as clever as you can be</em> when you write it, <em id="s-qh3">how will you ever debug it?"</em></span></div>
+          </div>
+          <div id="s-gauges" class="s-hide">
+            <div class="s-lab" style="left:1200px;top:140px;font-size:32px;color:#0e0c1d">brain power</div>
+            <div id="s-ghost" class="s-abs s-hide"></div>
+            <div id="s-spill" class="s-abs s-hide"></div>
+            <div class="s-tube" style="left:1260px"><div id="s-gw" class="s-tfill" style="background:#3b37e6"></div></div>
+            <div class="s-tube" style="left:1560px"><div id="s-gd" class="s-tfill" style="background:#b8235a"></div></div>
+            <div id="s-limit" class="s-abs s-hide"></div>
+            <div id="s-limlab" class="s-lab s-hide" style="left:1200px;top:500px;color:#0e0c1d">Sam's limit</div>
+            <div class="s-tlab" style="left:1225px">writing</div>
+            <div class="s-tlab" style="left:1525px">debugging</div>
+            <div id="s-pw" class="s-pct s-hide" style="left:1260px;top:600px;color:#fff">100%</div>
+            <div id="s-pd" class="s-pct s-hide" style="left:1560px;top:240px;color:#b8235a">200%</div>
+            <div id="s-twice" class="s-pill s-hide" style="left:1452px;top:686px;background:#ffc24b">×2</div>
+            <div id="s-nofit" class="s-pill s-hide" style="left:1560px;top:126px;background:#b8235a;color:#fff">does not fit</div>
+            <svg id="s-marks2" class="s-abs" viewBox="0 0 1920 1080">
+              <path id="s-crack1" d="M1566 566 L1600 610 L1586 640 L1626 690 L1612 724" stroke="#0e0c1d" stroke-width="6" />
+              <path id="s-crack2" d="M1724 580 L1700 620 L1716 652 L1690 700" stroke="#0e0c1d" stroke-width="6" />
+              <path id="s-arr" d="M1436 806 Q1495 746 1554 806" stroke="#b9741a" stroke-width="6" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- ============ STAGE 3: plain steps ============ -->
+        <div id="s-st3">
+          <div id="s-code3" class="s-abs s-code s-ol s-hide">
+            <div class="s-bar"><i></i><i></i><i></i><span>loyalty.py, in plain steps</span></div>
+            <div id="s-pass" class="s-pill s-hide">1 test passed</div>
+            <div class="s-lines">
+              <div class="s-ln s-pl"><i>1</i><span>${kw("def")} <span class="fn">points_for</span>(total, day, is_birthday):</span></div>
+              <div class="s-ln s-pl"><i>2</i><span>    points = int(total)</span></div>
+              <div class="s-ln s-pl"><i>3</i><span>    ${kw("if")} day == ${st('"Tuesday"')}:</span></div>
+              <div class="s-ln s-pl"><i>4</i><span>        points = points * ${nm("2")}</span></div>
+              <div class="s-ln s-pl"><i>5</i><span>    <span id="s-el" class="kw">el</span><span id="s-rest">${kw("if")} is_birthday:</span></span></div>
+              <div class="s-ln s-pl" id="s-l6"><i>6</i><span>        points = points + ${nm("10")}</span></div>
+              <div class="s-ln s-pl"><i>7</i><span>    ${kw("return")} points</span></div>
+              <div class="s-ln"><i>8</i></div>
+              <div class="s-ln s-tl"><i>9</i><span>${kw("def")} <span class="fn">test_birthday_on_a_tuesday</span>():</span></div>
+              <div class="s-ln s-tl"><i>10</i><span>    ${kw("assert")} points_for(${nm("23.50")}, ${st('"Tuesday"')}, ${kw("True")}) == ${nm("56")}</span></div>
+            </div>
+          </div>
+          <div id="s-g1" class="s-tag s-hide" style="top:${ROW3(2) + 2}px;background:#e6e3ff">1 point per dollar</div>
+          <div id="s-g2" class="s-tag s-hide" style="top:${ROW3(4) + 2}px;background:#fbebd2">double on Tuesday</div>
+          <div id="s-g3" class="s-tag s-hide" style="top:${ROW3(6) + 2}px;background:#ddefe6">+10 on a birthday</div>
+          <div id="s-g3x" class="s-tag s-hide" style="top:${ROW3(6) + 2}px;background:#fbe0ea;color:#b8235a">skipped on Tuesdays</div>
+
+          <div id="s-right" class="s-abs s-ol s-hide">
+            <div id="s-rt1" class="s-abs" style="top:24px">Ana's order</div>
+            <div id="s-ana" class="s-abs">
+              <small>$23.50, Tuesday, birthday</small>
+              <div id="s-pts"><b id="s-p46" style="color:#b8235a">46 points</b><b id="s-p56" style="color:#1f7a5c;opacity:0">56 points</b></div>
+              <div id="s-anachk" class="s-chk s-hide" style="right:-22px;top:-24px">${CHECK}</div>
+            </div>
+            <div id="s-rt2" class="s-abs" style="top:336px">Time spent</div>
+            <div class="s-row3" style="top:420px"><small>writing the clever line</small>
+              <div class="s-trk" style="position:relative;width:${TRACK3}px"><div class="s-fill" style="width:${(TRACK3 * 20) / 180}px;background:#3b37e6"></div><div class="s-val" style="left:${(TRACK3 * 20) / 180 + 14}px;top:0">20 min</div></div></div>
+            <div class="s-row3" style="top:550px"><small>staring at the clever line</small>
+              <div class="s-trk" style="position:relative;width:${TRACK3}px"><div class="s-fill" style="width:${TRACK3}px;background:#b8235a"></div><div class="s-val" style="left:${TRACK3 - 136}px;top:0;color:#fff">3 hours</div></div></div>
+            <div id="s-row3c" class="s-row3 s-hide" style="top:680px"><small>finding it in plain steps</small>
+              <div class="s-trk" style="position:relative;width:${TRACK3}px"><div id="s-f3" class="s-fill" style="width:${(TRACK3 * 5) / 180}px;background:#1f7a5c"></div><div class="s-val" style="left:${(TRACK3 * 5) / 180 + 14}px;top:0;color:#1f7a5c">5 min</div></div></div>
+            <div id="s-found" class="s-chk s-hide" style="left:500px;top:744px">${CHECK}</div>
+          </div>
+        </div>
+
+        <!-- marks and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-r1" d="${hand(segMid("d"), LINE_Y, 74, 34)}" stroke="#ff6b8b" stroke-width="6" stroke-dasharray="14 12" />
+          <path id="s-r2" d="${hand(segMid("t"), LINE_Y, 196, 34)}" stroke="#ff6b8b" stroke-width="6" stroke-dasharray="14 12" />
+          <path id="s-r3" d="${hand(segMid("b"), LINE_Y, 92, 34)}" stroke="#ff6b8b" stroke-width="6" stroke-dasharray="14 12" />
+          <path id="s-rel" d="${hand(CX(4) + 36, ROW3(5) + 26, 60, 32)}" stroke="#ff6b8b" stroke-width="6" />
+          <path id="s-skip" d="M${CX(27) + 20} ${ROW3(4) + 26} C${CX(27) + 150} ${ROW3(4) + 40} ${CX(27) + 150} ${ROW3(7) + 10} ${CX(18) + 30} ${ROW3(7) + 26}" stroke="#ff6b8b" stroke-width="6" />
+          <path id="s-skiph" d="M${CX(18) + 52} ${ROW3(7) + 12} L${CX(18) + 30} ${ROW3(7) + 26} L${CX(18) + 54} ${ROW3(7) + 40}" stroke="#ff6b8b" stroke-width="6" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). t(i) adds the 0.6 s lead-in.
+      const W = ${JSON.stringify(W)};
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const fade = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, at);
+      const draw = (sel, at, d, ease) => {
+        const p = document.querySelector(sel);
+        const L = p.getTotalLength() + 2;
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+        tl.set(p, { strokeDashoffset: L, opacity: 1 }, at);
+        tl.to(p, { strokeDashoffset: 0, duration: d || 0.45, ease: ease || "power2.out" }, at + 0.01);
+      };
+      const dashIn = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 1.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, at);
+      const stamp = (sel, at, rot) => tl.fromTo(sel, { opacity: 0, scale: 2.2, rotation: 4 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.3, ease: "power4.in" }, at);
+      const grow = (sel, from, to, at, d) => tl.fromTo(sel, { scaleX: from }, { scaleX: to, duration: d || 0.6, ease: "power2.out" }, at);
+      const rise = (sel, from, to, at, d, ease) => tl.fromTo(sel, { scaleY: from }, { scaleY: to, duration: d || 0.7, ease: ease || "power2.out" }, at);
+
+      /* ---- 1. Sam and his one clever line ---- */
+      tl.fromTo("#s-sam", { y: 30 }, { y: 0, duration: 0.5, ease: "expo.out" }, 0);
+      pop("#s-proud", t(2), { from: 0.3 });
+      tl.fromTo("#s-code1", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(4) - 0.1);
+      tl.fromTo("#s-code1 .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.12 }, t(4) + 0.1);
+      pop("#s-c1", t(14), { from: 0.5 });
+      pop("#s-c2", t(17), { from: 0.5 });
+      pop("#s-c3", t(21), { from: 0.5 });
+      // the chips fly up into the line
+      [["#s-c1", ${segMid("d")}, 730], ["#s-c2", ${segMid("t")}, 1130], ["#s-c3", ${segMid("b")}, 1540]].forEach(([c, tx, cx], i) => {
+        const at = t(26) + i * 0.18;
+        tl.to(c, { x: tx - cx, y: ${LINE_Y} - 442, scale: 0.3, opacity: 0, duration: 0.5, ease: "power3.in" }, at);
+        tl.fromTo("#s-u" + (i + 1), { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out" }, at + 0.45);
+      });
+      pop("#s-oneline", t(29), { from: 0.4, ease: "back.out(2.2)" });
+
+      /* ---- 2. Three checks, all correct, 20 minutes ---- */
+      out("#s-proud", t(31), 0.2);
+      fade("#s-tcap", t(32));
+      pop("#s-t1", t(34), { from: 0.75 });
+      pop("#s-t2", t(36), { from: 0.75 });
+      pop("#s-t3", t(39), { from: 0.75 });
+      ["#s-t1", "#s-t2", "#s-t3"].forEach((c, i) => pop(c + " .s-chk", t(41) + i * 0.14, { from: 0.2, ease: "back.out(2.4)" }));
+      tl.fromTo("#s-times", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(42));
+      grow("#s-f1", 0, 20 / 180, t(43), 0.6);
+      tl.set("#s-f2", { scaleX: 0 }, 0);
+
+      /* ---- 3. Six months later: Ana's complaint ---- */
+      out(["#s-tcap", "#s-t1", "#s-t2", "#s-t3", "#s-oneline"], t(46) - 0.3, 0.25);
+      stamp("#s-later", t(46), -3);
+      tl.fromTo("#s-mail", { opacity: 0, y: 40, rotation: 2 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, t(49));
+      tl.set("#s-mail p", { opacity: 0 }, 0);
+      fade("#s-mail p:nth-of-type(1)", t(52) - 0.1);
+      fade("#s-mail p:nth-of-type(2)", t(56) + 0.2);
+      fade("#s-mail p:nth-of-type(3)", t(58));
+      pop("#s-got", t(59) - 0.1, { from: 0.6 });
+
+      /* ---- 4. Sam stares. Priya cannot start. Three hours. ---- */
+      pop("#s-bs", t(63), { from: 0.3, ease: "back.out(2.4)" });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 640, y: 520 }, { opacity: 1, x: ${segMid("d") - 10}, y: ${LINE_Y + 6}, duration: 0.6, ease: "power3.out" }, t(66));
+      dashIn("#s-r1", t(68));
+      tl.to("#s-cursor", { x: ${segMid("t") - 10}, duration: 0.45, ease: "power2.inOut" }, t(69));
+      out("#s-r1", t(69) + 0.2, 0.2);
+      dashIn("#s-r2", t(69) + 0.35);
+      tl.to("#s-cursor", { x: ${segMid("b") - 10}, duration: 0.45, ease: "power2.inOut" }, t(70) + 0.2);
+      out("#s-r2", t(70) + 0.45, 0.2);
+      dashIn("#s-r3", t(70) + 0.6);
+      tl.to("#s-cursor", { x: ${segMid("d") - 10}, duration: 0.7, ease: "power2.inOut" }, t(71) + 0.2);
+      out("#s-r3", t(71) + 0.45, 0.2);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(72) + 0.2);
+      tl.fromTo("#s-priya", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(72) - 0.1);
+      fade("#s-priyan", t(72));
+      pop("#s-bp", t(74), { from: 0.3, ease: "back.out(2.4)" });
+      fade("#s-dbg", t(76) - 0.2);
+      grow("#s-f2", 0, 1, t(76), 1.1);
+      tl.fromTo("#s-v2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(76) + 0.9);
+      pop("#s-notfound", t(76) + 0.5, { from: 0.4 });
+
+      /* ---- 5. Kernighan: debugging is twice as hard ---- */
+      tl.to("#s-st1", { opacity: 0, y: -30, duration: 0.35, ease: "power2.in" }, t(80) - 0.3);
+      tl.fromTo("#s-quote", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(80) - 0.05);
+      fade("#s-qsrc", t(84));
+      tl.fromTo("#s-q1", { opacity: 0 }, { opacity: 1, duration: 0.5 }, t(88) - 0.1);
+      tl.fromTo("#s-gauges", { opacity: 0 }, { opacity: 1, duration: 0.4 }, t(88));
+      tl.set(["#s-gw", "#s-gd"], { scaleY: 0 }, 0);
+      tl.to("#s-qh1", { color: "#3b37e6", duration: 0.2 }, t(90));
+      // writing half, debugging twice that
+      rise("#s-gw", 0, 0.5, t(90), 0.6);
+      draw("#s-arr", t(90) + 0.3, 0.4);
+      pop("#s-twice", t(90) + 0.5, { from: 0.3, ease: "back.out(2.4)" });
+      rise("#s-gd", 0, 1, t(90) + 0.7, 0.8);
+      // as clever as you can be: writing hits the limit
+      tl.fromTo("#s-q2", { opacity: 0 }, { opacity: 1, duration: 0.5 }, t(97) - 0.1);
+      tl.to("#s-qh2", { color: "#3b37e6", duration: 0.2 }, t(100));
+      fade("#s-limit", t(100));
+      rise("#s-gw", 0.5, 1, t(100) + 0.1, 0.8);
+      tl.fromTo("#s-pw", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(102));
+      // how will you ever debug it: debugging needs 200%
+      tl.to("#s-qh3", { color: "#b8235a", duration: 0.2 }, t(110));
+      tl.fromTo("#s-ghost", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(110));
+      tl.set("#s-spill", { opacity: 1, scaleY: 0 }, t(111));
+      rise("#s-spill", 0, 1, t(111), 1.2, "power1.in");
+      draw("#s-crack1", t(114) - 0.1, 0.3, "none");
+      draw("#s-crack2", t(114) + 0.1, 0.25, "none");
+      tl.fromTo(".s-tube", { x: 0 }, { x: 5, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, t(114) - 0.1);
+      pop("#s-pd", t(114) + 0.2, { from: 0.4 });
+      // Sam used all his cleverness; fixing needs twice as much
+      pop("#s-limlab", t(118), { from: 0.5 });
+      tl.to("#s-pw", { scale: 1.2, duration: 0.2, yoyo: true, repeat: 1 }, t(120));
+      tl.fromTo("#s-spill", { x: 0 }, { x: 6, duration: 0.05, yoyo: true, repeat: 7, ease: "none" }, t(125));
+      tl.to("#s-pd", { scale: 1.25, duration: 0.2, yoyo: true, repeat: 1 }, t(125) + 0.1);
+      stamp("#s-nofit", t(128), -4);
+
+      /* ---- 6. Plain steps: the elif shows itself ---- */
+      tl.to("#s-st2", { opacity: 0, x: -60, duration: 0.4, ease: "power2.in" }, t(131) - 0.3);
+      tl.fromTo("#s-code3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(131) + 0.1);
+      tl.set(".s-tl", { opacity: 0 }, 0);
+      tl.fromTo(".s-pl > span", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.35, ease: "steps(8)", stagger: 0.25 }, t(136));
+      tl.fromTo("#s-right", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(138));
+      pop("#s-g1", t(139), { from: 0.5 });
+      pop("#s-g2", t(140) + 0.1, { from: 0.5 });
+      pop("#s-g3", t(141) + 0.2, { from: 0.5 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 900 }, { opacity: 1, x: ${CX(4) + 40}, y: ${ROW3(5) + 30}, duration: 0.7, ease: "power3.out" }, t(143));
+      tl.to("#s-cursor", { opacity: 0, x: ${CX(4) + 80}, y: ${ROW3(5) + 70}, duration: 0.3 }, t(147) + 0.1);
+      draw("#s-rel", t(147) - 0.05, 0.45);
+      draw("#s-skip", t(151), 0.6);
+      tl.fromTo("#s-skiph", { opacity: 0 }, { opacity: 1, duration: 0.15 }, t(151) + 0.55);
+      tl.to("#s-l6", { opacity: 0.35, duration: 0.3 }, t(153));
+      out("#s-g3", t(155) - 0.1, 0.15);
+      pop("#s-g3x", t(155), { from: 0.5 });
+      pop("#s-row3c", t(157), { from: 0.7 });
+      pop("#s-found", t(159), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 7. Change one word. Add one test. Done. ---- */
+      tl.set("#s-cursor", { x: 520, y: 900 }, t(160));
+      tl.to("#s-cursor", { opacity: 1, x: ${CX(4) + 20}, y: ${ROW3(5) + 30}, duration: 0.5, ease: "power3.out" }, t(161) - 0.35);
+      tl.to("#s-el", { opacity: 0, duration: 0.2 }, t(162));
+      tl.to("#s-rest", { x: -36, duration: 0.3, ease: "power2.inOut" }, t(162) + 0.15);
+      out(["#s-rel", "#s-skip", "#s-skiph", "#s-g3x"], t(162) + 0.1, 0.2);
+      tl.to("#s-l6", { opacity: 1, duration: 0.3 }, t(162) + 0.3);
+      pop("#s-g3", t(162) + 0.35, { from: 0.5 });
+      tl.to("#s-p46", { opacity: 0, duration: 0.12 }, t(162) + 0.5);
+      tl.fromTo("#s-p56", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(162) + 0.58);
+      tl.to("#s-cursor", { opacity: 0, x: 700, y: 760, duration: 0.4 }, t(163));
+      tl.fromTo(".s-tl", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.2 }, t(164));
+      pop("#s-pass", t(167), { from: 0.4, ease: "back.out(2.2)" });
+      pop("#s-anachk", t(167) + 0.15, { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, ${END} - 0.35);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>
+`;
+fs.writeFileSync(path.join(here, "compositions/story.html"), html);
+console.log("story.html written,", W.length, "words, END", END);

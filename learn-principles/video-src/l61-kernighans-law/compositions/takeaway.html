@@ -1,0 +1,87 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 110px; top: 100px; padding: 6px 30px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 44px; line-height: 1.4; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-who { left: 110px; top: 200px; font-size: 30px; line-height: 1.4; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    #t-head { left: 110px; top: 270px; font: 700 100px/1.14 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-under { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-so { left: 110px; top: 560px; font-size: 44px; line-height: 1.4; white-space: nowrap; opacity: 0; }
+    #t-so b { color: #1f7a5c; }
+    #t-built { left: 110px; top: 770px; display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+    #t-built b { font-size: 30px; color: #3e3b52; opacity: 0; }
+    #t-built span { opacity: 0; padding: 6px 24px; background: #fff; border-radius: 999px; font-size: 30px; line-height: 1.4; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-next { left: 110px; top: 890px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-g { left: 1420px; top: 300px; width: 420px; height: 560px; opacity: 0; }
+    .t-tube { position: absolute; top: 120px; width: 140px; height: 340px; border-radius: 0 0 24px 24px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; overflow: hidden; }
+    .t-fill { position: absolute; left: 0; bottom: 0; width: 140px; height: 340px; transform-origin: 50% 100%; }
+    #t-limit { position: absolute; left: 0; top: 117px; width: 420px; height: 6px; background: #0e0c1d; }
+    .t-lab { position: absolute; top: 480px; width: 200px; text-align: center; font-size: 30px; color: #3e3b52; }
+    #t-limlab { position: absolute; left: 0; top: 60px; font-size: 30px; white-space: nowrap; }
+    .t-pct { position: absolute; width: 140px; text-align: center; font: 700 40px/1 "Fraunces", serif; color: #fff; opacity: 0; }
+    #t-fits { position: absolute; left: 300px; top: 64px; width: 64px; height: 64px; opacity: 0; }
+    #t-fits > svg { width: 64px; height: 64px; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.6" data-track-index="1">
+      <div id="t-kick" class="t-abs">Kernighan's law</div>
+      <div id="t-who" class="t-abs">Brian Kernighan, 1978. A rule of thumb, not a law of nature.</div>
+      <div id="t-head" class="t-abs">
+        <span>Write</span> <span>code</span> <span class="ac">less</span> <span class="ac">clever</span><br />
+        <span class="ac">than</span> <span class="ac">you</span> <span class="ac">can.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 522 Q480 542 830 514" /></svg>
+      <div id="t-so" class="t-abs">Then there is <b>room left to debug it.</b></div>
+      <div id="t-built" class="t-abs"><b>Built on</b><span>5 KISS</span><span>12 Meaningful names</span><span>49 Testing pyramid</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 62: Occam's razor</div>
+      <div id="t-g" class="t-abs">
+        <div id="t-limlab">your limit</div>
+        <div class="t-tube" style="left:20px"><div id="t-gw" class="t-fill" style="background:#3b37e6"></div></div>
+        <div class="t-tube" style="left:240px"><div id="t-gd" class="t-fill" style="background:#1f7a5c"></div></div>
+        <div id="t-limit"></div>
+        <div id="t-pw" class="t-pct" style="left:20px;top:400px">50%</div>
+        <div id="t-pd" class="t-pct" style="left:240px;top:160px">100%</div>
+        <div class="t-lab" style="left:-10px">writing</div>
+        <div class="t-lab" style="left:210px">debugging</div>
+        <div id="t-fits"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="5" /><path d="M19 33 L28 42 L46 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 66.4;
+      const g = { that: 66.03, kern: 66.68, write: 68.31, less: 68.97, than: 69.54, and: 70.35, room: 70.85, debug: 71.39, end: 72.4 };
+      const at = (x) => x - S;
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-kick", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, at(g.kern) - 0.1);
+      tl.fromTo("#t-who", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, at(g.kern) + 0.5);
+      tl.fromTo("#t-g", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, at(g.kern) + 0.3);
+      tl.set(["#t-gw", "#t-gd"], { scaleY: 0 }, 0);
+      tl.fromTo(words.slice(0, 2), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out", stagger: 0.25 }, at(g.write) - 0.05);
+      tl.fromTo(words.slice(2), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out", stagger: 0.22 }, at(g.less) - 0.05);
+      tl.fromTo("#t-gw", { scaleY: 0 }, { scaleY: 0.5, duration: 0.7, ease: "power2.out" }, at(g.less));
+      tl.fromTo("#t-pw", { opacity: 0 }, { opacity: 1, duration: 0.3 }, at(g.less) + 0.6);
+      tl.fromTo("#t-under", { strokeDasharray: 760, strokeDashoffset: 760, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, at(g.than) + 0.4);
+      tl.fromTo("#t-so", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, at(g.and));
+      tl.fromTo("#t-gd", { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "power2.out" }, at(g.room));
+      tl.fromTo("#t-pd", { opacity: 0 }, { opacity: 1, duration: 0.3 }, at(g.room) + 0.7);
+      tl.fromTo("#t-fits", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, at(g.debug) + 0.3);
+      tl.fromTo("#t-built b", { opacity: 0 }, { opacity: 1, duration: 0.3 }, at(g.end) - 0.3);
+      tl.fromTo("#t-built span", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", stagger: 0.15 }, at(g.end) - 0.2);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, at(g.end) + 0.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

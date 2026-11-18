@@ -221,7 +221,8 @@ table.cheat td.lk{width:110px;text-align:right}
 .cl.hi{background:#2E2A58;box-shadow:inset 4px 0 0 #C9C6FF}
 .cl .k{color:#C9C6FF}.cl .nm{color:#FFC24B;font-weight:700}.cl .cmt{color:#8E8AC0}
 /* Show == and <= as typed, not as joined-up symbols */
-.term,code,.fillcode,.opt,.chipd,.tin,.oi{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+.term,.term *,code,.fillcode,.fillcode *,.opt,.chipd,.tin,.tin *,.oi,.oi *{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+[hidden]{display:none!important}
 .fillcode{white-space:pre-wrap}
 .qpic{margin:0 0 14px}.qpic .term{margin-top:0}
 .vid{padding:0;overflow:hidden;background:var(--night)}
@@ -253,5 +254,6 @@ table.cheat td.lk{width:110px;text-align:right}
 <script src="lessons/l11.js"></script>
 <script src="lessons/l12.js"></script>
 <script src="lessons/l13.js"></script>
+<script src="lessons/l14.js"></script>
 <script src="lessons/l15.js"></script>
 <script>PR.start();</script>

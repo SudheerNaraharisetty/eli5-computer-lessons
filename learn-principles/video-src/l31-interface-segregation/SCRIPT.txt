@@ -1,0 +1,15 @@
+Maya's shop has four ways to pay. Card. Cash. Phone. And gift voucher.
+
+She writes one big list that every one of them must sign. Pay. Refund. Print a slip.
+
+The card can do all three. But cash has no slip printer. Neither has the phone. And a gift voucher cannot refund, or print. The list makes them tick those boxes anyway. Four fake ticks.
+
+Sam builds a refund button. A customer returns a twenty dollar cake, paid by voucher. The screen says refunded. The customer gets nothing.
+
+Then Maya adds tips to the list. Only the card can take a tip. But all four have to sign again.
+
+The fix. Cut the big list into small ones. Each way to pay wears only the badges it has earned.
+
+Now the refund button asks for one badge. The voucher is not even offered. And the tip badge goes to the card alone.
+
+That is interface segregation. Small, focused lists, so nobody signs for what they cannot do.

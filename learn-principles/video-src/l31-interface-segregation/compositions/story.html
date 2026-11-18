@@ -1,0 +1,437 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-hide { opacity: 0; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #root code, .s-mono { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+
+    /* top left: shop sign, then the fake counter */
+    #s-sign { left: 96px; top: 96px; width: 504px; height: 130px; background: #fff; border-radius: 22px; padding: 12px 30px; }
+    #s-sign b { display: block; font: 700 52px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-sign span { display: block; font-size: 30px; line-height: 1.3; color: #3b37e6; }
+    .s-count { left: 96px; top: 96px; width: 504px; height: 130px; border-radius: 22px; display: flex; align-items: center; gap: 22px; padding: 0 34px; }
+    #s-cnt { background: #fbe0ea; color: #b8235a; }
+    #s-cnt0 { background: #ddefe6; color: #1f7a5c; }
+    .s-count .s-num { position: relative; width: 62px; height: 110px; font: 700 100px/110px "Fraunces", serif; }
+    .s-count .s-num b { position: absolute; left: 0; top: 0; width: 62px; text-align: center; }
+    .s-count > span { font-size: 44px; line-height: 1.1; white-space: nowrap; }
+
+    /* the big list (left column) */
+    #s-head { left: 96px; top: 250px; width: 504px; height: 85px; background: #0e0c1d; color: #fff; border-radius: 22px 22px 0 0; box-shadow: 0 0 0 5px #0e0c1d; padding: 0 28px; font: 700 46px/85px "Fraunces", serif; letter-spacing: -0.01em; white-space: nowrap; }
+    #s-headx { position: absolute; left: 22px; top: 44px; width: 270px; height: 6px; border-radius: 3px; background: #ff6b8b; }
+    .s-strip { position: absolute; left: 96px; width: 504px; height: 105px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; display: flex; align-items: center; padding: 0 28px; }
+    .s-strip > code { font-size: 36px; line-height: 1; }
+    .s-new { position: absolute; right: 18px; top: 26px; height: 52px; line-height: 52px; padding: 0 18px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 28px; }
+
+    /* the four ways to pay */
+    .s-seat { position: absolute; width: 220px; height: 126px; border-radius: 22px; box-shadow: inset 0 0 0 4px #c9c2b6; }
+    .s-icon { position: absolute; width: 244px; height: 150px; overflow: visible; }
+    .s-name { position: absolute; width: 240px; height: 56px; line-height: 56px; border-radius: 999px; background: #fff; text-align: center; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* cells */
+    .s-cell { position: absolute; width: 244px; height: 105px; }
+    .s-box { position: absolute; inset: 0; background: #fbf8f4; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-tick, .s-fk { position: absolute; top: 22px; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tick { left: 92px; background: #1f7a5c; }
+    .s-fk { left: 26px; background: #b8235a; }
+    .s-tick > svg, .s-fk > svg { position: absolute; left: 0; top: 0; width: 60px; height: 60px; }
+    .s-cant { position: absolute; left: 0; top: 0; width: 244px; height: 105px; line-height: 105px; text-align: center; font-size: 30px; color: #3e3b52; white-space: nowrap; }
+    .s-stamp { position: absolute; left: 104px; top: 24px; width: 122px; height: 56px; line-height: 48px; text-align: center; font-size: 30px; letter-spacing: 0.08em; color: #b8235a; background: #fff; border: 4px solid #b8235a; border-radius: 10px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .s-ring { fill: none; stroke-width: 7; stroke-linecap: round; opacity: 0; }
+    #s-wire { fill: none; stroke: #b8235a; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-wireh { fill: #b8235a; opacity: 0; }
+    .s-cut { position: absolute; left: 70px; width: 1760px; height: 0; border-top: 6px dashed #ff6b8b; }
+    #s-sciss { left: 0; top: 0; width: 110px; height: 80px; overflow: visible; }
+    #s-slot { fill: none; stroke: #b8235a; stroke-width: 5; stroke-dasharray: 14 12; stroke-linecap: round; opacity: 0; }
+    .s-pill { position: absolute; height: 54px; line-height: 54px; padding: 0 22px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-notoff { left: 1576px; top: 476px; background: #fbe0ea; color: #b8235a; }
+    #s-untouched { left: 1196px; top: 696px; background: #ddefe6; color: #1f7a5c; }
+
+    /* refund scene */
+    .s-card { position: absolute; background: #fff; border-radius: 22px; }
+    #s-b1 { left: 96px; top: 770px; width: 424px; height: 170px; }
+    #s-b1 > small { position: absolute; left: 30px; top: 16px; font-size: 28px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    .s-btn { position: absolute; left: 27px; width: 370px; height: 72px; line-height: 72px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 34px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-btn1 { top: 72px; }
+    #s-cake { left: 562px; top: 768px; width: 136px; height: 110px; overflow: visible; }
+    #s-price { left: 574px; top: 892px; width: 112px; padding: 0; text-align: center; background: #ffc24b; font-size: 34px; }
+    #s-codec { left: 740px; top: 770px; width: 540px; height: 170px; background: #15132b; color: #fff; }
+    #s-codec > small { position: absolute; left: 30px; top: 14px; font: 700 28px/1.3 "JetBrains Mono", monospace; color: #a9a5d6; white-space: nowrap; }
+    #s-codec > code { position: absolute; left: 30px; font-size: 30px; line-height: 46px; }
+    #s-codec .kw { color: #c9c6ff; }
+    #s-codec .fn { color: #7cf0b5; }
+    #s-cl1 { top: 58px; }
+    #s-cl2 { top: 106px; color: #ffc24b; }
+    #s-paysno { left: 326px; top: 104px; height: 50px; line-height: 50px; padding: 0 16px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-screen { left: 1322px; top: 780px; width: 226px; height: 150px; background: #15132b; color: #fff; border-radius: 18px; text-align: center; }
+    #s-screen code { display: block; }
+    #s-scr1 { margin-top: 22px; font-size: 34px; line-height: 1.3; color: #7cf0b5; }
+    #s-scr2 { font-size: 46px; line-height: 1.25; }
+    #s-scrok { position: absolute; right: -22px; top: -22px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-scrok > svg { position: absolute; left: -2px; top: -2px; width: 60px; height: 60px; }
+    #s-cust { left: 1586px; top: 770px; width: 238px; height: 170px; text-align: center; }
+    #s-cust > small { display: block; margin-top: 14px; font-size: 28px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    #s-cust > b { display: block; font: 700 96px/1.05 "Fraunces", serif; color: #b8235a; }
+    #s-wrong { right: -18px; top: -30px; padding: 2px 16px; background: #b8235a; color: #fff; font-size: 30px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+
+    /* after the fix */
+    #s-b2 { left: 96px; top: 826px; width: 424px; height: 122px; }
+    #s-btn2 { top: 22px; }
+    #s-asks { left: 552px; top: 866px; font-size: 32px; line-height: 1.3; white-space: nowrap; }
+    #s-chip { left: 690px; top: 846px; height: 82px; padding: 0 30px; border-radius: 999px; background: #ddefe6; display: flex; align-items: center; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    #s-chip > code { font-size: 32px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.7" data-track-index="1">
+      <div id="s-wrap">
+        <div id="s-sign" class="s-abs s-ol"><b>Maya's Cookies</b><span>4 ways to pay</span></div>
+        <div id="s-cnt" class="s-abs s-count s-ol s-hide"><div class="s-num"><b id="s-n4">4</b><b id="s-n7" class="s-hide">7</b></div><span>fake ticks</span></div>
+        <div id="s-cnt0" class="s-abs s-count s-ol s-hide"><div class="s-num"><b>0</b></div><span>fake ticks</span></div>
+
+        <div id="s-table" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="s-head" class="s-abs s-hide">The big list<i id="s-headx" class="s-hide"></i></div>
+          <div class="s-strip s-hide" id="st-0" style="top:340px"><code>pay(amount)</code></div>
+          <div class="s-strip s-hide" id="st-1" style="top:450px"><code>refund(amount)</code></div>
+          <div class="s-strip s-hide" id="st-2" style="top:560px"><code>print_slip()</code></div>
+          <div class="s-strip s-hide" id="st-3" style="top:670px"><code>tip(amount)</code><span class="s-new" id="s-new">new</span></div>
+
+          <div class="s-seat" id="seat-0" style="left:680px;top:112px"></div>
+          <svg class="s-icon s-hide" id="ic-0" style="left:668px;top:96px" viewBox="0 0 244 150"><rect x="32" y="30" width="180" height="112" rx="18" fill="#0e0c1d" /><rect x="32" y="20" width="180" height="112" rx="18" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" />
+   <rect x="50" y="88" width="40" height="28" rx="6" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" />
+   <circle cx="104" cy="60" r="13" fill="#fff" /><circle cx="150" cy="60" r="13" fill="#fff" /><circle cx="107" cy="62" r="6" fill="#0e0c1d" /><circle cx="153" cy="62" r="6" fill="#0e0c1d" />
+   <path d="M116 92 Q128 102 140 92" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg>
+          <div class="s-name s-hide" id="nm-0" style="left:670px;top:266px">Card</div>
+          <div class="s-seat" id="seat-1" style="left:974px;top:112px"></div>
+          <svg class="s-icon s-hide" id="ic-1" style="left:962px;top:96px" viewBox="0 0 244 150"><rect x="22" y="38" width="200" height="104" rx="12" fill="#0e0c1d" /><rect x="22" y="28" width="200" height="104" rx="12" fill="#bfe5d2" stroke="#0e0c1d" stroke-width="6" />
+   <rect x="38" y="44" width="168" height="72" rx="6" fill="none" stroke="#1f7a5c" stroke-width="4" />
+   <circle cx="122" cy="80" r="34" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="5" />
+   <circle cx="110" cy="72" r="9" fill="#fff" /><circle cx="134" cy="72" r="9" fill="#fff" /><circle cx="112" cy="74" r="4.5" fill="#0e0c1d" /><circle cx="136" cy="74" r="4.5" fill="#0e0c1d" />
+   <path d="M111 92 Q122 101 133 92" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg>
+          <div class="s-name s-hide" id="nm-1" style="left:964px;top:266px">Cash</div>
+          <div class="s-seat" id="seat-2" style="left:1268px;top:112px"></div>
+          <svg class="s-icon s-hide" id="ic-2" style="left:1256px;top:96px" viewBox="0 0 244 150"><rect x="80" y="14" width="84" height="134" rx="16" fill="#0e0c1d" /><rect x="80" y="6" width="84" height="134" rx="16" fill="#15132b" stroke="#0e0c1d" stroke-width="6" />
+   <rect x="90" y="22" width="64" height="94" rx="6" fill="#c9c6ff" />
+   <circle cx="110" cy="58" r="9" fill="#fff" /><circle cx="134" cy="58" r="9" fill="#fff" /><circle cx="112" cy="60" r="4.5" fill="#0e0c1d" /><circle cx="136" cy="60" r="4.5" fill="#0e0c1d" />
+   <path d="M112 82 Q122 90 132 82" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" />
+   <path d="M180 52 Q194 73 180 94 M196 40 Q218 73 196 106" fill="none" stroke="#3b37e6" stroke-width="6" stroke-linecap="round" /></svg>
+          <div class="s-name s-hide" id="nm-2" style="left:1258px;top:266px">Phone</div>
+          <div class="s-seat" id="seat-3" style="left:1562px;top:112px"></div>
+          <svg class="s-icon s-hide" id="ic-3" style="left:1550px;top:96px" viewBox="0 0 244 150"><path d="M22 50 Q22 38 34 38 H210 Q222 38 222 50 V74 A14 14 0 0 0 222 102 V130 Q222 142 210 142 H34 Q22 142 22 130 V102 A14 14 0 0 0 22 74 Z" fill="#0e0c1d" />
+   <path d="M22 40 Q22 28 34 28 H210 Q222 28 222 40 V64 A14 14 0 0 0 222 92 V120 Q222 132 210 132 H34 Q22 132 22 120 V92 A14 14 0 0 0 22 64 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+   <path d="M172 36 V124" stroke="#0e0c1d" stroke-width="5" stroke-dasharray="9 9" />
+   <circle cx="82" cy="70" r="12" fill="#fff" /><circle cx="126" cy="70" r="12" fill="#fff" /><circle cx="85" cy="72" r="5.5" fill="#0e0c1d" /><circle cx="129" cy="72" r="5.5" fill="#0e0c1d" />
+   <path d="M92 98 Q104 108 116 98" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" />
+   <path d="M197 66 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+          <div class="s-name s-hide" id="nm-3" style="left:1552px;top:266px">Gift voucher</div>
+
+          <div class="s-cell s-hide s-real s-row0 s-col0" id="c-0-0" style="left:668px;top:340px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row1 s-col0" id="c-0-1" style="left:668px;top:450px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row2 s-col0" id="c-0-2" style="left:668px;top:560px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row3 s-col0" id="c-0-3" style="left:668px;top:670px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row0 s-col1" id="c-1-0" style="left:962px;top:340px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row1 s-col1" id="c-1-1" style="left:962px;top:450px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row2 s-col1" id="c-1-2" style="left:962px;top:560px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no printer</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row3 s-col1" id="c-1-3" style="left:962px;top:670px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no tips</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-real s-row0 s-col2" id="c-2-0" style="left:1256px;top:340px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-real s-row1 s-col2" id="c-2-1" style="left:1256px;top:450px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row2 s-col2" id="c-2-2" style="left:1256px;top:560px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no printer</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row3 s-col2" id="c-2-3" style="left:1256px;top:670px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no tips</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-real s-row0 s-col3" id="c-3-0" style="left:1550px;top:340px">
+            <div class="s-box"></div>
+            <div class="s-tick s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row1 s-col3" id="c-3-1" style="left:1550px;top:450px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">cannot</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row2 s-col3" id="c-3-2" style="left:1550px;top:560px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no printer</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+          <div class="s-cell s-hide s-fake s-row3 s-col3" id="c-3-3" style="left:1550px;top:670px">
+            <div class="s-box"></div>
+            <div class="s-cant s-hide">no tips</div>
+            <div class="s-fk s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="s-stamp s-hide">FAKE</div>
+          </div>
+
+        </div>
+
+        <div class="s-cut s-hide" id="s-cut1" style="top:444px"></div>
+        <div class="s-cut s-hide" id="s-cut2" style="top:554px"></div>
+        <div class="s-cut s-hide" id="s-cut3" style="top:664px"></div>
+
+        <!-- the refund story -->
+        <div id="s-b1" class="s-card s-ol s-hide"><small>Sam's new button</small><div class="s-btn s-hide" id="s-btn1">Refund last sale</div></div>
+        <svg id="s-cake" class="s-abs s-hide" viewBox="0 0 136 110">
+          <ellipse cx="68" cy="98" rx="64" ry="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+          <rect x="16" y="46" width="104" height="50" rx="10" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" />
+          <path d="M16 62 Q16 46 30 46 H106 Q120 46 120 62 Q107 76 94 62 Q81 76 68 62 Q55 76 42 62 Q29 76 16 62 Z" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          <rect x="63" y="20" width="10" height="26" rx="3" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" />
+          <path d="M68 4 Q76 12 68 20 Q60 12 68 4 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+        </svg>
+        <div id="s-price" class="s-pill s-mono s-hide">$20</div>
+        <div id="s-codec" class="s-card s-ol s-hide">
+          <small>gift voucher</small>
+          <code id="s-cl1"><span class="kw">def</span> <span class="fn">refund</span>(self, amount):</code>
+          <code id="s-cl2" class="s-hide">    return True</code>
+          <div id="s-paysno" class="s-pill s-hide">pays nothing</div>
+        </div>
+        <div id="s-screen" class="s-abs s-ol s-hide">
+          <code id="s-scr1" class="s-hide">Refunded</code><code id="s-scr2" class="s-hide">$20</code>
+          <div id="s-scrok" class="s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L27 41 L44 21" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+        <div id="s-cust" class="s-card s-ol s-hide"><small>customer gets</small><b id="s-zero" class="s-hide">$0</b><div id="s-wrong" class="s-abs s-hide">WRONG</div></div>
+
+        <!-- after the fix -->
+        <div id="s-b2" class="s-card s-ol s-hide"><div class="s-btn" id="s-btn2">Refund last sale</div></div>
+        <div id="s-asks" class="s-abs s-hide">asks for</div>
+        <div id="s-chip" class="s-abs s-hide"><code>refund(amount)</code></div>
+        <div class="s-pill s-hide" id="s-notoff">not offered</div>
+        <div class="s-pill s-hide" id="s-untouched">3 classes not touched</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-wire" d="M1543 502 H1525 V722 H1000 V752" />
+          <polygon id="s-wireh" points="1000,768 986,746 1014,746" />
+          <path id="s-rv" class="s-ring" style="stroke:#b8235a" d="M1530 506.5 C1530 420.65999999999997 1814 420.65999999999997 1814 502.5 C1814 584.34 1536 584.34 1526 486.5" />
+          <path id="s-r3" class="s-ring" style="stroke:#1f7a5c" d="M644 506.5 C644 415.38 1524 415.38 1524 502.5 C1524 589.62 650 589.62 640 486.5" />
+          <path id="s-rt" class="s-ring" style="stroke:#3b37e6" d="M650 726.5 C650 643.3 930 643.3 930 722.5 C930 801.7 656 801.7 646 706.5" />
+          <rect id="s-slot" x="1562" y="458" width="220" height="89" rx="44" />
+        </svg>
+        <svg id="s-sciss" class="s-abs s-hide" viewBox="0 0 110 80">
+          <g id="s-bl1"><path d="M30 44 L106 30" stroke="#0e0c1d" stroke-width="13" stroke-linecap="round" /><path d="M30 44 L106 30" stroke="#fff" stroke-width="5" stroke-linecap="round" /></g>
+          <g id="s-bl2"><path d="M30 36 L106 50" stroke="#0e0c1d" stroke-width="13" stroke-linecap="round" /><path d="M30 36 L106 50" stroke="#fff" stroke-width="5" stroke-linecap="round" /></g>
+          <circle cx="20" cy="20" r="14" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="20" cy="60" r="14" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="44" cy="40" r="5" fill="#0e0c1d" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0,0.395,0.697,0.998,1.324,1.625,1.765,2.438,3.019,3.587,4.203,4.609,4.992,6.049,6.223,6.536,6.769,7.036,7.326,7.512,7.767,7.918,8.034,8.231,8.475,9.218,9.857,10.797,11.111,11.204,12.086,12.249,12.539,12.701,12.899,13.166,13.897,14.118,14.466,14.71,14.965,15.29,16.103,16.533,16.765,16.904,17.856,18.228,18.344,18.669,19.122,19.841,20.561,20.817,21.664,21.838,22.094,22.372,22.581,22.906,23.208,23.708,24.799,25.182,25.588,26.308,26.691,27.005,27.109,27.608,28.433,28.595,29.083,29.547,29.675,30.058,30.36,30.917,31.242,31.428,32.334,32.496,32.879,33.425,34.679,34.842,35.399,35.91,36.688,36.978,37.326,37.663,38.046,38.185,38.325,38.928,39.23,39.346,39.706,39.88,40.124,40.217,41.03,41.239,41.517,41.819,42.017,42.156,42.481,43.062,43.294,43.909,44.223,44.362,44.64,44.989,45.302,45.743,46.521,46.835,47.044,47.195,47.624,48.007,48.344,48.507,49.041,49.192,49.401,50.434,50.771,50.957,51.491,51.851,52.315,52.594,52.954,53.79,53.964,54.393,54.521,54.718,54.985,55.868,56.065,56.193,56.506,56.913,57.214,57.354,57.505,57.969,59.211,59.595,59.873,60.535,61.94,62.451,63.019,63.554,63.844,64.366,64.877,65.028,65.214,65.423,65.852];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const TINT = ["#e6e3ff","#ddefe6","#fbebd2","#d9ecf5"];
+
+      const ft = (sel, a, b, at) => tl.fromTo(sel, a, Object.assign({ immediateRender: false }, b), at);
+      const pop = (sel, at, o) => { o = o || {}; ft(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at); };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const hop = (sel, at, h) => tl.to(sel, { y: -(h || 16), duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      const swap = (a, b, at) => { tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at); ft(b, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08); };
+      const LEN = {};
+      document.querySelectorAll("#s-marks .s-ring, #s-wire").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 900;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        ft(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out" }, at);
+      };
+      const cell = (c, r) => "#c-" + c + "-" + r;
+      const tick = (c, r, at) => pop(cell(c, r) + " .s-tick", at, { from: 0.2, ease: "back.out(2.4)", d: 0.4 });
+      const note = (c, r, at) => ft(cell(c, r) + " .s-cant", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, at);
+      const fake = (c, r, at) => {
+        out(cell(c, r) + " .s-cant", at - 0.05, 0.12);
+        tl.to(cell(c, r) + " .s-box", { backgroundColor: "#fbe0ea", duration: 0.2 }, at);
+        pop(cell(c, r) + " .s-fk", at, { from: 0.2, ease: "back.out(2.4)", d: 0.35 });
+        ft(cell(c, r) + " .s-stamp", { opacity: 0, scale: 2.6, rotation: 6 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.24, ease: "power4.in" }, at + 0.12);
+      };
+      const row = (r, at) => {
+        ft("#st-" + r, { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, at);
+        ft(".s-row" + r, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", stagger: 0.07 }, at + 0.12);
+      };
+
+      /* ---- 1. Four ways to pay ---- */
+      tl.fromTo("#s-sign", { rotation: -4, y: -16 }, { rotation: 0, y: 0, duration: 0.7, ease: "back.out(1.8)" }, 0.05);
+      tl.fromTo(".s-seat", { scale: 1 }, { scale: 1.07, duration: 0.16, ease: "power1.inOut", yoyo: true, repeat: 1, stagger: 0.09 }, t(3) - 0.05);
+      [t(7), t(8), t(9), t(11)].forEach((at, c) => {
+        out("#seat-" + c, at - 0.05, 0.2);
+        ft("#ic-" + c, { opacity: 0, y: -90, rotation: -8 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.7)" }, at - 0.08);
+        pop("#nm-" + c, at + 0.18, { from: 0.5, d: 0.35 });
+      });
+
+      /* ---- 2. One big list that all must sign ---- */
+      ft("#s-head", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, t(15) - 0.1);
+      [0, 1, 2, 3].forEach((c) => hop("#ic-" + c, t(19) + c * 0.11));
+      row(0, t(25) - 0.1);
+      row(1, t(26) - 0.1);
+      row(2, t(27) - 0.1);
+
+      /* ---- 3. Who can really do what ---- */
+      [0, 1, 2].forEach((r) => tick(0, r, t(33) + r * 0.22));
+      hop("#ic-0", t(31));
+      hop("#ic-1", t(37));
+      tick(1, 0, t(37) + 0.05); tick(1, 1, t(37) + 0.25);
+      note(1, 2, t(39) - 0.05);
+      hop("#ic-2", t(45));
+      tick(2, 0, t(42)); tick(2, 1, t(42) + 0.2);
+      note(2, 2, t(44));
+      hop("#ic-3", t(48));
+      tick(3, 0, t(49));
+      note(3, 1, t(50));
+      note(3, 2, t(53) - 0.05);
+
+      /* ---- 4. The list makes them tick anyway: four fake ticks ---- */
+      tl.to("#s-head", { scale: 1.06, duration: 0.16, ease: "power1.inOut", yoyo: true, repeat: 1 }, t(55) - 0.05);
+      [[1, 2], [2, 2], [3, 1], [3, 2]].forEach(([c, r], i) => fake(c, r, t(58) - 0.05 + i * 0.26));
+      tl.to("#s-sign", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, t(61));
+      ft("#s-cnt", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, t(62) - 0.1);
+      [[1, 2], [2, 2], [3, 1], [3, 2]].forEach(([c, r], i) => tl.to(cell(c, r) + " .s-stamp", { scale: 1.2, duration: 0.12, ease: "power1.inOut", yoyo: true, repeat: 1 }, t(63) + i * 0.14));
+
+      /* ---- 5. Sam's refund button trusts the list ---- */
+      ft("#s-b1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(65) - 0.1);
+      pop("#s-btn1", t(68) - 0.05, { from: 0.5 });
+      pop("#s-cake", t(72), { from: 0.4 });
+      pop("#s-price", t(74) - 0.05, { from: 0.4, ease: "back.out(2.2)" });
+      draw("#s-rv", t(78) - 0.1, 0.5);
+      hop("#ic-3", t(79));
+      draw("#s-wire", t(79), 0.6);
+      ft("#s-wireh", { opacity: 0 }, { opacity: 1, duration: 0.15 }, t(79) + 0.55);
+      ft("#s-codec", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(79) + 0.45);
+      ft("#s-cursor", { opacity: 0, x: 620, y: 1040 }, { opacity: 1, x: 300, y: 900, duration: 0.6, ease: "power3.out" }, t(80) - 0.3);
+      tl.to("#s-btn1", { scale: 0.92, duration: 0.1, ease: "power2.in", yoyo: true, repeat: 1 }, t(81) - 0.1);
+      ft("#s-cl2", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, t(81) + 0.1);
+      ft("#s-screen", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(81) + 0.1);
+      pop("#s-scr1", t(83) - 0.05, { from: 0.6, d: 0.35 });
+      pop("#s-scr2", t(83) + 0.15, { from: 0.6, d: 0.35 });
+      pop("#s-scrok", t(83) + 0.5, { from: 0.2, ease: "back.out(2.4)" });
+      tl.to("#s-cursor", { opacity: 0, x: 380, y: 1010, duration: 0.4, ease: "power2.in" }, t(83));
+      ft("#s-cust", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(85) - 0.05);
+      ft("#s-zero", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.28, ease: "power4.in" }, t(87) - 0.2);
+      pop("#s-paysno", t(87) + 0.15, { from: 0.4 });
+      ft("#s-wrong", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.25, ease: "power4.in" }, t(87) + 0.35);
+
+      /* ---- 6. Tips join the big list: everyone signs again ---- */
+      out(["#s-b1", "#s-cake", "#s-price", "#s-codec", "#s-screen", "#s-cust", "#s-wire", "#s-wireh", "#s-rv"], t(88) + 0.15, 0.3);
+      row(3, t(91) - 0.15);
+      tick(0, 3, t(97));
+      hop("#ic-0", t(97));
+      [1, 2, 3].forEach((c, i) => note(c, 3, t(100) + i * 0.12));
+      [0, 1, 2, 3].forEach((c) => hop("#ic-" + c, t(103) + c * 0.1));
+      [1, 2, 3].forEach((c, i) => fake(c, 3, t(105) + i * 0.24));
+      swap("#s-n4", "#s-n7", t(108));
+
+      /* ---- 7. The fix: cut the big list into small ones ---- */
+      tl.to("#s-new", { opacity: 0, duration: 0.2 }, t(109));
+      [1, 2, 3].forEach((r, i) => {
+        const at = t(111) - 0.2 + i * 0.5, y = 340 + r * 110 - 43;
+        ft("#s-sciss", { opacity: 1, x: 30, y: y }, { opacity: 1, x: 1780, y: y, duration: 0.46, ease: "power1.inOut" }, at);
+        ft("#s-cut" + r, { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.46, ease: "power1.inOut" }, at);
+      });
+      tl.to("#s-bl1", { rotation: -9, svgOrigin: "44 40", duration: 0.09, ease: "none", yoyo: true, repeat: 15 }, t(111) - 0.2);
+      tl.to("#s-bl2", { rotation: 9, svgOrigin: "44 40", duration: 0.09, ease: "none", yoyo: true, repeat: 15 }, t(111) - 0.2);
+      out("#s-sciss", t(111) + 1.3, 0.15);
+      ft("#s-headx", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out" }, t(113));
+      tl.to("#s-head", { opacity: 0, y: -40, duration: 0.35, ease: "power2.in" }, t(115));
+      const S0 = t(116) - 0.1;
+      out(".s-cut", S0, 0.2);
+      [0, 1, 2, 3].forEach((r) => {
+        tl.to("#st-" + r, { scaleY: 0.84, scaleX: 0.97, backgroundColor: TINT[r], borderRadius: 26, duration: 0.45, ease: "back.out(2)" }, S0 + r * 0.08);
+        tl.to(".s-row" + r, { scaleY: 0.84, duration: 0.45, ease: "back.out(2)" }, S0 + r * 0.08);
+      });
+      [0, 1, 2, 3].forEach((c) => hop("#ic-" + c, t(119) + c * 0.1));
+      // real ticks become badges, column by column (the card's tip waits for its own beat)
+      [0, 1, 2, 3].forEach((c) => [0, 1, 2].forEach((r) => {
+        if (!document.querySelector(cell(c, r) + ".s-real")) return;
+        tl.to(cell(c, r) + " .s-box", { backgroundColor: TINT[r], borderRadius: 48, duration: 0.3, ease: "power2.out" }, t(122) + c * 0.14);
+        tl.to(cell(c, r), { scaleX: 0.9, duration: 0.35, ease: "back.out(2.4)" }, t(122) + c * 0.14);
+      }));
+      // the fakes fall off
+      [[1, 2], [2, 2], [3, 1], [3, 2], [1, 3], [2, 3], [3, 3]].forEach(([c, r], i) => {
+        tl.to(cell(c, r), { y: 90, rotation: i % 2 ? 10 : -10, opacity: 0, duration: 0.45, ease: "power2.in" }, t(124) + i * 0.09);
+      });
+      out("#s-cnt", t(128) - 0.1, 0.15);
+      ft("#s-cnt0", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, t(128));
+
+      /* ---- 8. The refund button asks for one badge ---- */
+      ft("#s-b2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(131) - 0.1);
+      ft("#s-asks", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, t(133) - 0.05);
+      pop("#s-chip", t(135) - 0.05, { from: 0.5 });
+      draw("#s-r3", t(136), 0.7);
+      [0, 1, 2].forEach((c) => hop(cell(c, 1), t(136) + 0.3 + c * 0.12, 12));
+      tl.to("#ic-3", { rotation: -7, transformOrigin: "50% 100%", duration: 0.12, ease: "power1.inOut", yoyo: true, repeat: 3 }, t(138));
+      ft("#s-slot", { opacity: 0 }, { opacity: 1, duration: 0.25 }, t(139));
+      pop("#s-notoff", t(141) - 0.05, { from: 0.4 });
+
+      /* ---- 9. The tip badge goes to the card alone ---- */
+      out("#s-r3", t(143), 0.25);
+      tl.to("#st-3", { x: 22, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, t(145));
+      tl.to(cell(0, 3) + " .s-box", { backgroundColor: TINT[3], borderRadius: 48, duration: 0.3, ease: "power2.out" }, t(146));
+      ft(cell(0, 3), { scaleX: 1.2 }, { scaleX: 0.9, duration: 0.45, ease: "back.out(2.4)" }, t(146));
+      draw("#s-rt", t(149), 0.5);
+      hop("#ic-0", t(150));
+      pop("#s-untouched", t(150) + 0.15, { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 59.35);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

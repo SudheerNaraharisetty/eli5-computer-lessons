@@ -1,0 +1,13 @@
+Monday, seven in the morning. Every cookie on Maya's website suddenly costs zero dollars.
+
+The team gathers, and the theories fly. Tom says a hacker broke in. Nina blames a rare bug in the database. Sam suspects the new server's clock, but only on Mondays.
+
+Each theory needs new things to be true, things nobody has seen. Count them. The hacker needs three. The database bug, two. The clock, three. The team spends an hour chasing them, and finds nothing.
+
+Then Maya asks a boring question. What changed? The release log has one line. At seven, one change went live. Priya renamed the price setting. That needs nothing new. It is a fact.
+
+So line the theories up, lightest first, and check them in that order. Ten minutes to confirm. Five to fix.
+
+The razor shaves away what the evidence does not need. It does not promise that the simplest story is true. It tells you where to look first.
+
+That is Occam's razor. Among explanations that fit the facts, start with the one that needs the fewest new assumptions. Next, the final exam.

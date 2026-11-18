@@ -1,0 +1,15 @@
+Maya's shop has a job called get total. What would you guess it does? Anyone would say, it just gives back a number.
+
+But look inside. Line three. It also charges the customer's card. Nothing in the name says so.
+
+Sam, Maya's new helper, is asked to show the total on the customer's screen. He reads the name, and calls get total.
+
+A customer orders ten dollars of cookies. The screen shows ten ninety. And the card is charged. Then comes the checkout. It calls get total again. The card is charged a second time.
+
+Sam did nothing silly. The name made a promise, and the code broke it.
+
+The fix. Get total only works out the total. The charging moves to the checkout, in plain sight.
+
+Now the screen can show the total as often as it likes. One order, one charge.
+
+That is least astonishment. Code should do what its name says, and nothing more.

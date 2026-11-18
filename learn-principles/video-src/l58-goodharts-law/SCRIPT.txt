@@ -1,0 +1,17 @@
+Maya's company has a new number. Test coverage. It shows how much of the code the tests really run. In January, it says fifty five percent.
+
+It works like a thermometer in a pot. It moves with the real thing.
+
+Then Maya makes it a target. Ninety percent by March, with a bonus.
+
+By March, it reads ninety two. But look at the new tests. They run the code, and check nothing. A test like this can never fail.
+
+And the risky code, the vouchers, still has no tests.
+
+In April, a voucher bug reaches customers. The number said safe. It was wrong.
+
+Nobody heated the soup. They held a lighter to the thermometer.
+
+So Maya drops the bonus. She reads coverage for what it shows: where tests are missing. And she watches it next to bugs that reach customers.
+
+That is Goodhart's law. When a measure becomes a target, it stops being a good measure.

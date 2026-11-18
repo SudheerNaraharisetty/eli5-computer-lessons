@@ -1,0 +1,322 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-pill { position: absolute; height: 52px; line-height: 52px; padding: 0 24px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-lab { position: absolute; font-size: 28px; line-height: 40px; color: #3e3b52; white-space: nowrap; letter-spacing: 0.04em; }
+
+    /* opening */
+    #s-maya { left: 110px; top: 330px; width: 420px; height: 546px; }
+    #s-co { left: 110px; top: 150px; padding: 18px 34px; background: #fff; border-radius: 22px; font: 700 56px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+
+    /* the code grid */
+    #s-grid { left: 640px; top: 230px; width: 476px; height: 476px; background: #15132b; border-radius: 24px; }
+    .s-sq { position: absolute; width: 34px; height: 34px; border-radius: 7px; background: #4a4670; }
+    #s-month { left: 640px; top: 146px; width: 230px; height: 56px; background: #0e0c1d; color: #fff; border-radius: 999px; }
+    #s-month > b { position: absolute; left: 0; top: 0; width: 230px; text-align: center; font-size: 30px; line-height: 56px; letter-spacing: 0.08em; opacity: 0; }
+    #s-month > b.m1 { opacity: 1; }
+    #s-unit { left: 640px; top: 820px; }
+    #s-cap { left: 640px; top: 770px; width: 520px; height: 44px; }
+    #s-cap > b { position: absolute; left: 0; top: 0; font-size: 32px; line-height: 44px; white-space: nowrap; opacity: 0; }
+    #s-cap > b.c1 { color: #1f7a5c; }
+    #s-cap > b.c2 { color: #1f7a5c; }
+    #s-vouch { left: 760px; top: 696px; background: #fbe0ea; color: #b8235a; }
+    #s-zero { left: 1010px; top: 696px; background: #b8235a; color: #fff; }
+    #s-here { left: 760px; top: 696px; background: #ddefe6; color: #1f7a5c; }
+
+    /* the thermometer */
+    #s-tlab { left: 1196px; top: 92px; }
+    #s-read { left: 1196px; top: 150px; width: 176px; height: 110px; background: #fff; border-radius: 20px; }
+    #s-read > b { position: absolute; left: 0; top: 0; width: 176px; text-align: center; font: 700 64px/110px "Fraunces", serif; opacity: 0; }
+    #s-thermo { left: 1360px; top: 160px; width: 120px; height: 720px; }
+    #s-target { left: 1484px; top: 234px; background: #fbe0ea; color: #b8235a; }
+    #s-bonus { left: 1484px; top: 304px; background: #ffd98a; }
+    #s-safe { left: 1196px; top: 290px; background: #1f7a5c; color: #fff; }
+    #s-wrong { left: 1250px; top: 336px; padding: 2px 18px; background: #b8235a; color: #fff; font-size: 36px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* the pot */
+    #s-pot { left: 1270px; top: 700px; width: 380px; height: 300px; }
+    #s-cold { left: 1500px; top: 630px; background: #cfe3ee; color: #15132b; }
+    #s-lighter { left: 1385px; top: 840px; width: 70px; height: 150px; }
+
+    /* the tests */
+    #s-code { left: 96px; top: 250px; width: 500px; height: 356px; background: #15132b; border-radius: 24px; color: #eceaff; }
+    #s-bar { left: 0; top: 0; width: 500px; height: 58px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 22px; gap: 9px; }
+    #s-bar > i { width: 14px; height: 14px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 12px; font: 700 28px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; color: #a9a5d6; }
+    #s-lines { left: 30px; top: 78px; font: 500 30px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+    #s-lines .kw { color: #c9c6ff; }
+    #s-lines .fn { color: #7cf0b5; }
+    #s-lines .nu { color: #ffc24b; }
+    #s-slot { left: 102px; top: 288px; width: 360px; height: 46px; border-radius: 10px; border: 4px dashed #ff6b8b; }
+    #s-slot > span { position: absolute; left: 16px; top: 0; font: 500 28px/38px "JetBrains Mono", monospace; font-variant-ligatures: none; color: #ff9db5; }
+    #s-nocheck { left: 96px; top: 650px; background: #fbe0ea; color: #b8235a; }
+    #s-pass { left: 330px; top: 572px; padding: 2px 18px; background: #1f7a5c; color: #fff; font-size: 32px; letter-spacing: 0.06em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* the receipt */
+    #s-rcpt { left: 96px; top: 250px; width: 500px; height: 330px; background: #fff; border-radius: 24px; }
+    #s-rcpt small { position: absolute; left: 34px; top: 24px; font-size: 28px; letter-spacing: 0.12em; color: #6f6b80; }
+    .s-row { position: absolute; left: 34px; width: 432px; height: 52px; font: 700 32px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; display: flex; justify-content: space-between; }
+    #s-dup { color: #b8235a; }
+    #s-twice { left: 96px; top: 620px; background: #fbe0ea; color: #b8235a; }
+    #s-bug { left: 420px; top: 222px; padding: 2px 18px; background: #b8235a; color: #fff; font-size: 34px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* the fix */
+    #s-maya2 { left: 150px; top: 470px; width: 330px; height: 429px; }
+    #s-bugs { left: 96px; top: 230px; width: 520px; height: 180px; background: #fbe0ea; border-radius: 24px; }
+    #s-bugs small { position: absolute; left: 30px; top: 22px; font-size: 28px; letter-spacing: 0.06em; color: #3e3b52; white-space: nowrap; }
+    #s-bugs b { position: absolute; left: 30px; top: 70px; font: 700 64px/1.2 "Fraunces", serif; color: #b8235a; white-space: nowrap; }
+    #s-bugs b span { font: 800 32px "Manrope", sans-serif; color: #3e3b52; }
+    #s-also { left: 96px; top: 150px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks > path { fill: none; stroke-width: 7; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="54.5" data-track-index="1">
+      <div id="s-wrap">
+        <!-- opening -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+        <div id="s-co" class="s-abs s-ol">Maya's company</div>
+
+        <!-- the pot (behind the thermometer) -->
+        <svg id="s-pot" class="s-abs s-hide" viewBox="0 0 380 300" data-layout-allow-overflow>
+          <g id="s-steam" fill="none" stroke="#3e3b52" stroke-width="6" stroke-linecap="round">
+            <path d="M240 60 q-14 -16 0 -32 q14 -16 0 -30" />
+            <path d="M290 60 q-14 -16 0 -32 q14 -16 0 -30" />
+            <path d="M340 60 q-14 -16 0 -32 q14 -16 0 -30" />
+          </g>
+          <path d="M20 72 H360 V200 Q360 232 328 232 H52 Q20 232 20 200 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <rect id="s-soup" x="26" y="92" width="328" height="36" fill="#f3b562" />
+          <rect id="s-soupc" x="26" y="92" width="328" height="36" fill="#cfe3ee" opacity="0" />
+          <line x1="2" y1="72" x2="378" y2="72" stroke="#0e0c1d" stroke-width="10" stroke-linecap="round" />
+          <text x="190" y="190" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="30" fill="#3e3b52" letter-spacing="2">REAL SAFETY</text>
+          <g id="s-flames"><path class="s-fl" d="M130 284 q-12 -16 0 -40 q12 24 0 40 z" fill="#ff8a3d" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /><path class="s-fl" d="M190 284 q-14.399999999999999 -19.2 0 -48 q14.399999999999999 28.799999999999997 0 48 z" fill="#ff8a3d" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /><path class="s-fl" d="M250 284 q-12 -16 0 -40 q12 24 0 40 z" fill="#ff8a3d" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g>
+          <line x1="40" y1="292" x2="340" y2="292" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+        </svg>
+        <div id="s-cold" class="s-pill s-hide">still cold</div>
+
+        <!-- the thermometer -->
+        <div id="s-tlab" class="s-lab s-hide">TEST COVERAGE</div>
+        <div id="s-read" class="s-abs s-ol s-hide"><b class="v55">55%</b><b class="v92">92%</b></div>
+        <svg id="s-thermo" class="s-abs s-hide" viewBox="0 0 120 720" data-layout-allow-overflow>
+          <rect x="38" y="20" width="44" height="620" rx="22" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <line x1="82" y1="640" x2="100" y2="640" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="580" x2="92" y2="580" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="520" x2="92" y2="520" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="460" x2="92" y2="460" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="400" x2="92" y2="400" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="340" x2="100" y2="340" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="280" x2="92" y2="280" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="220" x2="92" y2="220" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="160" x2="92" y2="160" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="100" x2="92" y2="100" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" /><line x1="82" y1="40" x2="100" y2="40" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" />
+          <rect id="s-liq" x="49" y="40" width="22" height="600" fill="#e0475f" />
+          <circle cx="60" cy="640" r="42" fill="#e0475f" stroke="#0e0c1d" stroke-width="6" />
+          <line id="s-tline" x1="20" y1="100" x2="112" y2="100" stroke="#b8235a" stroke-width="6" stroke-dasharray="12 9" opacity="0" />
+        </svg>
+        <div id="s-target" class="s-pill s-hide">target: 90% by March</div>
+        <div id="s-bonus" class="s-pill s-hide">+ bonus</div>
+        <div id="s-safe" class="s-pill s-hide">says: safe</div>
+        <div id="s-wrong" class="s-abs s-hide" data-layout-allow-overlap>WRONG</div>
+        <svg id="s-lighter" class="s-abs s-hide" viewBox="0 0 70 150" data-layout-allow-overflow>
+          <path id="s-lflame" d="M35 52 q-18 -22 0 -50 q18 28 0 50 z" fill="#ff8a3d" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+          <rect x="8" y="54" width="54" height="92" rx="10" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" />
+          <rect x="22" y="54" width="26" height="14" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" />
+        </svg>
+
+        <!-- the code, as squares -->
+        <div id="s-month" class="s-abs s-hide"><b class="m1">JANUARY</b><b class="m3">MARCH</b><b class="m4">APRIL</b></div>
+        <div id="s-unit" class="s-lab s-hide">1 square = 1 line of code</div>
+        <div id="s-grid" class="s-abs s-ol s-hide"><i class="s-sq g55" style="left:32px;top:32px"></i><i class="s-sq g55" style="left:74px;top:32px"></i><i class="s-sq g55" style="left:116px;top:32px"></i><i class="s-sq g55" style="left:158px;top:32px"></i><i class="s-sq g55" style="left:200px;top:32px"></i><i class="s-sq g55" style="left:242px;top:32px"></i><i class="s-sq g55" style="left:284px;top:32px"></i><i class="s-sq g55" style="left:326px;top:32px"></i><i class="s-sq g55" style="left:368px;top:32px"></i><i class="s-sq g55" style="left:410px;top:32px"></i><i class="s-sq g55" style="left:32px;top:74px"></i><i class="s-sq g55" style="left:74px;top:74px"></i><i class="s-sq g55" style="left:116px;top:74px"></i><i class="s-sq g55" style="left:158px;top:74px"></i><i class="s-sq g55" style="left:200px;top:74px"></i><i class="s-sq g55" style="left:242px;top:74px"></i><i class="s-sq g55" style="left:284px;top:74px"></i><i class="s-sq g55" style="left:326px;top:74px"></i><i class="s-sq g55" style="left:368px;top:74px"></i><i class="s-sq g55" style="left:410px;top:74px"></i><i class="s-sq g55" style="left:32px;top:116px"></i><i class="s-sq g55" style="left:74px;top:116px"></i><i class="s-sq g55" style="left:116px;top:116px"></i><i class="s-sq g55" style="left:158px;top:116px"></i><i class="s-sq g55" style="left:200px;top:116px"></i><i class="s-sq g55" style="left:242px;top:116px"></i><i class="s-sq g55" style="left:284px;top:116px"></i><i class="s-sq g55" style="left:326px;top:116px"></i><i class="s-sq g55" style="left:368px;top:116px"></i><i class="s-sq g55" style="left:410px;top:116px"></i><i class="s-sq g55" style="left:32px;top:158px"></i><i class="s-sq g55" style="left:74px;top:158px"></i><i class="s-sq g55" style="left:116px;top:158px"></i><i class="s-sq g55" style="left:158px;top:158px"></i><i class="s-sq g55" style="left:200px;top:158px"></i><i class="s-sq g55" style="left:242px;top:158px"></i><i class="s-sq g55" style="left:284px;top:158px"></i><i class="s-sq g55" style="left:326px;top:158px"></i><i class="s-sq g55" style="left:368px;top:158px"></i><i class="s-sq g55" style="left:410px;top:158px"></i><i class="s-sq g55" style="left:32px;top:200px"></i><i class="s-sq g55" style="left:74px;top:200px"></i><i class="s-sq g55" style="left:116px;top:200px"></i><i class="s-sq g55" style="left:158px;top:200px"></i><i class="s-sq g55" style="left:200px;top:200px"></i><i class="s-sq g55" style="left:242px;top:200px"></i><i class="s-sq g55" style="left:284px;top:200px"></i><i class="s-sq g55" style="left:326px;top:200px"></i><i class="s-sq g55" style="left:368px;top:200px"></i><i class="s-sq g55" style="left:410px;top:200px"></i><i class="s-sq g55" style="left:32px;top:242px"></i><i class="s-sq g55" style="left:74px;top:242px"></i><i class="s-sq g55" style="left:116px;top:242px"></i><i class="s-sq g55" style="left:158px;top:242px"></i><i class="s-sq g55" style="left:200px;top:242px"></i><i class="s-sq g92" style="left:242px;top:242px"></i><i class="s-sq g92" style="left:284px;top:242px"></i><i class="s-sq g92" style="left:326px;top:242px"></i><i class="s-sq g92" style="left:368px;top:242px"></i><i class="s-sq g92" style="left:410px;top:242px"></i><i class="s-sq g92" style="left:32px;top:284px"></i><i class="s-sq g92" style="left:74px;top:284px"></i><i class="s-sq g92" style="left:116px;top:284px"></i><i class="s-sq g92" style="left:158px;top:284px"></i><i class="s-sq g92" style="left:200px;top:284px"></i><i class="s-sq g92" style="left:242px;top:284px"></i><i class="s-sq g92" style="left:284px;top:284px"></i><i class="s-sq g92" style="left:326px;top:284px"></i><i class="s-sq g92" style="left:368px;top:284px"></i><i class="s-sq g92" style="left:410px;top:284px"></i><i class="s-sq g92" style="left:32px;top:326px"></i><i class="s-sq g92" style="left:74px;top:326px"></i><i class="s-sq g92" style="left:116px;top:326px"></i><i class="s-sq g92" style="left:158px;top:326px"></i><i class="s-sq g92" style="left:200px;top:326px"></i><i class="s-sq g92" style="left:242px;top:326px"></i><i class="s-sq g92" style="left:284px;top:326px"></i><i class="s-sq g92" style="left:326px;top:326px"></i><i class="s-sq g92" style="left:368px;top:326px"></i><i class="s-sq g92" style="left:410px;top:326px"></i><i class="s-sq g92" style="left:32px;top:368px"></i><i class="s-sq g92" style="left:74px;top:368px"></i><i class="s-sq g92" style="left:116px;top:368px"></i><i class="s-sq g92" style="left:158px;top:368px"></i><i class="s-sq g92" style="left:200px;top:368px"></i><i class="s-sq g92" style="left:242px;top:368px"></i><i class="s-sq g92" style="left:284px;top:368px"></i><i class="s-sq g92" style="left:326px;top:368px"></i><i class="s-sq g92" style="left:368px;top:368px"></i><i class="s-sq g92" style="left:410px;top:368px"></i><i class="s-sq g92" style="left:32px;top:410px"></i><i class="s-sq g92" style="left:74px;top:410px"></i><i class="s-sq red" style="left:116px;top:410px"></i><i class="s-sq red" style="left:158px;top:410px"></i><i class="s-sq red" style="left:200px;top:410px"></i><i class="s-sq red" style="left:242px;top:410px"></i><i class="s-sq red" style="left:284px;top:410px"></i><i class="s-sq red" style="left:326px;top:410px"></i><i class="s-sq red" style="left:368px;top:410px"></i><i class="s-sq red" style="left:410px;top:410px"></i></div>
+        <div id="s-cap" class="s-abs"><b class="c1">55 of 100 lines run by tests</b><b class="c2">92 of 100 lines run by tests</b></div>
+        <div id="s-vouch" class="s-pill s-hide">vouchers.py</div>
+        <div id="s-zero" class="s-pill s-hide">0 tests</div>
+        <div id="s-here" class="s-pill s-hide">write real tests here</div>
+
+        <!-- the new tests -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>test_extra.py</span></div>
+          <div id="s-lines" class="s-abs"><div><span class="kw">def</span> <span class="fn">test_final_total</span>():</div><div>    final_total(<span class="nu">10</span>)</div><div>    final_total(<span class="nu">20</span>)</div><div>    final_total(<span class="nu">100</span>)</div></div>
+          <div id="s-slot" class="s-abs s-hide"><span>no check here</span></div>
+        </div>
+        <div id="s-pass" class="s-abs s-hide">ALWAYS PASSES</div>
+        <div id="s-nocheck" class="s-pill s-hide">runs the code, checks nothing</div>
+
+        <!-- April -->
+        <div id="s-rcpt" class="s-abs s-ol s-hide">
+          <small>RECEIPT, APRIL</small>
+          <div class="s-row" style="top:84px"><span>order</span><span>$30.00</span></div>
+          <div class="s-row" style="top:150px"><span>$5 voucher</span><span>-$5.00</span></div>
+          <div class="s-row" id="s-dup" style="top:216px"><span>$5 voucher</span><span>-$5.00</span></div>
+        </div>
+        <div id="s-bug" class="s-abs s-hide">BUG</div>
+        <div id="s-twice" class="s-pill s-hide">one voucher, taken off twice</div>
+
+        <!-- the fix -->
+        <svg id="s-maya2" class="s-abs s-hide" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+        <div id="s-also" class="s-lab s-hide">READ IT NEXT TO</div>
+        <div id="s-bugs" class="s-abs s-ol s-hide"><small>BUGS REACHING CUSTOMERS</small><b>6 <span>in April</span></b></div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rReal" style="stroke:#3b37e6" d="M1262 800 C1250 690 1668 684 1668 806 C1668 950 1250 952 1256 790" />
+          <path id="s-rVouch" style="stroke:#ff6b8b" d="M748 662 C744 616 1104 614 1104 656 C1104 700 742 702 746 648" />
+          <path id="s-rRead" style="stroke:#b8235a" d="M1186 206 C1180 134 1384 132 1384 204 C1384 280 1180 282 1184 196" />
+          <path id="s-rThermo" style="stroke:#b8235a" d="M1420 160 C1366 164 1360 420 1366 620 C1370 820 1360 900 1420 906 C1480 902 1474 760 1476 600 C1478 420 1478 166 1420 160" />
+          <path id="s-rDup" style="stroke:#b8235a" d="M120 492 C114 450 586 448 586 488 C586 530 116 532 122 482" />
+          <path id="s-xBonus" style="stroke:#b8235a;stroke-width:8" d="M1478 300 L1640 360" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). t(i) adds the 0.6 s lead-in.
+      const W = [0,0.418,0.882,1.138,1.324,1.567,2.136,2.589,3.587,3.773,4.075,4.226,4.458,4.563,4.702,5.074,5.213,5.77,6.165,6.954,7.163,7.663,7.86,8.301,8.847,9.218,10.321,10.519,10.867,11.064,11.146,11.819,11.981,12.144,13.142,13.375,13.769,13.944,14.141,14.489,15.43,15.859,16.242,16.544,16.695,16.846,17.995,18.436,18.889,19.168,19.748,19.957,20.062,21.06,21.293,21.641,21.78,22.128,22.57,23.475,23.661,23.835,23.916,24.056,24.311,24.985,25.24,25.472,25.6,25.983,26.238,26.714,27.608,27.771,28.073,28.282,28.549,28.781,29.106,29.93,30.128,30.267,30.697,31.184,31.382,32.101,32.554,32.984,33.274,34.562,34.794,35.363,35.526,35.932,36.269,36.803,37.72,37.883,38.185,38.463,39.102,39.334,39.566,40.356,40.959,41.401,41.552,42.434,42.654,42.921,43.026,43.409,43.525,43.641,44.605,44.837,45.185,45.603,45.731,46.671,46.904,47.194,47.705,47.856,48.076,48.227,48.982,49.249,49.667,49.783,50.608,50.817,50.979,51.386,51.548,51.85,52.013,52.407,52.616,52.941,54.044,54.346,54.648,55.333,56.169,56.378,56.459,56.749,57.121,57.225,58.108,58.317,58.781,59.118,59.315,59.664];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      // Hand-drawn strokes: dash length from the real path length (pathLength did not animate in the renderer).
+      const draw = (sel, at, d) => {
+        const p = document.querySelector(sel);
+        const L = p.getTotalLength();
+        gsap.set(sel, { strokeDasharray: L + 2, strokeDashoffset: L + 2 });
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: L + 2 }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at + 0.01);
+      };
+      const level = (v, at, d) => tl.to("#s-liq", { scaleY: v / 100, duration: d || 0.8, ease: "power2.inOut" }, at);
+      tl.set("#s-liq", { scaleY: 0, svgOrigin: "60 640" }, 0);
+
+      /* ---- 1. A new number: test coverage ---- */
+      tl.fromTo("#s-co", { opacity: 0, y: -60, rotation: -6 }, { opacity: 1, y: 0, rotation: -2, duration: 0.6, ease: "back.out(1.3)" }, 0.2);
+      tl.fromTo("#s-thermo", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, t(5) - 0.1);
+      tl.fromTo("#s-tlab", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(7) - 0.05);
+      tl.fromTo("#s-grid", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(14) - 0.15);
+      tl.fromTo("#s-unit", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(14) + 0.2);
+      tl.to(".g55", { backgroundColor: "#4bd69b", duration: 0.12, stagger: 0.016 }, t(18) - 0.3);
+      level(55, t(18) - 0.3, 1.0);
+      pop("#s-month", t(20) - 0.05, { from: 0.5 });
+      pop("#s-read", t(23) - 0.05, { from: 0.5 });
+      tl.fromTo("#s-read .v55", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(23));
+      tl.fromTo("#s-cap .c1", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(25));
+
+      /* ---- 2. Like a thermometer in a pot ---- */
+      tl.fromTo("#s-pot", { opacity: 0, y: 160 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, t(33) - 0.35);
+      tl.fromTo(".s-fl", { scaleY: 1, svgOrigin: "190 284" }, { scaleY: 1.5, svgOrigin: "190 284", duration: 0.5, ease: "power2.out", yoyo: true, repeat: 1 }, t(35));
+      level(68, t(35) + 0.1, 0.5);
+      level(55, t(35) + 0.65, 0.5);
+      draw("#s-rReal", t(38) - 0.05, 0.6);
+      out("#s-rReal", t(40) - 0.3, 0.25);
+
+      /* ---- 3. Maya makes it a target ---- */
+      tl.to("#s-co", { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, t(40));
+      tl.fromTo("#s-tline", { opacity: 0, scaleX: 0, svgOrigin: "66 100" }, { opacity: 1, scaleX: 1, svgOrigin: "66 100", duration: 0.4, ease: "expo.out" }, t(45) - 0.1);
+      tl.fromTo("#s-target", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, t(46) - 0.05);
+      tl.fromTo("#s-bonus", { opacity: 0, scale: 0.3, rotation: -12 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.45, ease: "back.out(2.2)" }, t(52) - 0.05);
+
+      /* ---- 4. By March it reads 92 ---- */
+      swap("#s-month .m1", "#s-month .m3", t(54) - 0.05);
+      tl.to(".g92", { backgroundColor: "#4bd69b", duration: 0.1, stagger: 0.02 }, t(55));
+      level(92, t(55), 0.9);
+      swap("#s-read .v55", "#s-read .v92", t(57));
+      swap("#s-cap .c1", "#s-cap .c2", t(57) + 0.1);
+
+      /* ---- 5. Look at the new tests ---- */
+      tl.to("#s-maya", { opacity: 0, x: -80, duration: 0.35, ease: "power3.in" }, t(59));
+      tl.fromTo("#s-code", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(60) - 0.05);
+      tl.fromTo("#s-lines > div", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.08 }, t(60) + 0.15);
+      tl.fromTo(".g55, .g92", { scale: 1 }, { scale: 1.25, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.004 }, t(66));
+      tl.fromTo("#s-slot", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(70) - 0.05);
+      pop("#s-nocheck", t(71), { from: 0.4 });
+      tl.fromTo("#s-pass", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power4.in" }, t(77) - 0.2);
+
+      /* ---- 6. The risky code: the vouchers ---- */
+      tl.to(".red", { backgroundColor: "#ff6b8b", duration: 0.2, stagger: 0.05 }, t(81));
+      draw("#s-rVouch", t(84) - 0.1, 0.5);
+      pop("#s-vouch", t(84) + 0.2, { from: 0.4 });
+      pop("#s-zero", t(87) - 0.05, { from: 0.3, ease: "back.out(2.4)" });
+
+      /* ---- 7. April: the bug ---- */
+      out(["#s-code", "#s-pass", "#s-nocheck"], t(89) - 0.3, 0.25);
+      swap("#s-month .m3", "#s-month .m4", t(90) - 0.05);
+      tl.fromTo("#s-rcpt", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(92) - 0.1);
+      draw("#s-rDup", t(93), 0.5);
+      tl.fromTo("#s-bug", { opacity: 0, scale: 2.4, rotation: -4 }, { opacity: 1, scale: 1, rotation: 6, duration: 0.3, ease: "power4.in" }, t(93) + 0.3);
+      pop("#s-twice", t(95), { from: 0.4 });
+      draw("#s-rRead", t(97) - 0.05, 0.5);
+      pop("#s-safe", t(99) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-wrong", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(102) - 0.25);
+
+      /* ---- 8. Nobody heated the soup ---- */
+      out(["#s-rRead", "#s-safe", "#s-wrong", "#s-rDup", "#s-bug", "#s-twice", "#s-rcpt"], t(103) - 0.2, 0.25);
+      tl.to("#s-flames", { opacity: 0, scaleY: 0.2, svgOrigin: "190 284", duration: 0.4, ease: "power2.in" }, t(104));
+      tl.to("#s-steam", { opacity: 0, duration: 0.4 }, t(104));
+      tl.to("#s-soupc", { opacity: 1, duration: 0.5 }, t(106) - 0.2);
+      pop("#s-cold", t(106), { from: 0.4 });
+      tl.to("#s-pot", { x: 190, duration: 0.55, ease: "power3.inOut" }, t(108) - 0.2);
+      tl.fromTo("#s-lighter", { opacity: 0, y: 220 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(110) - 0.25);
+      tl.fromTo("#s-lflame", { scaleY: 1, scaleX: 1, svgOrigin: "35 52" }, { scaleY: 1.25, scaleX: 0.85, svgOrigin: "35 52", duration: 0.18, ease: "sine.inOut", yoyo: true, repeat: 7 }, t(110) + 0.2);
+      draw("#s-rThermo", t(113) - 0.05, 0.7);
+
+      /* ---- 9. What Maya does ---- */
+      out(["#s-rThermo", "#s-lighter", "#s-cold"], t(114) - 0.15, 0.25);
+      tl.fromTo("#s-maya2", { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t(115) - 0.2);
+      draw("#s-xBonus", t(116), 0.3);
+      tl.to(["#s-bonus", "#s-xBonus"], { opacity: 0, y: 140, rotation: 14, duration: 0.5, ease: "power3.in" }, t(118));
+      tl.to(["#s-target", "#s-tline"], { opacity: 0, duration: 0.3 }, t(118) + 0.1);
+      out(["#s-zero", "#s-vouch"], t(126) - 0.2, 0.2);
+      tl.fromTo("#s-rVouch", { opacity: 1 }, { opacity: 0.25, duration: 0.15, yoyo: true, repeat: 3 }, t(125));
+      pop("#s-here", t(126), { from: 0.4 });
+      tl.fromTo("#s-also", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(134) - 0.1);
+      tl.fromTo("#s-bugs", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, t(136) - 0.1);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, 54.15);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

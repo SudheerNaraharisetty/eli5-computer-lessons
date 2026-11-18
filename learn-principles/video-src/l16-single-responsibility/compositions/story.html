@@ -1,0 +1,457 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono, #s-lines, .s-blk, #s-prog { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* people */
+    .s-per { left: 96px; width: 200px; height: 244px; }
+    .s-pin { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; }
+    .s-face { width: 180px; height: 213px; flex: none; }
+    .s-plab { margin-top: -14px; padding: 0 18px; height: 44px; line-height: 44px; border-radius: 999px; color: #fff; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 5px 0 4px #0e0c1d; }
+
+    /* opening: the program */
+    #s-prog { left: 770px; top: 96px; width: 380px; height: 76px; background: #15132b; border-radius: 20px; color: #eceaff; font-weight: 700; font-size: 34px; line-height: 76px; text-align: center; }
+
+    /* what each person gets */
+    .s-card { left: 1384px; width: 440px; height: 220px; }
+    .s-cin { position: absolute; inset: 0; background: #fff; border-radius: 22px; }
+    .s-ch { position: absolute; left: 28px; top: 20px; font-size: 28px; letter-spacing: 0.06em; line-height: 1.2; white-space: nowrap; }
+    .s-cl { position: absolute; left: 28px; top: 92px; font-size: 32px; line-height: 1.2; color: #3e3b52; }
+    .s-num { position: absolute; right: 30px; top: 64px; height: 120px; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 100px; line-height: 120px; }
+    .s-num b, .s-qty b { position: absolute; right: 0; top: 0; opacity: 0; white-space: nowrap; }
+    .s-num b.v0, .s-qty b.v0 { opacity: 1; }
+    #s-n1 { width: 2ch; }
+    #s-n3 { width: 4ch; font-size: 84px; top: 70px; }
+    #s-n3 b.v1 { color: #b8235a; }
+    .s-row { position: absolute; left: 28px; height: 52px; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 40px; line-height: 52px; white-space: pre; display: flex; }
+    .s-qty { position: relative; display: block; width: 2ch; height: 52px; flex: none; }
+    .s-qty b.v1 { color: #b8235a; }
+    .s-tag { position: absolute; right: -10px; top: -26px; padding: 0 16px; height: 44px; line-height: 44px; color: #fff; font-size: 28px; border-radius: 999px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    .s-wrong { position: absolute; right: 70px; bottom: -26px; padding: 0 18px; height: 48px; line-height: 48px; background: #b8235a; color: #fff; font-size: 30px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok { position: absolute; right: -14px; bottom: -18px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+
+    /* the one shared function */
+    #s-code { left: 440px; top: 96px; width: 860px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 860px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-lines { left: 24px; top: 100px; width: 820px; font-weight: 500; font-size: 28px; line-height: 52px; }
+    .s-ln { height: 52px; display: flex; white-space: pre; }
+    .s-ln > i { position: relative; width: 46px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln > i > b { position: absolute; left: 0; top: 0; font-weight: 500; }
+    .s-ln > i > b.n { opacity: 0; }
+    .kw { color: #c9c6ff; }
+    .fn { color: #7cf0b5; }
+    .st { color: #ffc24b; }
+    .ct { font-weight: 700; color: #fff; }
+    #s-new { left: 0; top: 260px; width: 820px; }
+    #s-new .s-ln { background: #2b2752; border-radius: 10px; }
+    #s-new .s-ln > i { color: #ffc24b; padding-left: 0; }
+    .s-typed { display: inline-block; height: 52px; }
+
+    /* after the split */
+    .s-blk { left: 440px; width: 860px; background: #15132b; border-radius: 22px; color: #fff; font-weight: 500; font-size: 28px; line-height: 42px; padding: 16px 28px; }
+    .s-blk .s-bl { position: relative; height: 42px; white-space: pre; }
+    .s-side { position: absolute; left: 0; top: 0; width: 12px; height: 100%; border-radius: 22px 0 0 22px; }
+    .s-boss { opacity: 0; position: absolute; right: 20px; top: 22px; padding: 0 18px; height: 44px; line-height: 44px; border-radius: 999px; color: #fff; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; }
+    .s-lock { position: absolute; right: 16px; top: -30px; padding: 0 18px; height: 44px; line-height: 44px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tok { position: relative; display: inline-block; vertical-align: top; width: 14ch; height: 42px; }
+    .s-tok b { position: absolute; left: 0; top: 0; opacity: 0; font-weight: 500; white-space: pre; }
+    .s-tok b.v0 { opacity: 1; }
+    .s-tok b.v1 em { font-style: normal; font-weight: 700; color: #ffc24b; }
+    #s-hl { left: 12px; top: 310px; width: 836px; height: 42px; background: #2b2752; border-radius: 10px; }
+
+    /* requests from the baker */
+    .s-tk { left: 316px; top: 130px; width: 600px; height: 186px; background: #fff; border-radius: 22px; }
+    .s-tk > small { position: absolute; left: 30px; top: 20px; font-size: 28px; letter-spacing: 0.06em; color: #b9741a; white-space: nowrap; }
+    .s-tk > p { position: absolute; left: 30px; top: 64px; font-size: 40px; line-height: 50px; white-space: nowrap; }
+    .s-tk > p > span { display: inline-block; }
+    .s-tk > p em { font-style: normal; color: #b9741a; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { opacity: 0; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .s-rope { stroke-width: 8; }
+    .s-wire { stroke: #0e0c1d; stroke-width: 6; }
+    .s-ring { stroke: #ff6b8b; stroke-width: 6; }
+    #s-knot { left: 420px; top: 410px; width: 40px; height: 40px; border-radius: 50%; background: #ff6b8b; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-cut { left: 420px; width: 900px; height: 0; border-top: 6px dashed #ff6b8b; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="47.95" data-track-index="1">
+      <svg width="0" height="0" style="position:absolute">
+        <symbol id="s-f-baker" viewBox="80 -14 240 284">
+          <circle cx="200" cy="162" r="84" fill="#e9b88e" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 98 V52 C104 40 112 -2 150 6 C162 -8 238 -8 250 6 C288 -2 296 40 268 52 V98 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <path d="M132 72 H268" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="148" cy="196" r="13" fill="#f5a8a0" />
+          <circle cx="252" cy="196" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="160" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="160" r="8" fill="#0e0c1d" />
+          <path d="M158 200 Q180 182 200 196 Q220 182 242 200 Q220 216 200 206 Q180 216 158 200 Z" fill="#5a3418" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="s-f-maya" viewBox="80 -14 240 284">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </symbol>
+        <symbol id="s-f-acct" viewBox="80 -14 240 284">
+          <circle cx="200" cy="156" r="100" fill="#8a8799" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="162" r="84" fill="#f6d7b8" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M122 134 Q150 70 200 78 Q250 70 278 134 Q240 106 200 110 Q160 106 122 134 Z" fill="#8a8799" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="166" cy="172" r="27" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="234" cy="172" r="27" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M193 172 H207" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="166" cy="174" r="8" fill="#0e0c1d" />
+          <circle cx="234" cy="174" r="8" fill="#0e0c1d" />
+          <path d="M178 216 Q200 232 222 216" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </symbol>
+      </svg>
+
+      <div id="s-wrap">
+        <div id="s-prog" class="s-abs s-ol s-hide">shop.py</div>
+
+        <!-- the one shared function -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i><b>1</b></i><span class="dm"><span class="kw">def</span> <span class="fn">day_summary</span>(sales):</span></div>
+            <div class="s-ln"><i><b>2</b></i><span class="dm">    cookies = 0</span></div>
+            <div class="s-ln"><i><b>3</b></i><span class="dm">    money = 0</span></div>
+            <div class="s-ln"><i><b>4</b></i><span class="dm">    <span class="kw">for</span> sale <span class="kw">in</span> sales:</span></div>
+            <div class="s-ln"><i><b>5</b></i><span>        </span><span class="ct">count</span><span class="dm"> = sale.count</span></div>
+            <div id="s-low">
+              <div class="s-ln"><i><b class="o">6</b><b class="n">8</b></i><span class="dm">        cookies = cookies + </span><span class="ct">count</span></div>
+              <div class="s-ln"><i><b class="o">7</b><b class="n">9</b></i><span class="dm">        print_paper(</span><span class="ct">count</span><span class="dm">, sale.item)</span></div>
+              <div class="s-ln"><i><b class="o">8</b><b class="n">10</b></i><span class="dm">        money = money + </span><span class="ct">count</span><span class="dm"> * sale.price</span></div>
+              <div class="s-ln"><i><b class="o">9</b><b class="n">11</b></i><span class="dm">    tell_baker(cookies)</span></div>
+              <div class="s-ln"><i><b class="o">10</b><b class="n">12</b></i><span class="dm">    tell_accountant(money)</span></div>
+            </div>
+            <div id="s-new" class="s-abs">
+              <div class="s-ln s-hide" id="s-nl1"><i><b>6</b></i><span class="s-typed" id="s-ty1">        <span class="kw">if</span> sale.item == <span class="st">"gift box"</span>:</span></div>
+              <div class="s-ln s-hide" id="s-nl2"><i><b>7</b></i><span class="s-typed" id="s-ty2">            <span class="ct">count = count * 6</span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- after the split: one piece per person -->
+        <div id="s-bA" class="s-abs s-blk s-ol s-hide" style="top:116px;height:368px">
+          <div id="s-hl" class="s-abs s-hide"></div>
+          <div class="s-side" style="background:#ffc24b"></div>
+          <div class="s-boss" style="background:#b9741a">boss: the baker</div>
+          <div class="s-bl"><span class="kw">def</span> <span class="fn">baking_plan</span>(sales):</div>
+          <div class="s-bl">    cookies = 0</div>
+          <div class="s-bl">    <span class="kw">for</span> sale <span class="kw">in</span> sales:</div>
+          <div class="s-bl">        count = sale.count</div>
+          <div class="s-bl">        <span class="kw">if</span> sale.item == <span class="st">"gift box"</span>:</div>
+          <div class="s-bl">            count = count * 6</div>
+          <div class="s-bl">        cookies = cookies + count</div>
+          <div class="s-bl"><span>    tell_baker(</span><span class="s-tok" id="s-k1"><b class="v0">cookies)</b><b class="v1">cookies<em> + 10</em>)</b></span></div>
+        </div>
+        <div id="s-bB" class="s-abs s-blk s-ol s-hide" style="top:524px;height:158px">
+          <div class="s-side" style="background:#7cf0b5"></div>
+          <div class="s-boss" style="background:#1f7a5c">boss: Maya</div>
+          <div class="s-lock s-hide" id="s-lkB">not touched</div>
+          <div class="s-bl"><span class="kw">def</span> <span class="fn">closing_slip</span>(sales):</div>
+          <div class="s-bl">    <span class="kw">for</span> sale <span class="kw">in</span> sales:</div>
+          <div class="s-bl">        print_paper(sale.count, sale.item)</div>
+        </div>
+        <div id="s-bC" class="s-abs s-blk s-ol s-hide" style="top:722px;height:242px">
+          <div class="s-side" style="background:#c9c6ff"></div>
+          <div class="s-boss" style="background:#3b37e6">boss: the accountant</div>
+          <div class="s-lock s-hide" id="s-lkC">not touched</div>
+          <div class="s-bl"><span class="kw">def</span> <span class="fn">tax_summary</span>(sales):</div>
+          <div class="s-bl">    money = 0</div>
+          <div class="s-bl">    <span class="kw">for</span> sale <span class="kw">in</span> sales:</div>
+          <div class="s-bl">        money = money + sale.count * sale.price</div>
+          <div class="s-bl">    tell_accountant(money)</div>
+        </div>
+
+        <!-- ropes, wires, rings -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-o1" class="s-rope" stroke="#b9741a" d="M872 182 C760 204 560 188 482 222" />
+          <path id="s-o2" class="s-rope" stroke="#1f7a5c" d="M960 186 V228" />
+          <path id="s-o3" class="s-rope" stroke="#3b37e6" d="M1048 182 C1160 204 1370 190 1440 246" />
+
+          <path id="s-w1" class="s-wire" d="M1305 250 H1379" />
+          <path id="s-w2" class="s-wire" d="M1305 540 H1379" />
+          <path id="s-w3" class="s-wire" d="M1305 830 H1379" />
+          <path id="s-x1" class="s-wire" d="M1305 300 C1345 300 1340 250 1379 250" />
+          <path id="s-x2" class="s-wire" d="M1305 603 C1345 603 1340 540 1379 540" />
+          <path id="s-x3" class="s-wire" d="M1305 843 C1345 843 1340 830 1379 830" />
+
+          <path id="s-s1" class="s-rope" stroke="#b9741a" d="M286 258 C380 258 350 430 424 430" />
+          <path id="s-s2" class="s-rope" stroke="#1f7a5c" d="M286 548 C380 548 350 430 424 430" />
+          <path id="s-s3" class="s-rope" stroke="#3b37e6" d="M286 838 C400 838 330 430 424 430" />
+          <path id="s-a1" class="s-rope" stroke="#b9741a" d="M286 258 C360 258 370 300 434 300" />
+          <path id="s-a2" class="s-rope" stroke="#1f7a5c" d="M286 548 C360 548 370 603 434 603" />
+          <path id="s-a3" class="s-rope" stroke="#3b37e6" d="M286 838 C360 838 370 843 434 843" />
+
+          <path id="s-ufn" class="s-ring" style="stroke:#7cf0b5" d="M578 244 Q670 252 762 242" />
+          <path id="s-r5" class="s-ring" data-ring="686,430,58,30" />
+          <path id="s-u1" class="s-ring" style="stroke:#ffc24b" d="M980 502 Q1022 508 1064 500" />
+          <path id="s-u2" class="s-ring" style="stroke:#7cf0b5" d="M846 554 Q888 560 930 552" />
+          <path id="s-u3" class="s-ring" style="stroke:#c9c6ff" d="M913 606 Q955 612 997 604" />
+          <path id="s-rp" class="s-ring" data-ring="854,534,160,30" />
+          <path id="s-rm" class="s-ring" data-ring="955,690,58,30" />
+          <path id="s-rs" class="s-ring" data-ring="888,638,58,30" />
+        </svg>
+        <div id="s-knot" class="s-abs s-hide"></div>
+        <div class="s-abs s-cut s-hide" id="s-cut1" style="top:501px"></div>
+        <div class="s-abs s-cut s-hide" id="s-cut2" style="top:701px"></div>
+
+        <!-- the three people -->
+        <div class="s-abs s-per" id="s-p1" style="top:128px"><div class="s-pin s-hide" id="s-p1i">
+          <svg class="s-face" data-layout-allow-overflow viewBox="0 0 240 284"><use href="#s-f-baker" /></svg>
+          <div class="s-plab" style="background:#b9741a">baker</div>
+        </div></div>
+        <div class="s-abs s-per" id="s-p2" style="top:418px"><div class="s-pin" id="s-p2i">
+          <svg class="s-face" data-layout-allow-overflow viewBox="0 0 240 284"><use href="#s-f-maya" /></svg>
+          <div class="s-plab" style="background:#1f7a5c">Maya</div>
+        </div></div>
+        <div class="s-abs s-per" id="s-p3" style="top:708px"><div class="s-pin s-hide" id="s-p3i">
+          <svg class="s-face" data-layout-allow-overflow viewBox="0 0 240 284"><use href="#s-f-acct" /></svg>
+          <div class="s-plab" style="background:#3b37e6">accountant</div>
+        </div></div>
+
+        <!-- what each person gets -->
+        <div class="s-abs s-card" id="s-c1" style="top:140px"><div class="s-cin s-ol s-hide" id="s-c1i">
+          <div class="s-ch" style="color:#b9741a">BAKING PLAN</div>
+          <div class="s-cl">cookies<br />to bake</div>
+          <div class="s-num" id="s-n1"><b class="v0">32</b><b class="v1">42</b><b class="v2">52</b></div>
+          <div class="s-tag s-hide" id="s-t1" style="background:#b9741a">30 + 2 × 6</div>
+          <div class="s-tag s-hide" id="s-t1b" style="background:#b9741a">42 + 10</div>
+          <div class="s-ok s-hide" id="s-ok1"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div></div>
+        <div class="s-abs s-card" id="s-c2" style="top:430px"><div class="s-cin s-ol s-hide" id="s-c2i">
+          <div class="s-ch" style="color:#1f7a5c">CLOSING SLIP</div>
+          <div class="s-row" style="top:76px">30 choc chip</div>
+          <div class="s-row" style="top:130px"><span class="s-qty" id="s-q2"><b class="v0">2</b><b class="v1">12</b><b class="v2">2</b></span><span> gift box</span></div>
+          <div class="s-wrong s-hide" id="s-wr2">WRONG</div>
+          <div class="s-ok s-hide" id="s-ok2"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div></div>
+        <div class="s-abs s-card" id="s-c3" style="top:720px"><div class="s-cin s-ol s-hide" id="s-c3i">
+          <div class="s-ch" style="color:#3b37e6">TAX REPORT</div>
+          <div class="s-cl">sales<br />today</div>
+          <div class="s-num" id="s-n3"><b class="v0">$120</b><b class="v1">$270</b><b class="v2">$120</b></div>
+          <div class="s-tag s-hide" id="s-t3" style="background:#b8235a">$90 + 12 × $15</div>
+          <div class="s-wrong s-hide" id="s-wr3">WRONG</div>
+          <div class="s-ok s-hide" id="s-ok3"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div></div>
+
+        <!-- requests -->
+        <div class="s-abs s-tk s-ol s-hide" id="s-tk1" data-layout-allow-occlusion data-layout-allow-overlap>
+          <small>THE BAKER ASKS</small>
+          <p><span id="s-tk1a" class="s-hide">Count each&nbsp;</span><span id="s-tk1b" class="s-hide">gift box</span><br /><span id="s-tk1c" class="s-hide">as <em>6 cookies</em></span></p>
+        </div>
+        <div class="s-abs s-tk s-ol s-hide" id="s-tk2" data-layout-allow-occlusion data-layout-allow-overlap>
+          <small>THE BAKER ASKS AGAIN</small>
+          <p><span>Bake <em>10 spare</em></span><br /><span>cookies every day</span></p>
+        </div>
+
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.36, 0.708, 0.929, 1.265, 1.858, 2.159, 3.065, 3.216, 3.553, 4.04, 4.214, 4.458, 4.853, 4.992, 5.84, 6.13, 6.606, 6.78, 6.908, 7.407, 7.814, 8.719, 8.882, 9.416, 9.915, 10.124, 10.612, 10.844, 10.995, 11.157, 12.19, 12.446, 12.632, 12.771, 13.421, 13.758, 14.106, 14.454, 14.779, 15.453, 15.836, 16.15, 17.287, 17.705, 17.891, 18.332, 19.366, 19.772, 20.085, 20.457, 20.886, 21.177, 21.571, 22.315, 22.651, 23.058, 23.174, 23.708, 23.859, 24.23, 24.544, 24.799, 25.472, 25.925, 26.842, 27.005, 27.109, 27.446, 27.852, 28.224, 28.584, 28.99, 29.942, 30.395, 30.674, 30.871, 31.045, 31.405, 31.533, 31.916, 32.508, 32.74, 33.053, 33.413, 33.599, 34.702, 34.888, 35.213, 35.375, 35.7, 36.409, 36.629, 37.279, 37.732, 37.86, 38.603, 38.893, 39.253, 39.439, 39.729, 40.89, 41.308, 41.482, 41.9, 42.318, 43.386, 43.734, 43.874, 44.385, 44.733, 45.685, 45.882, 46.289, 46.718, 47.461, 47.81, 48.007, 48.436, 49.981, 50.271, 50.549, 50.677, 51.374, 51.676, 52.106, 52.28, 53.313, 54.091, 54.311, 54.509, 54.741, 54.869, 55.008, 55.368, 55.995, 56.204, 56.413, 56.645, 57.609, 58.061];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const pulse = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.1, duration: 0.17, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      const wobble = (sel, at, deg) => tl.fromTo(sel, { rotation: 0 }, { rotation: deg || 2.5, duration: 0.07, ease: "sine.inOut", yoyo: true, repeat: 5 }, at);
+
+      // Hand-drawn rings: build the path from "cx,cy,rx,ry".
+      document.querySelectorAll("#s-marks path[data-ring]").forEach((p) => {
+        const [cx, cy, rx, ry] = p.getAttribute("data-ring").split(",").map(Number);
+        p.setAttribute("d", `M${cx - rx} ${cy + 2} C${cx - rx - 2} ${cy - ry - 4} ${cx + rx} ${cy - ry - 6} ${cx + rx} ${cy} C${cx + rx} ${cy + ry + 4} ${cx - rx - 6} ${cy + ry + 6} ${cx - rx - 4} ${cy - 8}`);
+      });
+      // Stroke drawing: measure each path, then tween the dash offset to 0.
+      const LEN = {};
+      document.querySelectorAll("#s-marks path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 1200;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+        p.style.strokeDashoffset = L;
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+
+      /* ---- 1. Three people, one program ---- */
+      const MOVE = t(31) - 0.35;
+      // Opening places (big, in a row). They slide to the side columns at MOVE.
+      [["#s-p1", 284, 140], ["#s-p2", 764, -150], ["#s-p3", 1244, -440]].forEach(([p, x, y]) =>
+        tl.fromTo(p, { x, y, scale: 1.4 }, { x: 0, y: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, MOVE));
+      [["#s-c1", -1124, 510], ["#s-c2", -644, 220], ["#s-c3", -164, -70]].forEach(([c, x, y]) =>
+        tl.fromTo(c, { x, y }, { x: 0, y: 0, duration: 0.85, ease: "power3.inOut" }, MOVE + 0.05));
+
+      pop("#s-p1i", t(0) - 0.1, { from: 0.4 });
+      pop("#s-p3i", t(1) - 0.1, { from: 0.4 });
+      tl.fromTo("#s-prog", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, t(4) - 0.1);
+      draw("#s-o1", t(5), 0.45);
+      draw("#s-o2", t(5) + 0.15, 0.3);
+      draw("#s-o3", t(5) + 0.3, 0.45);
+      pulse("#s-prog", t(6) + 0.1, 1.08);
+
+      /* ---- 2. Who decides what ---- */
+      pulse("#s-p1i", t(8), 1.12);
+      pop("#s-c1i", t(10), { from: 0.7 });
+      pulse("#s-p2i", t(15), 1.12);
+      pop("#s-c2i", t(17), { from: 0.7 });
+      pulse("#s-p3i", t(23), 1.12);
+      pop("#s-c3i", t(25), { from: 0.7 });
+
+      /* ---- 3. In the code, all three share one function and one count ---- */
+      out(["#s-o1", "#s-o2", "#s-o3"], MOVE - 0.1, 0.2);
+      tl.to("#s-prog", { opacity: 0, scale: 0.7, duration: 0.25, ease: "power2.in" }, MOVE);
+      tl.fromTo("#s-code", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(34) - 0.25);
+      tl.fromTo("#s-lines > .s-ln, #s-low > .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.045 }, t(34));
+      draw("#s-w1", t(34) + 0.45, 0.25);
+      draw("#s-w2", t(34) + 0.5, 0.25);
+      draw("#s-w3", t(34) + 0.55, 0.25);
+      draw("#s-s1", t(35), 0.4);
+      draw("#s-s2", t(35) + 0.2, 0.4);
+      draw("#s-s3", t(36) + 0.05, 0.4);
+      pop("#s-knot", t(37), { from: 0.2, ease: "back.out(2.6)" });
+      draw("#s-ufn", t(39) - 0.05, 0.45);
+      tl.to("#s-lines .dm", { opacity: 0.45, duration: 0.4, ease: "power2.inOut" }, t(41) - 0.2);
+      draw("#s-r5", t(41), 0.5);
+      draw("#s-u1", t(42) + 0.05, 0.3);
+      draw("#s-u2", t(42) + 0.3, 0.3);
+      draw("#s-u3", t(42) + 0.55, 0.3);
+
+      /* ---- 4. The baker asks: a gift box is 6 cookies ---- */
+      out(["#s-ufn", "#s-r5", "#s-u1", "#s-u2", "#s-u3"], t(43) - 0.1, 0.25);
+      tl.to("#s-lines .dm", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(43));
+      pulse("#s-p1i", t(45), 1.14);
+      tl.fromTo("#s-p1", { x: 0 }, { x: -14, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 3, immediateRender: false }, t(46));
+      tl.fromTo("#s-tk1", { opacity: 0, scale: 0.3, x: -150, y: 30 }, { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.45, ease: "back.out(1.5)" }, t(47) - 0.5);
+      tl.fromTo("#s-tk1a", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.25, ease: "power3.out" }, t(47) - 0.05);
+      tl.fromTo("#s-tk1b", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.25, ease: "power3.out" }, t(49) - 0.05);
+      tl.fromTo("#s-tk1c", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.25, ease: "power3.out" }, t(51) - 0.05);
+      pulse("#s-tk1c", t(52) + 0.2, 1.12);
+
+      // The request travels into the code. Maya makes room and types two lines.
+      tl.to("#s-tk1", { x: 60, y: 250, scale: 0.12, opacity: 0, duration: 0.42, ease: "power3.in" }, t(54) - 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 780, y: 1010 }, { opacity: 1, x: 706, y: 492, duration: 0.5, ease: "power3.out" }, t(54) - 0.1);
+      tl.fromTo("#s-low", { y: 0 }, { y: 104, duration: 0.3, ease: "power3.inOut" }, t(55) - 0.15);
+      tl.to("#s-low b.o", { opacity: 0, duration: 0.1 }, t(55));
+      tl.to("#s-low b.n", { opacity: 1, duration: 0.1 }, t(55) + 0.05);
+      tl.set(["#s-nl1", "#s-nl2"], { opacity: 1 }, t(55) + 0.12);
+      tl.fromTo("#s-nl1", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "steps(12)", immediateRender: false }, t(55) + 0.12);
+      tl.set("#s-nl2", { clipPath: "inset(0% 100% 0% 0%)" }, t(55) + 0.12);
+      tl.to("#s-cursor", { x: 760, y: 544, duration: 0.2, ease: "power2.inOut" }, t(55) + 0.45);
+      tl.to("#s-nl2", { clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "steps(12)" }, t(57) - 0.12);
+      tl.to("#s-cursor", { x: 1090, y: 880, opacity: 0, duration: 0.5, ease: "power2.in" }, t(57) + 0.35);
+      // The tug: one rope moves, everything tied to the function shakes.
+      wobble("#s-code", t(57) + 0.3, 0.5);
+      wobble("#s-c1i", t(57) + 0.32, 2.5);
+      wobble("#s-c2i", t(57) + 0.38, 2.5);
+      wobble("#s-c3i", t(57) + 0.44, 2.5);
+
+      /* ---- 5. The baking plan is right: 42 ---- */
+      swap("#s-n1 .v0", "#s-n1 .v1", t(59));
+      pop("#s-ok1", t(62), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-t1", t(63), { from: 0.3, ease: "back.out(2.2)", d: 0.4 });
+      pulse("#s-n1", t(64), 1.12);
+
+      /* ---- 6. But the tax report used that same count ---- */
+      pulse("#s-p3i", t(67), 1.12);
+      wobble("#s-c3i", t(68), 2);
+      tl.to("#s-lines .dm", { opacity: 0.45, duration: 0.4, ease: "power2.inOut" }, t(69));
+      draw("#s-rp", t(70), 0.5);
+      draw("#s-rm", t(72) - 0.1, 0.45);
+      pulse("#s-n3", t(76), 1.1);
+      swap("#s-n3 .v0", "#s-n3 .v1", t(82));
+      wobble("#s-c3i", t(82) + 0.05, 3);
+      pop("#s-t3", t(83) + 0.25, { from: 0.3, ease: "back.out(2.2)", d: 0.4 });
+      tl.fromTo("#s-wr3", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(85) + 0.4);
+      // The slip is wrong too.
+      draw("#s-rs", t(87) - 0.1, 0.4);
+      pulse("#s-p2i", t(87), 1.1);
+      swap("#s-q2 .v0", "#s-q2 .v1", t(87) + 0.2);
+      tl.fromTo("#s-wr2", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(89) - 0.2);
+
+      /* ---- 7. The fix: split the function, one piece per person ---- */
+      out(["#s-rp", "#s-rm", "#s-rs"], t(91), 0.25);
+      tl.to("#s-lines .dm", { opacity: 1, duration: 0.3, ease: "power2.inOut" }, t(91));
+      const SPLIT = t(93);
+      pop("#s-cut1", SPLIT - 0.1, { from: 1, d: 0.01 });
+      pop("#s-cut2", SPLIT - 0.1, { from: 1, d: 0.01 });
+      tl.fromTo("#s-cut1", { clipPath: "inset(-10px 100% -10px 0%)" }, { clipPath: "inset(-10px 0% -10px 0%)", duration: 0.35, ease: "power2.out", immediateRender: false }, SPLIT - 0.1);
+      tl.fromTo("#s-cut2", { clipPath: "inset(-10px 0% -10px 100%)" }, { clipPath: "inset(-10px 0% -10px 0%)", duration: 0.35, ease: "power2.out", immediateRender: false }, SPLIT);
+      out(["#s-s1", "#s-s2", "#s-s3", "#s-knot", "#s-w1", "#s-w2", "#s-w3", "#s-t1", "#s-t3", "#s-wr2", "#s-wr3"], SPLIT + 0.3, 0.25);
+      tl.to("#s-code", { opacity: 0, scale: 0.97, duration: 0.25, ease: "power2.in" }, SPLIT + 0.4);
+      out(["#s-cut1", "#s-cut2"], SPLIT + 0.45, 0.2);
+      tl.fromTo("#s-bA", { opacity: 0, y: 70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.4)" }, SPLIT + 0.5);
+      tl.fromTo("#s-bB", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.4)" }, SPLIT + 0.56);
+      tl.fromTo("#s-bC", { opacity: 0, y: -70, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.4)" }, SPLIT + 0.62);
+      // The numbers go back to what each person expects.
+      swap("#s-q2 .v1", "#s-q2 .v2", SPLIT + 0.9);
+      swap("#s-n3 .v1", "#s-n3 .v2", SPLIT + 1.0);
+      [["1", "A", t(96)], ["2", "B", t(98) - 0.05], ["3", "C", t(99) + 0.15]].forEach(([n, b, at]) => {
+        draw("#s-a" + n, at, 0.35);
+        draw("#s-x" + n, at + 0.1, 0.3);
+        pop("#s-b" + b + " .s-boss", at + 0.15, { from: 0.4 });
+        if (n === "1") pulse("#s-ok1", at + 0.3, 1.25);
+        else pop("#s-ok" + n, at + 0.3, { from: 0.2, ease: "back.out(2.4)" });
+      });
+
+      /* ---- 8. The baker asks again: only the baker's piece changes ---- */
+      pulse("#s-p1i", t(103), 1.14);
+      tl.fromTo("#s-tk2", { opacity: 0, scale: 0.3, x: -150, y: 30 }, { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.45, ease: "back.out(1.5)" }, t(102));
+      tl.to("#s-tk2", { x: 150, y: 220, scale: 0.12, opacity: 0, duration: 0.42, ease: "power3.in" }, t(106) - 0.05);
+      tl.to(["#s-bB", "#s-bC"], { opacity: 0.78, duration: 0.35, ease: "power2.inOut" }, t(106));
+      tl.fromTo("#s-hl", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power3.out" }, t(108));
+      tl.set("#s-cursor", { x: 1000, y: 1010 }, t(106));
+      tl.to("#s-cursor", { opacity: 1, x: 880, y: 458, duration: 0.6, ease: "power3.out" }, t(108) - 0.1);
+      swap("#s-k1 .v0", "#s-k1 .v1", t(110));
+      swap("#s-n1 .v1", "#s-n1 .v2", t(110) + 0.3);
+      pop("#s-t1b", t(110) + 0.5, { from: 0.3, ease: "back.out(2.2)", d: 0.4 });
+      tl.to("#s-cursor", { opacity: 0, x: 960, y: 520, duration: 0.4, ease: "power2.in" }, t(110) + 0.5);
+      tl.to(["#s-bB", "#s-bC"], { opacity: 1, duration: 0.3, ease: "power2.out" }, t(112) - 0.15);
+      pop("#s-lkB", t(112), { from: 0.4 });
+      pop("#s-lkC", t(112) + 0.25, { from: 0.4 });
+      pulse("#s-ok2", t(113) + 0.1, 1.3);
+      pulse("#s-ok3", t(114), 1.3);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 47.6);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

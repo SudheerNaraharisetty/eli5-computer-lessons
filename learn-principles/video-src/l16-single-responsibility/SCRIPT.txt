@@ -1,0 +1,17 @@
+Three people give Maya's program its rules.
+
+The baker decides how many cookies to bake. Maya decides what the closing slip says. The accountant decides how sales add up for tax.
+
+But in the code, all three share one function, and one count.
+
+Then the baker asks. Count each gift box as six cookies. Maya changes the count.
+
+The baking plan is right. Forty two.
+
+But the tax report used that same count. Sales jump from one hundred and twenty dollars to two hundred and seventy. The slip is wrong too.
+
+The fix. Split the function. One piece for each person.
+
+Now the baker asks again. Only the baker's piece changes. The others cannot break.
+
+That is single responsibility. One piece of code, one reason to change. Ask, who could ask me to change this? More than one person? Split it.

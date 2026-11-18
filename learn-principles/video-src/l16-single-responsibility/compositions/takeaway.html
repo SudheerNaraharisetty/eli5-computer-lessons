@@ -1,0 +1,139 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 110px; top: 96px; padding: 0 28px; height: 64px; line-height: 64px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 36px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #t-solid { left: 600px; top: 96px; display: flex; gap: 14px; }
+    #t-solid span { width: 64px; height: 64px; border-radius: 14px; background: #fff; font: 700 42px/64px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #t-solid span.on { background: #ffc24b; }
+    #t-head { left: 110px; top: 206px; font: 700 124px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke-linecap: round; opacity: 0; }
+    #t-under { stroke: #3b37e6; stroke-width: 12; }
+    .t-rope { stroke-width: 8; }
+    #t-q { left: 110px; top: 574px; padding: 22px 36px 28px; background: #fff; border-radius: 24px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-q small { display: block; font-size: 28px; letter-spacing: 0.08em; color: #6f6b80; line-height: 1.3; }
+    #t-q b { display: block; font: 700 58px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    .t-face { left: 1250px; width: 110px; height: 130px; opacity: 0; }
+    .t-blk { left: 1500px; width: 320px; background: #15132b; color: #eceaff; border-radius: 20px; font: 700 28px "JetBrains Mono", monospace; font-variant-ligatures: none; text-align: center; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-one { top: 580px; height: 370px; line-height: 370px; }
+    .t-sm { height: 100px; line-height: 100px; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="13.65" data-track-index="1">
+      <svg width="0" height="0" style="position:absolute">
+        <symbol id="t-f-baker" viewBox="80 -14 240 284">
+          <circle cx="200" cy="162" r="84" fill="#e9b88e" stroke="#0e0c1d" stroke-width="8" />
+          <path d="M132 98 V52 C104 40 112 -2 150 6 C162 -8 238 -8 250 6 C288 -2 296 40 268 52 V98 Z" fill="#fff" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+          <path d="M132 72 H268" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="170" cy="160" r="9" fill="#0e0c1d" />
+          <circle cx="230" cy="160" r="9" fill="#0e0c1d" />
+          <path d="M158 200 Q180 182 200 196 Q220 182 242 200 Q220 216 200 206 Q180 216 158 200 Z" fill="#5a3418" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="t-f-maya" viewBox="80 -14 240 284">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="8" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+          <circle cx="170" cy="172" r="9" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="9" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+        </symbol>
+        <symbol id="t-f-acct" viewBox="80 -14 240 284">
+          <circle cx="200" cy="156" r="100" fill="#8a8799" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="200" cy="162" r="84" fill="#f6d7b8" stroke="#0e0c1d" stroke-width="8" />
+          <path d="M122 134 Q150 70 200 78 Q250 70 278 134 Q240 106 200 110 Q160 106 122 134 Z" fill="#8a8799" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+          <circle cx="166" cy="172" r="27" fill="#fff" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="234" cy="172" r="27" fill="#fff" stroke="#0e0c1d" stroke-width="8" />
+          <path d="M193 172 H207" stroke="#0e0c1d" stroke-width="8" />
+          <circle cx="166" cy="174" r="9" fill="#0e0c1d" />
+          <circle cx="234" cy="174" r="9" fill="#0e0c1d" />
+          <path d="M178 216 Q200 232 222 216" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+        </symbol>
+      </svg>
+
+      <div id="t-kick" class="t-abs">Single responsibility</div>
+      <div id="t-solid" class="t-abs"><span class="on">S</span><span>O</span><span>L</span><span>I</span><span>D</span></div>
+      <div id="t-head" class="t-abs">
+        <span>One</span> <span>piece</span> <span>of</span> <span>code,</span><br />
+        <span class="ac">one</span> <span class="ac">reason</span> <span class="ac">to</span> <span class="ac">change.</span>
+      </div>
+      <div id="t-q" class="t-abs"><small>THE TEST</small><b>Who could ask me to change this?</b></div>
+
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080">
+        <path id="t-under" d="M116 492 Q600 520 1300 484" />
+        <path id="t-r1" class="t-rope" stroke="#b9741a" d="M1366 630 C1440 630 1430 765 1494 765" />
+        <path id="t-r2" class="t-rope" stroke="#1f7a5c" d="M1366 770 H1494" />
+        <path id="t-r3" class="t-rope" stroke="#3b37e6" d="M1366 910 C1440 910 1430 765 1494 765" />
+        <path id="t-q1" class="t-rope" stroke="#b9741a" d="M1366 630 H1494" />
+        <path id="t-q2" class="t-rope" stroke="#1f7a5c" d="M1366 770 H1494" />
+        <path id="t-q3" class="t-rope" stroke="#3b37e6" d="M1366 910 H1494" />
+      </svg>
+      <svg class="t-abs t-face" data-layout-allow-overflow id="t-fa" style="top:560px" viewBox="0 0 240 284"><use href="#t-f-baker" /></svg>
+      <svg class="t-abs t-face" data-layout-allow-overflow id="t-fb" style="top:700px" viewBox="0 0 240 284"><use href="#t-f-maya" /></svg>
+      <svg class="t-abs t-face" data-layout-allow-overflow id="t-fc" style="top:840px" viewBox="0 0 240 284"><use href="#t-f-acct" /></svg>
+      <div class="t-abs t-blk" id="t-one">day_summary</div>
+      <div class="t-abs t-blk t-sm" id="t-b1" style="top:580px">baking_plan</div>
+      <div class="t-abs t-blk t-sm" id="t-b2" style="top:720px">closing_slip</div>
+      <div class="t-abs t-blk t-sm" id="t-b3" style="top:860px">tax_summary</div>
+
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 17: Small functions</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 47.95;
+      const g = { single: 48.61, resp: 49.04, one: 50.58, one2: 51.97, change: 52.88, ask: 53.91, who: 54.69, more: 56.6, split: 58.21, end: 59.3 };
+      const tl = gsap.timeline({ paused: true });
+      const LEN = {};
+      document.querySelectorAll("#t-line path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 1300;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+        p.style.strokeDashoffset = L;
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const pop = (sel, at, from) => tl.fromTo(sel, { opacity: 0, scale: from || 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at);
+      const words = gsap.utils.toArray("#t-head span");
+
+      tl.fromTo("#t-kick", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, 0.12);
+      tl.fromTo("#t-solid span", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)", stagger: 0.09 }, g.resp - S + 0.3);
+      tl.fromTo("#t-solid span.on", { scale: 1 }, { scale: 1.2, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, g.resp - S + 1.0);
+      tl.fromTo(words.slice(0, 4), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out", stagger: 0.2 }, g.one - S - 0.05);
+      tl.fromTo(words.slice(4), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out", stagger: 0.22 }, g.one2 - S - 0.05);
+      draw("#t-under", g.change - S + 0.3, 0.6);
+
+      tl.fromTo("#t-q", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, g.ask - S);
+      pop("#t-one", g.who - S, 0.7);
+      [["a", "1"], ["b", "2"], ["c", "3"]].forEach(([f, n], i) => {
+        pop("#t-f" + f, g.more - S + i * 0.22, 0.3);
+        draw("#t-r" + n, g.more - S + 0.1 + i * 0.22, 0.3);
+      });
+      // Split it.
+      tl.to(["#t-r1", "#t-r2", "#t-r3"], { opacity: 0, duration: 0.15 }, g.split - S - 0.05);
+      tl.to("#t-one", { opacity: 0, scale: 0.94, duration: 0.2, ease: "power2.in" }, g.split - S);
+      tl.fromTo("#t-b1", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, g.split - S + 0.15);
+      tl.fromTo("#t-b2", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.split - S + 0.2);
+      tl.fromTo("#t-b3", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, g.split - S + 0.25);
+      draw("#t-q1", g.split - S + 0.45, 0.25);
+      draw("#t-q2", g.split - S + 0.55, 0.25);
+      draw("#t-q3", g.split - S + 0.65, 0.25);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,92 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 70px; font: 700 170px/1.05 "Fraunces", serif; letter-spacing: -0.03em; color: #3b37e6; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-sub { left: 110px; top: 300px; font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub span { display: inline-block; opacity: 0; }
+    #t-sub .ac { color: #1f7a5c; }
+    #t-chart { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-chart path.ln { fill: none; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #t-chart circle { opacity: 0; }
+    .t-lab { position: absolute; font-size: 34px; line-height: 1.2; white-space: nowrap; opacity: 0; }
+    #t-labA { left: 960px; top: 536px; color: #b8235a; }
+    #t-labB { left: 960px; top: 800px; color: #1f7a5c; }
+    #t-labS { left: 196px; top: 528px; color: #3e3b52; font-size: 30px; }
+    #t-next { left: 110px; top: 920px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.1" data-track-index="1">
+      <div id="t-head" class="t-abs"><span>Boy</span> <span>Scout</span> <span>rule.</span></div>
+      <div id="t-sub" class="t-abs"><span>Leave</span> <span>the</span> <span>code</span> <span class="ac">a</span> <span class="ac">little</span> <span class="ac">cleaner</span><br /><span>than</span> <span>you</span> <span>found</span> <span>it.</span></div>
+      <svg id="t-chart" class="t-abs" viewBox="0 0 1920 1080">
+        <path id="t-axis" d="M150 520 V864 H930" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+        <path id="t-up" class="ln" stroke="#b8235a" d="M180 770 L320 730 L460 690 L600 650 L740 610 L880 570" />
+        <path id="t-down" class="ln" stroke="#1f7a5c" d="M180 770 L320 805 L460 840 L600 840 L740 840 L880 840" />
+        <circle id="t-dot" cx="180" cy="770" r="16" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <circle id="t-endA" cx="880" cy="570" r="16" fill="#b8235a" stroke="#0e0c1d" stroke-width="6" />
+        <circle id="t-endB" cx="880" cy="840" r="16" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="6" />
+      </svg>
+      <div id="t-labS" class="t-lab">the same file, 5 visits later</div>
+      <div id="t-labA" class="t-lab">one more leftover each visit</div>
+      <div id="t-labB" class="t-lab">one small tidy each visit</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 14: Review: keep it simple</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M140 286 Q200 318 260 286 L200 384 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="200" cy="312" r="11" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 52.5;
+      const g = { boy: 53.76, scout: 54.06, rule: 54.46, leave: 55.25, the: 55.56, code: 55.68, a: 56.08, little: 56.2, cleaner: 56.51, than: 56.94, you: 57.12, found: 57.3, it: 57.65 };
+      const tl = gsap.timeline({ paused: true });
+      const head = gsap.utils.toArray("#t-head span");
+      const sub = gsap.utils.toArray("#t-sub span");
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      // the chart frame is there from the start: same file, two ways to leave it
+      tl.fromTo("#t-axis", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.15);
+      tl.fromTo("#t-dot", { opacity: 0, scale: 0.3, svgOrigin: "180 770" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.35);
+      [g.boy, g.scout, g.rule].forEach((at, i) => tl.fromTo(head[i], { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, at - S - 0.06));
+      [g.leave, g.the, g.code, g.a, g.little, g.cleaner, g.than, g.you, g.found, g.it].forEach((at, i) => tl.fromTo(sub[i], { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, at - S - 0.05));
+      const line = (sel, at, d) => {
+        const p = document.querySelector(sel);
+        const L = Math.ceil(p.getTotalLength()) || 900;
+        p.style.strokeDasharray = L + " " + (L + 40);
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: "power2.inOut" }, at);
+      };
+      // the hurried line climbs first, then the tidy line comes down on "a little cleaner"
+      line("#t-up", g.leave - S, 0.8);
+      tl.fromTo("#t-endA", { opacity: 0, scale: 0.3, svgOrigin: "880 570" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, g.leave - S + 0.75);
+      tl.fromTo("#t-labA", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, g.leave - S + 0.8);
+      line("#t-down", g.little - S, 0.9);
+      tl.fromTo("#t-endB", { opacity: 0, scale: 0.3, svgOrigin: "880 840" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, g.little - S + 0.85);
+      tl.fromTo("#t-labB", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, g.little - S + 0.9);
+      tl.fromTo("#t-labS", { opacity: 0 }, { opacity: 1, duration: 0.4 }, g.it - S + 0.3);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 58.3 - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

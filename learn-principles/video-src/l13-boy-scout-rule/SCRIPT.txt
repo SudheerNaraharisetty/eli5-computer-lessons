@@ -1,0 +1,13 @@
+Scouts have a rule for camping. Leave the campsite cleaner than you found it.
+
+Maya's shop file gets a visit every week. A new feature here, a small fix there.
+
+In a hurry, each visit leaves something behind. A note that says fix later. A name like temp two. A copied line. An old line, switched off but never deleted.
+
+No single one hurts. But after five visits, the file is a mess, and a small change takes all afternoon.
+
+Now play it again, with one new habit. Each visit, Maya does her task, then tidies one small thing. A clearer name. A dead line deleted. A copied line given one home. Two minutes each.
+
+After five visits, the same file is clean. And the same small change takes five minutes.
+
+That is the Boy Scout rule. Leave the code a little cleaner than you found it.

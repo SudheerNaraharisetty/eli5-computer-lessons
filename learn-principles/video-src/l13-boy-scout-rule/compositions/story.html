@@ -1,0 +1,485 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* intro */
+    #s-kick { left: 96px; top: 84px; padding: 4px 26px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 32px; line-height: 1.5; letter-spacing: 0.06em; white-space: nowrap; }
+    #s-h2 { left: 96px; top: 162px; font: 700 88px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-h2 span { display: inline-block; }
+    #s-h2 .ac { color: #1f7a5c; }
+    #s-maya { left: 1450px; top: 500px; width: 440px; height: 572px; }
+
+    /* campsite: big in the intro, then it shrinks into the right panel */
+    #s-camp { left: 1250px; top: 752px; width: 534px; height: 216px; border-radius: 18px; background: #fbf8f4; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; overflow: hidden; }
+    #s-camp > svg { position: absolute; left: 0; top: 0; width: 534px; height: 216px; }
+
+    /* right panel */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-face { left: 34px; top: 12px; width: 88px; height: 100px; }
+    #s-rtitle { left: 136px; top: 28px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-pip { position: absolute; top: 120px; width: 76px; height: 76px; border-radius: 50%; background-color: #ffffff; box-shadow: 0 0 0 4px #0e0c1d, 0 5px 0 4px #0e0c1d; font-size: 38px; line-height: 76px; text-align: center; }
+    .s-pip > svg { position: absolute; left: 0; top: 0; width: 76px; height: 76px; opacity: 0; }
+    .s-min { position: absolute; top: 206px; width: 110px; text-align: center; font-size: 28px; line-height: 1.2; color: #1f7a5c; white-space: nowrap; }
+    #s-meter { left: 40px; top: 240px; width: 534px; height: 240px; }
+    #s-meter text { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 28px; text-anchor: middle; }
+    #s-meter .num { font-family: "Fraunces", serif; font-weight: 700; font-size: 50px; opacity: 0; }
+    #s-res { left: 40px; top: 496px; width: 534px; height: 150px; background: #fff; border-radius: 20px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; padding: 10px 22px 0; }
+    #s-res small { display: block; font-size: 28px; letter-spacing: 0.04em; line-height: 1.35; color: #3e3b52; }
+    .s-rr { display: flex; justify-content: space-between; align-items: baseline; height: 48px; white-space: nowrap; }
+    .s-rr span { font-size: 30px; line-height: 48px; }
+    .s-rr b { font: 700 38px/48px "Fraunces", serif; display: inline-block; }
+    #s-resA b { color: #b8235a; }
+    #s-resB b { color: #1f7a5c; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-pill { position: absolute; right: 22px; top: 10px; padding: 0 18px; height: 44px; border-radius: 999px; color: #fff; font-size: 28px; line-height: 44px; white-space: nowrap; }
+    #s-modeA { background: #b8235a; }
+    #s-modeB { background: #1f7a5c; }
+    #s-lines { left: 36px; top: 92px; width: 1000px; height: 720px; font: 500 28px/44px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-gut { position: absolute; left: 0; top: 0; width: 44px; color: #8480b8; }
+    #s-gut i { display: block; height: 44px; font-style: normal; opacity: 0; }
+    .s-ln { position: absolute; left: 48px; top: 0; width: 604px; height: 44px; border-radius: 10px; background-color: rgba(74, 30, 58, 0); }
+    .s-ln > span { position: absolute; left: 8px; top: 0; height: 44px; white-space: pre; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .cm { color: #b3afdd; }
+    .s-ln .bad { color: #ff9db3; font-weight: 700; }
+    .s-ln .good { color: #7cf0b5; font-weight: 700; }
+    .s-ln > em { position: absolute; left: 624px; top: 2px; height: 40px; padding: 0 18px; border-radius: 999px; font: 800 28px/40px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-ln > em.tb { background: #fbe0ea; color: #b8235a; }
+    .s-ln > em.tg { background: #ddefe6; color: #1f7a5c; }
+    .s-ln > s { position: absolute; left: 70px; top: 20px; width: 330px; height: 5px; border-radius: 3px; background: #ff6b8b; opacity: 0; }
+    .s-stamp { position: absolute; left: 740px; top: 306px; padding: 4px 22px; color: #fff; font-size: 44px; letter-spacing: 0.08em; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-mess { background: #b8235a; }
+    #s-clean { background: #1f7a5c; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="52.5" data-track-index="1">
+      <div id="s-wrap">
+        <!-- intro: the scouts' rule -->
+        <div id="s-kick" class="s-abs">A RULE FROM THE SCOUTS</div>
+        <div id="s-h2" class="s-abs">
+          <span>Leave</span> <span>the</span> <span>campsite</span><br />
+          <span class="ac">cleaner</span> <span>than</span> <span>you</span> <span>found</span> <span>it.</span>
+        </div>
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <g id="s-arm">
+            <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+            <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+          </g>
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M140 286 Q200 318 260 286 L200 384 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="200" cy="312" r="11" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-modeA" class="s-pill s-hide">in a hurry</div>
+          <div id="s-modeB" class="s-pill s-hide">one small tidy per visit</div>
+          <div id="s-lines" class="s-abs">
+            <div id="s-gut"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i><i>11</i><i>12</i><i>13</i><i>14</i><i>15</i><i>16</i></div>
+            <!-- cookie job -->
+            <div class="s-ln" id="s-r1" data-layout-allow-overflow><span class="va"><span class="kw">def</span> <span class="fn">cookie_total</span>(<span class="bad">x</span>):</span><span class="vb s-hide" data-layout-allow-overlap><span class="kw">def</span> <span class="fn">cookie_total</span>(<span class="good">cookies</span>):</span><em class="tb" id="s-t-x">unclear name</em><em class="tg" id="s-t-name" data-layout-allow-overlap>clear name</em></div>
+            <div class="s-ln" id="s-r2" data-layout-allow-overflow><span class="va">    total = <span class="bad">x</span> * COOKIE_PRICE</span><span class="vb s-hide" data-layout-allow-overlap>    total = <span class="good">cookies</span> * COOKIE_PRICE</span></div>
+            <div class="s-ln" id="s-r3" data-layout-allow-overflow><span class="va cm">    # total = total - 1</span><s></s><em class="tb" id="s-t-dead0">dead line</em></div>
+            <div class="s-ln" id="s-r4" data-layout-allow-overflow><span class="va">    <span class="kw">return</span> total + total * TAX_RATE</span><span class="vt s-hide" data-layout-allow-overlap>    <span class="kw">return</span> <span class="bad">tmp2</span> + <span class="bad">tmp2</span> * TAX_RATE</span><span class="vw s-hide" data-layout-allow-overlap>    <span class="kw">return</span> <span class="fn">with_tax</span>(total)</span></div>
+            <!-- cake job -->
+            <div class="s-ln" id="s-c1" data-layout-allow-overflow><span class="va"><span class="kw">def</span> <span class="fn">cake_total</span>(cakes):</span></div>
+            <div class="s-ln" id="s-c2" data-layout-allow-overflow><span class="va">    total = cakes * CAKE_PRICE</span></div>
+            <div class="s-ln" id="s-c3" data-layout-allow-overflow><span class="va">    <span class="kw">return</span> total + total * TAX_RATE</span><span class="vw s-hide" data-layout-allow-overlap>    <span class="kw">return</span> <span class="fn">with_tax</span>(total)</span></div>
+            <!-- rows that arrive on later visits -->
+            <div class="s-ln s-hide" id="s-a1" data-layout-allow-overflow><span class="va cm">    # TODO fix later</span><em class="tb" id="s-t-todo">fix what?</em></div>
+            <div class="s-ln s-hide" id="s-a2" data-layout-allow-overflow><span class="va">    total = total + CANDLE_PRICE</span><span class="vd cm s-hide" data-layout-allow-overlap>    # total = total + CANDLE_PRICE</span><em class="tb" id="s-t-dead">switched off</em></div>
+            <div class="s-ln s-hide" id="s-a3" data-layout-allow-overflow><span class="va">    <span class="bad">tmp2</span> = total + BOX_PRICE</span><em class="tb" id="s-t-tmp">tmp what?</em></div>
+            <div class="s-ln s-hide" id="s-a5" data-layout-allow-overflow><span class="va">    <span class="bad">tmp3</span> = total + BOX_PRICE</span><em class="tb" id="s-t-tmp3">and tmp3</em></div>
+            <div class="s-ln s-hide" id="s-b2" data-layout-allow-overflow><span class="va">    total = total + BOX_PRICE</span></div>
+            <div class="s-ln s-hide" id="s-b5" data-layout-allow-overflow><span class="va">    total = total + BOX_PRICE</span></div>
+            <div class="s-ln s-hide" id="s-p1" data-layout-allow-overflow><span class="va"><span class="kw">def</span> <span class="fn">pie_total</span>(pies):</span></div>
+            <div class="s-ln s-hide" id="s-p2" data-layout-allow-overflow><span class="va">    total = pies * PIE_PRICE</span></div>
+            <div class="s-ln s-hide" id="s-p3" data-layout-allow-overflow><span class="va">    <span class="kw">return</span> total + total * TAX_RATE</span><span class="vt s-hide" data-layout-allow-overlap>    <span class="kw">return</span> <span class="bad">tmp3</span> + <span class="bad">tmp3</span> * TAX_RATE</span><span class="vw s-hide" data-layout-allow-overlap>    <span class="kw">return</span> <span class="fn">with_tax</span>(total)</span><em class="tb" id="s-t-copy">copy no. 3</em></div>
+            <div class="s-ln s-hide" id="s-w1" data-layout-allow-overflow><span class="va"><span class="kw">def</span> <span class="fn">with_tax</span>(total):</span><em class="tg" id="s-t-home">one home</em></div>
+            <div class="s-ln s-hide" id="s-w2" data-layout-allow-overflow><span class="va">    <span class="kw">return</span> total + total * TAX_RATE</span></div>
+          </div>
+          <div id="s-mess" class="s-stamp s-hide">MESS</div>
+          <div id="s-clean" class="s-stamp s-hide" data-layout-allow-overlap>CLEAN</div>
+        </div>
+
+        <!-- the visits, the mess meter, the result -->
+        <div id="s-right" class="s-abs s-ol s-hide">
+          <svg id="s-face" class="s-abs" viewBox="86 0 228 260">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-rtitle" class="s-abs">Maya's visits</div>
+
+          <div class="s-pip s-hide" id="s-p-1" style="left:40px"><b>1</b><svg viewBox="0 0 76 76"><path d="M22 39 L34 51 L55 27" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-pip s-hide" id="s-p-2" style="left:154px"><b>2</b><svg viewBox="0 0 76 76"><path d="M22 39 L34 51 L55 27" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-pip s-hide" id="s-p-3" style="left:269px"><b>3</b><svg viewBox="0 0 76 76"><path d="M22 39 L34 51 L55 27" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-pip s-hide" id="s-p-4" style="left:383px"><b>4</b><svg viewBox="0 0 76 76"><path d="M22 39 L34 51 L55 27" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-pip s-hide" id="s-p-5" style="left:498px"><b>5</b><svg viewBox="0 0 76 76"><path d="M22 39 L34 51 L55 27" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-min s-hide" id="s-m-1" style="left:23px">2 min</div>
+          <div class="s-min s-hide" id="s-m-2" style="left:137px">2 min</div>
+          <div class="s-min s-hide" id="s-m-3" style="left:252px">2 min</div>
+          <div class="s-min s-hide" id="s-m-4" style="left:366px">2 min</div>
+          <div class="s-min s-hide" id="s-m-5" style="left:481px">2 min</div>
+
+          <svg id="s-meter" class="s-abs s-hide" viewBox="0 0 534 240">
+            <path d="M107 190 A160 160 0 0 1 427 190" fill="none" stroke="#0e0c1d" stroke-width="48" />
+            <path d="M107 190 A160 160 0 0 1 178.1 57" fill="none" stroke="#1f7a5c" stroke-width="36" />
+            <path d="M178.1 57 A160 160 0 0 1 328.2 42.2" fill="none" stroke="#ffc24b" stroke-width="36" />
+            <path d="M328.2 42.2 A160 160 0 0 1 427 190" fill="none" stroke="#b8235a" stroke-width="36" />
+            <rect x="80" y="188" width="374" height="8" fill="#fbf8f4" />
+            <text x="107" y="230" fill="#1f7a5c">clean</text>
+            <text x="427" y="230" fill="#b8235a">mess</text>
+            <polygon id="s-needle" points="258,190 276,190 267,44" fill="#0e0c1d" />
+            <circle cx="267" cy="190" r="44" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <text class="num" id="s-n0" x="267" y="207" fill="#1f7a5c">0</text>
+            <text class="num" id="s-n1" x="267" y="207" fill="#1f7a5c">1</text>
+            <text class="num" id="s-n2" x="267" y="207">2</text>
+            <text class="num" id="s-n3" x="267" y="207">3</text>
+            <text class="num" id="s-n4" x="267" y="207">4</text>
+            <text class="num" id="s-n5" x="267" y="207" fill="#b8235a">5</text>
+            <text class="num" id="s-n6" x="267" y="207" fill="#b8235a">6</text>
+            <text class="num" id="s-n7" x="267" y="207" fill="#b8235a">7</text>
+          </svg>
+
+          <div id="s-res" class="s-abs s-hide">
+            <small>A SMALL CHANGE TAKES</small>
+            <div class="s-rr" id="s-resA"><span class="s-hide">in a hurry</span><b class="s-hide">all afternoon</b></div>
+            <div class="s-rr" id="s-resB"><span class="s-hide">with the rule</span><b class="s-hide">5 minutes</b></div>
+          </div>
+        </div>
+
+        <!-- the campsite -->
+        <div id="s-camp" class="s-abs">
+          <svg viewBox="0 0 534 216">
+            <circle cx="452" cy="44" r="24" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" />
+            <rect x="0" y="150" width="534" height="66" fill="#ddefe6" /><path d="M0 150 H534" stroke="#0e0c1d" stroke-width="4" />
+            <!-- tree -->
+            <rect x="488" y="104" width="12" height="46" fill="#b9741a" stroke="#0e0c1d" stroke-width="4" />
+            <path d="M494 36 L528 112 H460 Z" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+            <!-- tent -->
+            <path d="M40 150 L128 44 L216 150 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+            <path d="M128 44 L104 150 H152 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+            <path d="M128 44 V28 L148 34 L128 40" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="3" stroke-linejoin="round" />
+            <!-- fire -->
+            <path d="M292 150 C276 132 290 122 290 108 C304 118 312 132 300 150 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+            <path d="M270 150 L318 140 M270 140 L318 150" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+            <!-- flowers that bloom once the site is clean -->
+            <g id="s-F1"><path d="M246 150 V124" stroke="#1f7a5c" stroke-width="4" stroke-linecap="round" /><circle cx="246" cy="116" r="10" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="3" /><circle cx="246" cy="116" r="3.5" fill="#ffc24b" /></g>
+            <g id="s-F2"><path d="M352 150 V120" stroke="#1f7a5c" stroke-width="4" stroke-linecap="round" /><circle cx="352" cy="112" r="10" fill="#fff" stroke="#0e0c1d" stroke-width="3" /><circle cx="352" cy="112" r="3.5" fill="#ffc24b" /></g>
+            <g id="s-F3"><path d="M404 150 V128" stroke="#1f7a5c" stroke-width="4" stroke-linecap="round" /><circle cx="404" cy="120" r="10" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="3" /><circle cx="404" cy="120" r="3.5" fill="#ffc24b" /></g>
+            <!-- litter: L0 is picked up in the intro, L1 and L2 are what Maya finds, A1 to A5 arrive with the hurried visits -->
+            <g id="s-L0"><g transform="translate(262 182) rotate(-18)"><rect x="-10" y="-15" width="20" height="30" rx="4" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" /><path d="M-10 -5 H10" stroke="#0e0c1d" stroke-width="3" /></g></g>
+            <g id="s-L1"><g transform="translate(120 184)"><path d="M-14 4 L-8 -11 L3 -6 L12 -13 L15 3 L5 12 L-7 11 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g></g>
+            <g id="s-L2"><g transform="translate(408 180) rotate(70)"><path d="M-6 -16 H6 V-8 L10 0 V16 H-10 V0 L-6 -8 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g></g>
+            <g id="s-A1"><g transform="translate(58 190) rotate(24)"><rect x="-10" y="-15" width="20" height="30" rx="4" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" /><path d="M-10 -5 H10" stroke="#0e0c1d" stroke-width="3" /></g></g>
+            <g id="s-A2"><g transform="translate(196 196) rotate(40)"><path d="M-14 4 L-8 -11 L3 -6 L12 -13 L15 3 L5 12 L-7 11 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g></g>
+            <g id="s-A3"><g transform="translate(330 194) rotate(-80)"><path d="M-6 -16 H6 V-8 L10 0 V16 H-10 V0 L-6 -8 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g></g>
+            <g id="s-A4"><g transform="translate(474 192) rotate(-30)"><rect x="-10" y="-15" width="20" height="30" rx="4" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><path d="M-10 -5 H10" stroke="#0e0c1d" stroke-width="3" /></g></g>
+            <g id="s-A5"><g transform="translate(262 186) rotate(160)"><path d="M-14 4 L-8 -11 L3 -6 L12 -13 L15 3 L5 12 L-7 11 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></g></g>
+            <g id="s-pick"><circle cx="262" cy="180" r="15" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="3" /><path d="M254 180 L260 186 L270 174" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></g>
+          </svg>
+        </div>
+
+        <!-- ring and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rx" class="s-ring" d="M462 212 C460 186 494 184 494 210 C494 236 458 238 460 206" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.488, 0.662, 0.743, 1.022, 1.173, 1.997, 2.31, 2.426, 2.972, 3.39, 3.553, 3.715, 4.04, 4.946, 5.375, 5.666, 5.968, 6.211, 6.304, 6.676, 7.094, 7.848, 8.011, 8.22, 8.615, 9.056, 9.207, 9.567, 9.927, 10.879, 11.064, 11.146, 11.645, 11.97, 12.365, 12.69, 13.108, 14.153, 14.327, 14.617, 14.826, 15.418, 15.928, 17.02, 17.194, 17.531, 17.891, 18.332, 19.028, 19.214, 19.69, 20.282, 20.491, 20.712, 21.269, 21.687, 21.896, 22.128, 22.43, 23.394, 23.695, 24.137, 24.369, 25.425, 25.611, 25.948, 26.308, 26.958, 27.12, 27.457, 27.631, 27.782, 28.386, 28.595, 28.676, 29.013, 29.431, 29.779, 30.023, 31.137, 31.497, 31.753, 31.892, 32.507, 32.774, 33.042, 33.297, 34.458, 34.783, 35.491, 35.828, 36.107, 36.292, 36.85, 37.117, 37.662, 37.988, 38.405, 39.207, 39.369, 39.741, 40.275, 40.495, 40.786, 41.122, 42.19, 42.364, 42.759, 43.073, 43.421, 43.665, 44.222, 44.536, 44.93, 46.08, 46.509, 46.869, 47.345, 47.554, 47.902, 48.251, 48.46, 49.4, 49.598, 49.714, 49.992, 50.329, 50.735, 51.13, 51.548, 52.361, 52.732, 52.976, 53.162, 53.463, 53.858, 54.648, 54.961, 55.077, 55.484, 55.6, 55.913, 56.343, 56.517, 56.703, 57.051];
+      const t = (i) => W[i] + 0.6;
+      const R = 44; // one code row
+      const PINK = "#4a1e3a", GREEN = "#173f36", CLEAR = "rgba(74, 30, 58, 0)";
+      const tl = gsap.timeline({ paused: true });
+      const $ = (id) => "#s-" + id;
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+
+      /* ---- code rows: every state of the file is an ordered list of row ids ("" is a blank line) ---- */
+      const cur = {}, vis = {};
+      const gut = gsap.utils.toArray("#s-gut i");
+      const state = (list, at, d) => {
+        list.forEach((id, i) => {
+          if (!id) return;
+          const y = i * R;
+          if (at === null) { gsap.set($(id), { y }); cur[id] = y; vis[id] = true; return; }
+          if (!vis[id]) tl.set($(id), { y }, at);
+          else if (cur[id] !== y) tl.fromTo($(id), { y: cur[id] }, { y, duration: d || 0.4, ease: "power3.inOut", immediateRender: false }, at);
+          cur[id] = y;
+        });
+        if (at !== null) gut.forEach((g, i) => tl.to(g, { opacity: i < list.length ? 1 : 0, duration: 0.2 }, at + 0.15));
+      };
+      const show = (ids, at) => ids.forEach((id, i) => {
+        vis[id] = true;
+        tl.fromTo($(id), { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", immediateRender: false }, at + i * 0.06);
+      });
+      const hide = (ids, at, d) => ids.forEach((id) => {
+        vis[id] = false;
+        tl.to($(id), { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      });
+      const vswap = (id, a, b, at) => {
+        tl.to($(id) + " > ." + a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.to($(id) + " > ." + b, { opacity: 1, duration: 0.3, ease: "power2.out" }, at + 0.08);
+      };
+      const tint = (id, col, at) => tl.to($(id), { backgroundColor: col, duration: 0.25 }, at);
+      const tag = (id, at) => tl.fromTo($(id), { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", immediateRender: false }, at);
+
+      const S = ["r1", "r2", "r3", "r4", "", "c1", "c2", "c3"];
+      state(S, null);
+
+      /* ---- meter, pips, litter ---- */
+      gsap.set("#s-needle", { rotation: -90, svgOrigin: "267 190" });
+      let count = 0;
+      const meter = (c, at) => {
+        tl.to("#s-needle", { rotation: -90 + c * 22.5, svgOrigin: "267 190", duration: 0.6, ease: "back.out(2.2)" }, at);
+        tl.to("#s-n" + count, { opacity: 0, duration: 0.1 }, at + 0.1);
+        tl.to("#s-n" + c, { opacity: 1, duration: 0.2 }, at + 0.18);
+        count = c;
+      };
+      const pipBad = (n, at) => {
+        tl.to($("p-" + n), { backgroundColor: "#ff9db3", duration: 0.2 }, at);
+        tl.to($("p-" + n), { scale: 1.22, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      };
+      const pipGood = (n, at) => {
+        tl.to($("p-" + n), { backgroundColor: "#1f7a5c", duration: 0.2 }, at);
+        tl.to($("p-" + n) + " > b", { opacity: 0, duration: 0.15 }, at);
+        tl.to($("p-" + n) + " > svg", { opacity: 1, duration: 0.2 }, at + 0.05);
+        tl.to($("p-" + n), { scale: 1.22, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, at);
+      };
+      const drop = (id, at) => tl.fromTo($(id), { opacity: 0, y: -130 }, { opacity: 1, y: 0, duration: 0.55, ease: "bounce.out" }, at);
+      const pick = (id, at) => tl.to($(id), { opacity: 0, y: -46, duration: 0.4, ease: "power2.in" }, at);
+      const bloom = (id, x, at) => tl.fromTo($(id), { opacity: 0, scale: 0, svgOrigin: x + " 150" }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, at);
+      gsap.set(["#s-A1", "#s-A2", "#s-A3", "#s-A4", "#s-A5", "#s-F1", "#s-F2", "#s-F3", "#s-pick"], { opacity: 0 });
+
+      const ring = document.querySelector("#s-rx");
+      const RL = Math.ceil(ring.getTotalLength()) || 200;
+      ring.style.strokeDasharray = RL + " " + (RL + 40);
+
+      /* ---- 1. The scouts' rule ---- */
+      const CAMP = { scale: 2.5, x: -1154, y: -352, transformOrigin: "0 0" };
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.3);
+      const hw = gsap.utils.toArray("#s-h2 span");
+      [6, 7, 8, 9, 10, 11, 12, 13].forEach((w, i) => tl.fromTo(hw[i], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, t(w) - 0.05));
+      tl.to("#s-L0", { y: -34, opacity: 0, duration: 0.45, ease: "power2.in" }, t(9) + 0.05);
+      tl.fromTo("#s-pick", { opacity: 0, scale: 0.2, svgOrigin: "262 180" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, t(9) + 0.45);
+
+      /* ---- 2. Maya's shop file gets a visit every week ---- */
+      const T2 = t(14) - 0.45;
+      tl.to(["#s-kick", "#s-h2", "#s-maya"], { opacity: 0, duration: 0.3, ease: "power2.in" }, T2);
+      tl.to("#s-pick", { opacity: 0, duration: 0.3 }, T2);
+      tl.fromTo("#s-camp", CAMP, { scale: 1, x: 0, y: 0, transformOrigin: "0 0", duration: 0.8, ease: "power3.inOut" }, T2 + 0.05);
+      tl.fromTo("#s-code", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, T2 + 0.4);
+      tl.fromTo("#s-lines .s-ln:not(.s-hide)", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.05 }, T2 + 0.6);
+      gut.slice(0, 8).forEach((g, i) => tl.to(g, { opacity: 1, duration: 0.2 }, T2 + 0.6 + i * 0.05));
+      tl.fromTo("#s-right", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, T2 + 0.35);
+      [1, 2, 3, 4, 5].forEach((n, i) => pop($("p-" + n), t(19) - 0.1 + i * 0.13, { from: 0.4, d: 0.35 }));
+      // "a new feature here, a small fix there": the meter shows how she finds the file
+      tl.fromTo("#s-meter", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(23) - 0.1);
+      tl.to("#s-n0", { opacity: 1, duration: 0.2 }, t(23) + 0.1);
+      meter(2, t(25));
+      tl.set("#s-rx", { opacity: 1 }, t(27));
+      tl.fromTo("#s-rx", { strokeDashoffset: RL }, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, t(27));
+      tag("t-x", t(27) + 0.25);
+      tl.to("#s-L1", { y: -14, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(27) + 0.1);
+      tint("r3", PINK, t(28) + 0.15);
+      tag("t-dead0", t(28) + 0.35);
+      tl.to("#s-L2", { y: -14, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(28) + 0.25);
+
+      /* ---- 3. In a hurry: each visit leaves something behind ---- */
+      out(["#s-rx", "#s-t-x", "#s-t-dead0"], t(30) - 0.1, 0.25);
+      tint("r3", CLEAR, t(30) - 0.1);
+      tl.fromTo("#s-modeA", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(31));
+      tl.to(".s-pip", { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.07 }, t(33));
+      // visit 1: a note that says fix later
+      const A1 = ["r1", "r2", "r3", "r4", "", "c1", "c2", "a1", "a2", "c3"];
+      pipBad(1, t(38));
+      state(A1, t(38), 0.35);
+      show(["a1", "a2"], t(38) + 0.25);
+      tint("a1", PINK, t(39) + 0.1);
+      drop("A1", t(39) + 0.1);
+      meter(3, t(39) + 0.3);
+      tag("t-todo", t(42));
+      // visit 2: a name like tmp2
+      const A2 = ["r1", "r2", "r3", "a3", "r4", "", "c1", "c2", "a1", "a2", "c3"];
+      pipBad(2, t(44));
+      state(A2, t(44), 0.35);
+      show(["a3"], t(44) + 0.25);
+      vswap("r4", "va", "vt", t(45) + 0.2);
+      tint("a3", PINK, t(47) - 0.1);
+      drop("A2", t(47) - 0.1);
+      meter(4, t(47) + 0.1);
+      tag("t-tmp", t(47) + 0.3);
+      // visit 3: a copied line
+      const A3 = A2.concat(["", "p1", "p2", "p3"]);
+      pipBad(3, t(49));
+      state(A3, t(49), 0.3);
+      show(["p1", "p2", "p3"], t(49) + 0.1);
+      tint("p3", PINK, t(50));
+      drop("A3", t(50));
+      meter(5, t(50) + 0.2);
+      tag("t-copy", t(50) + 0.35);
+      // visit 4: an old line, switched off but never deleted
+      pipBad(4, t(52));
+      vswap("a2", "va", "vd", t(55) - 0.1);
+      tint("a2", PINK, t(55));
+      tag("t-dead", t(55) + 0.2);
+      drop("A4", t(55) + 0.1);
+      meter(6, t(55) + 0.3);
+      // visit 5: no single one hurts
+      const A5 = A2.concat(["", "p1", "p2", "a5", "p3"]);
+      pipBad(5, t(60));
+      state(A5, t(60), 0.35);
+      show(["a5"], t(60) + 0.25);
+      vswap("p3", "va", "vt", t(61));
+      tint("a5", PINK, t(61));
+      tag("t-tmp3", t(61) + 0.25);
+      drop("A5", t(62));
+      meter(7, t(62) + 0.2);
+      // after five visits, the file is a mess
+      tl.to(".s-pip", { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.07 }, t(66));
+      tl.fromTo("#s-mess", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(72) - 0.25);
+      tl.fromTo("#s-res", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(75) - 0.15);
+      tl.fromTo("#s-resA span", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(77));
+      pop("#s-resA b", t(78), { from: 1.5, d: 0.4, ease: "back.out(2)" });
+
+      /* ---- 4. Now play it again, with one new habit ---- */
+      const TR = t(80) - 0.05;
+      out(["#s-t-todo", "#s-t-tmp", "#s-t-copy", "#s-t-dead", "#s-t-tmp3", "#s-mess"], TR, 0.2);
+      hide(["a5", "p3", "p2", "p1", "a3", "a2", "a1"], TR + 0.05, 0.3);
+      ["a1", "a2", "a3", "a5", "p3"].forEach((id) => tint(id, CLEAR, TR + 0.3));
+      tl.set("#s-r4 > .vt, #s-a2 > .vd, #s-p3 > .vt", { opacity: 0 }, TR + 0.4);
+      tl.set("#s-a2 > .va, #s-p3 > .va", { opacity: 1 }, TR + 0.4);
+      tl.to("#s-r4 > .va", { opacity: 1, duration: 0.25 }, TR + 0.4);
+      state(S, TR + 0.35, 0.5);
+      ["A5", "A4", "A3", "A2", "A1"].forEach((id, i) => tl.to($(id), { opacity: 0, y: -90, duration: 0.3, ease: "power2.in" }, TR + 0.1 + i * 0.07));
+      tl.to(".s-pip", { backgroundColor: "#ffffff", duration: 0.3, stagger: -0.06 }, TR + 0.2);
+      tl.to("#s-needle", { rotation: -45, svgOrigin: "267 190", duration: 0.8, ease: "power3.inOut" }, TR + 0.15);
+      tl.to("#s-n7", { opacity: 0, duration: 0.15 }, TR + 0.4);
+      tl.to("#s-n2", { opacity: 1, duration: 0.2 }, TR + 0.6);
+      count = 2;
+      out("#s-modeA", TR + 0.1, 0.25);
+      tl.fromTo("#s-modeB", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(85) - 0.1);
+      tl.to(".s-pip", { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.07 }, t(88));
+      // visit 1: the task, then a clearer name
+      const B1 = ["r1", "r2", "r3", "r4", "", "c1", "c2", "a2", "c3"];
+      state(B1, t(93) - 0.1, 0.35);
+      show(["a2"], t(93) + 0.15);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 1010 }, { opacity: 1, x: 472, y: 218, duration: 0.8, ease: "power3.out" }, t(95));
+      vswap("r1", "va", "vb", t(100) - 0.05);
+      vswap("r2", "va", "vb", t(100) + 0.15);
+      tag("t-name", t(100) + 0.3);
+      pick("L1", t(100) + 0.1);
+      meter(1, t(100) + 0.3);
+      pipGood(1, t(101));
+      // visit 2: the task, then a dead line deleted
+      const B2a = ["r1", "r2", "r3", "b2", "r4", "", "c1", "c2", "a2", "c3"];
+      const B2b = ["r1", "r2", "b2", "r4", "", "c1", "c2", "a2", "c3"];
+      out("#s-t-name", t(102) - 0.1, 0.2);
+      state(B2a, t(102) - 0.1, 0.3);
+      show(["b2"], t(102) + 0.1);
+      tl.to("#s-cursor", { x: 590, y: 302, duration: 0.45, ease: "power2.inOut" }, t(102));
+      tint("r3", PINK, t(103));
+      tl.fromTo("#s-r3 > s", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out" }, t(103) + 0.15);
+      hide(["r3"], t(105), 0.2);
+      state(B2b, t(105) + 0.15, 0.35);
+      pick("L2", t(105) + 0.05);
+      meter(0, t(105) + 0.25);
+      pipGood(2, t(105) + 0.3);
+      // visit 3: the task would copy the tax line a third time; it gets one home
+      const B3a = B2b.concat(["", "p1", "p2", "p3"]);
+      const B3b = ["w1", "w2", ""].concat(B3a);
+      state(B3a, t(106) - 0.1, 0.3);
+      show(["p1", "p2", "p3"], t(106));
+      tl.to("#s-cursor", { x: 820, y: 720, opacity: 0, duration: 0.5, ease: "power2.in" }, t(106));
+      ["r4", "c3", "p3"].forEach((id, i) => tint(id, "#2e2a58", t(107) + i * 0.12));
+      state(B3b, t(109) - 0.15, 0.4);
+      show(["w1", "w2"], t(109) + 0.15);
+      tint("w1", GREEN, t(109) + 0.2);
+      tint("w2", GREEN, t(109) + 0.2);
+      ["r4", "c3", "p3"].forEach((id, i) => {
+        vswap(id, "va", "vw", t(110) + i * 0.14);
+        tint(id, "rgba(46, 42, 88, 0)", t(110) + 0.1 + i * 0.14);
+      });
+      tag("t-home", t(111));
+      pipGood(3, t(111) + 0.1);
+      bloom("F1", 246, t(111) + 0.2);
+      // visits 4 and 5: two minutes each
+      const B4 = B3b.filter((id) => id !== "a2");
+      hide(["a2"], t(112) - 0.1, 0.2);
+      state(B4, t(112) + 0.05, 0.3);
+      pipGood(4, t(112) + 0.2);
+      bloom("F2", 352, t(112) + 0.3);
+      const B5 = B4.slice(0, 14).concat(["b5", "p3"]);
+      state(B5, t(113) + 0.2, 0.3);
+      show(["b5"], t(113) + 0.4);
+      pipGood(5, t(114));
+      bloom("F3", 404, t(114) + 0.1);
+      [1, 2, 3, 4, 5].forEach((n, i) => pop($("m-" + n), t(112) + i * 0.16, { from: 0.4, d: 0.3 }));
+
+      /* ---- 5. After five visits, the same file is clean ---- */
+      out("#s-t-home", t(115) - 0.1, 0.2);
+      tint("w1", CLEAR, t(115));
+      tint("w2", CLEAR, t(115));
+      tl.to(".s-pip", { y: -10, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.07 }, t(116));
+      tl.fromTo("#s-clean", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(122) - 0.25);
+      tl.fromTo("#s-resB span", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(125));
+      pop("#s-resB b", t(129), { from: 1.5, d: 0.4, ease: "back.out(2)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 52.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

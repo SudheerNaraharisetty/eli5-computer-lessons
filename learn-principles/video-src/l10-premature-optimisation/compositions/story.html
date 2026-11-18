@@ -1,0 +1,477 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap, #s-shop, #s-B, #s-C, #c-top { position: absolute; inset: 0; }
+    #s-C { opacity: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-ol4 { box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-pill { position: absolute; padding: 0 20px; height: 50px; line-height: 50px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-bad { background: #fbe0ea; color: #b8235a; }
+    .s-good { background: #ddefe6; color: #1f7a5c; }
+    .s-stamp { position: absolute; padding: 4px 18px; background: #b8235a; color: #fff; font-size: 32px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* stage A: the shop */
+    #s-counter { left: 96px; top: 740px; width: 1054px; height: 244px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 740px; width: 1054px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-maya { left: 150px; top: 236px; width: 420px; height: 546px; }
+    #s-name { left: 506px; top: 388px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-cookies { left: 580px; top: 664px; width: 210px; height: 80px; }
+    #s-pwin { left: 850px; top: 366px; width: 220px; height: 272px; overflow: hidden; }
+    #s-paper { left: 10px; top: 12px; width: 200px; height: 280px; background: #fff; box-shadow: inset 0 0 0 5px #0e0c1d; text-align: center; padding-top: 28px; }
+    #s-paper small { display: block; font-size: 28px; letter-spacing: 0.1em; color: #6f6b80; line-height: 1.25; }
+    #s-paper b { display: block; margin-top: 14px; font: 700 56px/1.2 "JetBrains Mono", monospace; }
+    #s-printer { left: 810px; top: 624px; width: 300px; height: 116px; background: #fff; border-radius: 18px 18px 0 0; }
+    #s-printer > i { position: absolute; left: 30px; top: 12px; width: 240px; height: 14px; border-radius: 7px; background: #0e0c1d; }
+    #s-printer > u { position: absolute; right: 30px; top: 58px; width: 22px; height: 22px; border-radius: 50%; background: #4bd69b; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-printer > span { position: absolute; left: 30px; top: 50px; font-size: 30px; letter-spacing: 0.08em; color: #3e3b52; }
+    #s-slow { left: 876px; top: 296px; background: #fbebd2; color: #8a5310; }
+    #s-think { left: 590px; top: 150px; width: 420px; height: 116px; background: #fff; border-radius: 30px; font: 700 54px/116px "Fraunces", serif; text-align: center; letter-spacing: -0.02em; }
+    #s-eve { left: 1300px; top: 360px; height: 150px; padding: 0 44px 0 30px; display: flex; align-items: center; gap: 24px; background: #15132b; color: #fff; border-radius: 28px; font: 700 64px/1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-eve > svg { width: 84px; height: 84px; flex: none; }
+    #s-think > i { position: absolute; left: 30px; bottom: -44px; width: 34px; height: 34px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* right panel */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-rtitle { left: 40px; top: 24px; font: 700 54px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-time { left: 40px; top: 108px; width: 534px; height: 132px; background: #fff; border-radius: 20px; }
+    #s-time small { position: absolute; left: 26px; top: 20px; font-size: 28px; letter-spacing: 0.03em; color: #8a5310; line-height: 1.3; }
+    #s-track { left: 26px; top: 72px; width: 330px; height: 36px; border-radius: 10px; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; overflow: hidden; }
+    #s-tfill { left: 0; top: 0; width: 330px; height: 36px; background: #3e3b52; }
+    #s-four { right: 26px; top: 40px; font: 700 64px/76px "Fraunces", serif; white-space: nowrap; }
+    #s-still { right: -22px; top: -30px; }
+    #s-wklabel { left: 40px; top: 262px; font-size: 34px; line-height: 1.3; }
+    .s-cal { position: absolute; width: 150px; height: 116px; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; text-align: center; font: 700 52px/84px "Fraunces", serif; }
+    .s-cal > i { display: block; height: 30px; background: #b8235a; box-shadow: 0 4px 0 0 #0e0c1d; }
+    #s-sat { left: 1250px; top: 420px; }
+    #s-sun { left: 1424px; top: 420px; }
+    #s-slabel { left: 40px; top: 258px; font-size: 28px; letter-spacing: 0.06em; color: #3e3b52; line-height: 1.3; }
+    .s-chip { position: absolute; top: 308px; width: 150px; height: 68px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; text-align: center; font: 700 40px/68px "JetBrains Mono", monospace; }
+    #s-c2 > i { position: absolute; left: 16px; top: 31px; width: 118px; height: 6px; border-radius: 3px; background: #b8235a; }
+    #s-refund { left: 300px; top: 256px; height: 44px; line-height: 44px; font-size: 28px; background: #b8235a; color: #fff; }
+    .s-row { position: absolute; left: 40px; width: 534px; height: 72px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; font-size: 32px; }
+    .s-val { position: relative; width: 110px; height: 56px; font: 700 44px/56px "JetBrains Mono", monospace; }
+    .s-val b { position: absolute; right: 0; top: 0; }
+    #s-v23 { color: #1f7a5c; }
+    #s-vT { color: #b8235a; }
+    #s-rcpt { left: 40px; top: 618px; width: 270px; height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #s-rcpt > svg { position: absolute; left: -5px; top: -5px; width: 280px; height: 172px; }
+    #s-rcpt small { position: relative; font-size: 28px; letter-spacing: 0.1em; color: #6f6b80; line-height: 1.2; }
+    #s-rcpt b { position: relative; font: 700 46px/1.2 "JetBrains Mono", monospace; }
+    #s-rlabel { left: 340px; top: 626px; font-size: 34px; line-height: 1.2; }
+    #s-wrong { left: 236px; top: 728px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-hard { right: 22px; top: 10px; height: 44px; line-height: 44px; font-size: 28px; background: #ffc24b; color: #0e0c1d; box-shadow: none; }
+    .s-strip { position: absolute; left: 14px; width: 1026px; border-radius: 12px; background: #3a3247; }
+    .s-lines { position: absolute; left: 36px; top: 104px; width: 1000px; font: 500 30px/52px "JetBrains Mono", monospace; }
+    .s-ln { height: 52px; display: flex; white-space: pre; }
+    .s-ln > i { width: 60px; flex: none; font-style: normal; color: #a5a1d4; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .nw { color: #ffc24b; }
+    .s-ty { display: inline-block; height: 52px; }
+
+    /* marks */
+    .s-marks { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .s-marks path { opacity: 0; fill: none; stroke-linecap: round; }
+    .s-ring { stroke: #ff6b8b; stroke-width: 6; }
+    #s-must { left: 800px; top: 584px; background: #ff6b8b; color: #0e0c1d; }
+    #s-upd { left: 668px; top: 513px; }
+    #s-forgot { left: 806px; top: 565px; }
+
+    /* stage C: the measurement */
+    #c-head { left: 96px; top: 84px; display: flex; align-items: center; gap: 26px; font: 700 84px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #c-watch { width: 100px; height: 110px; flex: none; }
+    #c-total { right: 96px; top: 76px; width: 420px; height: 130px; text-align: right; }
+    #c-total small { display: block; font-size: 28px; letter-spacing: 0.06em; color: #3e3b52; line-height: 1.3; }
+    #c-total b { position: absolute; right: 0; top: 36px; font: 700 84px/94px "Fraunces", serif; white-space: nowrap; }
+    #c-t01 { color: #1f7a5c; }
+    #c-bar { left: 96px; top: 340px; width: 1728px; height: 160px; border-radius: 22px; background: #ece7df; }
+    #c-in { left: 0; top: 0; width: 1728px; height: 160px; border-radius: 22px; overflow: hidden; }
+    #c-q { left: 0; top: 0; width: 1728px; height: 160px; text-align: center; font: 700 64px/160px "Fraunces", serif; color: #3e3b52; }
+    #c-add { left: 0; top: 0; width: 16px; height: 160px; background: #3b37e6; }
+    #c-warm { left: 16px; top: 0; width: 1668px; height: 160px; background: #ffc24b; box-shadow: inset 5px 0 0 0 #0e0c1d; display: flex; align-items: center; justify-content: center; gap: 36px; font: 700 68px/1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #c-warm > span { padding: 4px 22px; background: #fff; border-radius: 14px; font: 700 54px/1.3 "JetBrains Mono", monospace; letter-spacing: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    #c-print { left: 1684px; top: 0; width: 44px; height: 160px; background: #c9c6ff; box-shadow: inset 5px 0 0 0 #0e0c1d; }
+    #c-saved { left: 640px; top: 392px; height: 56px; line-height: 56px; font-size: 34px; }
+    .c-lab { position: absolute; display: flex; align-items: center; gap: 18px; font-size: 40px; line-height: 56px; white-space: nowrap; }
+    .c-lab > span { padding: 0 18px; background: #fff; border-radius: 12px; font: 700 36px/56px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    #c-ladd { left: 96px; top: 228px; }
+    #c-ladd > span { color: #3b37e6; }
+    #c-tick1 { left: 101px; top: 292px; width: 6px; height: 43px; background: #0e0c1d; }
+    #c-lprint { right: 96px; top: 536px; }
+    #c-tick2 { left: 1799px; top: 505px; width: 6px; height: 28px; background: #0e0c1d; }
+    #c-sat { left: 96px; top: 566px; }
+    #c-sun { left: 270px; top: 566px; }
+    #c-wkpill { left: 450px; top: 600px; background: #fff; }
+    #c-wrongpart { left: 190px; top: 395px; background: #b8235a; color: #fff; }
+    .c-card { position: absolute; top: 700px; height: 262px; border-radius: 24px; }
+    .c-card > small { position: absolute; left: 30px; top: 20px; font-size: 28px; letter-spacing: 0.06em; line-height: 1.3; white-space: nowrap; }
+    #c-code { left: 96px; width: 700px; background: #15132b; color: #fff; }
+    #c-code > small { color: #7cf0b5; }
+    #c-code pre { position: absolute; left: 30px; top: 84px; margin: 0; font: 500 32px/60px "JetBrains Mono", monospace; }
+    #c-code pre .kw { color: #c9c6ff; }
+    .c-ok { position: absolute; right: -20px; top: -22px; width: 60px; height: 60px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .c-ok > svg { position: absolute; left: 2px; top: 2px; width: 56px; height: 56px; }
+    #c-pr { left: 846px; width: 440px; background: #fff; }
+    #c-pr > small, #c-rep > small { color: #3e3b52; }
+    #c-tog { left: 30px; top: 96px; width: 124px; height: 60px; border-radius: 30px; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; }
+    #c-knob { left: 8px; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #c-state { left: 180px; top: 96px; width: 250px; height: 60px; font-size: 38px; line-height: 60px; white-space: nowrap; }
+    #c-state b { position: absolute; left: 0; top: 0; }
+    #c-st2 { color: #1f7a5c; }
+    #c-prnote { left: 30px; top: 186px; font: 600 30px/1.3 "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #c-rep { left: 1336px; width: 488px; background: #fff; }
+    #c-r23 { left: 30px; top: 62px; font: 700 80px/1.1 "JetBrains Mono", monospace; }
+    #c-r01 { left: 30px; top: 160px; font: 700 60px/1.2 "JetBrains Mono", monospace; }
+    #c-right { left: 240px; top: 80px; }
+    #c-quick { left: 240px; top: 172px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="53.75" data-track-index="1">
+      <div id="s-wrap">
+        <!-- stage A: the shop, the printer, the slow report -->
+        <div id="s-shop">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-pwin" class="s-abs">
+            <div id="s-paper" class="s-abs"><small>SALES</small><small>TODAY</small><b>$35</b></div>
+          </div>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-printer" class="s-abs s-ol"><i></i><span>PRINTER</span><u></u></div>
+          <div id="s-name" class="s-abs s-hide">Maya</div>
+          <svg id="s-cookies" class="s-abs" viewBox="0 0 210 80">
+            <ellipse cx="105" cy="68" rx="100" ry="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <g stroke="#0e0c1d" stroke-width="5">
+              <circle cx="56" cy="40" r="28" fill="#d9a05b" />
+              <circle cx="150" cy="40" r="28" fill="#d9a05b" />
+              <circle cx="103" cy="32" r="30" fill="#e2ad6b" />
+            </g>
+            <g fill="#5a3418">
+              <circle cx="94" cy="24" r="5" /><circle cx="114" cy="36" r="5" /><circle cx="98" cy="44" r="4" />
+              <circle cx="48" cy="34" r="4" /><circle cx="160" cy="46" r="4" /><circle cx="146" cy="30" r="4" />
+            </g>
+          </svg>
+          <div id="s-eve" class="s-abs s-ol s-hide"><svg viewBox="0 0 84 84"><path d="M56 8 A36 36 0 1 0 76 54 A28 28 0 0 1 56 8 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>Every evening</div>
+          <div id="s-slow" class="s-pill s-hide">so slow...</div>
+          <div id="s-think" class="s-abs s-ol s-hide">I know why!<i></i></div>
+        </div>
+
+        <!-- stage B: the code and what it prints -->
+        <div id="s-B">
+          <div id="s-code" class="s-abs s-ol s-hide">
+            <div class="s-strip s-hide" style="top:208px;height:104px"></div>
+            <div class="s-strip s-hide" style="top:468px;height:52px"></div>
+            <div class="s-strip s-hide" style="top:624px;height:156px"></div>
+            <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+            <div id="s-hard" class="s-pill s-hide">harder to read</div>
+            <div id="s-linesA" class="s-lines">
+              <div class="s-ln"><i>1</i><span><span class="kw">def</span> <span class="fn">add_sale</span>(amount):</span></div>
+              <div class="s-ln"><i>2</i><span>    sales.append(amount)</span></div>
+              <div class="s-ln"><i>3</i></div>
+              <div class="s-ln"><i>4</i><span><span class="kw">def</span> <span class="fn">refund</span>(amount):</span></div>
+              <div class="s-ln"><i>5</i><span>    sales.remove(amount)</span></div>
+              <div class="s-ln"><i>6</i></div>
+              <div class="s-ln"><i>7</i><span><span class="kw">def</span> <span class="fn">daily_total</span>():</span></div>
+              <div class="s-ln"><i>8</i><span>    total = 0</span></div>
+              <div class="s-ln"><i>9</i><span>    <span class="kw">for</span> amount <span class="kw">in</span> sales:</span></div>
+              <div class="s-ln"><i>10</i><span>        total = total + amount</span></div>
+              <div class="s-ln"><i>11</i><span>    <span class="kw">return</span> total</span></div>
+            </div>
+            <div id="s-linesB" class="s-lines s-hide">
+              <div class="s-ln"><i>1</i><span><span class="kw">def</span> <span class="fn">add_sale</span>(amount):</span></div>
+              <div class="s-ln"><i>2</i><span>    sales.append(amount)</span></div>
+              <div class="s-ln"><i>3</i><span class="s-ty" id="s-b3">    <span class="nw">cache.total</span> = cache.total + amount</span></div>
+              <div class="s-ln"><i>4</i><span class="s-ty" id="s-b4">    <span class="nw">cache.count</span> = cache.count + 1</span></div>
+              <div class="s-ln"><i>5</i></div>
+              <div class="s-ln"><i>6</i><span><span class="kw">def</span> <span class="fn">refund</span>(amount):</span></div>
+              <div class="s-ln"><i>7</i><span>    sales.remove(amount)</span></div>
+              <div class="s-ln"><i>8</i><span class="s-ty" id="s-b8">    <span class="nw">cache.count</span> = cache.count - 1</span></div>
+              <div class="s-ln"><i>9</i></div>
+              <div class="s-ln"><i>10</i><span><span class="kw">def</span> <span class="fn">daily_total</span>():</span></div>
+              <div class="s-ln"><i>11</i><span class="s-ty" id="s-b11">    <span class="kw">if</span> <span class="nw">cache.count</span> == len(sales):</span></div>
+              <div class="s-ln"><i>12</i><span class="s-ty" id="s-b12">        <span class="kw">return</span> <span class="nw">cache.total</span></span></div>
+              <div class="s-ln"><i>13</i><span class="s-ty" id="s-b13">    <span class="kw">return</span> recount()</span></div>
+            </div>
+          </div>
+
+          <div id="s-right" class="s-abs s-ol s-hide">
+            <div id="s-rtitle" class="s-abs">End of day</div>
+            <div id="s-time" class="s-abs s-ol4">
+              <small>THE REPORT TAKES</small>
+              <div id="s-track" class="s-abs"><div id="s-tfill" class="s-abs"></div></div>
+              <div id="s-four" class="s-abs s-hide">4 s</div>
+              <div id="s-still" class="s-stamp s-hide">STILL 4 s</div>
+            </div>
+            <div id="s-wklabel" class="s-abs s-hide">A whole weekend</div>
+            <div id="s-sales" class="s-abs" style="left:0;top:0;width:614px;height:600px">
+              <div id="s-slabel" class="s-abs s-hide">TODAY'S SALES</div>
+              <div class="s-chip s-hide" id="s-c1" style="left:40px">$3</div>
+              <div class="s-chip s-hide" id="s-c2" style="left:210px">$12<i id="s-strike"></i></div>
+              <div class="s-chip s-hide" id="s-c3" style="left:380px">$20</div>
+              <div id="s-refund" class="s-pill s-hide">refund</div>
+              <div class="s-row s-hide" id="s-rowL" style="top:404px"><span>The list adds up to</span><span class="s-val"><b id="s-v35">$35</b><b id="s-v23" class="s-hide">$23</b></span></div>
+              <div class="s-row s-hide" id="s-rowT" style="top:496px"><span>Running total</span><span class="s-val"><b id="s-vT">$35</b></span></div>
+            </div>
+            <div id="s-rcpt" class="s-abs s-hide">
+              <svg viewBox="0 0 280 172"><path d="M5 15 H275 V150 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#0e0c1d" /><path d="M5 5 H275 V140 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+              <small>SALES TODAY</small>
+              <b>$35</b>
+            </div>
+            <div id="s-rlabel" class="s-abs s-hide">The printed<br />report</div>
+            <div id="s-wrong" class="s-stamp s-hide">WRONG</div>
+          </div>
+
+          <div id="s-sat" class="s-cal s-hide"><i></i>SAT</div>
+          <div id="s-sun" class="s-cal s-hide"><i></i>SUN</div>
+
+          <svg id="s-marks" class="s-marks" viewBox="0 0 1920 1080">
+            <path id="s-rloop" class="s-ring s-draw" d="M226 668 C210 580 784 574 782 668 C780 758 206 760 222 650" />
+            <path id="s-under" class="s-ring s-draw" style="stroke:#7cf0b5" d="M262 356 Q360 364 464 354" />
+            <path id="s-rrm" class="s-ring s-draw" style="stroke:#7cf0b5" d="M228 540 C220 488 648 484 648 538 C648 592 216 594 224 526" />
+            <path id="s-rtot" class="s-ring" style="stroke:#b8235a;stroke-dasharray:16 13" d="M1236 628 C1232 566 1800 562 1800 626 C1800 692 1228 696 1234 616" />
+          </svg>
+          <div id="s-must" class="s-pill s-hide">must be this!</div>
+          <div id="s-upd" class="s-pill s-good s-hide">list updated</div>
+          <div id="s-forgot" class="s-pill s-bad s-hide">total never fixed</div>
+        </div>
+
+        <!-- stage C: Maya measures -->
+        <div id="s-C">
+          <div id="c-top">
+          <div id="c-head" class="s-abs s-hide">
+            <svg id="c-watch" viewBox="0 0 100 110">
+              <rect x="40" y="2" width="20" height="16" rx="4" fill="#0e0c1d" />
+              <path d="M82 28 L92 18" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+              <circle cx="50" cy="64" r="40" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+              <g id="c-hand"><path d="M50 64 L50 36" stroke="#b8235a" stroke-width="7" stroke-linecap="round" /></g>
+              <circle cx="50" cy="64" r="6" fill="#0e0c1d" />
+            </svg>
+            <span>Maya measures</span>
+          </div>
+          <div id="c-total" class="s-abs s-hide"><small>ONE REPORT</small><b id="c-t4">4 s</b><b id="c-t01" class="s-hide">0.1 s</b></div>
+          <div id="c-bar" class="s-abs s-ol s-hide">
+            <div id="c-in" class="s-abs">
+              <div id="c-q" class="s-abs">Where does the time go?</div>
+              <div id="c-add" class="s-abs s-hide"></div>
+              <div id="c-warm" class="s-abs s-hide">Printer warming up <span id="c-39" class="s-hide">3.9 s</span></div>
+              <div id="c-print" class="s-abs s-hide"></div>
+            </div>
+          </div>
+          <div id="c-saved" class="s-pill s-good s-hide">3.9 s saved</div>
+          <div id="c-ladd" class="c-lab s-hide"><b>Adding up the sales</b><span id="c-001" class="s-hide">under 0.01 s</span></div>
+          <div id="c-tick1" class="s-abs s-hide"></div>
+          <div id="c-lprint" class="c-lab s-hide"><b>Printing</b><span>0.1 s</span></div>
+          <div id="c-tick2" class="s-abs s-hide"></div>
+          <div id="c-sat" class="s-cal s-hide"><i></i>SAT</div>
+          <div id="c-sun" class="s-cal s-hide"><i></i>SUN</div>
+          <div id="c-wkpill" class="s-pill s-hide">her whole weekend</div>
+          <svg id="c-marks" class="s-marks" viewBox="0 0 1920 1080">
+            <path id="c-arrow" class="s-ring s-draw" style="stroke:#b8235a" d="M150 560 C150 540 124 530 110 514" />
+            <path id="c-ah" style="fill:#b8235a;stroke:none" d="M100 504 L126 512 L108 530 Z" />
+            <path id="c-rsl" class="s-ring" style="stroke:#b8235a;stroke-dasharray:16 13" d="M104 306 C52 306 52 534 104 534 C156 534 156 306 104 306" />
+          </svg>
+          <div id="c-wrongpart" class="s-pill s-hide">the wrong part</div>
+          </div>
+
+          <div id="c-code" class="c-card s-ol s-hide">
+            <small>THE SIMPLE CODE IS BACK</small>
+            <pre><span class="kw">for</span> amount <span class="kw">in</span> sales:
+    total = total + amount</pre>
+            <div class="c-ok s-hide" id="c-ok1"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div id="c-pr" class="c-card s-ol s-hide">
+            <small>PRINTER SETTING</small>
+            <div id="c-tog" class="s-abs"><div id="c-knob" class="s-abs"></div></div>
+            <div id="c-state" class="s-abs"><b id="c-st1">sleeps</b><b id="c-st2" class="s-hide">stays awake</b></div>
+            <div id="c-prnote" class="s-abs">no more warming up</div>
+          </div>
+          <div id="c-rep" class="c-card s-ol s-hide">
+            <small>THE REPORT</small>
+            <div id="c-r23" class="s-abs">$23</div>
+            <div id="c-right" class="s-pill s-good s-hide">right</div>
+            <div id="c-r01" class="s-abs s-hide">0.1 s</div>
+            <div id="c-quick" class="s-pill s-good s-hide">quick</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.546, 1.312, 1.718, 1.997, 2.322, 2.45, 2.879, 3.947, 4.191, 4.551, 4.853, 5.457, 5.689, 5.84, 6.188, 7.338, 7.721, 7.895, 8.255, 8.417, 8.707, 9.462, 9.659, 10.019, 10.228, 10.6, 10.774, 10.902, 11.865, 12.19, 12.341, 12.701, 12.794, 13.375, 13.746, 13.909, 14.965, 15.221, 15.546, 15.975, 16.173, 16.591, 17.403, 17.682, 17.821, 18.216, 18.483, 18.692, 18.843, 19.017, 19.899, 20.074, 20.41, 20.573, 20.921, 21.107, 21.908, 22.105, 22.233, 22.651, 22.941, 23.359, 23.731, 24.602, 25.194, 25.461, 25.681, 26.645, 26.819, 27.365, 27.701, 27.876, 28.828, 29.025, 29.315, 29.454, 29.931, 30.198, 31.324, 31.509, 31.846, 32.334, 32.647, 33.553, 33.797, 34.157, 34.424, 34.633, 34.865, 35.596, 35.863, 36.862, 37.256, 37.396, 37.523, 38.011, 38.429, 38.545, 39.462, 39.625, 40.02, 40.379, 40.565, 40.925, 41.297, 41.506, 41.749, 42.771, 43.003, 43.247, 43.735, 43.967, 44.164, 44.28, 44.582, 45.407, 45.604, 45.732, 46.115, 46.451, 46.765, 47.566, 47.775, 47.903, 48.355, 48.89, 50.004, 50.294, 50.434, 50.829, 51.003, 51.583, 51.839, 51.966, 52.199, 53.371, 53.87, 54.045, 54.428, 54.915, 55.066, 55.461, 55.728, 56.134, 56.901, 58.41, 58.7, 58.828, 59.501, 59.768, 59.977, 61.022, 61.336, 62.079, 62.299, 62.543, 62.799, 62.961, 63.391, 63.809];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const stamp = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.5, ease: "steps(" + n + ")" }, at);
+      // Hand-drawn strokes: the dash length comes from the real path length.
+      gsap.utils.toArray(".s-draw").forEach((p) => { const L = p.getTotalLength ? p.getTotalLength() : 1200; p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+      const draw = (sel, at, d) => { const L = +document.querySelector(sel).dataset.len; tl.to(sel, { opacity: 1, duration: 0.01 }, at); tl.fromTo(sel, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at); };
+
+      gsap.set("#c-top", { y: 170 });
+      tl.set(".s-ty", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.set("#s-strike", { scaleX: 0, transformOrigin: "0% 50%" }, 0);
+
+      /* ---- 1. Every evening the shop prints a report. It takes 4 seconds. ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 3 }, 0.4);
+      tl.fromTo("#s-eve", { opacity: 0, y: -40, rotation: 5 }, { opacity: 1, y: 0, rotation: 2, duration: 0.5, ease: "back.out(1.5)" }, 0.75);
+      out("#s-eve", t(8) - 0.4, 0.25);
+      pop("#s-name", t(2) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-paper", { y: 272 }, { y: 0, duration: 4.6, ease: "none" }, t(4));
+      tl.fromTo("#s-right", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, t(8) - 0.15);
+      tl.fromTo("#s-tfill", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 2.5, ease: "none" }, t(8) + 0.25);
+      pop("#s-four", t(10) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      pop("#s-slow", t(15) - 0.1, { from: 0.4 });
+
+      /* ---- 2. Maya is sure she knows why: the adding code ---- */
+      out("#s-slow", t(16) - 0.1, 0.2);
+      pop("#s-think", t(18) - 0.1, { from: 0.4 });
+      tl.to("#s-shop", { opacity: 0, x: -90, duration: 0.4, ease: "power3.in" }, t(22) - 0.5);
+      tl.fromTo("#s-code", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(22) - 0.15);
+      tl.fromTo("#s-linesA .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.05 }, t(22) + 0.05);
+      pop("#s-rcpt", t(23) + 0.3, { from: 0.7 });
+      tl.fromTo("#s-rlabel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(23) + 0.5);
+      draw("#s-rloop", t(25) - 0.05, 0.6);
+      pop("#s-must", t(28), { from: 0.4 });
+
+      /* ---- 3. A weekend making it fast: a running total ---- */
+      tl.fromTo("#s-wklabel", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, t(31) - 0.05);
+      tl.fromTo("#s-sat", { opacity: 0, y: -60, rotation: -10 }, { opacity: 1, y: 0, rotation: -4, duration: 0.45, ease: "back.out(1.8)" }, t(33) - 0.15);
+      tl.fromTo("#s-sun", { opacity: 0, y: -60, rotation: 10 }, { opacity: 1, y: 0, rotation: 3, duration: 0.45, ease: "back.out(1.8)" }, t(33) + 0.05);
+      out(["#s-rloop", "#s-must"], t(34) - 0.1, 0.25);
+      out("#s-wklabel", t(34) + 0.1, 0.25);
+      tl.to("#s-sat", { x: -372, y: -238, scale: 0.78, rotation: -6, duration: 0.6, ease: "power3.inOut" }, t(34) + 0.05);
+      tl.to("#s-sun", { x: -418, y: -238, scale: 0.78, rotation: 5, duration: 0.6, ease: "power3.inOut" }, t(34) + 0.17);
+      out("#s-linesA", t(37) - 0.2, 0.2);
+      tl.to("#s-linesB", { opacity: 1, duration: 0.25, ease: "power2.out" }, t(37));
+      type("#s-b3", t(39), 19, 0.5);
+      type("#s-b4", t(39) + 0.35, 17, 0.45);
+      draw("#s-under", t(41) + 0.05, 0.4);
+      type("#s-b8", t(43) - 0.2, 17, 0.45);
+      type("#s-b11", t(45), 17, 0.4);
+      type("#s-b12", t(46) + 0.15, 13, 0.35);
+      type("#s-b13", t(48), 10, 0.3);
+
+      /* ---- 4. Harder to read, and still 4 seconds ---- */
+      out("#s-under", t(51), 0.2);
+      tl.fromTo(".s-strip", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.14 }, t(52));
+      tl.fromTo("#s-hard", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(54));
+      out("#s-four", t(57), 0.15);
+      tl.to("#s-tfill", { scaleX: 0, duration: 0.2, ease: "power2.in" }, t(57));
+      tl.to("#s-tfill", { scaleX: 1, duration: t(63) - t(58) - 0.1, ease: "none" }, t(58));
+      pop("#s-four", t(62) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      stamp("#s-still", t(63) + 0.3);
+
+      /* ---- 5. Worse, it is wrong: the refund ---- */
+      out(["#s-sat", "#s-sun"], t(64) - 0.1, 0.3);
+      tl.fromTo("#s-slabel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(64));
+      pop("#s-c1", t(64) + 0.1, { from: 0.5 });
+      pop("#s-c2", t(64) + 0.25, { from: 0.5 });
+      pop("#s-c3", t(64) + 0.4, { from: 0.5 });
+      pop("#s-rowL", t(66), { from: 0.8 });
+      pop("#s-rowT", t(67), { from: 0.8 });
+      pop("#s-refund", t(72) - 0.05, { from: 0.4 });
+      tl.to("#s-c2", { backgroundColor: "#fbe0ea", color: "#b8235a", duration: 0.25 }, t(72));
+      tl.to("#s-strike", { scaleX: 1, duration: 0.3, ease: "power2.out" }, t(72) + 0.25);
+      draw("#s-rrm", t(74) - 0.05, 0.5);
+      pop("#s-upd", t(78) - 0.1, { from: 0.4 });
+      swap("#s-v35", "#s-v23", t(78));
+      tl.fromTo("#s-rtot", { opacity: 0, scale: 1.2, svgOrigin: "1517 628" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(80));
+      pop("#s-forgot", t(82) - 0.1, { from: 0.4 });
+      stamp("#s-wrong", t(83));
+
+      /* ---- 6. She measures ---- */
+      tl.to("#s-B", { opacity: 0, duration: 0.3, ease: "power2.in" }, t(84) - 0.4);
+      tl.to("#s-C", { opacity: 1, duration: 0.05 }, t(84) - 0.1);
+      tl.fromTo("#c-bar", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(84) - 0.05);
+      pop("#c-total", t(85) + 0.1, { from: 0.7 });
+      pop("#c-head", t(91) - 0.1, { from: 0.7 });
+      tl.fromTo("#c-hand", { rotation: 0, svgOrigin: "50 64" }, { rotation: 360, svgOrigin: "50 64", duration: 1.2, ease: "power1.inOut" }, t(91));
+      out("#c-q", t(92) - 0.1, 0.3);
+      tl.fromTo("#c-add", { opacity: 0, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, scaleY: 1, duration: 0.35, ease: "power3.out" }, t(92));
+      tl.fromTo("#c-ladd", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(92) + 0.1);
+      tl.fromTo("#c-tick1", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(92) + 0.3);
+      pop("#c-001", t(98) - 0.1, { from: 0.4, ease: "back.out(2)" });
+      tl.fromTo("#c-warm", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power2.inOut" }, t(100));
+      pop("#c-39", t(104), { from: 0.4, ease: "back.out(2)" });
+      tl.fromTo(["#c-print", "#c-tick2", "#c-lprint"], { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(107) + 0.3);
+
+      /* ---- 7. The weekend went into the wrong part ---- */
+      tl.fromTo("#c-sat", { opacity: 0, y: -330, rotation: -14 }, { opacity: 1, y: 0, rotation: -4, duration: 0.5, ease: "back.out(1.4)" }, t(110) - 0.2);
+      tl.fromTo("#c-sun", { opacity: 0, y: -330, rotation: 14 }, { opacity: 1, y: 0, rotation: 3, duration: 0.5, ease: "back.out(1.4)" }, t(110) - 0.05);
+      pop("#c-wkpill", t(110) + 0.3, { from: 0.4 });
+      draw("#c-arrow", t(111), 0.35);
+      tl.fromTo("#c-ah", { opacity: 0 }, { opacity: 1, duration: 0.12 }, t(111) + 0.3);
+      tl.fromTo("#c-rsl", { opacity: 0, scale: 1.3, svgOrigin: "104 420" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(114) - 0.1);
+      pop("#c-wrongpart", t(114) + 0.1, { from: 0.4 });
+
+      /* ---- 8. Simple code back, printer stays awake ---- */
+      out(["#c-sat", "#c-sun", "#c-wkpill", "#c-arrow", "#c-ah", "#c-rsl", "#c-wrongpart"], t(116) - 0.1, 0.3);
+      tl.to("#c-top", { y: 0, duration: 0.55, ease: "power3.inOut" }, t(116) - 0.2);
+      pop("#c-code", t(118) - 0.1, { from: 0.8 });
+      pop("#c-ok1", t(121), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#c-pr", t(124) - 0.15, { from: 0.8 });
+      tl.to("#c-knob", { x: 64, duration: 0.3, ease: "power3.inOut" }, t(125));
+      tl.to("#c-tog", { backgroundColor: "#1f7a5c", duration: 0.3 }, t(125));
+      swap("#c-st1", "#c-st2", t(125) + 0.1);
+      tl.fromTo("#c-prnote", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(126));
+      tl.to("#c-warm", { clipPath: "inset(0% 100% 0% 0%)", duration: 0.8, ease: "power3.inOut" }, t(126) + 0.1);
+      tl.to("#c-print", { x: -1668, duration: 0.8, ease: "power3.inOut" }, t(126) + 0.1);
+      out(["#c-tick2", "#c-lprint"], t(126), 0.2);
+      pop("#c-saved", t(126) + 0.75, { from: 0.4 });
+      swap("#c-t4", "#c-t01", t(126) + 0.85);
+      pop("#c-rep", t(129) - 0.1, { from: 0.8 });
+      pop("#c-right", t(131), { from: 0.3, ease: "back.out(2.2)" });
+      pop("#c-r01", t(132), { from: 0.5, ease: "back.out(2)" });
+      pop("#c-quick", t(135) - 0.05, { from: 0.3, ease: "back.out(2.2)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 53.45);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

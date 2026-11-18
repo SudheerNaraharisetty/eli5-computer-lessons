@@ -1,0 +1,90 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-kick { left: 116px; top: 104px; font-size: 44px; line-height: 1.3; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    #t-head { left: 110px; top: 176px; font: 700 150px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    .t-step { position: absolute; height: 84px; padding: 0 30px 0 16px; display: flex; align-items: center; gap: 18px; background: #fff; border-radius: 999px; font-size: 40px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; opacity: 0; }
+    .t-step > i { width: 56px; height: 56px; flex: none; border-radius: 50%; background: #0e0c1d; color: #fff; font-style: normal; font-size: 32px; line-height: 56px; text-align: center; }
+    #t-s1 { left: 110px; top: 580px; }
+    #t-s2 { left: 520px; top: 580px; }
+    #t-m { left: 110px; top: 712px; background: #fbebd2; padding-left: 22px; }
+    #t-m > svg { width: 50px; height: 56px; flex: none; }
+    #t-s3 { left: 470px; top: 712px; background: #ddefe6; }
+    .t-arr { position: absolute; font: 700 56px/84px "Fraunces", serif; color: #3b37e6; opacity: 0; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="14.05" data-track-index="1">
+      <div id="t-kick" class="t-abs">Speeding up code before you measure:</div>
+      <div id="t-head" class="t-abs">
+        <span>Premature</span><br />
+        <span class="ac">optimisation.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 512 Q520 540 1010 506" /></svg>
+      <div id="t-s1" class="t-step"><i>1</i>Make it work</div>
+      <div id="t-a1" class="t-arr" style="left:452px;top:578px">→</div>
+      <div id="t-s2" class="t-step"><i>2</i>Make it right</div>
+      <div id="t-m" class="t-step">
+        <svg viewBox="0 0 100 110"><rect x="40" y="2" width="20" height="16" rx="4" fill="#0e0c1d" /><circle cx="50" cy="64" r="40" fill="#fff" stroke="#0e0c1d" stroke-width="8" /><path d="M50 64 L50 38 M50 64 L68 74" stroke="#b8235a" stroke-width="8" stroke-linecap="round" /></svg>
+        Measure
+      </div>
+      <div id="t-a2" class="t-arr" style="left:402px;top:710px">→</div>
+      <div id="t-s3" class="t-step"><i>3</i>Make the slow part fast</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 11: Least astonishment</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 53.75;
+      const g = { speeding: 53.97, premature: 56.73, optim: 57.5, work: 59.01, right: 60.1, measure: 61.94, make: 62.9, end: 65.3 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength ? u.getTotalLength() : 900;
+      u.style.strokeDasharray = L; u.style.strokeDashoffset = L;
+      const pop = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at - S);
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-kick", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.speeding - S);
+      tl.fromTo(words[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.premature - S - 0.05);
+      tl.fromTo(words[1], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.optim - S - 0.05);
+      tl.to(u, { opacity: 1, duration: 0.01 }, g.optim - S + 0.55);
+      tl.fromTo(u, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, g.optim - S + 0.55);
+      pop("#t-s1", g.work);
+      pop("#t-a1", g.right - 0.15);
+      pop("#t-s2", g.right);
+      pop("#t-m", g.measure);
+      pop("#t-a2", g.make - 0.15);
+      pop("#t-s3", g.make);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

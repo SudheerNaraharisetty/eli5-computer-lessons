@@ -1,0 +1,15 @@
+Every evening, Maya's shop prints a sales report. It takes four seconds, and it feels slow.
+
+Maya is sure she knows why. The code that adds up the sales. So she spends a weekend making it fast. It now keeps a running total, so the report never has to add again.
+
+The code is harder to read. And the report still takes four seconds.
+
+Worse, it is wrong. A customer gets a refund. The list of sales is updated. The running total is not.
+
+So Maya does what she skipped. She measures. Adding up the sales takes a blink. The printer warming up takes almost all four seconds.
+
+Her whole weekend went into the wrong part.
+
+So the simple code goes back. And the printer stays awake. Now the report is right, and it is quick.
+
+Speeding up code before you measure is called premature optimisation. Make it work. Make it right. Then measure, and make only the slow part fast.

@@ -1,0 +1,13 @@
+Maya's company plans one grand new system. Maya two point oh. Ordering, kitchen screens, delivery, loyalty points, stock, accounts, and a phone app. All designed up front, in a sixty page plan. Switch it all on in month nine.
+
+For nine months, each team builds its own part. No real customer touches any of it.
+
+Switch-on day. Orders vanish. Loyalty points double. The app cannot log in. Hundreds of guesses meet reality at once, and nobody can tell which one broke what. That night, they switch back.
+
+Second try. Week one. Customers can order one cookie, and the kitchen sees it. That is all. Two wrong guesses show up. Each is fixed in a day, because only one thing was new.
+
+Then one piece at a time. Delivery. Loyalty. The app. Each one works before the next goes on.
+
+Count the working pieces. One line sat at zero for nine months. The other climbs, step by step.
+
+That is Gall's law. Complex systems that work grow from simple ones that worked. So get the smallest thing working first.

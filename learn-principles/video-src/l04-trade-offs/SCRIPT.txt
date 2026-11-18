@@ -1,0 +1,13 @@
+Maya learned a good trick. Give a value one name, in one place. Now she uses it everywhere.
+
+Here is a tiny job. It prints the total, then Thank you. Three lines.
+
+Maya gives the words a name. Then the exclamation mark. Then a switch to turn it off. Then a settings file, and a helper for each. Three lines are now nineteen, in four files.
+
+Then a simple request. Change the message. Where is it? The shop file. Then greeting. Then helpers. Then settings. Four files, for two words.
+
+Same goal. Opposite mistake. Too little structure hurts. Too much hurts too. Aim for just enough.
+
+Before you use any principle, ask two questions. Is this problem real right now? What will this cost the next reader?
+
+Principles are trade-offs, not laws.

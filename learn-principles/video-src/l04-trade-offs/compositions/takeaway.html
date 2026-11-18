@@ -1,0 +1,82 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-ask { left: 110px; top: 170px; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-ask span { display: inline-block; opacity: 0; }
+    #t-head { left: 110px; top: 96px; font: 700 124px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 1; opacity: 0; }
+    .t-q { position: absolute; left: 110px; width: 1250px; height: 160px; background: #fff; border-radius: 26px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    .t-q i { position: absolute; left: 30px; top: 40px; width: 80px; height: 80px; border-radius: 50%; background: #3b37e6; color: #fff; font: 800 44px/80px "Manrope", sans-serif; font-style: normal; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    .t-q b { position: absolute; left: 140px; top: 0; font: 700 56px/160px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    #t-q1 { top: 450px; }
+    #t-q2 { top: 650px; }
+    #t-next { left: 110px; top: 872px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="12.6" data-track-index="1">
+      <div id="t-ask" class="t-abs"><span>Before</span> <span>any</span> <span>principle,</span> <span>ask:</span></div>
+      <div id="t-head" class="t-abs" data-layout-allow-overlap>
+        <span>Principles</span> <span>are</span><br />
+        <span class="ac">trade-offs,</span> <span>not</span> <span>laws.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" pathLength="1" d="M116 382 Q400 404 716 376" /></svg>
+      <div class="t-q" id="t-q1"><i>1</i><b>Is this problem real right now?</b></div>
+      <div class="t-q" id="t-q2"><i>2</i><b>What will this cost the next reader?</b></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 5: KISS</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 48.4;
+      const g = { before: 46.87, any: 47.63, principle: 47.95, ask: 48.65, two: 49.1, is: 50.6, what: 53.14, principles: 55.64, are: 56.36, trade: 56.64, not: 57.64, laws: 57.97 };
+      const tl = gsap.timeline({ paused: true });
+      const ask = gsap.utils.toArray("#t-ask span");
+      const head = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      [0, 0.09, 0.18, 0.27].forEach((d, i) => {
+        const at = g.ask + d;
+        tl.fromTo(ask[i], { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, at - S - 0.05);
+      });
+      tl.fromTo("#t-q1", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.two - S);
+      tl.fromTo("#t-q2", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.two - S + 0.25);
+      tl.fromTo("#t-q1 b", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.is - S - 0.05);
+      tl.fromTo("#t-q2 b", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.what - S - 0.05);
+      tl.to("#t-ask", { opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power2.in" }, g.principles - S - 0.35);
+      tl.fromTo(head[0], { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, g.principles - S - 0.05);
+      tl.fromTo(head[1], { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, g.are - S - 0.05);
+      tl.fromTo(head[2], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.trade - S - 0.05);
+      tl.fromTo(head[3], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.not - S - 0.05);
+      tl.fromTo(head[4], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.laws - S - 0.05);
+      tl.fromTo("#t-under", { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, g.laws - S + 0.4);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.laws - S + 0.9);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

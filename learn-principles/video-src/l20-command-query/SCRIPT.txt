@@ -1,0 +1,13 @@
+Maya's shop keeps cookies in a jar, and the program keeps count. Twenty-four.
+
+To read that count, there is a job called cookies left. It sounds like a question. But Maya made it take one off the count as well.
+
+Sam prints the count on his morning checklist. Twenty-three. The website shows it to twenty visitors. Three. A report asks three more times. Zero.
+
+The jar is still full. But the website says sold out. Asking the question changed the answer.
+
+The fix is two jobs. Cookies left only looks. Take cookie only takes.
+
+Now anyone can look, as often as they like, and the count holds. Only a sale changes it.
+
+Remember get total, the job that secretly charged a card? Same mistake. A job should either ask a question, or do something. Never both. That is command query separation.

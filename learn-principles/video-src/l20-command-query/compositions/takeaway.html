@@ -1,0 +1,143 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-hide { opacity: 0; }
+    .t-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-code { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; white-space: nowrap; }
+
+    #t-head { left: 110px; top: 66px; font: 700 118px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+
+    /* lesson 11 recap */
+    #t-recap { left: 1040px; top: 80px; width: 770px; height: 250px; background: #fff; border-radius: 26px; }
+    #t-l11 { left: 28px; top: 20px; height: 46px; padding: 0 18px; line-height: 46px; border-radius: 999px; background: #e6e3ff; font-size: 28px; white-space: nowrap; }
+    #t-fn { left: 28px; top: 80px; height: 74px; padding: 0 28px; line-height: 74px; border-radius: 16px; background: #15132b; color: #7cf0b5; font-size: 44px; }
+    .t-pill { position: absolute; top: 172px; height: 56px; padding: 0 20px 0 8px; display: flex; align-items: center; gap: 10px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .t-pill > svg { width: 46px; height: 46px; flex: none; }
+    #t-pe { left: 28px; background: #ddefe6; color: #1f7a5c; }
+    #t-ph { left: 360px; background: #fbe0ea; color: #b8235a; }
+    .t-stamp { position: absolute; right: -22px; top: -30px; padding: 4px 20px; color: #fff; font-size: 36px; letter-spacing: 0.08em; border-radius: 10px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #t-both { background: #b8235a; }
+    #t-split { background: #1f7a5c; }
+
+    /* two columns */
+    .t-col { top: 392px; width: 820px; height: 420px; border-radius: 28px; }
+    #t-asks { left: 110px; background: #ddefe6; }
+    #t-does { left: 990px; background: #fbebd2; }
+    .t-ico { position: absolute; left: 34px; top: 26px; width: 76px; height: 76px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .t-ico > svg { position: absolute; left: 10px; top: 10px; width: 56px; height: 56px; }
+    .t-ct { position: absolute; left: 132px; top: 22px; font: 700 68px/84px "Fraunces", serif; letter-spacing: -0.02em; }
+    .t-cs { position: absolute; right: 36px; top: 46px; font-size: 32px; line-height: 40px; color: #3e3b52; white-space: nowrap; }
+    .t-chip { position: absolute; height: 64px; padding: 0 22px; line-height: 64px; border-radius: 14px; background: #15132b; color: #fff; font-size: 34px; opacity: 0; }
+    .t-cap { position: absolute; left: 36px; top: 306px; width: 748px; font-size: 30px; line-height: 39px; color: #3e3b52; opacity: 0; }
+    .t-fly { top: 606px; }
+
+    #t-name { left: 110px; top: 868px; padding: 10px 34px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 42px; line-height: 1.4; white-space: nowrap; }
+    #t-next { right: 110px; top: 874px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="15.1" data-track-index="1">
+      <div id="t-head" class="t-abs">
+        <span>Ask,</span> <span>or</span> <span>do.</span><br />
+        <span class="ac">Never</span> <span class="ac">both.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 334 Q400 356 742 328" /></svg>
+
+      <div id="t-asks" class="t-abs t-col t-ol t-hide">
+        <div class="t-ico"><svg viewBox="0 0 64 64"><path d="M4 32 Q32 2 60 32 Q32 62 4 32Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><circle cx="32" cy="32" r="12" fill="#3b37e6" /><circle cx="32" cy="32" r="5" fill="#0e0c1d" /></svg></div>
+        <div class="t-ct">Asks</div>
+        <div class="t-cs">changes nothing</div>
+        <div class="t-chip t-code ta" style="left:36px;top:130px">cookies_left()</div>
+        <div class="t-chip t-code ta" style="left:386px;top:130px">balance()</div>
+        <div class="t-cap" id="t-capa">Call it once, ten times or never.<br />Nothing is different afterwards.</div>
+      </div>
+      <div id="t-does" class="t-abs t-col t-ol t-hide">
+        <div class="t-ico"><svg viewBox="0 0 64 64"><g fill="#f2c9a5" stroke="#0e0c1d" stroke-width="3.5" stroke-linejoin="round"><rect x="16" y="10" width="8" height="28" rx="4" /><rect x="24" y="5" width="8" height="32" rx="4" /><rect x="32" y="6" width="8" height="32" rx="4" /><rect x="40" y="11" width="8" height="28" rx="4" /><rect x="4" y="30" width="9" height="22" rx="4.5" transform="rotate(-38 8 41)" /><rect x="14" y="30" width="36" height="28" rx="10" /></g></svg></div>
+        <div class="t-ct">Does</div>
+        <div class="t-cs">changes something</div>
+        <div class="t-chip t-code td" style="left:36px;top:130px">take_cookie()</div>
+        <div class="t-chip t-code td" style="left:368px;top:130px">earn()</div>
+        <div class="t-chip t-code td" style="left:556px;top:130px">spend()</div>
+        <div class="t-cap" id="t-capd">Every call counts.<br />Call it only when you mean it.</div>
+      </div>
+      <div id="t-fq" class="t-abs t-chip t-code t-fly" style="left:146px">get_total()</div>
+      <div id="t-fc" class="t-abs t-chip t-code t-fly" style="left:1026px">charge_card()</div>
+
+      <div id="t-recap" class="t-abs t-ol">
+        <div id="t-l11" class="t-abs">Lesson 11: Least astonishment</div>
+        <div id="t-fn" class="t-abs t-code t-hide">get_total()</div>
+        <div id="t-pe" class="t-pill t-hide"><svg viewBox="0 0 64 64"><path d="M4 32 Q32 2 60 32 Q32 62 4 32Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><circle cx="32" cy="32" r="12" fill="#3b37e6" /><circle cx="32" cy="32" r="5" fill="#0e0c1d" /></svg>gives the total</div>
+        <div id="t-ph" class="t-pill t-hide"><svg viewBox="0 0 64 64"><g fill="#f2c9a5" stroke="#0e0c1d" stroke-width="3.5" stroke-linejoin="round"><rect x="16" y="10" width="8" height="28" rx="4" /><rect x="24" y="5" width="8" height="32" rx="4" /><rect x="32" y="6" width="8" height="32" rx="4" /><rect x="40" y="11" width="8" height="28" rx="4" /><rect x="4" y="30" width="9" height="22" rx="4.5" transform="rotate(-38 8 41)" /><rect x="14" y="30" width="36" height="28" rx="10" /></g></svg>charges a card</div>
+        <div id="t-both" class="t-stamp t-hide">BOTH</div>
+        <div id="t-split" class="t-stamp t-hide">SPLIT IN TWO</div>
+      </div>
+
+      <div id="t-name" class="t-abs t-hide">Command-query separation</div>
+      <div id="t-next" class="t-abs t-hide">Next <b>→</b> Lesson 21: Guard clauses</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 46;
+      const g = { remember: 46.31, get: 46.84, job: 48.06, secretly: 48.58, charged: 49.16, same: 50.5, a: 51.92, either: 52.59, ask: 52.89, question: 53.34, or: 53.84, doo: 54.02, something: 54.23, never: 54.99, both: 55.28, that: 56.04, command: 56.53, end: 58.65 };
+      const at = (k) => g[k] - S;
+      const tl = gsap.timeline({ paused: true });
+      const pop = (sel, t0, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", stagger: o.stagger || 0 }, t0);
+      };
+      const stamp = (sel, t0, rot) => tl.fromTo(sel, { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.3, ease: "power4.in" }, t0);
+      const words = gsap.utils.toArray("#t-head span");
+      const under = document.querySelector("#t-under");
+      const UL = Math.ceil(under.getTotalLength()) || 640;
+      under.style.strokeDasharray = UL + " " + (UL + 40);
+      under.style.strokeDashoffset = UL;
+
+      /* ---- lesson 11's bug, in this lesson's words ---- */
+      tl.fromTo("#t-recap", { opacity: 0, x: -465, y: 330, scale: 1.6 }, { opacity: 1, x: -465, y: 300, scale: 1.6, duration: 0.3, ease: "power2.out" }, 0);
+      pop("#t-fn", at("get") - 0.05, { from: 0.5 });
+      pop("#t-pe", at("job") - 0.05, { from: 0.4 });
+      pop("#t-ph", at("charged") - 0.1, { from: 0.4 });
+      stamp("#t-both", at("same") - 0.2, 6);
+
+      /* ---- ask, or do ---- */
+      tl.to("#t-recap", { x: 0, y: 0, scale: 1, duration: 0.6, ease: "power3.inOut" }, at("a") - 0.15);
+      tl.fromTo("#t-asks", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, at("either") - 0.1);
+      tl.fromTo(words[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, at("ask") - 0.05);
+      pop(".ta", at("ask") + 0.1, { from: 0.5, stagger: 0.14 });
+      tl.fromTo("#t-capa", { opacity: 0 }, { opacity: 1, duration: 0.3 }, at("question"));
+      tl.fromTo("#t-does", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, at("or") - 0.15);
+      tl.fromTo([words[1], words[2]], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.16 }, at("or") - 0.05);
+      pop(".td", at("doo") + 0.1, { from: 0.5, stagger: 0.12 });
+      tl.fromTo("#t-capd", { opacity: 0 }, { opacity: 1, duration: 0.3 }, at("something") + 0.25);
+
+      /* ---- never both: get_total is split, as in lesson 11 ---- */
+      tl.fromTo([words[3], words[4]], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.26 }, at("never") - 0.05);
+      tl.fromTo("#t-under", { strokeDashoffset: UL, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, at("both") + 0.3);
+      tl.to("#t-both", { opacity: 0, duration: 0.2, ease: "power2.in" }, at("never"));
+      tl.fromTo("#t-fq", { opacity: 0, x: 922, y: -448 }, { opacity: 1, x: 0, y: 0, duration: 0.7, ease: "power3.inOut" }, at("never") + 0.05);
+      tl.fromTo("#t-fc", { opacity: 0, x: 383, y: -358 }, { opacity: 1, x: 0, y: 0, duration: 0.7, ease: "power3.inOut" }, at("never") + 0.2);
+      tl.to(["#t-fn", "#t-pe", "#t-ph"], { opacity: 0.35, duration: 0.3 }, at("never") + 0.3);
+      stamp("#t-split", at("both") + 0.55, -5);
+
+      /* ---- the name ---- */
+      tl.fromTo("#t-name", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, at("command") - 0.15);
+      tl.fromTo("#t-next", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, at("end") - 0.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

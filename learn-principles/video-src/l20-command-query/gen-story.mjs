@@ -1,0 +1,397 @@
+// Builds video-src/l20-command-query/compositions/story.html (repetitive markup is generated here).
+import fs from "node:fs";
+
+const OUT = "/Users/sudheer/personal/eli5lessons/learn-principles/video-src/l20-command-query/compositions/story.html";
+const W = JSON.parse(fs.readFileSync("/Users/sudheer/personal/eli5lessons/learn-principles/video-src/l20-command-query/assets/voice/words.json", "utf8")).map((w) => w.start);
+
+const EYE = `<svg viewBox="0 0 64 64"><path d="M4 32 Q32 2 60 32 Q32 62 4 32Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><circle cx="32" cy="32" r="12" fill="#3b37e6" /><circle cx="32" cy="32" r="5" fill="#0e0c1d" /></svg>`;
+const HAND = `<svg viewBox="0 0 64 64"><g fill="#f2c9a5" stroke="#0e0c1d" stroke-width="3.5" stroke-linejoin="round"><rect x="16" y="10" width="8" height="28" rx="4" /><rect x="24" y="5" width="8" height="32" rx="4" /><rect x="32" y="6" width="8" height="32" rx="4" /><rect x="40" y="11" width="8" height="28" rx="4" /><rect x="4" y="30" width="9" height="22" rx="4.5" transform="rotate(-38 8 41)" /><rect x="14" y="30" width="36" height="28" rx="10" /></g></svg>`;
+const CHECK = `<svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+
+// 24 cookies in the jar: 6 rows of 4. The last one drawn (top row, right) is the one a sale takes.
+const ck = `<circle r="30" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="-9" cy="-8" r="4.5" fill="#5a3418" /><circle cx="10" cy="-2" r="4.5" fill="#5a3418" /><circle cx="-3" cy="11" r="4" fill="#5a3418" />`;
+let cookies = "";
+for (let r = 0; r < 6; r++) {
+  for (let c = 0; c < 4; c++) {
+    const x = 75 + c * 70 + (r % 2 ? 6 : -6), y = 394 - r * 57;
+    const last = r === 5 && c === 3;
+    cookies += `<g transform="translate(${x} ${y})"><g class="s-ck"${last ? ' id="s-take"' : ""}>${ck}</g></g>`;
+  }
+}
+
+let strip = "";
+for (let n = 24; n >= 0; n--) strip += `<b id="s-d${n}">${n}</b>`;
+let eyes = "";
+for (let i = 0; i < 24; i++) eyes += `<div class="s-abs s-eye" id="s-e${i}">${EYE}</div>`;
+let puffs = "";
+for (let i = 0; i < 5; i++) puffs += `<div class="s-abs s-puff" id="s-p${i}" data-layout-allow-overlap>-1</div>`;
+let okp = "";
+for (let i = 0; i < 3; i++) okp += `<div class="s-abs s-okp" id="s-o${i}">${CHECK}</div>`;
+
+const card = (i, left, title, label, body) => `
+          <div class="s-abs s-card s-ol s-hide" id="s-c${i}" style="left:${left}px">
+            <div class="s-ctitle">${title}</div>
+            <div class="s-ccall">cookies_left()</div>
+            <div class="s-clabel">${label}</div>
+            ${body}
+            <div class="s-cbadge">${EYE}</div>
+          </div>`;
+const val = (id, a, b) => `<div class="s-val" id="${id}" data-layout-allow-overlap><b class="va">${a}</b><b class="vb">${b}</b></div>`;
+const box3 = (i, a, hour) => `<div class="s-box"><div class="s-bval" id="s-b${i}" data-layout-allow-overlap><b class="va">${a}</b><b class="vb">24</b></div><small>${hour}</small></div>`;
+
+const html = `<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap, #s-shop, #s-cards { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the shop (opening) */
+    #s-sign { left: 250px; top: 196px; padding: 24px 50px; background: #fff; border-radius: 26px; font: 700 100px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-maya { left: 170px; top: 566px; width: 340px; height: 442px; }
+    #s-counter { left: 96px; top: 850px; width: 1054px; height: 134px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 850px; width: 1054px; height: 30px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-lapscreen { left: 880px; top: 676px; width: 230px; height: 150px; background: #15132b; border-radius: 14px; }
+    #s-lapbase { left: 856px; top: 832px; width: 278px; height: 20px; background: #fff; border-radius: 8px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-bar { position: absolute; left: 22px; height: 12px; border-radius: 6px; }
+    #s-bubble { left: 548px; top: 610px; width: 300px; padding: 18px 26px; background: #fff; border-radius: 24px; font-size: 34px; line-height: 1.25; }
+    #s-bubble > i { position: absolute; left: -22px; top: 70px; width: 34px; height: 34px; background: #fff; transform: rotate(45deg); box-shadow: -5px 5px 0 0 #0e0c1d; }
+
+    /* right panel: the jar and the count */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-jar { left: 127px; top: 56px; width: 360px; height: 440px; overflow: visible; }
+    #s-morning { left: 197px; top: 514px; width: 220px; text-align: center; height: 48px; line-height: 48px; border-radius: 999px; background: #fbebd2; color: #8a5510; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-injar { left: 157px; top: 510px; width: 300px; height: 56px; line-height: 56px; text-align: center; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-dev { left: 117px; top: 596px; width: 380px; height: 150px; background: #15132b; border-radius: 22px; color: #eceaff; }
+    #s-devlabel { left: 28px; top: 36px; font-size: 30px; line-height: 39px; letter-spacing: 0.08em; color: #a9a5d6; }
+    #s-odo { right: 26px; top: 20px; width: 130px; height: 110px; overflow: hidden; }
+    #s-strip { position: absolute; right: 0; top: 0; width: 130px; height: 110px; color: #fff; }
+    #s-strip b { position: absolute; right: 0; top: 0; width: 130px; height: 110px; opacity: 0; font: 700 92px/110px "JetBrains Mono", monospace; text-align: right; font-variant-ligatures: none; }
+    #s-strip #s-d0 { color: #ff6b8b; }
+    #s-wrong { left: 300px; top: 566px; padding: 4px 18px; background: #b8235a; color: #fff; font-size: 34px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-cok { left: 462px; top: 708px; width: 60px; height: 60px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-cok > svg { position: absolute; left: 2px; top: 2px; width: 56px; height: 56px; }
+    .s-status { position: absolute; left: 87px; top: 776px; width: 440px; height: 60px; line-height: 60px; text-align: center; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 34px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 440px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-strip { position: absolute; left: 14px; width: 1026px; border-radius: 14px; }
+    #s-stripT { top: 216px; height: 60px; background: #4a1d3a; }
+    #s-flash { top: 216px; height: 60px; background: #b8235a; }
+    #s-stripA { top: 92px; height: 128px; background: #211e40; }
+    #s-stripD { top: 272px; height: 128px; background: #211e40; }
+    #s-flashD { top: 272px; height: 128px; background: #1f7a5c; }
+    #s-lines { left: 36px; top: 96px; width: 1000px; height: 300px; font: 500 34px/60px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-lines > i { position: absolute; left: 0; width: 60px; height: 60px; font-style: normal; color: #8480b8; }
+    .s-ln { position: absolute; left: 60px; height: 60px; white-space: pre; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .cm { color: #9d99cc; }
+    .s-ln .hot { color: #ffc24b; font-weight: 700; }
+    .s-tag { position: absolute; height: 52px; padding: 0 20px 0 8px; display: flex; align-items: center; gap: 10px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tag > svg { width: 44px; height: 44px; flex: none; }
+    #s-tagq { left: 640px; top: 196px; background: #e6e3ff; color: #0e0c1d; }
+    #s-tagt { left: 810px; top: 316px; background: #fbe0ea; color: #b8235a; }
+    #s-tagA { left: 640px; top: 196px; background: #ddefe6; color: #1f7a5c; }
+    #s-tagD { left: 640px; top: 376px; background: #fbebd2; color: #8a5510; }
+
+    /* three lookers */
+    .s-card { top: 572px; width: 330px; height: 400px; background: #fff; border-radius: 22px; }
+    .s-ctitle { position: absolute; left: 24px; top: 18px; font-size: 32px; line-height: 1.2; white-space: nowrap; }
+    .s-ccall { position: absolute; left: 24px; top: 68px; height: 46px; padding: 0 12px; border-radius: 10px; background: #15132b; color: #7cf0b5; font: 700 28px/46px "JetBrains Mono", monospace; font-variant-ligatures: none; white-space: nowrap; }
+    .s-clabel { position: absolute; left: 24px; top: 128px; font-size: 28px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    .s-cbadge { position: absolute; right: -26px; top: -32px; width: 64px; height: 64px; border-radius: 50%; background: #e6e3ff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-cbadge > svg { position: absolute; left: 8px; top: 8px; width: 48px; height: 48px; }
+    .s-val { position: absolute; left: 24px; top: 168px; width: 200px; height: 124px; font: 700 108px/124px "JetBrains Mono", monospace; }
+    .s-val b, .s-bval b { position: absolute; left: 0; top: 0; opacity: 0; }
+    .s-val .vb, .s-bval .vb { color: #1f7a5c; }
+    #s-x20 { left: 24px; top: 316px; height: 52px; padding: 0 18px; line-height: 52px; border-radius: 999px; background: #e6e3ff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-sold { left: 16px; top: 196px; padding: 6px 20px; background: #b8235a; color: #fff; font-size: 46px; letter-spacing: 0.06em; border-radius: 12px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-boxes { position: absolute; left: 24px; top: 176px; display: flex; gap: 12px; }
+    .s-box { width: 86px; text-align: center; }
+    .s-bval { position: relative; width: 86px; height: 96px; border-radius: 14px; background: #f6f1eb; box-shadow: 0 0 0 4px #0e0c1d; font: 700 50px/96px "JetBrains Mono", monospace; }
+    .s-bval b { width: 86px; text-align: center; }
+    .s-box small { display: block; margin-top: 14px; font-size: 28px; color: #3e3b52; }
+
+    /* marks, flying eyes, the hand */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { opacity: 0; fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+    .s-eye { left: 0; top: 0; width: 64px; height: 64px; opacity: 0; }
+    .s-eye > svg { width: 64px; height: 64px; }
+    #s-pok { left: 1632px; top: 628px; width: 84px; height: 52px; text-align: center; border-radius: 999px; background: #1f7a5c; color: #fff; font: 700 34px/52px "JetBrains Mono", monospace; opacity: 0; }
+    .s-puff { left: 1632px; top: 628px; width: 84px; height: 52px; line-height: 52px; text-align: center; border-radius: 999px; background: #b8235a; color: #fff; font: 700 34px/52px "JetBrains Mono", monospace; opacity: 0; }
+    .s-okp { left: 1640px; top: 628px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-okp > svg { width: 56px; height: 56px; }
+    #s-hand { left: 0; top: 0; width: 130px; height: 130px; opacity: 0; }
+    #s-hand > svg { width: 130px; height: 130px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="46" data-track-index="1">
+      <div id="s-wrap">
+        <!-- the shop -->
+        <div id="s-shop">
+          <div id="s-sign" class="s-abs s-ol">Maya's Cookies</div>
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-laptop" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+            <div id="s-lapscreen" class="s-abs s-ol">
+              <span class="s-bar" style="top:26px;width:110px;background:#c9c6ff"></span>
+              <span class="s-bar" style="top:50px;left:46px;width:150px;background:#7cf0b5"></span>
+              <span class="s-bar" style="top:74px;left:46px;width:96px;background:#ffc24b"></span>
+              <span class="s-bar" style="top:98px;width:124px;background:#c9c6ff"></span>
+              <span class="s-bar" style="top:122px;left:46px;width:130px;background:#7cf0b5"></span>
+            </div>
+            <div id="s-lapbase" class="s-abs"></div>
+          </div>
+          <div id="s-bubble" class="s-abs s-ol s-hide"><i></i>"We are about to sell one anyway."</div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div class="s-strip s-hide" id="s-stripA"></div>
+          <div class="s-strip s-hide" id="s-stripD"></div>
+          <div class="s-strip s-hide" id="s-flashD"></div>
+          <div class="s-strip s-hide" id="s-stripT"></div>
+          <div class="s-strip s-hide" id="s-flash"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <i style="top:0">1</i><i style="top:60px" class="s-n234 s-hide">2</i><i style="top:120px" class="s-n234 s-hide">3</i><i style="top:180px" class="s-n234 s-hide">4</i><i style="top:240px" id="s-n5" class="s-hide">5</i>
+            <div class="s-ln s-hide" id="s-A0" style="top:0"><span class="kw">def</span> <span class="fn">cookies_left</span>():</div>
+            <div class="s-ln s-hide" id="s-A1" style="top:60px"><span class="cm">    # about to sell one anyway</span></div>
+            <div class="s-ln s-hide" id="s-A2" style="top:120px">    jar.count = jar.count <span class="hot">- 1</span></div>
+            <div class="s-ln s-hide" id="s-A3" style="top:180px">    <span class="kw">return</span> jar.count</div>
+            <div class="s-ln s-hide" id="s-B3" style="top:180px"><span class="kw">def</span> <span class="fn">take_cookie</span>():</div>
+          </div>
+        </div>
+        <div class="s-tag s-hide" id="s-tagq">${EYE}sounds like a question</div>
+        <div class="s-tag s-hide" id="s-tagt">${HAND}also takes one</div>
+        <div class="s-tag s-hide" id="s-tagA">${EYE}only looks</div>
+        <div class="s-tag s-hide" id="s-tagD">${HAND}only takes</div>
+
+        <!-- three lookers -->
+        <div id="s-cards">${card(1, 96, "Sam's checklist", "prints:", val("s-v1", "23", "24"))}${card(2, 458, "Website", "home page shows:", val("s-v2", "3", "24") + `<div id="s-x20" class="s-abs s-hide">&times; 20 visitors</div><div id="s-sold" class="s-abs s-hide">SOLD OUT</div>`)}${card(3, 820, "Report", "one line per hour:", `<div id="s-boxes">${box3(1, 2, "9 am")}${box3(2, 1, "10 am")}${box3(3, 0, "11 am")}</div>`)}
+        </div>
+
+        <!-- the jar and the count -->
+        <div id="s-right" class="s-abs s-ol">
+          <svg id="s-jar" class="s-abs" viewBox="0 0 360 440">
+            <rect x="20" y="64" width="320" height="366" rx="44" fill="#f4f2ff" stroke="#0e0c1d" stroke-width="6" />
+            ${cookies}
+            <path d="M44 120 V300" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity="0.75" />
+            <rect x="20" y="64" width="320" height="366" rx="44" fill="none" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-lid"><rect x="64" y="8" width="232" height="52" rx="16" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" /><rect x="150" y="-10" width="60" height="20" rx="10" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" /></g>
+          </svg>
+          <div id="s-morning" class="s-abs s-hide">next morning</div>
+          <div id="s-injar" class="s-abs s-hide">in the jar: 24</div>
+          <div id="s-dev" class="s-abs s-ol s-hide">
+            <div id="s-devlabel" class="s-abs">COOKIES<br />LEFT</div>
+            <div id="s-odo" class="s-abs" data-layout-allow-overflow><div id="s-strip" data-layout-allow-overlap>${strip}</div></div>
+          </div>
+          <div id="s-wrong" class="s-abs s-hide">WRONG</div>
+          <div id="s-cok" class="s-abs s-hide">${CHECK}</div>
+          <div class="s-status s-hide" id="s-holds">the count holds</div>
+        </div>
+
+        <!-- rings, flying eyes, the hand -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rdev" d="M1310 770 C1300 660 1730 656 1728 766 C1726 878 1296 880 1306 752" />
+          <path id="s-rname" d="M262 226 C258 180 536 178 536 222 C536 266 254 268 258 214" />
+          <path id="s-rjar" style="stroke:#1f7a5c" d="M1517 126 C1790 126 1770 604 1517 604 C1268 604 1250 138 1496 124" />
+        </svg>
+        ${eyes}
+        ${puffs}
+        ${okp}
+        <div id="s-pok" class="s-abs">-1</div>
+        <div id="s-hand" class="s-abs">${HAND}</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = ${JSON.stringify(W)};
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const LEN = {};
+      gsap.utils.toArray("#s-marks path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 1400;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+        p.style.strokeDashoffset = L;
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const stamp = (sel, at, rot) => tl.fromTo(sel, { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.3, ease: "power4.in", immediateRender: false }, at);
+
+      // The counter: numbers 24..0 stacked in one window; a change rolls one out and the next in.
+      const roll = (from, to, at, d, dir) => {
+        dir = dir || 1;
+        tl.to("#s-d" + from, { y: -110 * dir, opacity: 0, duration: d, ease: "none" }, at);
+        tl.fromTo("#s-d" + to, { y: 110 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: d, ease: "none", immediateRender: false }, at);
+      };
+      const tick = (n, at) => roll(n + 1, n, at, 0.16);
+
+      // A look: an eye leaves a card's badge and lands on the counter.
+      const SRC = [390, 752, 1114], TX = 1468, TY = 735;
+      const fly = (i, c, at, d) => {
+        const el = "#s-e" + i;
+        tl.fromTo(el, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.12, ease: "power2.out", immediateRender: false }, at);
+        tl.fromTo(el, { x: SRC[c] }, { x: TX, duration: d, ease: "power1.in", immediateRender: false }, at);
+        tl.fromTo(el, { y: 540 }, { y: TY, duration: d, ease: "back.in(2.2)", immediateRender: false }, at);
+        tl.to(el, { opacity: 0, scale: 0.4, duration: 0.1, ease: "power2.in" }, at + d);
+        return at + d;
+      };
+      let pf = 0;
+      const puff = (at) => {
+        tl.fromTo("#s-p" + (pf++ % 5), { opacity: 1, y: 0, scale: 0.7 }, { opacity: 0, y: -64, scale: 1, duration: 0.36, ease: "power1.out", immediateRender: false }, at);
+      };
+      const flash = (at, d) => tl.fromTo("#s-flash", { opacity: 0.85 }, { opacity: 0, duration: d || 0.35, ease: "power1.in", immediateRender: false }, at);
+
+      /* ---- 1. A jar, and a count ---- */
+      tl.fromTo("#s-sign", { rotation: -3 }, { rotation: -3, duration: 0.01 }, 0);
+      tl.fromTo(".s-ck", { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)", stagger: 0.045 }, t(3) - 0.15);
+      tl.fromTo("#s-laptop", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(8) - 0.05);
+      tl.fromTo(".s-bar", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3, ease: "power3.out", stagger: 0.12 }, t(9));
+      tl.fromTo("#s-dev", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(10) - 0.05);
+      tl.fromTo("#s-d24", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)", immediateRender: false }, t(12) - 0.05);
+
+      /* ---- 2. cookies_left sounds like a question ---- */
+      draw("#s-rdev", t(14) - 0.05, 0.6);
+      out("#s-rdev", t(17) + 0.1, 0.25);
+      tl.to("#s-sign", { opacity: 0, y: -120, duration: 0.35, ease: "power3.in" }, t(17) - 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t(17) + 0.05);
+      tl.fromTo("#s-A0", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "steps(19)", immediateRender: false }, t(21) - 0.1);
+      draw("#s-rname", t(22) + 0.2, 0.5);
+      pop("#s-tagq", t(25) + 0.1, { from: 0.4 });
+      out("#s-rname", t(29) - 0.2, 0.25);
+      tl.fromTo(["#s-A1", "#s-A2", "#s-A3"], { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: 0.1, immediateRender: false }, t(29));
+      tl.fromTo(".s-n234", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.1 }, t(29));
+      pop("#s-bubble", t(30) + 0.05, { from: 0.5 });
+      tl.fromTo("#s-stripT", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t(33) - 0.1);
+      pop("#s-tagt", t(34), { from: 0.4 });
+
+      /* ---- 3. Three lookers. Every look takes one. ---- */
+      tl.to("#s-shop", { opacity: 0, y: 70, duration: 0.35, ease: "power3.in" }, t(40) - 0.45);
+      const rise = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, at);
+      rise("#s-c1", t(40) - 0.05);
+      let land = fly(0, 0, t(47) + 0.2, 0.6);
+      tick(23, land); puff(land); flash(land);
+      pop("#s-v1 .va", t(48) - 0.05, { from: 0.4 });
+
+      rise("#s-c2", t(49) - 0.05);
+      pop("#s-x20", t(54) - 0.05, { from: 0.4 });
+      const F0 = t(51) - 0.1;
+      for (let k = 0; k < 20; k++) {
+        land = fly(1 + k, 1, F0 + k * 0.075, 0.45);
+        puff(land);
+        roll(23 - k, 22 - k, land, 0.075);
+      }
+      tl.fromTo("#s-flash", { opacity: 0 }, { opacity: 0.85, duration: 0.1, immediateRender: false }, F0 + 0.45);
+      tl.to("#s-flash", { opacity: 0, duration: 0.3 }, F0 + 0.45 + 19 * 0.075 + 0.1);
+      pop("#s-v2 .va", t(56) - 0.05, { from: 0.4 });
+
+      rise("#s-c3", t(57) - 0.05);
+      [[t(60) - 0.05, 2], [t(61) + 0.1, 1], [t(62) + 0.25, 0]].forEach(([at, n], k) => {
+        land = fly(21 + k, 2, at - 0.45, 0.45);
+        tick(n, land); puff(land); flash(land);
+        pop("#s-b" + (k + 1) + " .va", land + 0.05, { from: 0.4, d: 0.3 });
+      });
+      tl.fromTo("#s-odo", { scale: 1.35 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)", immediateRender: false }, t(63));
+
+      /* ---- 4. A full jar, and "sold out" ---- */
+      draw("#s-rjar", t(65) - 0.05, 0.7);
+      pop("#s-injar", t(67) + 0.1, { from: 0.4 });
+      tl.to(["#s-c1", "#s-c3"], { opacity: 0.3, duration: 0.3, ease: "power2.inOut" }, t(70));
+      out("#s-v2 .va", t(73) - 0.3, 0.15);
+      stamp("#s-sold", t(73) - 0.25, -8);
+      tl.to(["#s-c1", "#s-c3"], { opacity: 1, duration: 0.3, ease: "power2.inOut" }, t(75) - 0.2);
+      tl.fromTo(".s-cbadge", { scale: 1 }, { scale: 1.45, duration: 0.22, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.14, immediateRender: false }, t(75));
+      stamp("#s-wrong", t(78) - 0.25, -7);
+
+      /* ---- 5. The fix: two jobs ---- */
+      const FX = t(81);
+      out(["#s-sold", "#s-wrong", "#s-rjar", "#s-injar", "#s-tagq", "#s-tagt", "#s-stripT", "#s-x20", ".s-val .va", ".s-bval .va"], FX, 0.25);
+      tl.to(".s-card", { opacity: 0.3, duration: 0.3, ease: "power2.inOut" }, FX);
+      roll(0, 24, FX + 0.1, 0.4, -1);
+      pop("#s-morning", FX + 0.25, { from: 0.4 });
+      const SP = t(84) - 0.15;
+      out("#s-A1", SP, 0.2);
+      tl.to("#s-A3", { y: -120, duration: 0.55, ease: "power3.inOut" }, SP + 0.05);
+      tl.to("#s-A2", { y: 120, duration: 0.55, ease: "power3.inOut" }, SP + 0.05);
+      tl.fromTo("#s-n5", { opacity: 0 }, { opacity: 1, duration: 0.3 }, SP + 0.3);
+      tl.fromTo("#s-B3", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "steps(18)", immediateRender: false }, SP + 0.45);
+      tl.fromTo("#s-stripA", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(86) - 0.1);
+      pop("#s-tagA", t(88), { from: 0.4 });
+      tl.fromTo("#s-stripD", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(90) - 0.1);
+      pop("#s-tagD", t(92), { from: 0.4 });
+
+      /* ---- 6. Look as often as you like. Only a sale changes it. ---- */
+      tl.to(".s-card", { opacity: 1, duration: 0.35, ease: "power2.inOut" }, t(94) - 0.1);
+      const shown = ["#s-v1 .vb", "#s-v2 .vb", "#s-b1 .vb", null, null, "#s-b2 .vb", null, null, "#s-b3 .vb"];
+      for (let k = 0; k < 9; k++) {
+        land = fly(k, k % 3, t(95) - 0.1 + k * 0.28, 0.5);
+        tl.fromTo("#s-o" + (k % 3), { opacity: 1, y: 0, scale: 0.6 }, { opacity: 0, y: -60, scale: 1, duration: 0.45, ease: "power1.out", immediateRender: false }, land);
+        if (shown[k]) pop(shown[k], land + 0.05, { from: 0.4, d: 0.3 });
+      }
+      pop("#s-cok", t(105) - 0.05, { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-holds", t(103) - 0.05, { from: 0.5 });
+
+      const HX = 1563;
+      tl.fromTo("#s-hand", { opacity: 1, x: HX, y: -150, rotation: 180 }, { opacity: 1, x: HX, y: 142, rotation: 180, duration: 0.6, ease: "power3.out", immediateRender: false }, t(107));
+      tl.to("#s-lid", { rotation: -45, svgOrigin: "64 60", duration: 0.3, ease: "power2.out" }, t(107) + 0.05);
+      const LIFT = t(109) + 0.2;
+      tl.to("#s-hand", { y: -170, duration: 0.5, ease: "power2.in" }, LIFT);
+      tl.to("#s-take", { y: -312, duration: 0.5, ease: "power2.in" }, LIFT);
+      tl.to("#s-take", { opacity: 0, duration: 0.1 }, LIFT + 0.4);
+      tick(23, t(110));
+      tl.fromTo("#s-flashD", { opacity: 0.45 }, { opacity: 0, duration: 0.7, ease: "power1.in", immediateRender: false }, t(110) - 0.05);
+      tl.to("#s-lid", { rotation: 0, svgOrigin: "64 60", duration: 0.25, ease: "power2.in" }, LIFT + 0.5);
+      out("#s-holds", t(108), 0.2);
+      out("#s-cok", t(108), 0.2);
+      tl.fromTo("#s-pok", { opacity: 1, y: 0, scale: 0.7 }, { opacity: 0, y: -70, scale: 1, duration: 0.7, ease: "power1.in", immediateRender: false }, t(110));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.26, ease: "power2.in" }, 45.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>
+`;
+fs.writeFileSync(OUT, html);
+console.log("wrote", OUT, html.length);

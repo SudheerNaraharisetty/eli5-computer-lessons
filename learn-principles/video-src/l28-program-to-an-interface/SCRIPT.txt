@@ -1,0 +1,11 @@
+Maya's checkout takes payment with one card machine. And the code knows that machine well. Connect. Send cents. Check for code seven.
+
+Then customers want to pay by phone. And cash. And vouchers. Each one gets wired into checkout, with its own quirks. The function nearly triples. And a change for vouchers breaks cards.
+
+The fix. Checkout decides what it needs. One thing. Pay this amount, and answer yes or no. That short list is called an interface.
+
+Now every way to pay becomes a plug with that shape. Card. Phone. Cash. Voucher. Each hides its own quirks inside. Checkout shrinks to one question. Plug in any of them, and it never asks who is answering.
+
+Later, store credit arrives. A new plug. It simply fits. Checkout does not change.
+
+That is programming to an interface. Depend on what, not who.

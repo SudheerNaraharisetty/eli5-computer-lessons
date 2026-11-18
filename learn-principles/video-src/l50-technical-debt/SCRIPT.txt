@@ -1,0 +1,17 @@
+Two weeks before Christmas, Maya wants to sell hampers on her website. By Friday.
+
+The proper way takes five days. So she takes a shortcut. She copies the order code, types the prices in, and skips the tests. One day. And she leaves a note. Fix in January.
+
+Three hundred hampers sold. A good decision. She borrowed four days.
+
+But January is busy. And a loan charges interest.
+
+February. A change to orders must be made twice. She misses one. A day lost. March. A simple discount takes three days, not one. April. Sam loses a day, puzzled by two order systems.
+
+By May, the interest has passed the loan. And it keeps growing.
+
+So Maya pays it off. Five days, done properly. Now every change is made once.
+
+An old shortcut, in a report nobody touches? No interest. Leave it.
+
+That is technical debt. A shortcut is a loan. Take it on purpose, write it down, and pay it back where you work most.

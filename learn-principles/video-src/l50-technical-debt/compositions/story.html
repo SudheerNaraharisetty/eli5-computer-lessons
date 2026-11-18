@@ -1,0 +1,473 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { box-sizing: border-box; }
+    #s-all, #s-wrap, #s-shop { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* ---------- shop ---------- */
+    #s-counter { left: 96px; top: 740px; width: 1054px; height: 244px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 740px; width: 1054px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-maya { left: 130px; top: 236px; width: 420px; height: 546px; }
+    #s-web { left: 600px; top: 96px; width: 520px; height: 400px; background: #fff; border-radius: 22px; }
+    #s-webbar { left: 0; top: 0; width: 520px; height: 54px; background: #ece7df; border-radius: 22px 22px 0 0; box-shadow: 0 4px 0 0 #0e0c1d; display: flex; align-items: center; gap: 10px; padding: 0 22px; }
+    #s-webbar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; box-shadow: 0 0 0 3px #0e0c1d; }
+    #s-webbar > i:nth-child(2) { background: #ffc24b; }
+    #s-webbar > i:nth-child(3) { background: #4bd69b; }
+    #s-webtitle { left: 30px; top: 70px; font: 700 42px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-tile { position: absolute; top: 146px; width: 214px; height: 220px; border-radius: 18px; background: #fbf8f4; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tile > svg { position: absolute; left: 22px; top: 20px; width: 170px; height: 130px; }
+    .s-tile > span { position: absolute; left: 0; width: 214px; top: 162px; text-align: center; font-size: 32px; line-height: 1.3; }
+    #s-friday { left: 330px; top: 116px; padding: 0 18px; height: 50px; line-height: 50px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-cal { left: 640px; top: 520px; width: 250px; height: 206px; background: #fff; border-radius: 18px; overflow: hidden; text-align: center; }
+    #s-cal b { display: block; height: 52px; line-height: 52px; background: #b8235a; color: #fff; font-size: 28px; letter-spacing: 0.1em; }
+    #s-cal strong { display: block; font: 700 92px/1.05 "Fraunces", serif; }
+    #s-cal span { display: block; font-size: 30px; line-height: 1.2; color: #3e3b52; }
+    #s-xmas { left: 916px; top: 588px; width: 180px; text-align: center; font-size: 30px; line-height: 1.25; color: #1f7a5c; }
+
+    /* ---------- code panel ---------- */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-lines { left: 36px; top: 92px; width: 1000px; height: 750px; font: 500 28px/50px "JetBrains Mono", monospace; }
+    .s-grp { position: absolute; left: 0; top: 0; width: 1000px; height: 750px; }
+    .s-ln { position: absolute; left: 0; width: 1000px; height: 50px; white-space: pre; }
+    .s-ln > i { position: absolute; left: 0; top: 0; width: 56px; font-style: normal; color: #8480b8; }
+    .s-ln > span { position: absolute; left: 60px; top: 0; }
+    .kw { color: #c9c6ff; }
+    .fn { color: #7cf0b5; }
+    .nm { color: #ffc24b; }
+    .st { color: #ffb3c6; }
+    .cm { color: #a9a5d6; }
+    .s-note { background: rgba(255, 194, 75, 0.16); border-radius: 8px; }
+    .s-note > span { color: #ffd98a; }
+    #s-kit, #s-fixline { color: #7cf0b5; }
+    #s-fixline .cm { color: #a9a5d6; }
+
+    /* ---------- right panel ---------- */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    .s-pane { position: absolute; inset: 0; }
+    .s-title { left: 40px; top: 22px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-day { position: absolute; top: 110px; width: 92px; height: 50px; line-height: 50px; text-align: center; font-size: 28px; border-radius: 10px; background: #ece7df; }
+    .s-day.fri { background: #fbebd2; }
+    .s-day.late { background: #fbe0ea; color: #b8235a; }
+    #s-deadline { left: 434px; top: 98px; width: 6px; height: 380px; background: #b8235a; border-radius: 3px; }
+    .s-lbl { position: absolute; left: 40px; font-size: 32px; line-height: 1.2; white-space: nowrap; }
+    .s-blk { position: absolute; width: 92px; height: 64px; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-blk.p { background: #e6e3ff; }
+    .s-blk.late { background: #fbe0ea; }
+    .s-blk.s { background: #ddefe6; }
+    #s-brk { left: 140px; top: 446px; width: 400px; height: 34px; }
+    #s-sold { left: 40px; top: 510px; width: 534px; height: 160px; background: #fff; border-radius: 20px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    #s-sold small { position: absolute; left: 28px; top: 20px; font-size: 30px; color: #3e3b52; }
+    #s-soldn { position: absolute; left: 28px; top: 58px; font: 700 80px/1.1 "Fraunces", serif; }
+    #s-good { left: 300px; top: 52px; padding: 0 18px; height: 56px; line-height: 56px; border-radius: 12px; background: #1f7a5c; color: #fff; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-borrow { left: 40px; top: 712px; padding: 0 24px; height: 64px; line-height: 64px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 34px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    #s-intpill { left: 362px; top: 36px; padding: 0 18px; height: 50px; line-height: 50px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    .s-row { position: absolute; left: 24px; width: 566px; height: 50px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; font-size: 28px; line-height: 50px; }
+    .s-row.ok { background: #ddefe6; }
+    .s-row > b { position: absolute; left: 16px; }
+    .s-row > span { position: absolute; left: 96px; color: #3e3b52; white-space: nowrap; }
+    .s-row > em { position: absolute; right: 16px; font-style: normal; color: #b8235a; }
+    .s-row.ok > em { color: #1f7a5c; }
+    .s-row.zero > em { color: #3e3b52; }
+    #s-balance { left: 24px; top: 470px; width: 566px; height: 64px; border-radius: 14px; background: #0e0c1d; color: #fff; font-size: 30px; line-height: 64px; padding-left: 20px; }
+    #s-bv { position: absolute; right: 20px; top: 0; width: 180px; height: 64px; }
+    #s-bv > b { position: absolute; right: 0; top: 0; opacity: 0; white-space: nowrap; font: 700 40px/64px "Fraunces", serif; }
+    #s-bv > b.pos { color: #7cf0b5; }
+    #s-bv > b.neg { color: #fff; }
+    #s-chart { left: 24px; top: 552px; width: 566px; height: 320px; overflow: visible; }
+    #s-chart text { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 28px; fill: #3e3b52; text-anchor: middle; }
+    #s-chart .seg { fill: none; stroke: #0e0c1d; stroke-width: 7; stroke-linecap: round; opacity: 0; }
+    #s-chart .dot { opacity: 0; }
+    #s-paid { left: 300px; top: 560px; padding: 4px 18px; border-radius: 10px; background: #3b37e6; color: #fff; font-size: 30px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; text-align: center; }
+    #s-int0 { left: 420px; top: 676px; padding: 0 14px; height: 44px; line-height: 44px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 28px; box-shadow: 0 0 0 3px #0e0c1d; white-space: nowrap; }
+
+    /* ---------- marks ---------- */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-linecap: round; opacity: 0; }
+    .s-ring { stroke: #ff6b8b; stroke-width: 6; }
+    .s-ring.g { stroke: #7cf0b5; }
+    .s-ring.v { stroke: #c9c6ff; stroke-width: 5; }
+    .s-badge { position: absolute; width: 52px; height: 52px; border-radius: 50%; background: #ff6b8b; color: #0e0c1d; font-size: 30px; line-height: 52px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-badge.v { background: #c9c6ff; }
+    .s-pill { position: absolute; padding: 0 18px; height: 48px; line-height: 48px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.bad { background: #fbe0ea; color: #b8235a; }
+    .s-pill.good { background: #ddefe6; color: #1f7a5c; }
+    .s-pill.info { background: #e6e3ff; color: #3b37e6; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+
+    /* ---------- dusty corner ---------- */
+    #s-dusty { left: 200px; top: 250px; width: 840px; height: 500px; background: #fff; border-radius: 26px; }
+    #s-dtab { left: 0; top: 0; width: 840px; height: 70px; background: #ece7df; border-radius: 26px 26px 0 0; box-shadow: 0 4px 0 0 #0e0c1d; font: 700 30px/70px "JetBrains Mono", monospace; padding-left: 32px; }
+    .s-dl { position: absolute; left: 40px; font-size: 32px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    #s-web2 { left: 640px; top: 66px; width: 200px; height: 200px; }
+    #s-dint { left: 40px; top: 330px; width: 560px; height: 120px; border-radius: 18px; background: #ddefe6; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-dint small { position: absolute; left: 26px; top: 40px; font-size: 32px; color: #1f7a5c; }
+    #s-dint b { position: absolute; left: 290px; top: 14px; font: 700 76px/1.2 "Fraunces", serif; color: #1f7a5c; white-space: nowrap; }
+    #s-leave { left: 600px; top: 352px; padding: 6px 26px; border-radius: 12px; background: #1f7a5c; color: #fff; font-size: 44px; letter-spacing: 0.06em; box-shadow: 0 0 0 5px #0e0c1d; white-space: nowrap; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.3" data-track-index="1">
+      <div id="s-wrap">
+        <!-- ===== the shop ===== -->
+        <div id="s-shop">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-web" class="s-abs s-ol s-hide">
+            <div id="s-webbar" class="s-abs"><i></i><i></i><i></i></div>
+            <div id="s-webtitle" class="s-abs">Maya's Cookies</div>
+            <div class="s-tile" style="left:30px">
+              <svg viewBox="0 0 210 160">
+                <ellipse cx="105" cy="130" rx="96" ry="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+                <g stroke="#0e0c1d" stroke-width="5"><circle cx="58" cy="96" r="30" fill="#d9a05b" /><circle cx="152" cy="96" r="30" fill="#d9a05b" /><circle cx="105" cy="84" r="34" fill="#e2ad6b" /></g>
+                <g fill="#5a3418"><circle cx="96" cy="74" r="5" /><circle cx="116" cy="88" r="5" /><circle cx="50" cy="90" r="4" /><circle cx="160" cy="100" r="4" /></g>
+              </svg>
+              <span>Cookies</span>
+            </div>
+            <div id="s-htile" class="s-tile s-hide" style="left:276px">
+              <svg viewBox="0 0 170 130">
+                <path d="M40 62 Q85 -8 130 62" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+                <path d="M16 58 H154 L136 124 H34 Z" fill="#d9a05b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+                <path d="M26 82 H144 M30 104 H140" stroke="#0e0c1d" stroke-width="4" />
+                <path d="M85 60 L62 44 L62 76 Z M85 60 L108 44 L108 76 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+              </svg>
+              <span>Hampers</span>
+            </div>
+            <div id="s-friday" class="s-abs s-hide">by Friday</div>
+          </div>
+          <div id="s-cal" class="s-abs s-ol s-hide"><b>DECEMBER</b><strong>13</strong><span>Tuesday</span></div>
+          <div id="s-xmas" class="s-abs s-hide">12 days to Christmas</div>
+        </div>
+
+        <!-- ===== the code ===== -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>orders.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <div id="s-gA" class="s-grp">
+              <div class="s-ln" style="top:0"><i>1</i><span><b class="kw">def</b> <b class="fn">place_order</b>(item):</span></div>
+              <div class="s-ln" style="top:50px"><i>2</i><span>    price = <b class="nm">MENU</b>[item]</span></div>
+              <div class="s-ln" style="top:100px"><i>3</i><span>    total = final_total(price)</span></div>
+              <div class="s-ln" style="top:150px"><i>4</i><span>    sales_book.save(item, total)</span></div>
+              <div class="s-ln" style="top:200px"><i>5</i><span id="s-kit">    kitchen.add(item)</span></div>
+              <div class="s-ln" style="top:250px"><i>6</i><span>    <b class="kw">return</b> total</span></div>
+              <div class="s-ln" style="top:300px"><i>7</i></div>
+            </div>
+            <div id="s-gB" class="s-grp">
+              <div class="s-ln s-note" style="top:350px"><i>8</i><span># SHORTCUT, 13 Dec: copy of place_order.</span></div>
+              <div class="s-ln s-note" style="top:400px"><i>9</i><span># Prices typed in. No tests. Fix in January.</span></div>
+            </div>
+            <div id="s-gC" class="s-grp">
+              <div class="s-ln" style="top:450px"><i>10</i><span><b class="kw">def</b> <b class="fn">place_hamper_order</b>():</span></div>
+              <div class="s-ln" style="top:500px"><i>11</i><span>    price = <b class="nm">16</b> + <b class="nm">2</b>   <b class="cm"># hamper + wrap</b></span></div>
+              <div class="s-ln" style="top:550px"><i>12</i><span>    total = price + price * <b class="nm">0.09</b></span></div>
+              <div class="s-ln" style="top:600px"><i>13</i><span>    sales_book.save(<b class="st">"hamper"</b>, total)</span></div>
+              <div class="s-ln" style="top:650px"><i>14</i></div>
+              <div class="s-ln" style="top:700px"><i>15</i><span>    <b class="kw">return</b> total</span></div>
+            </div>
+            <div id="s-gD" class="s-grp s-hide">
+              <div class="s-ln" style="top:350px"><i>8</i><span id="s-fixline"><b class="nm">MENU</b>[<b class="st">"hamper"</b>] = <b class="nm">18</b>  <b class="cm"># $16 + $2 wrap</b></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== right panel ===== -->
+        <div id="s-right" class="s-abs s-ol s-hide">
+          <div id="s-plan" class="s-pane">
+            <div class="s-abs s-title">By Friday?</div>
+            <div class="s-day" style="left:40px">Tue</div>
+            <div class="s-day" style="left:140px">Wed</div>
+            <div class="s-day" style="left:240px">Thu</div>
+            <div class="s-day fri" style="left:340px">Fri</div>
+            <div class="s-day late" style="left:440px">Mon</div>
+            <div id="s-deadline" class="s-abs"></div>
+            <div id="s-plbl" class="s-lbl s-hide" style="top:184px">Proper way: 5 days</div>
+            <div class="s-blk p s-hide" style="left:40px;top:236px"></div>
+            <div class="s-blk p s-hide" style="left:140px;top:236px"></div>
+            <div class="s-blk p s-hide" style="left:240px;top:236px"></div>
+            <div class="s-blk p s-hide" style="left:340px;top:236px"></div>
+            <div class="s-blk late s-hide" style="left:440px;top:236px"></div>
+            <div id="s-slbl" class="s-lbl s-hide" style="top:326px">Shortcut: 1 day</div>
+            <div id="s-sblk" class="s-blk s s-hide" style="left:40px;top:376px"></div>
+            <svg id="s-brk" class="s-abs s-hide" viewBox="0 0 400 34"><path d="M4 2 V22 Q4 30 12 30 H388 Q396 30 396 22 V2" fill="none" stroke="#1f7a5c" stroke-width="6" stroke-linecap="round" /></svg>
+            <div id="s-sold" class="s-abs s-hide"><small>Hampers sold</small><div id="s-soldn">0</div><div id="s-good" class="s-abs s-hide">good decision ✓</div></div>
+            <div id="s-borrow" class="s-abs s-hide">4 days borrowed</div>
+          </div>
+
+          <div id="s-ledger" class="s-pane s-hide">
+            <div class="s-abs s-title">Maya's loan</div>
+            <div id="s-intpill" class="s-abs s-hide">+ interest</div>
+            <div class="s-row ok s-hide" id="s-r0" style="top:110px"><b>Dec</b><span>borrowed</span><em>+4</em></div>
+            <div class="s-row zero s-hide" id="s-r1" style="top:168px"><b>Jan</b><span>busy</span><em>0</em></div>
+            <div class="s-row s-hide" id="s-r2" style="top:226px"><b>Feb</b><span>kitchen missed</span><em>−1</em></div>
+            <div class="s-row s-hide" id="s-r3" style="top:284px"><b>Mar</b><span>promo: 3 days</span><em>−2</em></div>
+            <div class="s-row s-hide" id="s-r4" style="top:342px"><b>Apr</b><span>Sam puzzled</span><em>−1</em></div>
+            <div class="s-row s-hide" id="s-r5" style="top:400px"><b>May</b><span>made twice</span><em>−1</em></div>
+            <div id="s-balance" class="s-abs s-hide">Balance
+              <div id="s-bv"><b class="pos" id="s-b4">+4 days</b><b class="pos" id="s-b3">+3 days</b><b class="pos" id="s-b1">+1 day</b><b class="pos" id="s-b0" style="color:#fff">0 days</b><b class="neg" id="s-bm1">−1 day</b></div>
+            </div>
+            <svg id="s-chart" class="s-abs" viewBox="0 0 566 320" data-layout-allow-overflow>
+              <rect id="s-red" x="370" y="184" width="170" height="80" fill="#fbe0ea" opacity="0" />
+              <line x1="30" y1="184" x2="550" y2="184" stroke="#6f6b80" stroke-width="3" stroke-dasharray="8 8" />
+              <text x="14" y="194">0</text>
+              <text x="50" y="304">Dec</text><text x="130" y="304">Jan</text><text x="210" y="304">Feb</text><text x="290" y="304">Mar</text><text x="370" y="304">Apr</text><text x="450" y="304">May</text><text x="530" y="304">Jun</text>
+              <path id="s-c1" class="seg" d="M50 40 L130 40" />
+              <path id="s-c2" class="seg" d="M130 40 L210 76" />
+              <path id="s-c3" class="seg" d="M210 76 L290 148" />
+              <path id="s-c4" class="seg" d="M290 148 L370 184" />
+              <path id="s-c5" class="seg" d="M370 184 L450 220" style="stroke:#b8235a" />
+              <path id="s-c6" class="seg" d="M450 220 L530 256" style="stroke:#b8235a;stroke-dasharray:14 12" />
+              <path id="s-c7" class="seg" d="M450 220 L530 220" style="stroke:#1f7a5c" />
+              <circle class="dot" id="s-d0" cx="50" cy="40" r="10" fill="#0e0c1d" />
+              <circle class="dot" id="s-d1" cx="130" cy="40" r="10" fill="#0e0c1d" />
+              <circle class="dot" id="s-d2" cx="210" cy="76" r="10" fill="#0e0c1d" />
+              <circle class="dot" id="s-d3" cx="290" cy="148" r="10" fill="#0e0c1d" />
+              <circle class="dot" id="s-d4" cx="370" cy="184" r="10" fill="#0e0c1d" />
+              <circle class="dot" id="s-d5" cx="450" cy="220" r="10" fill="#b8235a" />
+            </svg>
+            <div id="s-paid" class="s-abs s-hide">PAID OFF<br />5 days</div>
+            <div id="s-int0" class="s-abs s-hide">interest: 0</div>
+          </div>
+        </div>
+
+        <!-- ===== marks ===== -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rprice" class="s-ring" />
+          <path id="s-rtax" class="s-ring" />
+          <path id="s-rmiss" class="s-ring" style="stroke-dasharray:14 12" />
+          <path id="s-rfin" class="s-ring g" />
+          <path id="s-rcalc" class="s-ring" />
+          <path id="s-bk1" class="s-ring v" d="M1092 192 Q1110 192 1110 212 V464 Q1110 484 1092 484" />
+          <path id="s-bk2" class="s-ring v" d="M1092 642 Q1110 642 1110 662 V914 Q1110 934 1092 934" />
+          <path id="s-rail" class="s-ring g" d="M178 563 H150 Q136 563 136 549 V227 Q136 213 150 213 H176" />
+        </svg>
+        <div id="s-notests" class="s-pill bad s-hide" style="left:660px;top:639px">no tests</div>
+        <div id="s-n1" class="s-badge s-hide" style="left:580px;top:387px">1</div>
+        <div id="s-n2" class="s-badge s-hide" style="left:600px;top:837px">2</div>
+        <div id="s-missed" class="s-pill bad s-hide" style="left:672px;top:839px">missed</div>
+        <div id="s-edit1" class="s-pill good s-hide" style="left:730px;top:289px">1 edit</div>
+        <div id="s-byhand" class="s-pill bad s-hide" style="left:770px;top:739px">by hand, no tests</div>
+        <div id="s-sam" class="s-pill info s-hide" style="left:520px;top:490px">Sam: why are there two?</div>
+        <div id="s-k1" class="s-badge v s-hide" style="left:1030px;top:312px">1</div>
+        <div id="s-k2" class="s-badge v s-hide" style="left:1030px;top:762px">2</div>
+        <div id="s-onepath" class="s-pill good s-hide" style="left:192px;top:642px">hampers use place_order now</div>
+        <div id="s-once" class="s-pill good s-hide" style="left:620px;top:189px">every change: made once</div>
+
+        <!-- ===== dusty corner ===== -->
+        <div id="s-dusty" class="s-abs s-ol s-hide">
+          <div id="s-dtab" class="s-abs">year_end_report.py</div>
+          <div class="s-dl" style="top:110px">copied code inside, a bit ugly</div>
+          <div class="s-dl" style="top:160px">opened once a year</div>
+          <div class="s-dl" style="top:210px">last changed 3 years ago</div>
+          <svg id="s-web2" class="s-abs" viewBox="0 0 200 200">
+            <g fill="none" stroke="#8480b8" stroke-width="3">
+              <path d="M200 0 L60 140 M200 0 L110 190 M200 0 L10 90 M200 0 L170 200" />
+              <path d="M150 50 Q170 40 168 22 M120 80 Q160 70 172 34 Q186 52 180 80 M86 112 Q150 104 176 58 Q196 92 186 128 M48 150 Q140 140 180 90 Q204 130 190 170" />
+            </g>
+          </svg>
+          <div id="s-dint" class="s-abs"><small>interest paid:</small><b id="s-dzero" class="s-hide">0 days</b></div>
+          <div id="s-leave" class="s-abs s-hide">LEAVE IT</div>
+        </div>
+
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds); the voice starts 0.6 s in.
+      const W = [0.0, 0.29, 0.592, 0.894, 1.753, 2.055, 2.322, 2.45, 2.728, 3.251, 3.448, 3.599, 4.528, 4.772, 5.689, 5.828, 6.13, 6.385, 6.815, 7.221, 8.092, 8.29, 8.44, 8.731, 8.824, 9.81, 10.008, 10.379, 10.53, 10.82, 11.447, 11.854, 11.97, 12.446, 12.91, 13.166, 13.723, 13.862, 14.954, 15.256, 15.964, 16.208, 16.358, 16.625, 16.741, 17.333, 17.74, 18.03, 19.063, 19.388, 19.771, 20.224, 20.816, 20.99, 21.199, 22.024, 22.233, 22.616, 22.894, 23.498, 23.73, 24.334, 24.497, 25.286, 25.518, 25.623, 26.018, 26.598, 27.318, 28.363, 28.514, 28.816, 28.955, 29.315, 29.535, 29.675, 29.953, 30.708, 30.917, 31.3, 31.823, 31.985, 32.229, 32.787, 33.657, 33.808, 34.11, 34.586, 34.946, 35.248, 35.921, 36.177, 37.164, 38.313, 38.684, 39.056, 39.149, 39.602, 40.054, 40.252, 40.588, 40.89, 41.958, 42.225, 42.597, 42.794, 43.224, 43.398, 43.735, 43.874, 44.443, 44.71, 44.814, 45.14, 45.975, 46.196, 46.475, 46.765, 46.904, 47.589, 48.007, 48.576, 48.89, 49.911, 50.283, 50.654, 51.014, 51.165, 51.467, 52.408, 52.57, 52.756, 53.545, 53.708, 53.789, 54.207, 54.648, 55.763, 56.065, 56.831, 57.168, 57.632, 57.98, 58.294, 59.014, 59.908, 60.07, 60.651, 60.848, 60.999, 61.939, 62.218, 62.323, 62.462, 63.008, 63.379, 63.507, 63.913, 64.145, 64.366, 64.505, 64.819, 65.051, 65.225, 65.597];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const $ = (s) => document.querySelector(s);
+
+      // hand-drawn rings around code tokens
+      const ring = (cx, cy, rx, ry) => `M${cx - rx + 8} ${cy + 6} C${cx - rx - 2} ${cy - ry} ${cx + rx} ${cy - ry - 2} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 6} ${cy + ry} ${cx - rx + 2} ${cy - 10}`;
+      $("#s-rprice").setAttribute("d", ring(444, 713, 72, 40));
+      $("#s-rtax").setAttribute("d", ring(696, 763, 52, 40));
+      $("#s-rmiss").setAttribute("d", ring(402, 863, 168, 38));
+      $("#s-rfin").setAttribute("d", ring(545, 313, 168, 40));
+      $("#s-rcalc").setAttribute("d", ring(562, 763, 186, 40));
+      const lens = {};
+      document.querySelectorAll("#s-marks path, #s-chart .seg").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 300;
+        lens[p.id] = L;
+        if (p.id === "s-rmiss" || p.id === "s-c6") return; // dashed ones pop instead of drawing
+        p.style.strokeDasharray = L + " " + (L + 40);
+        p.style.strokeDashoffset = L;
+      });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (sel, at, d) => {
+        const L = lens[sel.slice(1)];
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at);
+      };
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const typeIn = (sel, at, d, steps) => tl.fromTo(sel, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "steps(" + steps + ")" }, at);
+
+      /* ---- 1. Christmas, hampers, by Friday ---- */
+      tl.fromTo("#s-cal", { opacity: 0, y: -60, rotation: -6 }, { opacity: 1, y: 0, rotation: -3, duration: 0.55, ease: "back.out(1.4)" }, 0.15);
+      tl.fromTo("#s-xmas", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(3) - 0.1);
+      tl.fromTo("#s-web", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(9) - 0.5);
+      pop("#s-htile", t(8), { from: 0.4, ease: "back.out(2)" });
+      tl.fromTo("#s-friday", { opacity: 0, scale: 2.2, rotation: 8 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.35, ease: "power4.in" }, t(13) - 0.15);
+
+      /* ---- 2. Two ways: proper (5 days) or shortcut (1 day) ---- */
+      tl.fromTo("#s-right", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, t(15) - 0.2);
+      tl.fromTo("#s-plbl", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(15));
+      tl.fromTo("#s-plan .s-blk.p, #s-plan .s-blk.late", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.25, ease: "power3.out", stagger: 0.16 }, t(18) - 0.05);
+      tl.fromTo("#s-deadline", { scaleY: 1 }, { scaleY: 1.04, duration: 0.15, yoyo: true, repeat: 1, ease: "power1.inOut" }, t(19) + 0.3);
+      tl.fromTo("#s-slbl", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(24) - 0.05);
+
+      // the shop slides away, the code arrives
+      tl.to("#s-shop", { opacity: 0, x: -90, duration: 0.4, ease: "power3.in" }, t(25) - 0.45);
+      tl.fromTo("#s-code", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(25) - 0.1);
+      tl.set(["#s-gB", "#s-gC"], { opacity: 0 }, 0);
+      tl.set("#s-kit", { opacity: 0 }, 0);
+      tl.fromTo("#s-gA .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.05 }, t(25));
+      // the copy slides down from the original
+      tl.fromTo("#s-gC", { opacity: 0, y: -450 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.inOut" }, t(28) - 0.1);
+      draw("#s-rprice", t(32) - 0.15, 0.45);
+      draw("#s-rtax", t(32) + 0.3, 0.4);
+      tl.fromTo("#s-notests", { opacity: 0, scale: 2, rotation: 6 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.3, ease: "power4.in" }, t(35));
+      tl.fromTo("#s-sblk", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "back.out(1.6)" }, t(38) - 0.05);
+      // the note
+      out(["#s-rprice", "#s-rtax"], t(40), 0.25);
+      tl.set("#s-gB", { opacity: 1 }, t(44) - 0.1);
+      typeIn("#s-gB .s-ln:nth-child(1)", t(44) - 0.1, 0.6, 12);
+      typeIn("#s-gB .s-ln:nth-child(2)", t(45), 0.7, 14);
+
+      /* ---- 3. 300 sold, good decision, 4 days borrowed ---- */
+      tl.fromTo("#s-sold", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(48) - 0.2);
+      const sold = { v: 0 };
+      tl.fromTo(sold, { v: 0 }, { v: 300, duration: 1.1, ease: "power2.out", onUpdate: () => { $("#s-soldn").textContent = Math.round(sold.v); } }, t(48));
+      tl.fromTo("#s-good", { opacity: 0, scale: 2.2, rotation: 6 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.3, ease: "power4.in" }, t(53) - 0.1);
+      tl.fromTo("#s-brk", { opacity: 0, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power3.out" }, t(56) - 0.1);
+      pop("#s-borrow", t(57), { from: 0.4 });
+
+      /* ---- 4. January is busy. A loan charges interest. ---- */
+      tl.to("#s-plan", { opacity: 0, duration: 0.3, ease: "power2.in" }, t(60) + 0.3);
+      tl.fromTo("#s-ledger", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(60) + 0.45);
+      tl.fromTo("#s-r0", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(60) + 0.5);
+      tl.fromTo("#s-balance", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(60) + 0.6);
+      tl.fromTo("#s-b4", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(60) + 0.6);
+      tl.fromTo("#s-d0", { opacity: 0, scale: 0, svgOrigin: "50 40" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, t(60) + 0.7);
+      tl.fromTo("#s-r1", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(62) + 0.15);
+      draw("#s-c1", t(62) + 0.25, 0.35);
+      tl.fromTo("#s-d1", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(62) + 0.3);
+      tl.to("#s-gB .s-ln", { backgroundColor: "rgba(255,194,75,0.06)", duration: 0.6 }, t(62));
+      pop("#s-intpill", t(67) - 0.05, { from: 0.4 });
+
+      /* ---- 5. February: made twice, one missed ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 560, y: 1010 }, { opacity: 1, x: 300, y: 430, duration: 0.7, ease: "power3.out" }, t(68));
+      tl.set("#s-kit", { opacity: 1 }, t(70) - 0.05);
+      typeIn("#s-kit", t(70) - 0.05, 0.6, 10);
+      tl.to("#s-cursor", { x: 520, y: 430, duration: 0.6, ease: "none" }, t(70) - 0.05);
+      pop("#s-n1", t(76) - 0.3, { from: 0.3 });
+      tl.to("#s-cursor", { x: 300, y: 880, duration: 0.5, ease: "power2.inOut" }, t(76) - 0.2);
+      pop("#s-n2", t(76) + 0.2, { from: 0.3 });
+      tl.to("#s-cursor", { x: 1000, y: 1000, opacity: 0, duration: 0.6, ease: "power2.in" }, t(78) - 0.1);
+      tl.fromTo("#s-rmiss", { opacity: 0, scale: 1.5, svgOrigin: "402 863" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(78));
+      pop("#s-missed", t(79), { from: 0.4 });
+      tl.fromTo("#s-r2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(81) - 0.1);
+      draw("#s-c2", t(81), 0.35);
+      tl.fromTo("#s-d2", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(81) + 0.3);
+      swap("#s-b4", "#s-b3", t(81) + 0.1);
+
+      /* ---- 6. March: discount, 3 days not 1 ---- */
+      out(["#s-n1", "#s-n2", "#s-rmiss", "#s-missed"], t(83) - 0.1);
+      draw("#s-rfin", t(86) - 0.1, 0.45);
+      pop("#s-edit1", t(86) + 0.3, { from: 0.4 });
+      draw("#s-rcalc", t(87) - 0.1, 0.45);
+      pop("#s-byhand", t(88), { from: 0.4 });
+      tl.fromTo("#s-r3", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(88) + 0.1);
+      draw("#s-c3", t(88) + 0.2, 0.4);
+      tl.fromTo("#s-d3", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(88) + 0.55);
+      swap("#s-b3", "#s-b1", t(88) + 0.3);
+
+      /* ---- 7. April: Sam, two order systems ---- */
+      out(["#s-rfin", "#s-edit1", "#s-rcalc", "#s-byhand"], t(92) - 0.1);
+      pop("#s-sam", t(93), { from: 0.4 });
+      tl.fromTo("#s-r4", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(94));
+      draw("#s-c4", t(94) + 0.1, 0.35);
+      tl.fromTo("#s-d4", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(94) + 0.4);
+      swap("#s-b1", "#s-b0", t(94) + 0.2);
+      draw("#s-bk1", t(99) - 0.05, 0.4);
+      pop("#s-k1", t(99) + 0.2, { from: 0.3 });
+      draw("#s-bk2", t(100) - 0.05, 0.4);
+      pop("#s-k2", t(100) + 0.2, { from: 0.3 });
+
+      /* ---- 8. May: interest passes the loan, and keeps growing ---- */
+      tl.fromTo("#s-r5", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(103) - 0.1);
+      draw("#s-c5", t(103), 0.35);
+      tl.fromTo("#s-d5", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(103) + 0.3);
+      swap("#s-b0", "#s-bm1", t(103) + 0.1);
+      tl.fromTo("#s-red", { opacity: 0 }, { opacity: 1, duration: 0.4 }, t(107) - 0.1);
+      tl.fromTo("#s-balance", { backgroundColor: "#0e0c1d" }, { backgroundColor: "#b8235a", duration: 0.3 }, t(107));
+      tl.set("#s-c6", { opacity: 1 }, t(112));
+      tl.fromTo("#s-c6", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "power1.in" }, t(112));
+
+      /* ---- 9. Pay it off: five days, every change made once ---- */
+      out(["#s-sam", "#s-bk1", "#s-bk2", "#s-k1", "#s-k2", "#s-notests"], t(114) - 0.2);
+      tl.to("#s-gC", { opacity: 0, scaleY: 0.3, transformOrigin: "50% 0%", duration: 0.45, ease: "power3.in" }, t(116));
+      tl.to("#s-gB", { opacity: 0, duration: 0.3, ease: "power2.in" }, t(116) + 0.15);
+      tl.fromTo("#s-paid", { opacity: 0, scale: 2.4, rotation: 6 }, { opacity: 1, scale: 1, rotation: -5, duration: 0.3, ease: "power4.in" }, t(117));
+      tl.to("#s-c6", { opacity: 0, duration: 0.3 }, t(117) + 0.1);
+      tl.fromTo("#s-gD", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(121) - 0.1);
+      typeIn("#s-gD .s-ln", t(121) - 0.1, 0.7, 14);
+      pop("#s-onepath", t(122), { from: 0.5 });
+      draw("#s-rail", t(124) - 0.1, 0.6);
+      draw("#s-c7", t(124), 0.4);
+      pop("#s-once", t(126), { from: 0.4 });
+      pop("#s-int0", t(128) - 0.1, { from: 0.4 });
+
+      /* ---- 10. A quiet corner: no interest, leave it ---- */
+      tl.to("#s-code", { opacity: 0.18, duration: 0.4, ease: "power2.inOut" }, t(129) - 0.2);
+      out(["#s-onepath", "#s-once", "#s-rail"], t(129) - 0.2, 0.3);
+      tl.fromTo("#s-dusty", { opacity: 0, y: 60, rotation: 2 }, { opacity: 1, y: 0, rotation: -1, duration: 0.6, ease: "expo.out" }, t(130));
+      tl.fromTo("#s-web2", { opacity: 0 }, { opacity: 1, duration: 0.6 }, t(135));
+      pop("#s-dzero", t(137), { from: 0.4 });
+      tl.fromTo("#s-leave", { opacity: 0, scale: 2.4, rotation: 8 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power4.in" }, t(139) - 0.15);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 57.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

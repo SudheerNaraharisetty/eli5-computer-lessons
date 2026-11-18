@@ -1,0 +1,15 @@
+Maya's checkout does three kinds of work. It works out the total. It saves the sale. And it prints the receipt.
+
+Here is the code. Look at the colours. The three kinds of work are braided together, line by line.
+
+Then a request arrives. It is only about looks. Make the total big, and add a thank you.
+
+Maya edits among the tangled lines. To tidy up, she moves the save line. It lands above the tax.
+
+Now the receipt says ten ninety. But the sales file says ten dollars. Every receipt looks fine, so for a week, nobody notices.
+
+The fix. Pull the braid apart. One part works out the total. One part saves the sale. One part prints the receipt.
+
+Now a change to the looks touches only the printing part. The sums and the sales file stay closed.
+
+That is separation of concerns. One kind of work per part.

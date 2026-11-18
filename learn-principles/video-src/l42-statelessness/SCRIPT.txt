@@ -1,0 +1,19 @@
+Maya's website keeps every visitor's basket in its own memory. Like a clerk with a private notepad.
+
+Ben adds two cookies. The clerk writes it down.
+
+Then the program restarts. The notepad is wiped. Ben's basket is empty.
+
+For the Christmas rush, Maya runs two copies of the program. Two clerks. Two notepads.
+
+Ben adds two cookies at window A. His next click lands on window B. Empty. Back to A. Two cookies. His basket flickers.
+
+Nothing is broken. Each copy just has its own private memory.
+
+So throw the notepads away. Put one shared cabinet behind every window, and give Ben a basket number. Seventy-three oh five.
+
+Now every request carries that number. Any clerk pulls the same card, changes it, puts it back, and forgets.
+
+Swap a clerk mid-order. Nothing is lost. Run five copies. Every window gives the same answer.
+
+That is statelessness. The program remembers nothing between requests. The memory lives in one shared place.

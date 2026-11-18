@@ -1,0 +1,440 @@
+// Builds compositions/story.html for lesson 42 (Statelessness). Run: node gen-story.mjs
+import { writeFileSync } from "node:fs";
+
+const W = [0.0, 0.43, 0.929, 1.231, 1.498, 1.927, 2.426, 2.566, 2.786, 3.088, 3.773, 4.005, 4.11, 4.516, 4.667, 4.748, 5.178, 6.316, 6.641, 6.954, 7.21, 8.15, 8.301, 8.615, 8.928, 9.067, 9.764, 10.124, 10.252, 10.774, 11.68, 11.842, 12.33, 12.608, 13.27, 13.618, 14.141, 14.42, 15.557, 15.72, 15.836, 16.312, 16.672, 17.009, 17.346, 17.659, 18.1, 18.205, 18.309, 19.169, 19.447, 20.039, 20.341, 21.351, 21.595, 21.839, 22.071, 22.489, 22.64, 23.093, 23.859, 24.091, 24.381, 24.695, 25.101, 25.368, 25.809, 26.645, 27.284, 27.586, 27.795, 28.526, 28.828, 29.467, 29.757, 30.349, 31.649, 32.032, 32.172, 32.996, 33.286, 33.693, 33.994, 34.203, 34.412, 34.784, 35.364, 36.107, 36.386, 36.676, 36.792, 37.315, 38.011, 38.267, 38.569, 38.905, 39.405, 39.869, 40.252, 40.775, 41.018, 41.262, 41.622, 41.808, 42.319, 43.097, 43.956, 44.211, 45.117, 45.511, 45.871, 46.382, 46.777, 46.998, 47.857, 48.159, 48.518, 48.82, 48.936, 49.203, 49.796, 50.307, 50.655, 50.957, 51.085, 51.421, 51.665, 52.989, 53.349, 53.442, 53.883, 54.788, 55.183, 55.334, 55.903, 56.24, 56.634, 57.772, 58.074, 58.457, 58.736, 58.91, 59.281, 60.21, 60.535, 60.779, 62.126, 62.288, 62.753, 63.322, 63.74, 64.111, 65.26, 65.435, 65.829, 66.212, 66.456, 66.793, 67.257];
+const DUR = 60.55;
+
+const clerk = (hat) => `<svg viewBox="0 0 200 220">
+                <path d="M30 222 C30 150 60 128 100 128 C140 128 170 150 170 222 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+                <path d="M66 222 V168 Q100 154 134 168 V222 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+                <rect x="88" y="104" width="24" height="30" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+                <circle cx="100" cy="72" r="44" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+                <path d="M60 50 Q58 12 100 12 Q142 12 140 50 Z" fill="${hat}" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+                <rect x="52" y="44" width="96" height="18" rx="7" fill="${hat}" stroke="#0e0c1d" stroke-width="6" />
+                <circle cx="84" cy="80" r="5.5" fill="#0e0c1d" /><circle cx="116" cy="80" r="5.5" fill="#0e0c1d" />
+                <path d="M84 96 Q100 110 116 96" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+              </svg>`;
+
+const win = (L, i) => `
+          <div class="s-win${i > 1 ? " s-hide" : ""}" id="s-w${L}" style="left:${i * 440}px">
+            <div class="s-booth s-ol"></div>
+            <div class="s-awn" id="s-awn${L}"><span>copy ${L}</span></div>
+            <div class="s-open">
+              <div class="s-clk" id="s-clk${L}">${clerk("#ffffff")}</div>${L === "A" ? `
+              <div class="s-clk s-hide" id="s-clkN">${clerk("#ffc24b")}</div>
+              <div class="s-rst s-hide" id="s-rst"><span>restarting</span></div>` : ""}
+            </div>
+            <div class="s-ledge"></div>
+            <div class="s-ans s-hide" id="s-ans${L}">2 cookies</div>${i < 2 ? `
+            <div class="s-chk s-hide" id="s-chk${L}"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>` : ""}
+          </div>`;
+
+const pad = (L, x, entry, cls) => `
+        <div class="s-pad s-abs s-ol s-hide" id="s-pad${L}" style="left:${x}px">
+          <div class="s-bind"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="s-ptitle s-mono">baskets = {}</div>
+          <div class="s-pcap s-hide" id="s-pcap${L}">inside the program</div>
+          <div class="s-rule" style="top:226px"></div><div class="s-rule" style="top:292px"></div>
+          <div class="s-pent ${cls}" id="s-pent${L}">${entry}</div>
+          <div class="s-priv s-hide" id="s-priv${L}">private</div>
+        </div>`;
+
+const env = `<svg viewBox="0 0 44 34"><rect x="2" y="2" width="40" height="30" rx="4" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="4" /><path d="M4 5 L22 19 L40 5" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>`;
+const msg = (id, text, tag) => `
+        <div class="s-msg s-ol4" id="${id}" data-layout-allow-overlap data-layout-allow-occlusion>${env}<span>${text}</span>${tag ? `<div class="s-tk s-mono">#7305</div>` : ""}</div>`;
+
+const ring = (id, cx, cy, rx, ry, col) => `<path id="${id}" style="stroke:${col}" d="M${cx - rx + 6} ${cy + 4} C${cx - rx - 4} ${cy - ry - 4} ${cx + rx + 2} ${cy - ry - 8} ${cx + rx} ${cy - 2} C${cx + rx - 2} ${cy + ry + 6} ${cx - rx - 8} ${cy + ry + 8} ${cx - rx + 2} ${cy - 10}" />`;
+
+// five-copies layout: the window row is scaled by S5 from its top-left corner
+const S5 = 1244 / 2160;
+const cx5 = (i) => Math.round(580 + (i * 440 + 200) * S5);
+const rails = [0, 1, 2, 3, 4].map((i) => `<path class="s-rail" d="M${cx5(i)} 364 V470" />`).join("\n          ");
+
+const html = `<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-ol4 { box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-h { font: 700 46px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+
+    /* Ben's phone */
+    #s-phone { left: 96px; top: 96px; width: 424px; height: 544px; background: #fff; border-radius: 28px; }
+    #s-ava { left: 26px; top: 20px; width: 60px; height: 60px; }
+    #s-site { left: 28px; top: 88px; font-size: 28px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    #s-req { left: 24px; top: 132px; width: 376px; height: 84px; border-radius: 16px; background: #ece7df; font-size: 28px; line-height: 84px; text-align: center; color: #3e3b52; white-space: nowrap; }
+    #s-blab { left: 28px; top: 234px; font-size: 32px; line-height: 1.3; white-space: nowrap; }
+    #s-pv { left: 24px; top: 288px; width: 376px; height: 124px; border-radius: 18px; background: #fbf8f4; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-pv > b { position: absolute; left: 0; top: 0; width: 376px; height: 124px; font-size: 54px; line-height: 124px; text-align: center; white-space: nowrap; opacity: 0; }
+    #s-pve { color: #b8235a; }
+    #s-pvn { color: #6a6679; }
+    #s-pok { right: -20px; top: -22px; width: 60px; height: 60px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-pok > svg { position: absolute; left: 2px; top: 2px; width: 56px; height: 56px; }
+    #s-stub { left: 24px; top: 440px; height: 68px; padding: 0 20px; background: #ffc24b; border-radius: 12px; display: flex; align-items: center; gap: 14px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-stub > b { font-size: 36px; }
+
+    /* copies running */
+    #s-count { left: 96px; top: 700px; width: 424px; height: 284px; background: #fbf8f4; border-radius: 24px; }
+    #s-clab { left: 30px; top: 22px; font-size: 36px; line-height: 1.3; white-space: nowrap; }
+    #s-cnum { left: 30px; top: 86px; width: 200px; height: 170px; font: 700 160px/170px "Fraunces", serif; }
+    #s-cnum > b { position: absolute; left: 0; top: 0; opacity: 0; }
+    #s-cnum > #s-n1 { opacity: 1; }
+    #s-cnote { left: 190px; top: 150px; width: 210px; font-size: 30px; line-height: 1.25; color: #3e3b52; }
+
+    /* the windows */
+    #s-wins { left: 580px; top: 96px; width: 2160px; height: 440px; }
+    .s-win { position: absolute; top: 0; width: 400px; height: 440px; }
+    .s-booth { position: absolute; inset: 0; background: #fff; border-radius: 28px; }
+    .s-awn { position: absolute; left: 0; top: 0; width: 400px; height: 84px; background: #3b37e6; border-radius: 28px 28px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; color: #fff; font-size: 52px; line-height: 84px; text-align: center; white-space: nowrap; }
+    .s-awn > span { display: inline-block; }
+    .s-open { position: absolute; left: 30px; top: 112px; width: 340px; height: 218px; background: #ece7df; border-radius: 16px; box-shadow: inset 0 0 0 4px #0e0c1d; overflow: hidden; }
+    .s-clk { position: absolute; left: 70px; top: 8px; width: 200px; height: 220px; }
+    .s-clk > svg { position: absolute; left: 0; top: 0; width: 200px; height: 220px; }
+    .s-rst { position: absolute; inset: 0; background: #15132b; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+    .s-rst > span { color: #eceaff; font-size: 40px; white-space: nowrap; }
+    .s-ledge { position: absolute; left: 0; top: 344px; width: 400px; height: 96px; background: #fbf8f4; border-radius: 0 0 28px 28px; box-shadow: 0 -5px 0 0 #0e0c1d; }
+    .s-ans { position: absolute; left: 40px; top: 356px; width: 320px; height: 72px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 50px; line-height: 72px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-forget { left: 1040px; top: 452px; width: 360px; height: 72px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 32px; line-height: 72px; text-align: center; white-space: nowrap; }
+    .s-chk { position: absolute; right: -22px; top: -26px; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-chk > svg { position: absolute; left: 4px; top: 4px; width: 56px; height: 56px; }
+    #s-new { left: 878px; top: 190px; height: 56px; padding: 0 20px; border-radius: 999px; background: #ffc24b; font-size: 32px; line-height: 56px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* private notepads */
+    .s-pad { top: 580px; width: 400px; height: 404px; background: #fbebd2; border-radius: 20px; }
+    .s-bind { position: absolute; left: 0; top: 0; width: 400px; height: 40px; background: #0e0c1d; border-radius: 20px 20px 0 0; display: flex; align-items: center; justify-content: space-around; padding: 0 30px; }
+    .s-bind > i { width: 18px; height: 18px; border-radius: 50%; background: #fbebd2; }
+    .s-ptitle { position: absolute; left: 28px; top: 58px; font-size: 34px; line-height: 1.3; white-space: nowrap; }
+    .s-pcap { position: absolute; left: 28px; top: 108px; font-size: 28px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    .s-rule { position: absolute; left: 28px; width: 344px; height: 4px; border-radius: 2px; background: #e0c9a0; }
+    .s-pent { position: absolute; left: 28px; top: 166px; width: 344px; height: 58px; font-size: 42px; line-height: 58px; white-space: nowrap; opacity: 0; }
+    .s-pent.no { color: #b8235a; }
+    .s-priv { position: absolute; left: 28px; top: 320px; height: 54px; padding: 0 22px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 30px; line-height: 54px; white-space: nowrap; }
+    #s-wiped { left: 742px; top: 838px; padding: 2px 20px; background: #b8235a; color: #fff; font-size: 36px; line-height: 1.3; letter-spacing: 0.08em; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-neq { left: 950px; top: 820px; width: 100px; height: 100px; border-radius: 50%; background: #fbe0ea; color: #b8235a; font: 700 76px/96px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* Maya and her notices */
+    #s-maya { left: 1452px; top: 110px; width: 340px; height: 442px; }
+    .s-note { position: absolute; left: 1470px; top: 584px; height: 64px; padding: 0 24px; border-radius: 999px; font-size: 34px; line-height: 64px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-nrst { background: #fbe0ea; color: #b8235a; }
+    #s-nrush { background: #e6e3ff; color: #3b37e6; }
+
+    /* the shared store */
+    #s-cab { left: 580px; top: 600px; width: 580px; height: 384px; background: #e6e3ff; border-radius: 24px; }
+    #s-cabtag { right: 30px; top: 22px; height: 50px; padding: 0 18px; border-radius: 10px; background: #15132b; color: #7cf0b5; font-size: 30px; line-height: 50px; }
+    #s-drawer { left: 30px; top: 92px; width: 520px; height: 268px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-drow { position: absolute; left: 20px; width: 480px; height: 62px; border-radius: 10px; background: #f1eee9; display: flex; align-items: center; gap: 18px; padding: 0 16px; font-size: 28px; color: #3e3b52; white-space: nowrap; }
+    #s-slot { left: 20px; top: 86px; width: 480px; height: 96px; border-radius: 12px; box-shadow: inset 0 0 0 4px #c9c6ff; }
+    #s-card { left: 0; top: 0; width: 360px; height: 80px; background: #fff; border-radius: 12px; display: flex; align-items: center; gap: 16px; padding: 0 14px; }
+    #s-card > i { font-style: normal; height: 52px; padding: 0 12px; border-radius: 8px; background: #ffc24b; font-size: 30px; line-height: 52px; box-shadow: 0 0 0 3px #0e0c1d; }
+    #s-cval { position: relative; width: 190px; height: 52px; font-size: 34px; line-height: 52px; }
+    #s-cval > b { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; }
+    #s-cval > #s-cve { opacity: 1; color: #6a6679; }
+    #s-same { left: 1230px; top: 498px; height: 70px; padding: 0 30px; border-radius: 999px; background: #1f7a5c; color: #fff; font-size: 36px; line-height: 70px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* code panel */
+    #s-code { left: 1204px; top: 600px; width: 620px; height: 384px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 620px; height: 56px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 24px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-lines { left: 32px; top: 84px; width: 560px; font: 500 28px/54px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-ln { position: relative; height: 54px; white-space: pre; }
+    .s-ln .cm { color: #a09cd0; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .tk { color: #ffc24b; font-weight: 700; display: inline-block; }
+    #s-hl { left: 16px; top: 142px; width: 588px; height: 50px; border-radius: 8px; box-shadow: inset 0 0 0 4px #ffc24b; }
+
+    /* messages */
+    .s-msg { position: absolute; left: 0; top: 0; height: 76px; padding: 0 20px 0 16px; background: #fff; border-radius: 16px; display: flex; align-items: center; gap: 12px; font-size: 30px; white-space: nowrap; opacity: 0; }
+    .s-msg > svg { width: 44px; height: 34px; flex: none; }
+    .s-tk { height: 46px; margin-left: 4px; padding: 0 14px; background: #ffc24b; border-radius: 8px; font-size: 28px; line-height: 46px; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks .s-conn { stroke: #0e0c1d; }
+    #s-marks .s-rail { stroke: #3b37e6; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="${DUR}" data-track-index="1">
+      <div id="s-wrap">
+        <!-- Maya, who runs the website -->
+        <div id="s-mayawrap" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div class="s-note s-hide" id="s-nrst">restart</div>
+          <div class="s-note s-hide" id="s-nrush">Christmas rush</div>
+        </div>
+
+        <!-- Ben's phone -->
+        <div id="s-phone" class="s-abs s-ol">
+          <svg id="s-ava" class="s-abs" viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#c9e4d8" stroke="#0e0c1d" stroke-width="5" /><circle cx="30" cy="24" r="10" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="4" /><path d="M12 50 Q30 30 48 50" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" /></svg>
+          <div class="s-abs s-h" style="left:100px;top:22px">Ben's phone</div>
+          <div id="s-site" class="s-abs">Maya's Cookies, online</div>
+          <div id="s-req" class="s-abs" data-layout-allow-overlap>Ben's request</div>
+          <div id="s-blab" class="s-abs">Your basket</div>
+          <div id="s-pv" class="s-abs">
+            <b id="s-pv2">2 cookies</b><b id="s-pve">empty</b><b id="s-pvn">empty</b>
+            <div id="s-pok" class="s-abs s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div id="s-stub" class="s-abs s-hide"><span>basket</span><b class="s-mono" id="s-stubn">#7305</b></div>
+        </div>
+
+        <!-- how many copies of the program are running -->
+        <div id="s-count" class="s-abs s-ol">
+          <div id="s-clab" class="s-abs">copies running</div>
+          <div id="s-cnum" class="s-abs"><b id="s-n1">1</b><b id="s-n2">2</b><b id="s-n5">5</b></div>
+          <div id="s-cnote" class="s-abs">of Maya's website program</div>
+        </div>
+
+        <!-- the shared store -->
+        <div id="s-cab" class="s-abs s-ol s-hide">
+          <div class="s-abs s-h" style="left:30px;top:20px">Shared store</div>
+          <div id="s-cabtag" class="s-abs s-mono">store</div>
+          <div id="s-drawer" class="s-abs">
+            <div class="s-drow" style="top:14px"><span class="s-mono">#7304</span><span>1 cake</span></div>
+            <div id="s-slot" class="s-abs"></div>
+            <div class="s-drow" style="top:192px"><span class="s-mono">#7306</span><span>6 cookies</span></div>
+          </div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>website.py</span></div>
+          <div id="s-hl" class="s-abs s-hide"></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><span class="cm"># for every request</span></div>
+            <div class="s-ln dm"><span>basket = store.<span class="fn">load</span>(<span class="tk" id="s-bid">basket_id</span>)</span></div>
+            <div class="s-ln dm"><span>basket.<span class="fn">append</span>(item)</span></div>
+            <div class="s-ln dm"><span>store.<span class="fn">save</span>(<span class="tk">basket_id</span>, basket)</span></div>
+            <div class="s-ln s-hide" id="s-lforget"><span class="cm"># nothing is kept here</span></div>
+          </div>
+        </div>
+
+        <!-- private notepads, one per copy -->${pad("A", 580, "Ben: 2 cookies", "")}${pad("B", 1020, "no Ben here", "no")}
+        <div id="s-wiped" class="s-abs s-hide">WIPED</div>
+
+        <!-- the windows: one per running copy -->
+        <div id="s-wins" class="s-abs" data-layout-allow-overflow>${["A", "B", "C", "D", "E"].map(win).join("")}
+        </div>
+        <div id="s-forget" class="s-abs s-hide">remembers nothing</div>
+        <div id="s-new" class="s-abs s-hide">new clerk</div>
+        <div id="s-neq" class="s-abs s-hide">≠</div>
+        <div id="s-same" class="s-abs s-hide">the same answer</div>
+
+        <!-- Ben's basket card, kept in the store -->
+        <div id="s-card" class="s-abs s-ol4 s-hide"><i class="s-mono">#7305</i><span id="s-cval"><b id="s-cve">empty</b><b id="s-cv2">2 cookies</b></span></div>
+
+        <!-- requests -->${msg("s-m1", "add 2 cookies")}${msg("s-m2", "add 2 cookies")}${msg("s-m3", "show basket")}${msg("s-m4", "show basket")}${msg("s-m5", "add 2 cookies", true)}${msg("s-m6", "show basket", true)}
+
+        <!-- rings, links -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          ${ring("s-rpv", 308, 446, 204, 78, "#b8235a")}
+          ${ring("s-rpa", 780, 775, 196, 46, "#b8235a")}
+          ${ring("s-rpb", 1220, 775, 196, 46, "#b8235a")}
+          ${ring("s-rstub", 262, 570, 158, 48, "#3b37e6")}
+          <path id="s-ca" class="s-conn" d="M780 550 V596" />
+          <path id="s-cb" class="s-conn" d="M1220 550 V574 H1100 V596" />
+          ${rails}
+          <path id="s-bus" class="s-rail" d="M${cx5(0)} 470 H${cx5(4)}" />
+          <path id="s-drop" class="s-rail" d="M870 470 V594" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = ${JSON.stringify(W)};
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: !o.again }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (sel, at, d) => {
+        gsap.utils.toArray(sel).forEach((p) => {
+          const L = p.getTotalLength() + 2;
+          gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+          tl.set(p, { strokeDashoffset: L, opacity: 1 }, at);
+          tl.to(p, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at + 0.01);
+        });
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.12, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const hop = (sel, at) => tl.fromTo(sel, { y: 0 }, { y: -16, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+
+      // what Ben's phone shows
+      const PV = ["#s-pv2", "#s-pve", "#s-pvn"];
+      gsap.set("#s-pvn", { opacity: 1 });
+      const phone = (which, at, quick) => {
+        PV.forEach((s) => tl.set(s, { opacity: s === which ? 1 : 0 }, at));
+        if (!quick) tl.fromTo(which, { scale: 1.35 }, { scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, at);
+      };
+      // a request leaves the phone and is handed in at a window
+      const WX = { A: 640, B: 1080 };
+      const send = (sel, to, at) => {
+        const d = to === "A" ? 0.5 : 0.75;
+        tl.fromTo(sel, { x: 130, y: 232, opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)" }, at - 0.35);
+        tl.to(sel, { x: WX[to], duration: d, ease: "power2.inOut" }, at + 0.15);
+        tl.to(sel, { y: 300, opacity: 0, scale: 0.5, duration: 0.22, ease: "power2.in" }, at + 0.2 + d);
+        return at + 0.3 + d;
+      };
+      // a line is written on a notepad
+      const write = (sel, at) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "steps(10)", immediateRender: false }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+
+      /* ---- 1. The basket lives in the program's own memory ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 3 }, 0.3);
+      bump("#s-awnA > span", t(1), 1.15);
+      hop("#s-clkA", t(1) + 0.1);
+      tl.fromTo("#s-padA", { opacity: 0, y: -70, rotation: -5 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, t(5) - 0.1);
+      tl.fromTo("#s-pcapA", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, t(8));
+      hop("#s-clkA", t(12));
+      pop("#s-privA", t(15), { from: 0.4 });
+
+      /* ---- 2. Ben adds two cookies. The clerk writes it down ---- */
+      send("#s-m1", "A", t(18));
+      hop("#s-clkA", t(22));
+      write("#s-pentA", t(23));
+      phone("#s-pv2", t(25));
+
+      /* ---- 3. The program restarts. The notepad is wiped ---- */
+      pop("#s-nrst", t(28), { from: 0.5 });
+      tl.to("#s-clkA", { y: 240, duration: 0.3, ease: "power2.in" }, t(29));
+      tl.fromTo("#s-rst", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(29) + 0.15);
+      tl.to("#s-rst", { opacity: 0, duration: 0.2 }, t(30) + 0.1);
+      tl.to("#s-clkA", { y: 0, duration: 0.4, ease: "back.out(1.5)" }, t(30) + 0.15);
+      tl.to("#s-pentA", { clipPath: "inset(0% 0% 0% 100%)", duration: 0.45, ease: "power2.inOut" }, t(33) - 0.1);
+      tl.fromTo("#s-wiped", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.28, ease: "power4.in" }, t(33) + 0.2);
+      phone("#s-pve", t(37));
+
+      /* ---- 4. The Christmas rush: two copies, two clerks, two notepads ---- */
+      out(["#s-nrst", "#s-wiped"], t(38) + 0.2, 0.25);
+      pop("#s-nrush", t(40), { from: 0.5 });
+      tl.fromTo("#s-wB", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.4)" }, t(44));
+      swap("#s-n1", "#s-n2", t(44) + 0.1);
+      hop("#s-clkA", t(49));
+      hop("#s-clkB", t(49) + 0.2);
+      bump("#s-padA", t(51), 1.04);
+      tl.fromTo("#s-padB", { opacity: 0, y: -70, rotation: 5 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, t(51) + 0.15);
+      tl.fromTo(["#s-pcapB", "#s-privB"], { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(52) + 0.3);
+
+      /* ---- 5. Window A, window B, back to A: the basket flickers ---- */
+      phone("#s-pvn", t(53) - 0.2, true);
+      send("#s-m2", "A", t(54));
+      write("#s-pentA", t(56) + 0.2);
+      bump("#s-awnA > span", t(58), 1.2);
+      phone("#s-pv2", t(59));
+      send("#s-m3", "B", t(62));
+      bump("#s-awnB > span", t(65), 1.2);
+      write("#s-pentB", t(66) + 0.1);
+      phone("#s-pve", t(67));
+      send("#s-m4", "A", t(68));
+      bump("#s-awnA > span", t(70), 1.2);
+      phone("#s-pv2", t(71));
+      [0, 0.17, 0.34, 0.51, 0.68, 0.85].forEach((d, i) => phone(i % 2 ? "#s-pv2" : "#s-pve", t(75) + d, true));
+      draw("#s-rpv", t(75) + 0.1, 0.5);
+
+      /* ---- 6. Nothing is broken. Each copy has its own private memory ---- */
+      pop("#s-chkA", t(76), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-chkB", t(78), { from: 0.2, ease: "back.out(2.4)" });
+      draw("#s-rpa", t(80), 0.45);
+      draw("#s-rpb", t(83), 0.45);
+      pop("#s-neq", t(85), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 7. Throw the notepads away. One shared cabinet. A basket number ---- */
+      out(["#s-rpv", "#s-rpa", "#s-rpb", "#s-neq", "#s-chkA", "#s-chkB", "#s-nrush"], t(87), 0.25);
+      tl.to("#s-padA", { x: -120, y: 520, rotation: -22, opacity: 0, duration: 0.6, ease: "power2.in" }, t(88) + 0.1);
+      tl.to("#s-padB", { x: 160, y: 520, rotation: 24, opacity: 0, duration: 0.6, ease: "power2.in" }, t(88) + 0.3);
+      phone("#s-pvn", t(91), true);
+      tl.fromTo("#s-cab", { opacity: 0, y: 90 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t(94) - 0.2);
+      draw(["#s-ca", "#s-cb"], t(96), 0.4);
+      tl.fromTo("#s-stub", { opacity: 0, scale: 1.8, rotation: 8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.45, ease: "back.out(1.8)" }, t(103) - 0.05);
+      gsap.set("#s-stubn", { opacity: 0 });
+      pop("#s-stubn", t(105), { from: 1.6, ease: "back.out(2)", again: true });
+      draw("#s-rstub", t(106), 0.5);
+      tl.set("#s-card", { x: 650, y: 786 }, 0);
+      pop("#s-card", t(107), { from: 0.6 });
+
+      /* ---- 8. Every request carries the number: load, change, save, forget ---- */
+      out("#s-rstub", t(108) - 0.1, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, t(108));
+      gsap.set("#s-lines .dm", { opacity: 0.5 });
+      send("#s-m5", "B", t(110));
+      bump("#s-bid", t(112) + 0.1, 1.3);
+      hop("#s-clkB", t(115));
+      tl.to("#s-lines .dm:nth-child(2)", { opacity: 1, duration: 0.2 }, t(116));
+      tl.fromTo("#s-hl", { opacity: 0, y: 0 }, { opacity: 1, y: 0, duration: 0.2 }, t(116));
+      tl.to("#s-card", { x: 1040, y: 448, duration: 0.55, ease: "power3.inOut" }, t(116) + 0.05);
+      tl.to("#s-lines .dm:nth-child(3)", { opacity: 1, duration: 0.2 }, t(120));
+      tl.to("#s-hl", { y: 54, duration: 0.25, ease: "power3.out" }, t(120));
+      swap("#s-cve", "#s-cv2", t(120) + 0.1);
+      tl.to("#s-lines .dm:nth-child(4)", { opacity: 1, duration: 0.2 }, t(122));
+      tl.to("#s-hl", { y: 108, duration: 0.25, ease: "power3.out" }, t(122));
+      tl.to("#s-card", { x: 650, y: 786, duration: 0.5, ease: "power3.inOut" }, t(122) + 0.1);
+      phone("#s-pv2", t(124) + 0.3);
+      tl.to("#s-hl", { opacity: 0, duration: 0.2 }, t(126) - 0.1);
+      tl.fromTo("#s-lforget", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, t(126));
+      pop("#s-forget", t(126) + 0.05, { from: 0.5 });
+
+      /* ---- 9. Swap a clerk. Run five copies. Same answer everywhere ---- */
+      out("#s-forget", t(127) - 0.25, 0.2);
+      tl.to("#s-clkA", { y: 240, duration: 0.3, ease: "power2.in" }, t(127));
+      tl.fromTo("#s-clkN", { opacity: 1, y: 240 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.5)" }, t(128) + 0.2);
+      pop("#s-new", t(129) + 0.1, { from: 0.4 });
+      send("#s-m6", "A", t(130) - 0.1);
+      tl.to("#s-card", { x: 600, y: 448, duration: 0.4, ease: "power3.inOut" }, t(131) - 0.15);
+      tl.to("#s-card", { x: 650, y: 786, duration: 0.4, ease: "power3.inOut" }, t(132) + 0.3);
+      pop("#s-ansA", t(133) + 0.15, { from: 0.5 });
+      pop("#s-pok", t(133) + 0.3, { from: 0.2, ease: "back.out(2.4)" });
+      out(["#s-new", "#s-ca", "#s-cb"], t(134) - 0.3, 0.2);
+      tl.to("#s-mayawrap", { opacity: 0, x: 60, duration: 0.3, ease: "power2.in" }, t(134) - 0.3);
+      tl.to("#s-wins", { scale: ${S5.toFixed(5)}, transformOrigin: "0 0", duration: 0.6, ease: "power3.inOut" }, t(134));
+      ["#s-wC", "#s-wD", "#s-wE"].forEach((w, i) => tl.fromTo(w, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.4)" }, t(135) + 0.1 + i * 0.14));
+      swap("#s-n2", "#s-n5", t(135));
+      draw(".s-rail", t(136) + 0.2, 0.5);
+      ["#s-ansB", "#s-ansC", "#s-ansD", "#s-ansE"].forEach((a, i) => pop(a, t(138) + i * 0.2, { from: 0.4 }));
+      pop("#s-same", t(139) + 0.1, { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, ${(DUR - 0.27).toFixed(2)});
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>
+`;
+writeFileSync(new URL("./compositions/story.html", import.meta.url), html);
+console.log("story.html written", html.length);

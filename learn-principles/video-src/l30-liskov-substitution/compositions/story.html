@@ -1,0 +1,402 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; }
+
+    /* Maya and the checkout */
+    #s-maya { left: 170px; top: 66px; width: 300px; height: 390px; }
+    #s-name { left: 430px; top: 250px; padding: 4px 24px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-till { left: 96px; top: 400px; width: 520px; height: 440px; background: #fff; border-radius: 24px; z-index: 2; }
+    #s-screen { left: 30px; top: 30px; width: 460px; height: 120px; background: #15132b; border-radius: 16px; color: #eceaff; font: 700 34px/120px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-screen b { position: absolute; left: 0; top: 0; width: 460px; text-align: center; opacity: 0; white-space: nowrap; }
+    #s-screen b.s0 { opacity: 1; }
+    #s-screen b.sE { color: #ff6b8b; }
+    #s-screen b.sT { color: #7cf0b5; }
+    #s-tlabel { left: 30px; top: 168px; font: 700 56px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-lamp { left: 420px; top: 176px; width: 64px; height: 64px; border-radius: 50%; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-lamp i { position: absolute; inset: 0; border-radius: 50%; opacity: 0; }
+    #s-lampG { background: #2fbf8a; }
+    #s-lampR { background: #e0356f; }
+    #s-drawer { left: 30px; top: 270px; width: 460px; height: 140px; background: #ece7df; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-drawer i { position: absolute; left: 170px; top: 62px; width: 120px; height: 16px; border-radius: 8px; background: #0e0c1d; }
+    #s-socket { left: 606px; top: 560px; width: 62px; height: 120px; background: #0e0c1d; border-radius: 14px; z-index: 5; }
+    #s-socket i { position: absolute; left: 18px; width: 32px; height: 14px; border-radius: 4px; background: #6f6b80; }
+    #s-socklabel { left: 640px; top: 474px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-ghost { left: 668px; top: 575px; width: 340px; height: 90px; border-radius: 18px; outline: 4px dashed #6f6b80; outline-offset: -2px; background: #fbf8f4; color: #3e3b52; font-size: 30px; line-height: 90px; padding-left: 24px; white-space: nowrap; z-index: 3; }
+    #s-ghost > i { position: absolute; left: -40px; width: 38px; height: 14px; background: #6f6b80; border-radius: 4px 0 0 4px; }
+    #s-ghost > i.a { top: 18px; }
+    #s-ghost > i.b { top: 58px; }
+    #s-crash { left: 176px; top: 690px; padding: 2px 26px; background: #b8235a; color: #fff; font-size: 60px; line-height: 1.3; letter-spacing: 0.08em; border-radius: 12px; box-shadow: 0 0 0 5px #0e0c1d; z-index: 6; }
+    .s-tpill { left: 116px; top: 880px; height: 64px; padding: 0 26px; line-height: 64px; border-radius: 999px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-untouched { background: #ddefe6; color: #1f7a5c; }
+    #s-noask { background: #1f7a5c; color: #fff; }
+    #s-sparks { left: 588px; top: 436px; width: 160px; height: 160px; z-index: 7; }
+
+    /* the promise */
+    #s-card { left: 800px; top: 96px; width: 620px; height: 300px; background: #fbebd2; border-radius: 22px; }
+    #s-chead { left: 34px; top: 20px; font-size: 28px; line-height: 44px; color: #7a4a0c; letter-spacing: 0.04em; white-space: nowrap; }
+    #s-chead span { color: #0e0c1d; letter-spacing: 0; font-size: 30px; font-weight: 700; }
+    .s-pl { position: absolute; left: 34px; height: 52px; display: flex; align-items: center; gap: 18px; font-size: 38px; white-space: nowrap; }
+    .s-num { width: 50px; height: 50px; flex: none; border-radius: 50%; background: #3b37e6; color: #fff; font-size: 30px; line-height: 50px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* plugs */
+    .s-plug { position: absolute; left: 1484px; width: 340px; height: 90px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; z-index: 3; font-size: 30px; line-height: 90px; padding-left: 24px; white-space: nowrap; }
+    .s-plug > i { position: absolute; left: -40px; width: 38px; height: 14px; background: #0e0c1d; border-radius: 4px 0 0 4px; }
+    .s-plug > i.a { top: 18px; }
+    .s-plug > i.b { top: 58px; }
+    #s-p5 { background: #fbebd2; }
+    .s-pk { position: absolute; right: 16px; top: 21px; width: 48px; height: 48px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pk > svg, .s-mk > svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+    #s-new { position: absolute; left: 24px; top: 21px; height: 48px; padding: 0 20px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 28px; line-height: 48px; }
+    #s-chip { position: absolute; right: 14px; top: 19px; width: 84px; height: 52px; border-radius: 10px; background: #15132b; color: #fff; font: 700 28px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-chip b { position: absolute; left: 0; top: 0; width: 84px; text-align: center; opacity: 0; }
+    #s-chip b.c20 { opacity: 1; }
+    #s-chip b.c0 { color: #ff6b8b; }
+    #s-chip b.c14 { color: #7cf0b5; }
+    #s-same { left: 1130px; top: 566px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 4; }
+
+    /* customers */
+    .s-tk { position: absolute; left: 1080px; top: 440px; width: 330px; height: 210px; background: #fff; border-radius: 20px; }
+    .s-tk em { position: absolute; left: 22px; top: 20px; padding: 0 22px; height: 52px; line-height: 52px; border-radius: 999px; background: #3b37e6; color: #fff; font-style: normal; font-size: 34px; }
+    .s-tk span { position: absolute; left: 24px; top: 78px; font-size: 32px; line-height: 1.3; color: #3e3b52; }
+    .s-tk b { position: absolute; right: 24px; top: 128px; font: 700 58px/1.1 "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    #s-no { left: 770px; top: 474px; height: 64px; padding: 0 24px; line-height: 64px; border-radius: 999px; background: #fff; color: #3e3b52; font-size: 32px; white-space: nowrap; outline: 4px dashed #6f6b80; outline-offset: -2px; }
+    #s-took { left: 690px; top: 474px; height: 64px; padding: 0 24px; line-height: 64px; border-radius: 12px; background: #b8235a; color: #fff; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 4; }
+
+    /* code */
+    #s-code { left: 700px; top: 690px; width: 1124px; height: 294px; background: #15132b; border-radius: 22px; color: #fff; z-index: 4; }
+    #s-bar { left: 0; top: 0; width: 1124px; height: 52px; background: #211e40; border-radius: 22px 22px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 24px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; font-variant-ligatures: none; color: #a9a5d6; }
+    #s-lines { left: 36px; top: 62px; width: 1060px; font: 500 28px/44px "JetBrains Mono", monospace; font-variant-ligatures: none; }
+    .s-ln { height: 44px; display: flex; white-space: pre; }
+    .s-ln > i { width: 50px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .st { color: #ffc24b; }
+    .s-tok { position: relative; display: inline-block; height: 44px; vertical-align: top; font-weight: 700; }
+    .s-tok b { position: absolute; left: 0; top: 0; opacity: 0; white-space: pre; }
+    .s-tok b.old { opacity: 1; color: #eceaff; }
+    .s-tok b.new { color: #7cf0b5; }
+
+    /* test bench */
+    #s-bench { left: 700px; top: 96px; width: 1124px; height: 888px; background: #fff; border-radius: 28px; z-index: 1; }
+    #s-btitle { left: 740px; top: 116px; font: 700 60px/1.2 "Fraunces", serif; letter-spacing: -0.02em; z-index: 2; }
+    .s-bpill { left: 742px; top: 200px; height: 56px; padding: 0 22px; line-height: 56px; border-radius: 12px; color: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; z-index: 2; }
+    #s-fails { background: #b8235a; }
+    #s-passes { background: #1f7a5c; }
+    .s-hd { position: absolute; top: 112px; width: 180px; text-align: center; font-size: 28px; line-height: 34px; z-index: 2; }
+    .s-hd .s-num { margin: 0 auto 8px; }
+    .s-row { position: absolute; left: 730px; width: 1064px; height: 120px; border-radius: 16px; background: #f6f1eb; z-index: 2; }
+    #s-row5 i { position: absolute; inset: 0; border-radius: 16px; opacity: 0; }
+    #s-row5bad { background: #fbe0ea; }
+    #s-row5ok { background: #ddefe6; }
+    .s-mk { position: absolute; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; z-index: 4; opacity: 0; }
+    .s-mk.x { background: #b8235a; }
+
+    /* the fix */
+    #s-ftitle { left: 760px; top: 190px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-calc { position: absolute; left: 1180px; height: 64px; padding: 0 20px; border-radius: 12px; background: #ece7df; font: 700 30px/64px "JetBrains Mono", monospace; font-variant-ligatures: none; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-stamp { position: absolute; left: 1400px; height: 64px; padding: 0 22px; border-radius: 12px; background: #1f7a5c; color: #fff; font-size: 32px; line-height: 64px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 8; }
+    #s-marks path { opacity: 0; fill: none; stroke-linecap: round; }
+    .s-ring { stroke: #ff6b8b; stroke-width: 6; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; z-index: 9; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.75" data-track-index="1">
+      <div id="s-wrap">
+        <!-- Maya -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <g id="s-arm">
+            <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+            <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+          </g>
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-name" class="s-abs s-hide">Maya</div>
+
+        <!-- the checkout and its socket -->
+        <div id="s-till" class="s-abs s-ol">
+          <div id="s-screen" class="s-abs">
+            <b class="s0">payment.pay(total)</b><b class="s26">pay(26)</b><b class="sE">ValueError</b><b class="s6">pay(6)</b><b class="sT">True</b>
+          </div>
+          <div id="s-tlabel" class="s-abs">Checkout</div>
+          <div id="s-lamp" class="s-abs"><i id="s-lampG"></i><i id="s-lampR"></i></div>
+          <div id="s-drawer" class="s-abs"><i></i></div>
+        </div>
+        <div id="s-socket" class="s-abs"><i style="top:33px"></i><i style="top:73px"></i></div>
+        <div id="s-socklabel" class="s-abs s-hide">one socket</div>
+        <div id="s-ghost" class="s-abs s-hide"><i class="a"></i><i class="b"></i>any payment</div>
+        <div id="s-crash" class="s-abs s-hide">CRASH</div>
+        <div id="s-untouched" class="s-abs s-tpill s-hide">checkout: not touched</div>
+        <div id="s-noask" class="s-abs s-tpill s-hide">never asks which kind</div>
+        <svg id="s-sparks" class="s-abs s-hide" viewBox="0 0 200 200">
+          <polygon points="100,8 118,66 176,40 142,92 196,112 138,124 160,184 108,146 70,194 72,134 10,140 58,100 16,50 76,70" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <polygon points="100,56 110,86 138,76 122,100 146,112 118,116 126,146 102,128 82,148 84,120 56,120 78,102 62,78 90,88" fill="#fff" />
+        </svg>
+
+        <!-- the promise -->
+        <div id="s-card" class="s-abs s-ol s-hide">
+          <div id="s-chead" class="s-abs">THE PROMISE OF <span class="s-mono">pay(amount)</span></div>
+          <div class="s-pl s-hide" id="s-pl1" style="top:84px"><div class="s-num">1</div>never crashes</div>
+          <div class="s-pl s-hide" id="s-pl2" style="top:152px"><div class="s-num">2</div>answers yes or no</div>
+          <div class="s-pl s-hide" id="s-pl3" style="top:220px"><div class="s-num">3</div>takes the exact amount</div>
+        </div>
+
+        <!-- test bench -->
+        <div id="s-benchwrap" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="s-bench" class="s-abs s-ol"></div>
+          <div id="s-btitle" class="s-abs">Test bench</div>
+          <div id="s-fails" class="s-abs s-bpill s-hide">2 fails</div>
+          <div id="s-passes" class="s-abs s-bpill s-hide">all 5 pass</div>
+          <div class="s-hd s-hide" id="s-h1" style="left:1270px"><div class="s-num">1</div>never<br />crashes</div>
+          <div class="s-hd s-hide" id="s-h2" style="left:1450px"><div class="s-num">2</div>yes<br />or no</div>
+          <div class="s-hd s-hide" id="s-h3" style="left:1630px"><div class="s-num">3</div>exact<br />amount</div>
+          <div class="s-row" style="top:266px"></div>
+          <div class="s-row" style="top:406px"></div>
+          <div class="s-row" style="top:546px"></div>
+          <div class="s-row" style="top:686px"></div>
+          <div class="s-row" id="s-row5" style="top:826px"><i id="s-row5bad"></i><i id="s-row5ok"></i></div>
+        </div>
+        <div id="s-mkwrap" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-mk mA" style="left:1328px;top:294px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1508px;top:294px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1688px;top:294px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1328px;top:434px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1508px;top:434px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1688px;top:434px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1328px;top:574px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1508px;top:574px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1688px;top:574px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1328px;top:714px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1508px;top:714px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk mA" style="left:1688px;top:714px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk x mB" id="s-x1" style="left:1328px;top:854px"><svg viewBox="0 0 64 64"><path d="M21 21 L43 43 M43 21 L21 43" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" /></svg></div>
+          <div class="s-mk mB" id="s-v2" style="left:1508px;top:854px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk x mB" id="s-x3" style="left:1688px;top:854px"><svg viewBox="0 0 64 64"><path d="M21 21 L43 43 M43 21 L21 43" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" /></svg></div>
+          <div class="s-mk" id="s-v1" style="left:1328px;top:854px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-mk" id="s-v3" style="left:1688px;top:854px"><svg viewBox="0 0 64 64"><path d="M19 33 L28 43 L46 23" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+
+        <!-- five plugs -->
+        <div class="s-plug s-hide" id="s-p1" style="top:96px"><i class="a"></i><i class="b"></i>card<div class="s-pk s-hide"><svg viewBox="0 0 48 48"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-plug s-hide" id="s-p2" style="top:206px"><i class="a"></i><i class="b"></i>phone<div class="s-pk s-hide"><svg viewBox="0 0 48 48"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-plug s-hide" id="s-p3" style="top:316px"><i class="a"></i><i class="b"></i>cash<div class="s-pk s-hide"><svg viewBox="0 0 48 48"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-plug s-hide" id="s-p4" style="top:426px"><i class="a"></i><i class="b"></i>voucher<div class="s-pk s-hide"><svg viewBox="0 0 48 48"><path d="M14 25 L21 32 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+        <div class="s-plug s-hide" id="s-p5" style="top:536px"><i class="a"></i><i class="b"></i><span id="s-p5l" class="s-hide">gift voucher</span><div id="s-new">new</div><div id="s-chip" class="s-hide"><b class="c20">$20</b><b class="c0">$0</b><b class="c14">$14</b></div></div>
+        <div id="s-same" class="s-abs s-hide">same shape</div>
+
+        <!-- customers -->
+        <div class="s-tk s-ol s-hide" id="s-tkB"><em>Ben</em><span>birthday cake</span><b class="s-hide">$26</b></div>
+        <div class="s-tk s-ol s-hide" id="s-tkA"><em>Ana</em><span>cookies</span><b class="s-hide">$6</b></div>
+        <div id="s-no" class="s-abs s-hide">answers no</div>
+        <div id="s-took" class="s-abs s-hide">took $20</div>
+
+        <!-- inside the gift voucher -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>gift_voucher.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i>1</i><span><span class="kw">def</span> <span class="fn">pay</span>(self, amount):</span></div>
+            <div class="s-ln"><i>2</i><span>    <span class="kw">if</span> amount &gt; self._left:</span></div>
+            <div class="s-ln"><i>3</i><span>        </span><span class="s-tok" id="s-k3" style="width:29ch"><b class="old">raise ValueError("too small")</b><b class="new">return False</b></span></div>
+            <div class="s-ln"><i>4</i><span>    </span><span class="s-tok" id="s-k4" style="width:32ch"><b class="old">self._left = 0</b><b class="new">self._left = self._left - amount</b></span></div>
+            <div class="s-ln"><i>5</i><span>    <span class="kw">return</span> True</span></div>
+          </div>
+        </div>
+
+        <!-- the fix -->
+        <div id="s-ftitle" class="s-abs s-hide">Fix the plug</div>
+        <div class="s-calc s-hide" id="s-q1" style="top:346px">bill $26</div>
+        <div class="s-stamp s-hide" id="s-a1" style="top:346px">answers no</div>
+        <div class="s-calc s-hide" id="s-q2" style="top:446px">bill $6</div>
+        <div class="s-stamp s-hide" id="s-a2" style="top:446px">takes $6</div>
+
+        <!-- rings, strike, pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rsock" class="s-ring" style="stroke:#3b37e6" d="M590 620 C588 536 684 534 684 618 C684 704 584 706 586 610" />
+          <path id="s-rprong" class="s-ring" style="stroke:#3b37e6" d="M1436 581 C1434 532 1500 530 1500 579 C1500 630 1430 632 1432 573" />
+          <path id="s-strike" style="stroke:#b8235a;stroke-width:9" d="M756 512 Q870 498 1016 504" />
+          <path id="s-r3" class="s-ring" d="M894 862 C890 820 1436 818 1436 860 C1436 904 886 906 890 852" />
+          <path id="s-r4" class="s-ring" d="M830 906 C827 866 1114 864 1114 904 C1114 946 822 948 826 896" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.453, 0.987, 1.3, 1.66, 2.09, 2.241, 3.077, 3.529, 3.866, 4.029, 4.354, 4.725, 5.631, 5.968, 6.711, 7.221, 7.512, 7.674, 8.29, 8.499, 8.766, 9.416, 9.532, 9.927, 10.89, 11.169, 11.656, 12.225, 12.562, 12.806, 13.05, 13.305, 13.526, 13.932, 14.048, 15.07, 15.383, 15.754, 16.126, 16.335, 17.008, 17.229, 17.589, 18.413, 18.785, 19.191, 19.365, 19.493, 19.864, 20.282, 20.944, 21.223, 21.548, 21.71, 21.803, 22.268, 22.569, 22.871, 23.475, 23.672, 23.777, 24.241, 24.624, 24.984, 25.983, 26.157, 26.401, 26.656, 27.074, 27.771, 27.968, 28.398, 28.56, 29.152, 29.35, 29.489, 30.023, 31.265, 31.637, 32.032, 32.426, 32.798, 32.995, 34.075, 34.272, 34.748, 35.515, 35.805, 36.385, 36.757, 36.954, 37.895, 38.115, 38.382, 38.673, 38.789, 38.882, 39.23, 39.845, 40.217, 40.542, 41.308, 41.482, 41.703, 42.109, 42.515, 43.293, 43.572, 43.955, 44.489, 44.628, 45.174, 45.383, 45.499, 46.904, 47.136, 47.775, 48.309, 48.843, 49.83, 50.143, 50.712, 51.165, 51.397, 51.746, 52.686, 53.034, 53.278, 53.603, 54.393, 54.544, 54.997, 55.31, 55.519, 55.682, 55.96, 56.227, 56.378, 56.517, 57.4, 57.737, 58.015, 58.607, 60.082, 60.233, 60.732, 61.011, 61.289, 61.579, 61.997, 62.113, 62.241, 62.531, 62.694];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, at + 0.08);
+      };
+      const draw = (sel, at, d) => {
+        const p = document.querySelector(sel);
+        const L = p.getTotalLength() + 2;
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+        tl.set(p, { strokeDashoffset: L, opacity: 1 }, at);
+        tl.to(p, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at + 0.01);
+      };
+      const P = ["#s-p1", "#s-p2", "#s-p3", "#s-p4", "#s-p5"];
+      const rackY = (i) => 96 + 110 * i;
+      const IN = { x: 668 - 1484 }; // plugged into the socket
+      const inY = (i) => 575 - rackY(i);
+      const benchX = 760 - 1484;
+      const benchY = (i) => 281 + 140 * i - rackY(i);
+
+      /* ---- 1. One socket, three promises ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.3);
+      pop("#s-name", t(0) - 0.05, { from: 0.4 });
+      draw("#s-rsock", t(3), 0.5);
+      pop("#s-socklabel", t(4), { from: 0.4 });
+      tl.fromTo("#s-ghost", { opacity: 0, x: 260 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, t(5) + 0.1);
+      tl.fromTo("#s-card", { opacity: 0, y: -120, rotation: -5 }, { opacity: 1, y: 0, rotation: -1.5, duration: 0.6, ease: "back.out(1.4)" }, t(7));
+      tl.fromTo("#s-pl1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(13) - 0.05);
+      tl.fromTo("#s-pl2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(15) - 0.05);
+      tl.fromTo("#s-pl3", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(20) - 0.05);
+
+      /* ---- 2. Four plugs keep the promise ---- */
+      out(["#s-rsock", "#s-socklabel", "#s-name", "#s-ghost"], t(25) - 0.3, 0.25);
+      tl.fromTo(P.slice(0, 4), { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.4, ease: "back.out(1.4)", stagger: 0.1 }, t(25) - 0.05);
+      P.slice(0, 4).forEach((p, i) => {
+        const go = t(28) - 0.15 + i * 0.5;
+        tl.to(p, { x: IN.x, y: inY(i), duration: 0.24, ease: "power3.in" }, go);
+        tl.to("#s-lampG", { opacity: 1, duration: 0.06 }, go + 0.24);
+        tl.to("#s-lampG", { opacity: 0, duration: 0.14 }, go + 0.4);
+        tl.to(p, { x: 0, y: 0, duration: 0.26, ease: "power3.out" }, go + 0.34);
+        pop(p + " .s-pk", go + 0.5, { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      });
+      tl.to("#s-card .s-num", { scale: 1.25, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.1 }, t(35));
+
+      /* ---- 3. The fifth plug: same shape ---- */
+      tl.fromTo("#s-p5", { opacity: 0, x: 140 }, { opacity: 1, x: 0, duration: 0.45, ease: "back.out(1.5)" }, t(40) - 0.05);
+      out("#s-new", t(42) - 0.1, 0.15);
+      tl.fromTo("#s-p5l", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, t(42));
+      draw("#s-rprong", t(44), 0.45);
+      pop("#s-same", t(45), { from: 0.4 });
+      out(["#s-rprong", "#s-same"], t(48) - 0.25, 0.2);
+      tl.to("#s-p5", { x: IN.x, y: inY(4), duration: 0.7, ease: "power3.inOut" }, t(48));
+
+      /* ---- 4. Ben: it crashes ---- */
+      tl.fromTo("#s-tkB", { opacity: 0, y: 60, rotation: 4 }, { opacity: 1, y: 0, rotation: -2, duration: 0.5, ease: "back.out(1.5)" }, t(51) - 0.05);
+      pop("#s-tkB b", t(55), { from: 1.6, ease: "back.out(2)", d: 0.35 });
+      pop("#s-chip", t(61), { from: 0.3, ease: "back.out(2.2)", d: 0.35 });
+      swap("#s-screen .s0", "#s-screen .s26", t(63));
+      pop("#s-no", t(68) - 0.1, { from: 0.5 });
+      draw("#s-strike", t(69) + 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(70));
+      draw("#s-r3", t(71) + 0.1, 0.5);
+      swap("#s-screen .s26", "#s-screen .sE", t(73));
+      tl.fromTo("#s-sparks", { opacity: 0, scale: 0.2, rotation: -30 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.3, ease: "back.out(2.5)" }, t(73) + 0.1);
+      tl.to("#s-sparks", { scale: 1.15, rotation: 12, duration: 0.18, ease: "power1.inOut", yoyo: true, repeat: 5 }, t(73) + 0.45);
+      tl.to("#s-lampR", { opacity: 1, duration: 0.1 }, t(77) - 0.1);
+      tl.fromTo("#s-crash", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(77) - 0.25);
+      tl.to("#s-till", { x: 9, duration: 0.05, ease: "none", yoyo: true, repeat: 7 }, t(77) + 0.05);
+
+      /* ---- 5. Ana: yes, and all twenty gone ---- */
+      out(["#s-crash", "#s-sparks", "#s-no", "#s-strike", "#s-r3", "#s-tkB", "#s-lampR"], t(78) - 0.45, 0.25);
+      swap("#s-screen .sE", "#s-screen .s0", t(78) - 0.3);
+      tl.fromTo("#s-tkA", { opacity: 0, y: 60, rotation: -4 }, { opacity: 1, y: 0, rotation: 2, duration: 0.5, ease: "back.out(1.5)" }, t(78) - 0.05);
+      pop("#s-tkA b", t(80), { from: 1.6, ease: "back.out(2)", d: 0.35 });
+      swap("#s-screen .s0", "#s-screen .s6", t(81));
+      swap("#s-screen .s6", "#s-screen .sT", t(86) - 0.05);
+      tl.to("#s-lampG", { opacity: 1, duration: 0.15 }, t(86));
+      draw("#s-r4", t(89) - 0.1, 0.45);
+      swap("#s-chip .c20", "#s-chip .c0", t(90));
+      tl.fromTo("#s-took", { opacity: 0, scale: 2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.3, ease: "power4.in" }, t(90) + 0.2);
+
+      /* ---- 6. The test bench ---- */
+      out(["#s-card", "#s-tkA", "#s-code", "#s-r4", "#s-lampG", "#s-chip"], t(92) - 0.15, 0.3);
+      out("#s-took", t(93) + 0.35, 0.25);
+      swap("#s-screen .sT", "#s-screen .s0", t(93));
+      tl.fromTo("#s-benchwrap", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(93) + 0.05);
+      P.forEach((p, i) => tl.to(p, { x: benchX, y: benchY(i), duration: 0.6, ease: "power3.inOut" }, t(93) + 0.1 + i * 0.07));
+      pop("#s-h1", t(100) - 0.05, { from: 0.4, d: 0.35 });
+      pop("#s-h2", t(100) + 0.12, { from: 0.4, d: 0.35 });
+      pop("#s-h3", t(100) + 0.29, { from: 0.4, d: 0.35 });
+      tl.fromTo(".mA", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.4)", stagger: 0.055 }, t(101) + 0.1);
+      tl.to("#s-row5bad", { opacity: 1, duration: 0.3 }, t(103));
+      pop("#s-x1", t(105), { from: 2, ease: "back.out(2)", d: 0.3 });
+      pop("#s-v2", t(105) + 0.14, { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      pop("#s-x3", t(105) + 0.28, { from: 2, ease: "back.out(2)", d: 0.3 });
+      tl.fromTo("#s-fails", { opacity: 0, scale: 2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.3, ease: "power4.in" }, t(105) + 0.3);
+
+      /* ---- 7. Fix the plug, not the checkout ---- */
+      const mk = ".s-mk";
+      out(["#s-benchwrap", mk, "#s-p1", "#s-p2", "#s-p3", "#s-p4"], t(108), 0.3);
+      tl.to("#s-p5", { x: benchX, y: 396 - rackY(4), duration: 0.6, ease: "power3.inOut" }, t(108));
+      tl.set("#s-chip .c0", { opacity: 0 }, t(108));
+      tl.set("#s-chip .c20", { opacity: 1, scale: 1 }, t(108));
+      tl.to("#s-chip", { opacity: 1, duration: 0.3 }, t(108) + 0.3);
+      tl.fromTo("#s-ftitle", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, t(109));
+      tl.fromTo("#s-code", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(110));
+      tl.fromTo("#s-untouched", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, t(113));
+      pop("#s-q1", t(115), { from: 0.5, d: 0.35 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1300, y: 1010 }, { opacity: 1, x: 1010, y: 866, duration: 0.7, ease: "power3.out" }, t(116));
+      swap("#s-k3 .old", "#s-k3 .new", t(117) + 0.1);
+      pop("#s-a1", t(118), { from: 0.4, d: 0.35 });
+      pop("#s-q2", t(119), { from: 0.5, d: 0.35 });
+      tl.to("#s-cursor", { x: 960, y: 910, duration: 0.5, ease: "power2.inOut" }, t(120) - 0.3);
+      swap("#s-k4 .old", "#s-k4 .new", t(121));
+      pop("#s-a2", t(122), { from: 0.4, d: 0.35 });
+      tl.to("#s-cursor", { opacity: 0, x: 1040, y: 1000, duration: 0.5, ease: "power2.in" }, t(123));
+      swap("#s-chip .c20", "#s-chip .c14", t(125));
+
+      /* ---- 8. All five pass ---- */
+      out(["#s-ftitle", "#s-q1", "#s-a1", "#s-q2", "#s-a2", "#s-code", "#s-fails"], t(126) - 0.25, 0.25);
+      tl.to("#s-benchwrap", { opacity: 1, duration: 0.35, ease: "power2.out" }, t(126));
+      tl.to(["#s-p1", "#s-p2", "#s-p3", "#s-p4", ".mA", ".mB"], { opacity: 1, duration: 0.35, ease: "power2.out" }, t(126));
+      tl.to("#s-p5", { x: benchX, y: benchY(4), duration: 0.55, ease: "power3.inOut" }, t(126));
+      swap("#s-x1", "#s-v1", t(129) - 0.1);
+      swap("#s-x3", "#s-v3", t(129) + 0.08);
+      tl.to("#s-row5bad", { opacity: 0, duration: 0.2 }, t(129));
+      tl.to("#s-row5ok", { opacity: 1, duration: 0.3 }, t(129));
+      tl.fromTo("#s-passes", { opacity: 0, scale: 2, rotation: -3 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.3, ease: "power4.in" }, t(129) + 0.1);
+      out("#s-untouched", t(132) - 0.1, 0.2);
+      tl.fromTo("#s-noask", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, t(132) + 0.1);
+      P.forEach((p, i) => tl.to(p, { scale: 1.07, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, t(136) + i * 0.13));
+      tl.to("#s-lampG", { opacity: 1, duration: 0.2 }, t(139));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 57.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

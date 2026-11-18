@@ -1,0 +1,17 @@
+Maya's checkout has one socket for payments. Whatever plugs in makes three promises. Never crash. Answer yes or no. And take exactly the amount asked.
+
+Four payments already plug in, and each one keeps the promises.
+
+Then Maya adds a fifth. The gift voucher. Same shape, so it plugs straight in.
+
+Ben pays for a twenty six dollar cake with a twenty dollar gift voucher. It does not answer no. It raises an error, and the till crashes.
+
+Ana buys six dollars of cookies. It answers yes, and quietly takes all twenty.
+
+Put every plug on a test bench. Same three checks. The gift voucher fails two.
+
+So Maya fixes the plug, not the checkout. Not enough? Answer no. Enough? Take exactly six, and leave fourteen.
+
+Now all five pass. The checkout never has to ask which one it got.
+
+That is Liskov substitution. A stand-in must keep every promise of the thing it replaces.

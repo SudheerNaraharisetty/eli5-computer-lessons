@@ -1,0 +1,15 @@
+Maya has a dream. One day, a second cookie shop, in Paris.
+
+So, just in case, she gets her code ready now. She adds a currency to every job. Then a shop number. Then code that turns dollars into euros.
+
+It feels smart. But each extra is like a suitcase. And every change has to carry all three.
+
+Customers ask for gift wrap. A small change. But now it has to work in euros too, for a shop that does not exist.
+
+Six months pass. No Paris. Then a bug turns up in the euro code. Code that no customer has ever used.
+
+So Maya deletes it. Three suitcases, gone. The next change is quick again.
+
+If Paris ever happens, she will build what that shop really needs. On that day.
+
+That is Yagni. You aren't gonna need it. Do not build it until someone really asks.

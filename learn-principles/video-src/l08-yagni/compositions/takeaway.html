@@ -1,0 +1,78 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-big { left: 104px; top: 70px; font: 700 230px/1.05 "Fraunces", serif; letter-spacing: -0.03em; color: #3b37e6; white-space: nowrap; }
+    #t-big span { display: inline-block; opacity: 0; }
+    #t-head { left: 110px; top: 340px; font: 700 104px/1.15 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head > span { display: inline-block; opacity: 0; }
+    #t-head i { font-style: normal; color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-rule { left: 110px; top: 540px; width: 1250px; height: 130px; background: #fff; border-radius: 26px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-rule b { position: absolute; left: 44px; top: 0; font: 700 56px/130px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-rule b span { display: inline-block; opacity: 0; }
+    #t-ask { left: 110px; top: 724px; padding: 6px 32px; background: #fbebd2; border-radius: 999px; font-size: 40px; line-height: 1.5; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; opacity: 0; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.7" data-track-index="1">
+      <div id="t-big" class="t-abs"><span>Y</span><span>A</span><span>G</span><span>N</span><span>I</span></div>
+      <div id="t-head" class="t-abs">
+        <span><i>Y</i>ou</span> <span><i>a</i>ren't</span> <span><i>g</i>onna</span> <span><i>n</i>eed</span> <span><i>i</i>t.</span>
+      </div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 478 Q620 506 1236 470" /></svg>
+      <div id="t-rule" class="t-abs"><b><span>Do</span> <span>not</span> <span>build</span> <span>it</span> <span>until</span> <span>someone</span> <span>really</span> <span>asks.</span></b></div>
+      <div id="t-ask" class="t-abs">Is someone asking now, or am I guessing?</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 9: Rule of three</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 51.3;
+      const g = { yagni: 51.8, you: [52.531, 52.74, 52.938, 53.17, 53.448], rule: [53.762, 54.041, 54.273, 54.586, 54.749, 55.143, 55.643, 56.13], end: 57.07 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-big span", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)", stagger: 0.07 }, g.yagni - S - 0.05);
+      gsap.utils.toArray("#t-head > span").forEach((w, i) => {
+        tl.fromTo(w, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, g.you[i] - S - 0.05);
+      });
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength ? u.getTotalLength() : 1130;
+      u.style.strokeDasharray = L;
+      u.style.strokeDashoffset = L;
+      tl.to(u, { opacity: 1, duration: 0.01 }, g.you[4] - S + 0.15);
+      tl.fromTo(u, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, g.you[4] - S + 0.15);
+      tl.fromTo("#t-rule", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.rule[0] - S - 0.2);
+      gsap.utils.toArray("#t-rule b span").forEach((w, i) => {
+        tl.fromTo(w, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, g.rule[i] - S - 0.03);
+      });
+      tl.fromTo("#t-ask", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.end - S + 0.05);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.6);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

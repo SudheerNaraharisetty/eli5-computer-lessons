@@ -1,0 +1,393 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-intro, #s-main { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-ol4 { box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .kw { color: #c9c6ff; }
+    .fn { color: #7cf0b5; }
+    .nm { color: #ffc24b; font-weight: 700; }
+    .x { display: inline-block; color: #ffc24b; font-weight: 700; }
+    .s-marks { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .s-marks path { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+
+    /* intro: the dream */
+    #s-maya { left: 110px; top: 470px; width: 470px; height: 611px; }
+    #s-name { left: 500px; top: 640px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; }
+    #s-jic { left: 470px; top: 800px; padding: 8px 30px; background: #fbebd2; border-radius: 999px; font: 700 50px/1.3 "Fraunces", serif; white-space: nowrap; }
+    .s-dot { position: absolute; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-cloud { left: 660px; top: 100px; width: 1150px; height: 610px; background: #fff; border-radius: 90px; }
+    #s-oneday { left: 70px; top: 44px; font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; color: #3b37e6; white-space: nowrap; }
+    #s-shop2 { left: 60px; top: 170px; width: 520px; height: 400px; }
+    #s-tower { left: 730px; top: 70px; width: 300px; height: 460px; }
+    #s-plabel { left: 790px; top: 520px; width: 180px; height: 60px; line-height: 60px; text-align: center; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-bugstrip { left: 14px; top: 620px; width: 1026px; height: 216px; border-radius: 14px; background: #4a1e3a; }
+    #s-lines { left: 36px; top: 104px; width: 1000px; height: 730px; font: 500 28px/52px "JetBrains Mono", monospace; }
+    .s-num { position: absolute; left: 0; width: 60px; height: 52px; color: #8480b8; }
+    .s-row { position: absolute; left: 60px; top: 0; width: 900px; height: 52px; white-space: pre; }
+    .s-row > b { position: absolute; left: 0; top: 0; font-weight: 500; white-space: pre; }
+    .s-strike { position: absolute; top: 24px; height: 5px; border-radius: 3px; background: #ff6b8b; opacity: 0; }
+    #s-bug { left: 716px; top: 636px; width: 180px; height: 72px; line-height: 72px; text-align: center; background: #b8235a; color: #fff; font-size: 44px; letter-spacing: 0.08em; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-zero { left: 640px; top: 744px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; white-space: nowrap; }
+    #s-future { left: 60px; top: 484px; width: 934px; height: 350px; border: 5px dashed #8480b8; border-radius: 24px; }
+    #s-ftower { left: 34px; top: 40px; width: 160px; height: 245px; }
+    #s-ftitle { left: 230px; top: 26px; font: 700 56px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-fsub { left: 230px; top: 104px; font-size: 34px; line-height: 1.3; color: #c9c6ff; white-space: nowrap; }
+    .s-chip { position: absolute; top: 170px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; background: #fff; color: #0e0c1d; font-size: 30px; white-space: nowrap; }
+    #s-fday { left: 230px; top: 254px; padding: 0 26px; height: 60px; line-height: 60px; border-radius: 999px; background: #7cf0b5; color: #0e0c1d; font-size: 34px; white-space: nowrap; }
+
+    /* right panel */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-rtitle { left: 40px; top: 24px; font: 700 54px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-smart { left: 40px; top: 122px; padding: 0 26px; height: 64px; line-height: 64px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 34px; white-space: nowrap; }
+    #s-req { left: 40px; top: 108px; width: 534px; height: 116px; background: #fbebd2; border-radius: 20px; padding: 14px 26px; }
+    #s-req small { display: block; font-size: 28px; letter-spacing: 0.06em; color: #b9741a; line-height: 1.3; }
+    #s-req b { display: block; font: 700 46px/1.2 "Fraunces", serif; white-space: nowrap; }
+    #s-month { left: 40px; top: 254px; width: 214px; height: 60px; background: #fff; border-radius: 999px; font-size: 30px; line-height: 60px; padding-left: 28px; white-space: nowrap; }
+    #s-mn { position: absolute; left: 148px; top: 0; width: 40px; height: 60px; }
+    #s-mn b { position: absolute; left: 0; top: 0; opacity: 0; }
+    #s-paris { left: 278px; top: 254px; width: 296px; height: 60px; }
+    #s-paris > div { position: absolute; left: 0; top: 0; width: 296px; height: 60px; border-radius: 999px; font-size: 30px; line-height: 60px; text-align: center; white-space: nowrap; }
+    #s-pa { background: #fff; border: 4px dashed #0e0c1d; line-height: 52px !important; }
+    #s-pb { background: #b8235a; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-cart { left: 40px; top: 0; width: 290px; height: 792px; }
+    #s-load { left: 0; top: 0; width: 290px; height: 742px; }
+    .s-suit { position: absolute; left: 10px; width: 270px; height: 92px; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d; font-size: 30px; line-height: 92px; text-align: center; white-space: nowrap; }
+    .s-suit > i { position: absolute; top: 0; width: 8px; height: 92px; background: #0e0c1d; }
+    .s-suit > i.l { left: 14px; }
+    .s-suit > i.r { right: 14px; }
+    .s-suit > u { position: absolute; right: -22px; top: 24px; width: 18px; height: 44px; border-radius: 0 14px 14px 0; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-su1 { top: 620px; background: #fbebd2; }
+    #s-su2 { top: 520px; background: #e6e3ff; }
+    #s-su3 { top: 420px; background: #fbe0ea; }
+    #s-parcel { left: 50px; top: 344px; width: 190px; height: 64px; border-radius: 10px; background: #7cf0b5; box-shadow: 0 0 0 4px #0e0c1d; font-size: 30px; line-height: 64px; }
+    #s-parcel b { position: absolute; left: 0; top: 0; width: 190px; text-align: center; white-space: nowrap; }
+    #s-plat { left: 0; top: 720px; width: 290px; height: 18px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-wheel { position: absolute; top: 748px; width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-wheel > i { position: absolute; left: 17px; top: 2px; width: 6px; height: 36px; border-radius: 3px; background: #0e0c1d; }
+    .s-cnt { position: absolute; left: -24px; width: 48px; height: 48px; border-radius: 50%; background: #ff6b8b; color: #0e0c1d; font-size: 30px; line-height: 48px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-bugmini { right: -26px; top: 418px; padding: 0 14px; height: 44px; line-height: 44px; border-radius: 10px; background: #b8235a; color: #fff; font-size: 28px; letter-spacing: 0.06em; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-road { left: 30px; top: 792px; width: 554px; height: 6px; border-radius: 3px; background: #0e0c1d; }
+    #s-asked { left: 40px; top: 812px; font-size: 30px; line-height: 48px; color: #3e3b52; }
+    #s-done { right: 40px; top: 812px; height: 48px; display: flex; align-items: center; gap: 12px; font-size: 30px; line-height: 48px; color: #3e3b52; }
+    #s-donek { width: 48px; height: 48px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-donek > svg { display: block; width: 48px; height: 48px; }
+    #s-quick { left: 40px; top: 452px; padding: 0 26px; height: 60px; line-height: 60px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 30px; white-space: nowrap; }
+    #s-wire { left: 1150px; top: 520px; width: 60px; height: 6px; background: #0e0c1d; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="51.3" data-track-index="1">
+
+      <!-- 0. Maya and the dream -->
+      <div id="s-intro">
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="174" cy="166" r="8" fill="#0e0c1d" />
+          <circle cx="234" cy="166" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-name" class="s-abs s-ol4 s-hide">Maya</div>
+        <div class="s-dot s-hide" id="s-dot1" style="left:500px;top:520px;width:40px;height:40px"></div>
+        <div class="s-dot s-hide" id="s-dot2" style="left:566px;top:440px;width:60px;height:60px"></div>
+        <div id="s-cloud" class="s-abs s-ol s-hide">
+          <div id="s-oneday" class="s-abs s-hide">One day...</div>
+          <svg id="s-shop2" class="s-abs s-hide" viewBox="0 0 520 400">
+            <rect x="40" y="150" width="440" height="236" fill="#fbf8f4" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="84" y="226" width="180" height="104" fill="#15132b" stroke="#0e0c1d" stroke-width="6" />
+            <g stroke="#0e0c1d" stroke-width="5"><circle cx="134" cy="290" r="24" fill="#e2ad6b" /><circle cx="196" cy="296" r="20" fill="#d9a05b" /></g>
+            <rect x="310" y="226" width="120" height="160" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="332" cy="310" r="8" fill="#0e0c1d" />
+            <path d="M16 126 H504 L480 196 H40 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <path d="M92 129 H168 L162 193 H98 Z M244 129 H320 L314 193 H250 Z M396 129 H472 L458 193 H402 Z" fill="#3b37e6" />
+            <rect x="80" y="30" width="360" height="76" rx="16" fill="#0e0c1d" />
+            <rect x="80" y="22" width="360" height="76" rx="16" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <text x="260" y="74" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="40" fill="#0e0c1d">Maya's Cookies</text>
+            <circle cx="446" cy="30" r="30" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" />
+            <text x="446" y="44" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="800" font-size="38" fill="#0e0c1d">2</text>
+          </svg>
+          <svg id="s-tower" class="s-abs s-hide" viewBox="0 0 300 460">
+            <path d="M150 8 V40" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+            <path d="M150 36 C150 210 112 340 36 446 H96 C118 392 134 344 150 344 C166 344 182 392 204 446 H264 C188 340 150 210 150 36 Z" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <rect x="82" y="262" width="136" height="22" rx="4" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="110" y="166" width="80" height="18" rx="4" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          </svg>
+          <div id="s-plabel" class="s-abs s-hide">Paris</div>
+        </div>
+        <div id="s-jic" class="s-abs s-ol4 s-hide">"Just in case..."</div>
+      </div>
+
+      <!-- 1. Code on the left, what every change has to carry on the right -->
+      <div id="s-main" class="s-hide">
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bugstrip" class="s-abs s-hide"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-num" style="top:0">1</div>
+            <div class="s-num" style="top:52px">2</div>
+            <div class="s-num" style="top:104px">3</div>
+            <div class="s-num" style="top:156px">4</div>
+            <div class="s-num" style="top:208px">5</div>
+            <div class="s-num" style="top:260px">6</div>
+            <div class="s-num" style="top:312px">7</div>
+            <div class="s-num s-hide s-nx" style="top:364px">8</div>
+            <div class="s-num s-hide s-nx" style="top:416px">9</div>
+            <div class="s-num s-hide s-nx" style="top:468px">10</div>
+            <div class="s-num s-hide s-nx" style="top:520px">11</div>
+            <div class="s-num s-hide s-nx" style="top:572px">12</div>
+            <div class="s-num s-hide s-nx" style="top:624px">13</div>
+            <div class="s-num s-hide s-nx" style="top:676px">14</div>
+
+            <div class="s-row" id="s-rA"><b class="a"><span class="kw">def</span> <span class="fn">show_price</span>(price):</b><b class="b s-hide"><span class="kw">def</span> <span class="fn">show_price</span>(price<span class="x">, currency="USD"</span>):</b><b class="c s-hide"><span class="kw">def</span> <span class="fn">show_price</span>(price<span class="x">, currency="USD"</span><span class="x x2">, shop_id=1</span>):</b><span class="s-strike" style="left:336px;width:454px"></span></div>
+            <div class="s-row" id="s-rT1">    total = price + price * <span class="nm">TAX_RATE</span></div>
+            <div class="s-row s-hide" id="s-rM1">    <span class="x">total = to_money(total, currency)</span><span class="s-strike" style="left:67px;width:554px"></span></div>
+            <div class="s-row" id="s-rD"><b class="a">    display(total)</b><b class="b s-hide">    display(total<span class="x">, shop_id</span>)</b><span class="s-strike" style="left:286px;width:151px"></span></div>
+            <div class="s-row" id="s-rB"><b class="a"><span class="kw">def</span> <span class="fn">print_receipt</span>(price):</b><b class="b s-hide"><span class="kw">def</span> <span class="fn">print_receipt</span>(price<span class="x">, currency="USD"</span>):</b><b class="c s-hide"><span class="kw">def</span> <span class="fn">print_receipt</span>(price<span class="x">, currency="USD"</span><span class="x x2">, shop_id=1</span>):</b><span class="s-strike" style="left:386px;width:454px"></span></div>
+            <div class="s-row" id="s-rT2">    total = price + price * <span class="nm">TAX_RATE</span></div>
+            <div class="s-row s-hide" id="s-rM2">    <span class="x">total = to_money(total, currency)</span><span class="s-strike" style="left:67px;width:554px"></span></div>
+            <div class="s-row" id="s-rP"><b class="a">    print_paper(total)</b><b class="b s-hide">    print_paper(total<span class="x">, shop_id</span>)</b><span class="s-strike" style="left:353px;width:151px"></span></div>
+            <div class="s-row s-hide s-e" id="s-e0"><span class="x">def to_money(amount, currency):</span><span class="s-strike" style="left:0;width:521px"></span></div>
+            <div class="s-row s-hide s-e" id="s-e1"><span class="x">    if currency == "EUR":</span><span class="s-strike" style="left:67px;width:353px"></span></div>
+            <div class="s-row s-hide s-e" id="s-e2"><span class="x">        return amount * 0.9</span><span class="s-strike" style="left:134px;width:320px"></span></div>
+            <div class="s-row s-hide s-e" id="s-e3"><span class="x">    return amount</span><span class="s-strike" style="left:67px;width:219px"></span></div>
+          </div>
+          <div id="s-bug" class="s-abs s-hide">BUG</div>
+          <div id="s-zero" class="s-abs s-hide">used by 0 customers</div>
+          <div id="s-future" class="s-abs s-hide">
+            <svg id="s-ftower" class="s-abs" viewBox="0 0 300 460">
+              <path d="M150 8 V40" stroke="#c9c6ff" stroke-width="10" stroke-linecap="round" />
+              <path d="M150 36 C150 210 112 340 36 446 H96 C118 392 134 344 150 344 C166 344 182 392 204 446 H264 C188 340 150 210 150 36 Z" fill="none" stroke="#c9c6ff" stroke-width="10" stroke-linejoin="round" />
+              <path d="M88 272 H212 M114 176 H186" stroke="#c9c6ff" stroke-width="10" stroke-linecap="round" />
+            </svg>
+            <div id="s-ftitle" class="s-abs">If Paris happens</div>
+            <div id="s-fsub" class="s-abs s-hide">build what the real shop needs</div>
+            <div class="s-chip s-hide" style="left:230px">its money</div>
+            <div class="s-chip s-hide" style="left:436px">its tax</div>
+            <div class="s-chip s-hide" style="left:598px">its customers</div>
+            <div id="s-fday" class="s-abs s-hide">on that day</div>
+          </div>
+        </div>
+        <div id="s-wire" class="s-abs s-hide"></div>
+
+        <div id="s-right" class="s-abs s-ol s-hide">
+          <div id="s-rtitle" class="s-abs">Packed for Paris</div>
+          <div id="s-smart" class="s-abs s-hide">Ready for Paris!</div>
+          <div id="s-req" class="s-abs s-ol4 s-hide"><small>CUSTOMERS ASK FOR</small><b>Gift wrap, +$2</b></div>
+          <div id="s-month" class="s-abs s-ol4 s-hide">Month<span id="s-mn"><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b></span></div>
+          <div id="s-paris" class="s-abs s-hide"><div id="s-pa">Paris shop: ?</div><div id="s-pb" class="s-hide">No Paris shop</div></div>
+          <div id="s-quick" class="s-abs s-hide">nothing extra to carry</div>
+          <div id="s-road" class="s-abs"></div>
+          <div id="s-asked" class="s-abs">asked</div>
+          <div id="s-done" class="s-abs"><span>done</span><div id="s-donek" class="s-hide"><svg viewBox="0 0 48 48"><path d="M13 25 L21 33 L35 17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+          <div id="s-cart" class="s-abs">
+            <div id="s-load" class="s-abs">
+              <div id="s-parcel" class="s-abs s-hide"><b id="s-pc1">a change</b><b id="s-pc2" class="s-hide">gift wrap</b></div>
+              <div class="s-suit s-hide" id="s-su3">euros<i class="l"></i><i class="r"></i><u></u><div class="s-cnt s-hide" style="top:22px">3</div><div id="s-bugmini" class="s-abs s-hide" style="top:-18px">BUG</div></div>
+              <div class="s-suit s-hide" id="s-su2">shop number<i class="l"></i><i class="r"></i><u></u><div class="s-cnt s-hide" style="top:22px">2</div></div>
+              <div class="s-suit s-hide" id="s-su1">currency<i class="l"></i><i class="r"></i><u></u><div class="s-cnt s-hide" style="top:22px">1</div></div>
+              <div id="s-plat" class="s-abs"></div>
+            </div>
+            <div class="s-wheel" style="left:36px"><i></i></div>
+            <div class="s-wheel" style="left:214px"><i></i></div>
+          </div>
+        </div>
+
+        <svg class="s-marks" viewBox="0 0 1920 1080">
+          <path id="s-rpar" class="s-ring" d="M1290 446 C1284 410 1512 408 1514 482 C1516 548 1278 552 1282 468" />
+          <path id="s-reur" class="s-ring" d="M196 734 C186 690 760 688 762 826 C764 956 174 954 178 826 C180 768 236 716 340 712" />
+        </svg>
+      </div>
+
+      <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.418, 0.627, 0.731, 1.753, 2.032, 2.45, 2.647, 3.111, 3.413, 3.785, 4.029, 5.016, 5.375, 5.631, 5.747, 6.084, 6.235, 6.478, 6.629, 6.92, 7.233, 8.034, 8.22, 8.452, 8.533, 9.079, 9.288, 9.671, 10.344, 10.774, 10.937, 11.238, 12.016, 12.318, 12.62, 12.783, 13.154, 13.618, 13.92, 15.035, 15.244, 15.546, 16.498, 16.753, 17.078, 17.589, 17.729, 17.926, 18.042, 19.11, 19.354, 19.644, 20.039, 20.236, 20.353, 20.701, 20.968, 21.792, 22.373, 22.756, 22.942, 23.278, 23.859, 24.021, 24.358, 25.333, 25.565, 25.925, 26.065, 26.262, 26.366, 26.633, 26.773, 27.307, 27.969, 28.154, 28.259, 28.596, 28.805, 29.106, 29.408, 30.314, 30.674, 31.022, 31.684, 31.986, 33.24, 33.623, 33.797, 34.157, 34.528, 34.737, 34.888, 35.027, 35.41, 36.246, 36.583, 36.803, 37.047, 37.605, 37.837, 38.22, 38.777, 39.009, 39.288, 39.787, 40.333, 40.635, 41.587, 42.585, 42.759, 43.026, 43.398, 43.665, 43.967, 44.791, 45.035, 45.488, 45.79, 46.44, 46.625, 46.834, 47.136, 47.334, 47.589, 48.019, 48.471, 49.702, 49.969, 50.225, 50.747, 51.014, 51.2, 51.931, 52.14, 52.338, 52.57, 52.848, 53.162, 53.441, 53.673, 53.986, 54.149, 54.543, 55.043, 55.53];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const show = (sel, at) => tl.to(sel, { opacity: 1, duration: 0.01 }, at);
+      const hide = (sel, at) => tl.to(sel, { opacity: 0, duration: 0.01 }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.6, ease: "steps(" + n + ")" }, at);
+      // Hand-drawn rings: dash length comes from the real path length.
+      gsap.utils.toArray(".s-ring").forEach((p) => { const L = p.getTotalLength ? p.getTotalLength() : 1200; p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+      const draw = (sel, at, d) => { const L = +document.querySelector(sel).dataset.len; tl.to(sel, { opacity: 1, duration: 0.01 }, at); tl.fromTo(sel, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at); };
+      // A variant of a code line replaces the one before it; the new token pops.
+      const vary = (row, from, to, at, tok) => {
+        hide(row + " ." + from, at);
+        show(row + " ." + to, at);
+        if (tok) tl.fromTo(row + " ." + to + " " + tok, { scale: 1.25, transformOrigin: "0% 50%" }, { scale: 1, duration: 0.4, ease: "back.out(2)" }, at);
+      };
+      const R = (n) => n * 52;
+      const place = (rows, at, d) => Object.keys(rows).forEach((k) => (d ? tl.to(k, { y: R(rows[k]), duration: d, ease: "power3.out" }, at) : tl.set(k, { y: R(rows[k]) }, at)));
+
+      /* ---- 0. Maya has a dream: a second shop, in Paris ---- */
+      pop("#s-name", t(0) - 0.05, { from: 0.4 });
+      pop("#s-dot1", t(3) - 0.15, { from: 0.2, d: 0.3 });
+      pop("#s-dot2", t(3), { from: 0.2, d: 0.3 });
+      tl.fromTo("#s-cloud", { opacity: 0, scale: 0.7, transformOrigin: "0% 100%" }, { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.4)" }, t(3) + 0.12);
+      tl.fromTo("#s-oneday", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(4));
+      tl.fromTo("#s-shop2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, t(7) - 0.05);
+      tl.fromTo("#s-tower", { opacity: 0, scaleY: 0.2, transformOrigin: "50% 100%" }, { opacity: 1, scaleY: 1, duration: 0.6, ease: "back.out(1.6)" }, t(11) - 0.15);
+      pop("#s-plabel", t(11) + 0.2, { from: 0.4 });
+      out("#s-name", t(13) - 0.3);
+      pop("#s-jic", t(13) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      tl.to("#s-intro", { opacity: 0, x: -90, duration: 0.35, ease: "power3.in" }, t(19) - 0.5);
+
+      /* ---- 1. She gets her code ready now ---- */
+      place({ "#s-rA": 0, "#s-rT1": 1, "#s-rM1": 2, "#s-rD": 2, "#s-rB": 4, "#s-rT2": 5, "#s-rM2": 7, "#s-rP": 6, "#s-e0": 10, "#s-e1": 11, "#s-e2": 12, "#s-e3": 13 }, 0);
+      show("#s-main", t(19) - 0.15);
+      tl.fromTo("#s-code", { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, t(19) - 0.15);
+      tl.fromTo("#s-right", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, t(20));
+      tl.fromTo("#s-wire", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(20) + 0.4);
+
+      // a currency on every job
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 1010 }, { opacity: 1, x: 690, y: 242, duration: 0.6, ease: "power3.out" }, t(23) - 0.3);
+      vary("#s-rA", "a", "b", t(25), ".x");
+      vary("#s-rB", "a", "b", t(27), ".x");
+      tl.to("#s-cursor", { x: 740, y: 450, duration: 0.4, ease: "power2.inOut" }, t(27) - 0.45);
+      const drop = (sel, at) => {
+        tl.fromTo(sel, { opacity: 0, y: -420, rotation: -7 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "power2.in" }, at);
+      };
+      drop("#s-su1", t(25) + 0.05);
+      tl.to("#s-load", { y: 3, duration: 0.3, ease: "back.out(4)" }, t(25) + 0.5);
+      // a shop number
+      tl.to("#s-cursor", { x: 930, y: 242, duration: 0.45, ease: "power2.inOut" }, t(31) - 0.55);
+      vary("#s-rA", "b", "c", t(31), ".x2");
+      vary("#s-rB", "b", "c", t(31) + 0.15, ".x2");
+      vary("#s-rD", "a", "b", t(31) + 0.3, ".x");
+      vary("#s-rP", "a", "b", t(31) + 0.45, ".x");
+      drop("#s-su2", t(31) + 0.05);
+      tl.to("#s-load", { y: 6, duration: 0.3, ease: "back.out(4)" }, t(31) + 0.5);
+      // code that turns dollars into euros
+      tl.to("#s-cursor", { x: 520, y: 760, duration: 0.55, ease: "power2.inOut" }, t(34) - 0.5);
+      place({ "#s-rD": 3, "#s-rB": 5, "#s-rT2": 6, "#s-rP": 8 }, t(34) - 0.1, 0.4);
+      show(".s-nx", t(34) + 0.1);
+      type("#s-e0", t(34) + 0.1, 31, 0.6);
+      type("#s-e1", t(36), 25, 0.4);
+      type("#s-e2", t(37) + 0.1, 27, 0.4);
+      type("#s-e3", t(38) + 0.1, 17, 0.3);
+      type("#s-rM1", t(38) + 0.35, 37, 0.35);
+      type("#s-rM2", t(38) + 0.6, 37, 0.35);
+      drop("#s-su3", t(39) - 0.1);
+      tl.to("#s-load", { y: 9, duration: 0.3, ease: "back.out(4)" }, t(39) + 0.35);
+      tl.to("#s-cursor", { opacity: 0, x: 600, y: 860, duration: 0.4, ease: "power2.in" }, t(39) + 0.3);
+
+      /* ---- 2. It feels smart. But each extra is a suitcase ---- */
+      pop("#s-smart", t(42) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      out("#s-smart", t(43) + 0.1, 0.25);
+      tl.set(".s-suit > i, .s-suit > u", { opacity: 0 }, 0);
+      ["#s-su1", "#s-su2", "#s-su3"].forEach((s, i) => {
+        const at = t(48) + i * 0.16;
+        tl.fromTo(s + " > i", { opacity: 1, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: 0.3, ease: "power3.out" }, at);
+        tl.fromTo(s + " > u", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, ease: "back.out(2)" }, at + 0.1);
+      });
+      pop("#s-parcel", t(52) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      pop("#s-su1 .s-cnt", t(55), { from: 0.3, d: 0.35 });
+      pop("#s-su2 .s-cnt", t(56), { from: 0.3, d: 0.35 });
+      pop("#s-su3 .s-cnt", t(57), { from: 0.3, d: 0.35 });
+
+      /* ---- 3. Gift wrap: a small change that has to work in euros ---- */
+      tl.fromTo("#s-req", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(58));
+      hide("#s-pc1", t(61));
+      tl.fromTo("#s-pc2", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(61));
+      draw("#s-rpar", t(64) - 0.05, 0.5);
+      out("#s-rpar", t(66) - 0.2);
+      out(".s-cnt", t(66) - 0.2);
+      // the loaded cart crawls
+      tl.to("#s-cart", { x: 56, duration: t(82) - t(66), ease: "none" }, t(66));
+      tl.to(".s-wheel", { rotation: 160, duration: t(82) - t(66), ease: "none" }, t(66));
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 1010 }, { opacity: 1, x: 640, y: 800, duration: 0.6, ease: "power3.out" }, t(71) - 0.2);
+      draw("#s-reur", t(73) - 0.1, 0.7);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(75));
+      tl.fromTo("#s-paris", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, t(77));
+      out("#s-reur", t(81) + 0.3, 0.3);
+
+      /* ---- 4. Six months, no Paris, and a bug nobody could hit ---- */
+      pop("#s-month", t(82) - 0.1, { from: 0.5 });
+      show("#s-mn b:nth-child(1)", t(82) - 0.1);
+      [2, 3, 4, 5, 6].forEach((n, i) => {
+        const at = t(82) + 0.15 + i * 0.16;
+        hide("#s-mn b:nth-child(" + (n - 1) + ")", at);
+        tl.fromTo("#s-mn b:nth-child(" + n + ")", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, at);
+      });
+      tl.to("#s-cart", { x: 110, duration: t(103) - t(82), ease: "none" }, t(82));
+      tl.to(".s-wheel", { rotation: 310, duration: t(103) - t(82), ease: "none" }, t(82));
+      hide("#s-pa", t(85) + 0.05);
+      tl.fromTo("#s-pb", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power4.in" }, t(85) - 0.2);
+      tl.fromTo("#s-bugstrip", { opacity: 0 }, { opacity: 1, duration: 0.25 }, t(89) - 0.1);
+      tl.fromTo("#s-bug", { opacity: 0, scale: 2.2, rotation: 5 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power4.in" }, t(89) - 0.2);
+      pop("#s-bugmini", t(94), { from: 0.3, ease: "back.out(2.2)" });
+      pop("#s-zero", t(98), { from: 0.4, ease: "back.out(2)" });
+
+      /* ---- 5. So Maya deletes it ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1000, y: 1010 }, { opacity: 1, x: 760, y: 242, duration: 0.5, ease: "power3.out" }, t(103) - 0.1);
+      out(["#s-bug", "#s-zero", "#s-bugstrip", "#s-bugmini"], t(104) + 0.1, 0.25);
+      tl.fromTo(".s-strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power3.out", stagger: 0.03 }, t(105) - 0.1);
+      const del = t(106) - 0.05;
+      out([".s-strike", "#s-rM1", "#s-rM2", ".s-e", ".s-nx"], del, 0.2);
+      vary("#s-rA", "c", "a", del + 0.1);
+      vary("#s-rB", "c", "a", del + 0.1);
+      vary("#s-rD", "b", "a", del + 0.1);
+      vary("#s-rP", "b", "a", del + 0.1);
+      place({ "#s-rD": 2, "#s-rB": 4, "#s-rT2": 5, "#s-rP": 6 }, del + 0.15, 0.45);
+      tl.to("#s-cursor", { opacity: 0, x: 860, y: 160, duration: 0.4, ease: "power2.in" }, del + 0.2);
+      // three suitcases, gone
+      [["#s-su3", t(107) - 0.05], ["#s-su2", t(108) + 0.05], ["#s-su1", t(108) + 0.4]].forEach(([s, at], i) => {
+        tl.to(s, { x: 470, y: -230 - i * 40, rotation: 34, opacity: 0, duration: 0.5, ease: "power2.in" }, at);
+      });
+      tl.to("#s-parcel", { y: 304, duration: 0.4, ease: "bounce.out" }, t(109) - 0.25);
+      tl.to("#s-load", { y: 0, duration: 0.4, ease: "back.out(3)" }, t(109) - 0.1);
+      out(["#s-month", "#s-paris"], t(109), 0.3);
+      // the next change is quick again
+      tl.to("#s-cart", { x: 244, duration: 0.5, ease: "power3.inOut" }, t(114) - 0.35);
+      tl.to(".s-wheel", { rotation: 720, duration: 0.5, ease: "power3.inOut" }, t(114) - 0.35);
+      pop("#s-donek", t(114) + 0.2, { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-quick", t(115) + 0.1, { from: 0.5 });
+
+      /* ---- 6. If Paris ever happens: build it on that day ---- */
+      tl.fromTo("#s-future", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(117) - 0.1);
+      tl.fromTo("#s-fsub", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(122));
+      gsap.utils.toArray(".s-chip").forEach((c, i) => pop(c, t(126) + i * 0.22, { from: 0.4, d: 0.35 }));
+      pop("#s-fday", t(128) - 0.05, { from: 0.4, ease: "back.out(2)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to(["#s-main", "#s-cursor"], { opacity: 0, duration: 0.28, ease: "power2.in" }, 51.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,17 @@
+Maya prints a label for every bag of cookies. One small function does it.
+
+Then she starts selling cakes. The cake label is nearly the same.
+
+Lesson six said, don't repeat yourself. So Maya merges the two into one function, straight away.
+
+Then gift boxes arrive. A box label has no price, and it needs a nut warning. It does not fit.
+
+So Maya patches it. An extra option here. An extra question there. The function swells.
+
+Later, she flips that option to make boxes easier. Now cookie labels print with no price.
+
+Rewind. This time, Maya waits. Three labels, side by side. Now she can see what is truly the same. Only the top.
+
+So she pulls out just that part. Everything else stays separate.
+
+That is the rule of three. The first time, write it. The second time, copy it. The third time, pull out what is truly shared.

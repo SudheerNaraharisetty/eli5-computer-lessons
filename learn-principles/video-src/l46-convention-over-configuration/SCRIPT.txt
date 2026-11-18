@@ -1,0 +1,15 @@
+Maya's shop now sells twelve things. Each one needs a page, a photo, and a label.
+
+So her settings file spells out every one. Twelve products, three settings each. Thirty-six lines.
+
+Look closely. Almost every line just repeats the product's name. Only two are really different.
+
+Then Sam adds ginger snaps. Three more lines. He gets one right, mistypes one, and forgets the third. Now the new page shows a broken picture.
+
+The fix is one house rule, written once. A product's page, photo and label all follow from its name.
+
+Thirty-four lines disappear. The settings file keeps only the two real exceptions, in plain sight.
+
+Now ginger snaps need just a name. The page, the photo and the label fall into place.
+
+Agree on the usual way. Write it down. Spell out only what is different. That is convention over configuration.

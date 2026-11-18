@@ -1,0 +1,378 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* right panel: what the code causes in the shop */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-face { left: 34px; top: 12px; width: 88px; height: 100px; }
+    #s-rtitle { left: 136px; top: 28px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-slot { position: absolute; left: 40px; top: 120px; width: 534px; height: 124px; border-radius: 20px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; padding: 12px 24px 0; }
+    .s-slot small { display: block; font-size: 28px; letter-spacing: 0.03em; line-height: 1.3; }
+    .s-slot b { display: block; font-size: 38px; line-height: 1.35; white-space: nowrap; }
+    .s-slot b span, .s-slot b i { display: inline-block; font-style: normal; }
+    .s-slot b i { color: #3b37e6; }
+    .s-note { background: #fbebd2; }
+    .s-note small { color: #8a5510; }
+    #s-order { background: #fff; }
+    #s-order small { color: #3e3b52; }
+    #s-order b i { font-family: "JetBrains Mono", monospace; font-weight: 700; color: #0e0c1d; }
+    .s-dev { position: absolute; left: 40px; width: 534px; height: 164px; display: flex; align-items: center; gap: 22px; }
+    .s-obj { position: relative; width: 270px; height: 150px; flex: none; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+    .s-lbl { font-size: 34px; line-height: 1.15; }
+    .s-lbl small { display: block; margin-top: 6px; font: 700 28px/1.2 "JetBrains Mono", monospace; color: #3e3b52; letter-spacing: -0.03em; }
+    .s-scr { background: #15132b; color: #eceaff; }
+    .s-rdr { background: #fff; justify-content: flex-start; }
+    .s-mini { margin-left: 16px; width: 178px; height: 94px; border-radius: 12px; background: #15132b; color: #eceaff; display: flex; align-items: center; justify-content: center; }
+    .s-keys { margin-left: 16px; display: grid; grid-template-columns: repeat(3, 10px); gap: 9px; }
+    .s-keys i { width: 10px; height: 10px; border-radius: 50%; background: #3e3b52; }
+    .s-rcp { flex-direction: column; }
+    .s-rcp > svg { position: absolute; left: -5px; top: -5px; width: 280px; height: 172px; }
+    .s-rcp small { position: relative; font-size: 28px; letter-spacing: 0.12em; color: #6f6b80; line-height: 1.2; }
+    .s-amt { position: relative; display: block; width: 6ch; height: 1.2em; line-height: 1.2em; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 50px; }
+    .s-mini .s-amt { font-size: 38px; }
+    .s-rcp .s-amt { font-size: 46px; }
+    .s-amt b { position: absolute; left: 0; top: 0; opacity: 0; }
+    .s-amt b.mp { opacity: 1; }
+    .s-scr .s-amt b.mp, .s-mini .s-amt b.mp { color: #8e8ac0; }
+    .s-rcp .s-amt b.mp { color: #6f6b80; }
+    .s-amt b.mw { color: #ff8fa8; }
+    .s-ok { position: absolute; right: -24px; bottom: -22px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    #s-neq { left: 84px; top: 412px; width: 64px; height: 64px; border-radius: 50%; background: #fbe0ea; box-shadow: 0 0 0 4px #0e0c1d; font: 700 52px/60px "Fraunces", serif; color: #b8235a; text-align: center; }
+    #s-wrong { right: -66px; top: -30px; padding: 4px 18px; background: #b8235a; color: #fff; font-size: 32px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-pill { position: absolute; right: 22px; top: 10px; padding: 0 18px; height: 44px; border-radius: 999px; color: #fff; font-size: 28px; line-height: 44px; white-space: nowrap; }
+    #s-copies { background: #b8235a; }
+    #s-onehome { background: #1f7a5c; }
+    #s-lines { left: 36px; top: 100px; width: 1000px; height: 748px; font: 500 28px/44px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-gut { position: absolute; left: 0; top: 0; width: 56px; color: #8480b8; }
+    #s-gut i { display: block; height: 44px; font-style: normal; }
+    .s-same { position: absolute; left: 48px; width: 640px; height: 44px; border-radius: 10px; background: #2e2a58; opacity: 0; }
+    #s-stN { position: absolute; left: 48px; top: 0; width: 950px; height: 176px; border-radius: 12px; background: #173f36; opacity: 0; }
+    .s-ln { position: absolute; left: 56px; height: 44px; white-space: pre; }
+    .s-blk { position: absolute; left: 48px; width: 950px; height: 132px; }
+    .s-blk > u { position: absolute; left: 0; top: 0; width: 950px; height: 132px; border-radius: 12px; background: #2e2a58; opacity: 0; }
+    .s-blk .s-ln { left: 8px; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .cmp { font-weight: 700; display: inline-block; }
+    .s-tok { position: relative; display: inline-block; width: 4ch; height: 44px; vertical-align: top; font-weight: 700; }
+    .s-tok b { position: absolute; left: 0; top: 0; display: inline-block; color: #ffc24b; }
+    .s-tok b.v15 { opacity: 0; color: #7cf0b5; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path, #s-marks polygon { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+    .s-rail { fill: none; stroke: #c9c6ff; stroke-width: 4; stroke-linecap: round; }
+    .s-badge { position: absolute; left: 1066px; width: 50px; height: 50px; border-radius: 50%; background: #ff6b8b; color: #0e0c1d; font-size: 30px; line-height: 50px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-tip { position: absolute; padding: 0 20px; height: 48px; line-height: 48px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-samepill { left: 866px; top: 414px; background: #e6e3ff; color: #0e0c1d; }
+    #s-notgte { left: 540px; top: 502px; background: #fbe0ea; color: #b8235a; }
+    #s-notgte span { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-oneedit { left: 872px; top: 282px; background: #ddefe6; color: #1f7a5c; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="50.45" data-track-index="1">
+      <div id="s-wrap">
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-copies" class="s-pill s-hide">1 rule, 3 copies</div>
+          <div id="s-onehome" class="s-pill s-hide">1 rule, 1 home</div>
+          <div id="s-lines" class="s-abs">
+            <div id="s-gut"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i><i>11</i><i class="s-hide" id="s-g12">12</i><i class="s-hide" id="s-g13">13</i><i class="s-hide" id="s-g14">14</i><i class="s-hide" id="s-g15">15</i><i class="s-hide" id="s-g16">16</i><i class="s-hide" id="s-g17">17</i></div>
+            <div class="s-same" id="s-l1" style="top:44px"></div>
+            <div class="s-same" id="s-l2" style="top:220px"></div>
+            <div class="s-same" id="s-l3" style="top:396px"></div>
+            <div id="s-stN"></div>
+            <!-- the three jobs: a def line and an action line each -->
+            <div class="s-ln s-job s-def" id="s-dA" style="top:0"><span class="kw">def</span> <span class="fn">show_price</span>(price):</div>
+            <div class="s-ln s-job" id="s-acA" style="top:88px">    display(total)</div>
+            <div class="s-ln s-job s-def" id="s-dB" style="top:176px"><span class="kw">def</span> <span class="fn">take_payment</span>(price):</div>
+            <div class="s-ln s-job" id="s-acB" style="top:264px">    charge_card(total)</div>
+            <div class="s-ln s-job s-def" id="s-dC" style="top:352px"><span class="kw">def</span> <span class="fn">print_receipt</span>(price):</div>
+            <div class="s-ln s-job" id="s-acC" style="top:440px">    print_paper(total)</div>
+            <!-- after the fix -->
+            <div class="s-ln s-hide" id="s-n1" style="top:0"><span class="kw">def</span> <span class="fn">final_total</span>(price):</div>
+            <div class="s-ln s-hide" id="s-c1" style="top:264px">    total = <span class="fn">final_total</span>(price)</div>
+            <div class="s-ln s-hide" id="s-c2" style="top:440px">    total = <span class="fn">final_total</span>(price)</div>
+            <div class="s-ln s-hide" id="s-c3" style="top:616px">    total = <span class="fn">final_total</span>(price)</div>
+            <!-- the rule: three copies, each a card that can move -->
+            <div class="s-blk" data-layout-allow-overflow id="s-kA" style="top:44px">
+              <u></u>
+              <div data-layout-allow-overlap class="s-ln s-hide s-if" style="top:0">    <span class="kw">if</span> price <span class="cmp">&gt;=</span> 20:</div>
+              <div data-layout-allow-overlap class="s-ln s-hide s-pr" style="top:44px">        price = price - price * <span class="s-tok" id="s-k0"><b class="v10">0.10</b><b class="v15">0.15</b></span></div>
+              <div data-layout-allow-overlap class="s-ln s-tt" style="top:88px">    total = price + price * TAX_RATE</div>
+              <div data-layout-allow-overlap class="s-ln s-hide" id="s-ret" style="top:88px">    <span class="kw">return</span> price + price * TAX_RATE</div>
+            </div>
+            <div class="s-blk" data-layout-allow-overflow id="s-kB" style="top:308px">
+              <u></u>
+              <div data-layout-allow-overlap class="s-ln s-hide s-if" style="top:0">    <span class="kw">if</span> price <span class="cmp">&gt;</span> 20:</div>
+              <div data-layout-allow-overlap class="s-ln s-hide s-pr" style="top:44px">        price = price - price * 0.10</div>
+              <div data-layout-allow-overlap class="s-ln s-tt" style="top:88px">    total = price + price * TAX_RATE</div>
+            </div>
+            <div class="s-blk" data-layout-allow-overflow id="s-kC" style="top:572px">
+              <u></u>
+              <div data-layout-allow-overlap class="s-ln s-hide s-if" style="top:0">    <span class="kw">if</span> price <span class="cmp">&gt;=</span> 20:</div>
+              <div data-layout-allow-overlap class="s-ln s-hide s-pr" style="top:44px">        price = price - price * 0.10</div>
+              <div data-layout-allow-overlap class="s-ln s-tt" style="top:88px">    total = price + price * TAX_RATE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- what the shop shows -->
+        <div id="s-right" class="s-abs s-ol">
+          <svg id="s-face" class="s-abs" viewBox="86 0 228 260">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-rtitle" class="s-abs">Maya's shop</div>
+
+          <div id="s-rule" class="s-slot s-note s-hide"><small>NEW RULE</small><b><span id="s-ru1">$20 or more</span> <i id="s-ru2">→ 10% off</i></b></div>
+          <div id="s-order" class="s-slot s-hide"><small>A CUSTOMER ORDERS</small><b><span>exactly</span> <i id="s-or2">$20.00</i></b></div>
+          <div id="s-rule2" class="s-slot s-note s-hide"><small>THE RULE CHANGES</small><b><span>10% off</span> <i id="s-rv2">→ 15% off</i></b></div>
+
+          <div class="s-dev s-hide" id="s-d1" style="top:262px">
+            <div class="s-obj s-scr s-ol">
+              <span class="s-amt" id="s-a1"><b class="mp">$--.--</b><b class="ma">$19.62</b><b class="mb">$18.53</b></span>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <div class="s-lbl">Screen<small>show_price</small></div>
+          </div>
+          <div class="s-dev s-hide" id="s-d2" style="top:462px">
+            <div class="s-obj s-rdr s-ol">
+              <div class="s-mini"><span class="s-amt" id="s-a2"><b class="mp">$--.--</b><b class="mw">$21.80</b><b class="ma">$19.62</b><b class="mb">$18.53</b></span></div>
+              <div class="s-keys"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div id="s-wrong" class="s-abs s-hide">WRONG</div>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <div class="s-lbl">Card reader<small>take_payment</small></div>
+          </div>
+          <div class="s-dev s-hide" id="s-d3" style="top:662px">
+            <div class="s-obj s-rcp">
+              <svg viewBox="0 0 280 172"><path d="M5 15 H275 V150 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#0e0c1d" /><path d="M5 5 H275 V140 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+              <small>TOTAL</small>
+              <span class="s-amt" id="s-a3"><b class="mp">$--.--</b><b class="ma">$19.62</b><b class="mb">$18.53</b></span>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <div class="s-lbl">Receipt<small>print_receipt</small></div>
+          </div>
+          <div id="s-neq" class="s-abs s-hide">≠</div>
+        </div>
+
+        <!-- circles, rail, pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-br" class="s-rail" d="M812 262 H846 V614 H812" />
+          <path id="s-brm" class="s-rail" d="M846 438 H812" />
+          <path id="s-rgt" class="s-ring" d="M390 528 C388 497 442 495 442 526 C442 557 386 559 388 521" />
+          <path id="s-under" class="s-ring" style="stroke:#7cf0b5" d="M255 243 Q350 250 440 241" />
+          <path id="s-rail" class="s-rail" d="M708 834 H834 Q850 834 850 818 V234 Q850 218 834 218 H606" />
+          <path id="s-rb1" class="s-rail" d="M708 482 H850" />
+          <path id="s-rb2" class="s-rail" d="M708 658 H850" />
+          <polygon id="s-ah" points="588,218 608,207 608,229" fill="#c9c6ff" />
+        </svg>
+        <div class="s-badge s-hide" id="s-b1" style="top:281px">1</div>
+        <div class="s-badge s-hide" id="s-b2" style="top:545px">2</div>
+        <div class="s-badge s-hide" id="s-b3" style="top:809px">3</div>
+        <div id="s-samepill" class="s-tip s-hide">same line × 3</div>
+        <div id="s-notgte" class="s-tip s-hide">not <span>&gt;=</span></div>
+        <div id="s-oneedit" class="s-tip s-hide">1 edit</div>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.441, 0.743, 0.987, 1.312, 2.009, 2.264, 2.38, 2.879, 3.216, 3.332, 3.866, 4.156, 4.284, 5.201, 5.526, 5.782, 6.142, 6.316, 6.444, 6.85, 7.012, 7.163, 7.535, 7.895, 8.777, 9.091, 9.532, 9.729, 9.996, 10.867, 11.273, 11.401, 11.784, 12.132, 12.272, 12.527, 12.875, 13.189, 13.63, 14.629, 15.0, 15.337, 15.464, 15.778, 16.022, 16.161, 16.544, 17.113, 17.45, 17.589, 18.251, 18.518, 18.669, 19.632, 19.888, 20.178, 20.538, 20.805, 21.037, 21.537, 22.43, 22.605, 23.104, 23.499, 24.184, 24.671, 25.635, 25.786, 26.122, 26.436, 26.993, 27.481, 28.259, 28.421, 28.688, 28.828, 29.362, 29.942, 30.244, 31.382, 31.672, 32.148, 32.52, 32.822, 33.344, 33.599, 33.913, 34.47, 34.598, 34.818, 34.935, 35.492, 35.712, 36.722, 37.013, 37.129, 37.419, 37.883, 38.209, 38.522, 39.219, 39.706, 40.24, 41.436, 41.761, 42.098, 42.4, 42.864, 42.969, 43.096, 43.247, 44.234, 44.559, 44.826, 44.954, 45.198, 46.057, 46.428, 46.881, 47.055, 47.961, 48.205, 48.425, 48.786, 49.18, 50.132, 50.585, 50.899, 52.002, 52.327, 52.687, 53.441, 53.766, 54.196, 54.579, 54.823];
+      const t = (i) => W[i] + 0.6;
+      const R = 44; // one code row
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const LEN = {};
+      document.querySelectorAll("#s-marks path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 1200;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at);
+      };
+      const type = (sel, at, d, steps) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "steps(" + steps + ")" }, at);
+      const move = (sel, rows, at, d) => tl.to(sel, { y: rows * R, duration: d || 0.4, ease: "power3.inOut" }, at);
+
+      // Before the rule exists, each "total = ..." line sits right under its def line.
+      gsap.set("#s-kA .s-tt", { y: -2 * R });
+      gsap.set("#s-kB .s-tt", { y: -4 * R });
+      gsap.set("#s-kC .s-tt", { y: -6 * R });
+
+      /* ---- 1. Three jobs, the very same line ---- */
+      tl.fromTo("#s-lines .s-job, #s-lines .s-tt", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: 0.05 }, 0.1);
+      [["#s-d1", "#s-dA", 5], ["#s-d2", "#s-dB", 8], ["#s-d3", "#s-dC", 11]].forEach(([d, def, w]) => {
+        pop(d, t(w), { from: 0.75 });
+        tl.to(def, { scale: 1.07, transformOrigin: "0% 50%", duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(w));
+      });
+      tl.to("#s-lines .s-job", { opacity: 0.45, duration: 0.4, ease: "power2.inOut" }, t(14));
+      tl.to(["#s-l1", "#s-l2", "#s-l3"], { opacity: 1, duration: 0.25, stagger: 0.3 }, t(16));
+      draw("#s-br", t(22), 0.5);
+      draw("#s-brm", t(22) + 0.3, 0.2);
+      pop("#s-samepill", t(23), { from: 0.4 });
+
+      /* ---- 2. A new rule, written into each job ---- */
+      out(["#s-br", "#s-brm", "#s-samepill", "#s-l1", "#s-l2", "#s-l3"], t(25) - 0.1, 0.25);
+      tl.to("#s-lines .s-job", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(25));
+      tl.fromTo("#s-rule", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(28) - 0.1);
+      gsap.set(["#s-ru1", "#s-ru2"], { opacity: 0 });
+      pop("#s-ru1", t(32) - 0.05, { from: 0.7, d: 0.35 });
+      pop("#s-ru2", t(37) - 0.05, { from: 1.6, d: 0.35, ease: "back.out(2)" });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 1010 }, { opacity: 1, x: 830, y: 262, duration: 0.7, ease: "power3.out" }, t(40));
+      // first job opens up, the rule is typed in
+      move("#s-kA .s-tt", 0, t(43));
+      move("#s-acA", 2, t(43));
+      move(["#s-dB", "#s-acB", "#s-dC", "#s-acC"], 2, t(43));
+      move("#s-kB .s-tt", -2, t(43));
+      move("#s-kC .s-tt", -4, t(43));
+      tl.to(["#s-g12", "#s-g13"], { opacity: 1, duration: 0.2 }, t(43) + 0.2);
+      type("#s-kA .s-if", t(46) - 0.1, 0.3, 10);
+      type("#s-kA .s-pr", t(46) + 0.2, 0.45, 14);
+      // second job
+      tl.to("#s-cursor", { x: 830, y: 526, duration: 0.45, ease: "power2.inOut" }, t(48) - 0.25);
+      move("#s-kB .s-tt", 0, t(48), 0.35);
+      move("#s-acB", 4, t(48), 0.35);
+      move(["#s-dC", "#s-acC"], 4, t(48), 0.35);
+      move("#s-kC .s-tt", -2, t(48), 0.35);
+      tl.to(["#s-g14", "#s-g15"], { opacity: 1, duration: 0.2 }, t(48) + 0.2);
+      type("#s-kB .s-if", t(50) - 0.1, 0.25, 10);
+      type("#s-kB .s-pr", t(50) + 0.15, 0.4, 14);
+      // third job
+      tl.to("#s-cursor", { x: 830, y: 790, duration: 0.45, ease: "power2.inOut" }, t(51) - 0.15);
+      move("#s-kC .s-tt", 0, t(51) + 0.05, 0.35);
+      move("#s-acC", 6, t(51) + 0.05, 0.35);
+      tl.to(["#s-g16", "#s-g17"], { opacity: 1, duration: 0.2 }, t(51) + 0.25);
+      type("#s-kC .s-if", t(53) - 0.1, 0.25, 10);
+      type("#s-kC .s-pr", t(53) + 0.15, 0.4, 14);
+      tl.to("#s-cursor", { x: 980, y: 900, opacity: 0, duration: 0.5, ease: "power2.in" }, t(54) - 0.2);
+
+      /* ---- 3. One copy is slightly different ---- */
+      tl.to("#s-lines .s-job, #s-lines .s-pr, #s-lines .s-tt", { opacity: 0.45, duration: 0.4, ease: "power2.inOut" }, t(55));
+      tl.to("#s-kA .cmp, #s-kC .cmp", { color: "#7cf0b5", duration: 0.25 }, t(57));
+      draw("#s-rgt", t(59) - 0.05, 0.5);
+      tl.to("#s-kB .cmp", { color: "#ff6b8b", scale: 1.25, duration: 0.25, ease: "back.out(2)" }, t(59) + 0.1);
+      pop("#s-notgte", t(60), { from: 0.4 });
+      tl.to("#s-rule", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, t(61));
+      tl.fromTo("#s-order", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(62));
+      gsap.set("#s-or2", { opacity: 0 });
+      pop("#s-or2", t(65) - 0.05, { from: 1.6, d: 0.35, ease: "back.out(2)" });
+      tl.to("#s-lines .s-job, #s-lines .s-pr, #s-lines .s-tt", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(66) + 0.3);
+      tl.to("#s-d1 .s-obj", { scale: 1.06, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, t(68));
+      swap("#s-a1 .mp", "#s-a1 .ma", t(70));
+      swap("#s-a3 .mp", "#s-a3 .ma", t(72) + 0.2);
+      tl.to("#s-d2 .s-obj", { scale: 1.06, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, t(74));
+      swap("#s-a2 .mp", "#s-a2 .mw", t(77));
+      pop("#s-neq", t(79) + 0.1, { from: 0.2, ease: "back.out(2.4)" });
+      tl.fromTo("#s-wrong", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(79) + 0.4);
+
+      /* ---- 4. One rule, three copies, three chances ---- */
+      tl.to("#s-lines .s-job", { opacity: 0.45, duration: 0.4, ease: "power2.inOut" }, t(80) - 0.1);
+      tl.to(".s-blk > u", { opacity: 1, duration: 0.3, stagger: 0.12 }, t(81) - 0.1);
+      pop("#s-b1", t(83) - 0.05, { from: 0.3, d: 0.3 });
+      pop("#s-b2", t(83) + 0.2, { from: 0.3, d: 0.3 });
+      pop("#s-b3", t(84), { from: 0.3, d: 0.3 });
+      tl.fromTo("#s-copies", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(86));
+      tl.to(".s-badge", { scale: 1.25, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.12 }, t(86) + 0.1);
+      tl.to("#s-kB > u", { backgroundColor: "#4a1e3a", duration: 0.25 }, t(91) - 0.1);
+
+      /* ---- 5. The fix: pull the three copies into one function ---- */
+      out(["#s-rgt", "#s-notgte", "#s-neq", "#s-wrong", "#s-copies"], t(92), 0.3);
+      tl.to("#s-kB > u", { backgroundColor: "#2e2a58", duration: 0.3 }, t(92));
+      tl.to("#s-kB .cmp", { color: "#ffffff", scale: 1, duration: 0.3 }, t(92));
+      // the copies lift, travel up and stack on the first one
+      out(["#s-b2", "#s-b3"], t(94) - 0.15, 0.2);
+      tl.to("#s-kB", { y: -6 * R + 12, x: 14, duration: 0.8, ease: "power3.inOut" }, t(94) - 0.05);
+      tl.to("#s-kC", { y: -12 * R + 24, x: 28, duration: 0.9, ease: "power3.inOut" }, t(94) + 0.15);
+      // the jobs close up underneath
+      move("#s-dA, #s-acA", 5, t(96) + 0.1, 0.6);
+      move("#s-dB, #s-acB", 5, t(96) + 0.15, 0.6);
+      move("#s-dC, #s-acC", 5, t(96) + 0.2, 0.6);
+      out("#s-g17", t(96) + 0.3, 0.2);
+      // "into one"
+      tl.to("#s-kB", { y: -6 * R, x: 0, opacity: 0, duration: 0.3, ease: "power2.in" }, t(99) - 0.1);
+      tl.to("#s-kC", { y: -12 * R, x: 0, opacity: 0, duration: 0.3, ease: "power2.in" }, t(99));
+      out("#s-b1", t(99), 0.2);
+      tl.to("#s-kA", { scale: 1.03, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, t(99) + 0.22);
+      tl.to("#s-stN", { opacity: 1, duration: 0.3 }, t(100));
+      tl.to("#s-kA > u", { opacity: 0, duration: 0.3 }, t(100));
+      tl.to("#s-kA .cmp", { color: "#ffffff", duration: 0.3 }, t(100));
+      // "called final_total"
+      type("#s-n1", t(101), 0.6, 12);
+      draw("#s-under", t(102) + 0.4, 0.4);
+      out("#s-kA .s-tt", t(103) + 0.35, 0.15);
+      tl.fromTo("#s-ret", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, t(103) + 0.45);
+      // "Each job just asks it for the answer"
+      tl.to("#s-lines .s-job", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(104) - 0.1);
+      type("#s-c1", t(104), 0.3, 10);
+      type("#s-c2", t(105), 0.3, 10);
+      type("#s-c3", t(106), 0.3, 10);
+      draw("#s-rail", t(107), 0.7);
+      draw("#s-rb2", t(107) + 0.15, 0.25);
+      draw("#s-rb1", t(107) + 0.3, 0.25);
+      tl.fromTo("#s-ah", { opacity: 0 }, { opacity: 1, duration: 0.15 }, t(107) + 0.6);
+      swap("#s-a2 .mw", "#s-a2 .ma", t(111));
+      tl.fromTo("#s-onehome", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(111) + 0.2);
+
+      /* ---- 6. The rule changes again: one edit ---- */
+      out("#s-under", t(112) - 0.2, 0.25);
+      tl.to("#s-order", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, t(112) - 0.2);
+      tl.fromTo("#s-rule2", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(114) - 0.15);
+      gsap.set("#s-rv2", { opacity: 0 });
+      pop("#s-rv2", t(116), { from: 1.6, d: 0.35, ease: "back.out(2)" });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 1010 }, { opacity: 1, x: 752, y: 314, duration: 0.8, ease: "power3.out", immediateRender: false }, t(117));
+      swap("#s-k0 .v10", "#s-k0 .v15", t(120));
+      pop("#s-oneedit", t(120) + 0.25, { from: 0.4 });
+      tl.to("#s-cursor", { opacity: 0, x: 800, y: 380, duration: 0.4, ease: "power2.in" }, t(121) - 0.3);
+      ["#s-a1", "#s-a2", "#s-a3"].forEach((a, i) => swap(a + " .ma", a + " .mb", t(122) + i * 0.16));
+      ["#s-d1", "#s-d2", "#s-d3"].forEach((d, i) => pop(d + " .s-ok", t(124) + i * 0.12, { from: 0.2, ease: "back.out(2.4)", d: 0.35 }));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 50.15);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

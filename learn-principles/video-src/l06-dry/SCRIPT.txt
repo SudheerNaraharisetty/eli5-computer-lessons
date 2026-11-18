@@ -1,0 +1,13 @@
+Maya's shop has three jobs. Show the price, take the payment, print the receipt. Each one works out the total with the very same line.
+
+Then comes a new rule. Orders of twenty dollars or more get ten percent off. Maya writes the rule into the first job. Then the second. Then the third.
+
+But one copy came out slightly different. A customer orders exactly twenty dollars. The screen says nineteen sixty two. The card is charged twenty one eighty.
+
+One rule, written three times, is three chances to get it wrong.
+
+The fix. Pull the three copies into one function, called final total. Each job just asks it for the answer.
+
+Next time the rule changes, Maya changes it once. And all three jobs agree.
+
+That is dry. Don't repeat yourself. Give every rule one home.

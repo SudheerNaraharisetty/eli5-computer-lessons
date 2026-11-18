@@ -1,0 +1,85 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 70px; font: 700 230px/1.05 "Fraunces", serif; letter-spacing: -0.03em; color: #3b37e6; white-space: nowrap; opacity: 0; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 730px; top: 150px; font: 700 84px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub2 { left: 110px; top: 420px; font: 700 76px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub span, #t-sub2 span { display: inline-block; opacity: 0; }
+    #t-sub2 .ac { color: #1f7a5c; }
+    #t-house { left: 110px; top: 580px; width: 330px; height: 290px; opacity: 0; }
+    .t-card { position: absolute; top: 720px; width: 230px; height: 104px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; font: 700 34px/104px "JetBrains Mono", monospace; text-align: center; opacity: 0; }
+    #t-next { left: 110px; top: 908px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.15" data-track-index="1">
+      <div id="t-head" class="t-abs">DRY.</div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M118 322 Q300 344 520 316" /></svg>
+      <div id="t-sub" class="t-abs"><span>Don't</span> <span>repeat</span><br /><span>yourself.</span></div>
+      <div id="t-sub2" class="t-abs"><span>Give</span> <span>every</span> <span>rule</span> <span class="ac">one</span> <span class="ac">home.</span></div>
+      <svg id="t-house" class="t-abs" viewBox="0 0 330 290">
+        <path d="M22 122 L165 22 L308 122 V280 H22 Z" fill="#0e0c1d" transform="translate(0 10)" />
+        <path d="M22 112 L165 12 L308 112 V270 H22 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+      <div class="t-card" data-layout-allow-overlap id="t-c3" style="left:1040px">the rule</div>
+      <div class="t-card" data-layout-allow-overlap id="t-c2" style="left:770px">the rule</div>
+      <div class="t-card" data-layout-allow-overlap id="t-c1" style="left:500px">the rule</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 7: Single source of truth</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 50.45;
+      const g = { dry: 51.5, dont: 52.6, repeat: 52.93, yourself: 53.29, give: 54.04, every: 54.37, rule: 54.8, one: 55.18, home: 55.42 };
+      const tl = gsap.timeline({ paused: true });
+      const sub = gsap.utils.toArray("#t-sub span");
+      const sub2 = gsap.utils.toArray("#t-sub2 span");
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.fromTo("#t-head", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.dry - S - 0.08);
+      const UL = Math.ceil(document.querySelector("#t-under").getTotalLength()) || 500;
+      document.querySelector("#t-under").style.strokeDasharray = UL + " " + (UL + 40);
+      tl.set("#t-under", { opacity: 1 }, g.dry - S + 0.4);
+      tl.fromTo("#t-under", { strokeDashoffset: UL }, { strokeDashoffset: 0, duration: 0.45, ease: "power2.out" }, g.dry - S + 0.4);
+      // "Don't repeat yourself": three copies of the rule appear, one per word
+      [g.dont, g.repeat, g.yourself].forEach((at, i) => {
+        tl.fromTo(sub[i], { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, at - S - 0.05);
+        tl.fromTo("#t-c" + (i + 1), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, at - S);
+      });
+      // "Give every rule one home": the copies slide into one house
+      [g.give, g.every, g.rule, g.one, g.home].forEach((at, i) => tl.fromTo(sub2[i], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, at - S - 0.05));
+      tl.fromTo("#t-house", { opacity: 0, scale: 0.7, transformOrigin: "50% 100%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.5)" }, g.rule - S);
+      tl.to("#t-c1", { x: -340, duration: 0.5, ease: "power3.inOut" }, g.one - S - 0.1);
+      tl.to("#t-c2", { x: -610, duration: 0.6, ease: "power3.inOut" }, g.one - S + 0.05);
+      tl.to("#t-c3", { x: -880, duration: 0.7, ease: "power3.inOut" }, g.one - S + 0.2);
+      tl.to(["#t-c2", "#t-c3"], { opacity: 0, duration: 0.15 }, g.one - S + 0.85);
+      tl.to("#t-house", { scale: 1.05, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, g.one - S + 0.9);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 56.2 - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

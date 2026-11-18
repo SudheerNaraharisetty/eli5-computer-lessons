@@ -1,0 +1,15 @@
+A road runs across the hills, and a fence stands in the way. A busy man with a clipboard says, I don't see the use of this. Let us clear it away.
+
+The writer G.K. Chesterton gave the answer. If you don't see the use of it, I certainly won't let you clear it away. Go away and think.
+
+Walk past the fence, and the reason appears. The road ends at a cliff.
+
+Code has fences too. Priya is making the checkout quicker. She finds two odd lines. Skip any order that costs zero. And wait four seconds after waking the printer. They look like junk. She deletes both, and every test still passes.
+
+Next morning, the first receipt prints blank. The old printer needed those four seconds to warm up. Then Ben claims his free cookie. The order costs zero. The payment company refuses it, and the till freezes.
+
+So before you remove a fence, find out why it is there. Read the file's history. Ask the person who wrote it. Write a test.
+
+If the reason is gone, remove it. If not, nail up a sign. A comment that says why.
+
+That is Chesterton's fence. Know why it is there before you remove it.

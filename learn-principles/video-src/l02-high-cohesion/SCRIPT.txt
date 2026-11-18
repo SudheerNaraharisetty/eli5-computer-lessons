@@ -1,0 +1,17 @@
+Maya's cookie shop is growing. And so is her code.
+
+Her file now covers three topics. The menu. The receipt. And loyalty points. But look. They are all mixed together.
+
+Then the loyalty card changes. Points will count dollars, not cookies. So a free cookie should need thirty points, not ten.
+
+Maya hunts through the file and fixes how points are earned. But the free cookie rule is hiding far below. She misses it.
+
+Now four cookies win a free one. Nothing crashed. The shop just quietly gives cookies away.
+
+The fix. Move the code so each topic lives together. Menu with menu. Receipt with receipt. Points with points.
+
+Now both points rules sit side by side. Maya spots the old ten at once, and fixes it.
+
+Next time points change, she opens one small file.
+
+That is high cohesion. Things that change together live together.

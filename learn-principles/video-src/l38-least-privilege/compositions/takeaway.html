@@ -1,0 +1,100 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 84px; font: 700 132px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-sub { left: 116px; top: 244px; font: 700 62px/1.2 "Fraunces", serif; letter-spacing: -0.02em; color: #3b37e6; white-space: nowrap; }
+    #t-sub span { display: inline-block; opacity: 0; }
+    #t-table { left: 110px; top: 392px; width: 1440px; height: 426px; background: #fff; border-radius: 26px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    .t-hrow, .t-row { position: absolute; left: 0; width: 1440px; display: flex; align-items: center; }
+    .t-hrow { top: 0; height: 120px; background: #ece7df; border-radius: 26px 26px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    .t-row { height: 100px; opacity: 0; }
+    .t-row + .t-row { box-shadow: 0 -3px 0 0 #ece7df; }
+    .t-who { width: 300px; flex: none; padding-left: 34px; font-size: 38px; white-space: nowrap; }
+    .t-who.code { font: 700 34px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .t-col { width: 190px; flex: none; text-align: center; font-size: 28px; line-height: 1.2; }
+    .t-cell { width: 190px; flex: none; height: 100px; position: relative; }
+    .t-cell i { position: absolute; left: 67px; top: 22px; width: 56px; height: 56px; border-radius: 50%; }
+    .t-cell i.y { background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .t-cell i.y svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    .t-cell i.n { left: 81px; top: 46px; width: 28px; height: 8px; border-radius: 4px; background: #c9c3ba; }
+    #t-marks { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-marks path { fill: none; stroke: #3b37e6; stroke-width: 8; stroke-linecap: round; opacity: 0; }
+    #t-key { left: 1640px; top: 356px; width: 190px; height: 505px; opacity: 0; }
+    #t-next { left: 110px; top: 892px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.55" data-track-index="1">
+      <div id="t-head" class="t-abs"><span>Least</span> <span>privilege.</span></div>
+      <div id="t-sub" class="t-abs"><span>Only</span> <span>the</span> <span>access</span> <span>the</span> <span>job</span> <span>needs.</span></div>
+
+      <div id="t-table" class="t-abs">
+        <div class="t-hrow">
+          <div class="t-who"></div>
+          <div class="t-col">Read<br />menu</div><div class="t-col">Print<br />labels</div><div class="t-col">Change<br />prices</div><div class="t-col">Give<br />refunds</div><div class="t-col">Customer<br />details</div><div class="t-col">Sales<br />records</div>
+        </div>
+        <div class="t-row" id="t-r1" style="top:125px">
+          <div class="t-who">Maya</div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+        </div>
+        <div class="t-row" id="t-r2" style="top:225px">
+          <div class="t-who">Leo</div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div>
+        </div>
+        <div class="t-row" id="t-r3" style="top:325px">
+          <div class="t-who code">labels.py</div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="y"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></i></div>
+          <div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div><div class="t-cell"><i class="n"></i></div>
+        </div>
+      </div>
+
+      <svg id="t-marks" class="t-abs" viewBox="0 0 1920 1080">
+        <path id="t-ring" d="M430 624 C520 596 700 600 786 626 C812 690 810 770 780 810 C690 828 510 826 424 806 C398 760 398 680 440 618" />
+      </svg>
+      <svg id="t-key" class="t-abs" viewBox="0 0 64 170">
+        <path d="M24 58 H40 V152 H24 Z M40 106 H56 V122 H40 Z M40 132 H52 V146 H40 Z" fill="#7cf0b5" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+        <circle cx="32" cy="34" r="26" fill="#7cf0b5" stroke="#0e0c1d" stroke-width="5" />
+        <circle cx="32" cy="34" r="9" fill="#f6f1eb" stroke="#0e0c1d" stroke-width="4" />
+      </svg>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 39: Defensive programming</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 54.75;
+      const g = { that: 54.876, least: 55.341, privilege: 55.677, give: 56.745, person: 57.419, piece: 58.417, code: 58.824, only: 59.567, access: 60.031, needs: 61.006, end: 62.0 };
+      const tl = gsap.timeline({ paused: true });
+      const head = gsap.utils.toArray("#t-head span");
+      const sub = gsap.utils.toArray("#t-sub span");
+      tl.fromTo(head, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: g.privilege - g.least }, g.least - S - 0.05);
+      tl.fromTo("#t-table", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, g.give - S - 0.1);
+      tl.fromTo("#t-r1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, g.person - S - 0.25);
+      tl.fromTo("#t-r2", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, g.person - S + 0.1);
+      tl.fromTo("#t-r3", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, g.code - S - 0.1);
+      tl.fromTo(sub, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: (g.needs - g.only) / 5 }, g.only - S - 0.05);
+      const ring = document.querySelector("#t-ring"), L = ring.getTotalLength();
+      ring.style.strokeDasharray = L; ring.style.strokeDashoffset = L;
+      tl.fromTo("#t-ring", { strokeDashoffset: L, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.7, ease: "power2.out" }, g.access - S);
+      tl.fromTo("#t-key", { opacity: 0, y: 80, rotation: 30 }, { opacity: 1, y: 0, rotation: 12, duration: 0.6, ease: "back.out(1.5)" }, g.needs - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

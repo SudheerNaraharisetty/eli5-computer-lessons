@@ -1,0 +1,11 @@
+Maya hires Leo to print price labels on Saturdays. To save time, she gives him her own login. It opens every room in the shop. The till. The menu. The sales records. The customer details. The safe.
+
+Leo's label program runs with that same key. One Saturday it has a bug. It meant to clear its own list. It empties the menu.
+
+How much worse could it get? As bad as the key allows. Every door it opens is a door the damage can walk through. People call that the blast radius. Here, it is the whole shop.
+
+So Maya gives Leo his own login. One small key. It can read the menu, and print labels. Nothing else.
+
+Same Saturday. Same bug. It tries to empty the menu. Refused. Every other door is shut. The worst a mistake can do now is spoil some labels.
+
+That is least privilege. Give every person, and every piece of code, only the access the job needs.

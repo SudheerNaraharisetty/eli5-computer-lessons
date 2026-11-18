@@ -1,0 +1,13 @@
+Maya's shop takes an order. Cookie, cookie, cake. Twenty six dollars.
+
+That one list is handed to three jobs. The kitchen. The receipt. And Sam's new job, which offers the customer an extra.
+
+Sam wants a copy to play with. So he writes, preview equals order. But that copies nothing. It is a second name for the same list.
+
+He adds a brownie to his preview. The customer says, no thanks. Too late. The brownie is on the real order. The kitchen bakes it. The receipt says twenty eight dollars. Nothing crashed.
+
+So Maya makes the order a tuple. Like a list, but sealed. It can never be changed. Now Sam's line fails at once, with a loud error.
+
+To try a brownie, he builds a new one. Order, plus brownie. A fresh copy for Sam. The original stays untouched.
+
+That is immutability. Data that never changes after it is made. Change things privately. Share things frozen.

@@ -1,0 +1,371 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono, #s-lines, .s-it, .s-tag, .s-cl, #s-amt, #s-price { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-pill { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; font-size: 30px; line-height: 56px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-sw { position: relative; display: inline-block; vertical-align: top; }
+    .s-sw > b { position: absolute; left: 0; top: 0; opacity: 0; white-space: pre; }
+    .s-sw > b.on { opacity: 1; }
+    #s-count, #s-rc, #s-amt, #s-q { position: absolute; }
+
+    /* Maya */
+    #s-maya { left: 150px; top: 80px; width: 300px; height: 390px; }
+    #s-name { left: 410px; top: 250px; padding: 4px 24px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+
+    /* code */
+    #s-code { left: 96px; top: 96px; width: 860px; height: 360px; background: #15132b; border-radius: 22px; color: #fff; z-index: 2; }
+    #s-bar { left: 0; top: 0; width: 860px; height: 56px; background: #211e40; border-radius: 22px 22px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 24px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; font-variant-ligatures: none; color: #a9a5d6; }
+    .s-barpill { position: absolute; right: 18px; top: 7px; height: 42px; padding: 0 18px; border-radius: 999px; color: #fff; font-size: 28px; line-height: 42px; white-space: nowrap; }
+    #s-noerr { background: #1f7a5c; }
+    #s-tuple { background: #3b37e6; }
+    #s-l3bg { left: 12px; top: 196px; width: 836px; height: 58px; border-radius: 10px; background: #5a1f3f; }
+    #s-lines { left: 30px; top: 80px; width: 810px; font-weight: 500; font-size: 32px; line-height: 58px; }
+    .s-ln { height: 58px; display: flex; white-space: pre; }
+    .s-ln > i { width: 50px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .st { color: #ffc24b; }
+    .s-ln .s-sw { height: 58px; font-weight: 700; }
+    .s-ln .s-sw > b.nw { color: #7cf0b5; }
+    #s-l2, #s-l3 { display: inline-block; height: 58px; }
+    #s-err { left: 30px; top: 272px; width: 800px; height: 64px; border-radius: 12px; background: #b8235a; color: #fff; font-size: 28px; line-height: 64px; padding-left: 22px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-err b { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-weight: 700; margin-right: 18px; }
+
+    /* the order clipboard */
+    #s-clip { left: 1010px; top: 110px; width: 380px; height: 500px; background: #fff; border-radius: 22px; z-index: 2; }
+    #s-clamp { left: 130px; top: -28px; width: 120px; height: 54px; background: #6f6b80; border-radius: 12px; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-chead { left: 50px; top: 46px; font-size: 28px; line-height: 40px; letter-spacing: 0.1em; color: #5d596e; }
+    .s-it { position: absolute; left: 50px; font-weight: 700; font-size: 40px; line-height: 72px; white-space: nowrap; }
+    #s-it4 { color: #b8235a; }
+    #s-count { left: 50px; top: 412px; width: 200px; height: 44px; font-size: 32px; line-height: 44px; color: #3e3b52; }
+    #s-count b.c4 { color: #b8235a; }
+    #s-price { left: 1296px; top: 70px; height: 68px; padding: 0 22px; border-radius: 14px; background: #fbebd2; font-weight: 700; font-size: 40px; line-height: 68px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; z-index: 4; }
+
+    /* glass */
+    #s-glass { left: 994px; top: 84px; width: 412px; height: 542px; border-radius: 34px; background: rgba(150, 195, 255, 0.3); box-shadow: 0 0 0 5px #0e0c1d; z-index: 5; overflow: hidden; }
+    #s-glass i { position: absolute; top: -80px; height: 760px; background: rgba(255, 255, 255, 0.3); transform: rotate(24deg); }
+    #s-lock { left: 1364px; top: 54px; width: 76px; height: 76px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; z-index: 6; }
+    #s-lock > svg { position: absolute; left: 0; top: 0; width: 76px; height: 76px; }
+    #s-sealed { left: 1126px; top: 590px; background: #1f7a5c; color: #fff; z-index: 6; }
+    #s-cant { left: 1066px; top: 438px; background: #b8235a; color: #fff; border-radius: 12px; z-index: 6; }
+    #s-untouched { left: 1076px; top: 432px; background: #1f7a5c; color: #fff; border-radius: 12px; font-size: 34px; z-index: 6; }
+    #s-skid { left: 1196px; top: 410px; width: 130px; height: 130px; z-index: 6; }
+
+    /* name tags */
+    .s-tag { position: absolute; left: 1580px; height: 64px; padding: 0 28px; border-radius: 999px; font-weight: 700; font-size: 32px; line-height: 64px; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; z-index: 8; }
+    #s-tagO { top: 120px; background: #e6e3ff; color: #3b37e6; }
+    #s-tagP { top: 300px; background: #fbebd2; color: #7a4a0c; }
+    #s-same { left: 1412px; top: 212px; background: #0e0c1d; color: #fff; z-index: 6; }
+    #s-ghost { left: 1500px; top: 400px; width: 320px; height: 290px; border-radius: 20px; outline: 4px dashed #6f6b80; outline-offset: -2px; background: #fbf8f4; color: #3e3b52; font: 700 44px/290px "Fraunces", serif; text-align: center; z-index: 2; }
+    #s-copy { left: 1500px; top: 400px; width: 320px; height: 290px; background: #fff; border-radius: 20px; z-index: 7; }
+    .s-cl { position: absolute; left: 36px; font-weight: 700; font-size: 32px; line-height: 50px; white-space: nowrap; }
+    #s-cl4 { color: #3b37e6; }
+
+    /* stations */
+    .s-st { position: absolute; top: 730px; width: 500px; height: 250px; border-radius: 24px; z-index: 2; }
+    .s-stt { position: absolute; left: 28px; top: 16px; font: 700 44px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-kit { left: 96px; background: #fbebd2; }
+    #s-kit > svg { position: absolute; left: 28px; top: 96px; width: 444px; height: 130px; }
+    #s-notord { right: 20px; top: 20px; height: 50px; line-height: 50px; padding: 0 20px; font-size: 28px; background: #b8235a; color: #fff; }
+    #s-rec { left: 710px; background: #fff; }
+    #s-amt { left: 28px; top: 100px; width: 170px; height: 100px; font-weight: 700; font-size: 84px; line-height: 100px; }
+    #s-amt b.a28 { color: #b8235a; }
+    #s-rc { right: 24px; top: 22px; width: 130px; height: 44px; font-size: 32px; line-height: 44px; color: #3e3b52; }
+    #s-rc b { left: auto; right: 0; }
+    #s-rc b.c4 { color: #b8235a; }
+    #s-should { left: 222px; top: 124px; padding: 0 20px; font-size: 28px; background: #fbe0ea; color: #b8235a; }
+    #s-off { left: 1324px; background: #15132b; color: #eceaff; }
+    #s-q { left: 28px; top: 86px; width: 440px; height: 54px; font-size: 38px; line-height: 54px; color: #fff; }
+    .s-btn { position: absolute; top: 164px; height: 60px; border-radius: 999px; font-size: 30px; line-height: 60px; text-align: center; box-shadow: 0 0 0 4px #eceaff; }
+    #s-yes { left: 32px; width: 120px; }
+    #s-no { left: 184px; width: 210px; }
+    #s-nop { position: absolute; inset: 0; border-radius: 999px; background: #eceaff; color: #0e0c1d; }
+    .s-ok { position: absolute; right: -22px; bottom: -20px; width: 60px; height: 60px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 60px; height: 60px; }
+
+    /* strings, marks, pointers */
+    #s-strings { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 1; }
+    #s-strings path { fill: none; stroke: #0e0c1d; stroke-width: 5; stroke-linecap: round; opacity: 0; }
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 8; }
+    #s-marks path { opacity: 0; fill: none; stroke-linecap: round; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; z-index: 9; }
+    #s-pen { left: 0; top: 0; width: 84px; height: 84px; z-index: 9; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="54" data-track-index="1">
+      <div id="s-wrap">
+        <!-- Maya -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <g id="s-arm">
+            <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+            <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+          </g>
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-name" class="s-abs s-hide">Maya</div>
+
+        <!-- strings: who holds the order -->
+        <svg id="s-strings" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-sK" d="M1110 615 Q700 640 346 727" />
+          <path id="s-sR" d="M1200 615 Q1090 660 960 727" />
+          <path id="s-sO" d="M1290 615 Q1400 650 1470 727" />
+          <path id="s-sA" style="stroke:#3b37e6" d="M1580 152 Q1480 150 1392 182" />
+          <path id="s-sB" style="stroke:#b9741a" d="M1580 332 Q1490 340 1392 300" />
+        </svg>
+
+        <!-- code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-l3bg" class="s-abs s-hide"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-noerr" class="s-barpill s-hide">runs with no errors</div>
+          <div id="s-tuple" class="s-barpill s-hide">a tuple</div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i>1</i><span>order = </span><span class="s-sw" id="s-k1" style="width:1ch"><b class="on">[</b><b class="nw">(</b></span><span><span class="st">"cookie"</span>, <span class="st">"cookie"</span>, <span class="st">"cake"</span></span><span class="s-sw" id="s-k2" style="width:1ch"><b class="on">]</b><b class="nw">)</b></span></div>
+            <div class="s-ln"><i>2</i><span id="s-l2" class="s-hide"><span class="s-sw" id="s-k3" style="width:30ch"><b class="on">preview = order</b><b class="nw">preview = order + ("brownie",)</b></span></span></div>
+            <div class="s-ln"><i>3</i><span id="s-l3" class="s-hide">preview.append(<span class="st">"brownie"</span>)</span></div>
+          </div>
+          <div id="s-err" class="s-abs s-hide"><b>AttributeError</b>a tuple has no append</div>
+        </div>
+
+        <!-- the order -->
+        <div id="s-clip" class="s-abs s-ol s-hide">
+          <div id="s-clamp" class="s-abs"></div>
+          <div id="s-chead" class="s-abs">THE ORDER</div>
+          <div class="s-it s-hide" id="s-it1" style="top:100px">cookie</div>
+          <div class="s-it s-hide" id="s-it2" style="top:172px">cookie</div>
+          <div class="s-it s-hide" id="s-it3" style="top:244px">cake</div>
+          <div class="s-it s-hide" id="s-it4" style="top:316px">brownie</div>
+          <div id="s-count" class="s-abs s-sw s-hide"><b class="c3 on">3 items</b><b class="c4">4 items</b></div>
+        </div>
+        <div id="s-price" class="s-abs s-hide">$26</div>
+        <div id="s-glass" class="s-abs s-hide" data-layout-allow-overflow><i style="left:60px;width:46px"></i><i style="left:130px;width:16px"></i></div>
+        <div id="s-lock" class="s-abs s-hide"><svg viewBox="0 0 76 76"><path d="M27 35 V28 a11 11 0 0 1 22 0 V35" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" /><rect x="21" y="35" width="34" height="24" rx="6" fill="#fff" /></svg></div>
+        <div id="s-sealed" class="s-pill s-hide">sealed</div>
+        <div id="s-cant" class="s-pill s-hide">cannot change</div>
+        <div id="s-untouched" class="s-pill s-hide">untouched</div>
+        <svg id="s-skid" class="s-abs s-hide" viewBox="0 0 130 130"><path d="M60 18 L84 4 M72 62 L112 60 M62 104 L88 124 M40 40 L16 22" fill="none" stroke="#b8235a" stroke-width="9" stroke-linecap="round" /></svg>
+
+        <!-- two names -->
+        <div id="s-tagO" class="s-tag s-hide">order</div>
+        <div id="s-tagP" class="s-tag s-hide">preview</div>
+        <div id="s-same" class="s-pill s-hide">same list</div>
+        <div id="s-ghost" class="s-abs s-hide">a copy?</div>
+        <div id="s-copy" class="s-abs s-ol s-hide" data-layout-allow-overlap>
+          <div class="s-cl" style="top:66px">cookie</div>
+          <div class="s-cl" style="top:116px">cookie</div>
+          <div class="s-cl" style="top:166px">cake</div>
+          <div class="s-cl s-hide" id="s-cl4" style="top:216px">brownie</div>
+        </div>
+
+        <!-- three jobs -->
+        <div id="s-kit" class="s-st s-ol s-hide">
+          <div class="s-stt">Kitchen</div>
+          <svg viewBox="0 0 444 130">
+            <g stroke="#0e0c1d" stroke-width="5">
+              <circle cx="56" cy="70" r="46" fill="#d9a05b" /><circle cx="160" cy="70" r="46" fill="#e2ad6b" />
+              <path d="M226 118 V62 Q226 50 238 50 H322 Q334 50 334 62 V118 Z" fill="#fff" stroke-linejoin="round" />
+              <path d="M226 78 Q244 96 262 78 Q280 96 298 78 Q316 96 334 78 V62 Q334 50 322 50 H238 Q226 50 226 62 Z" fill="#f5a8a0" stroke-linejoin="round" />
+              <path d="M280 50 V26" stroke-linecap="round" />
+            </g>
+            <circle cx="280" cy="18" r="8" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" />
+            <g fill="#5a3418"><circle cx="40" cy="56" r="6" /><circle cx="70" cy="84" r="6" /><circle cx="66" cy="52" r="5" /><circle cx="146" cy="60" r="6" /><circle cx="176" cy="76" r="6" /><circle cx="150" cy="90" r="5" /></g>
+            <g id="s-brn">
+              <rect x="356" y="44" width="80" height="74" rx="12" fill="#6b3d1e" stroke="#0e0c1d" stroke-width="5" />
+              <path d="M370 62 h22 M400 80 h22 M374 100 h18" stroke="#3a1f0d" stroke-width="6" stroke-linecap="round" />
+            </g>
+          </svg>
+          <div id="s-notord" class="s-pill s-hide">not ordered</div>
+          <div class="s-ok s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L26 40 L44 21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+        <div id="s-rec" class="s-st s-ol s-hide">
+          <div class="s-stt">Receipt</div>
+          <div id="s-rc" class="s-abs s-sw"><b class="c3 on">3 items</b><b class="c4">4 items</b></div>
+          <div id="s-amt" class="s-abs s-sw"><b class="a26 on">$26</b><b class="a28">$28</b></div>
+          <div id="s-should" class="s-pill s-hide">should be $26</div>
+          <div class="s-ok s-hide"><svg viewBox="0 0 60 60"><path d="M17 31 L26 40 L44 21" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+        <div id="s-off" class="s-st s-ol s-hide">
+          <div class="s-stt">Sam's offer</div>
+          <div id="s-q" class="s-abs s-sw s-hide"><b class="q1 on">Add an extra?</b><b class="q2">Add a brownie?</b></div>
+          <div id="s-yes" class="s-btn s-hide">Yes</div>
+          <div id="s-no" class="s-btn s-hide"><span id="s-not">No thanks</span><div id="s-nop" class="s-hide">No thanks</div></div>
+        </div>
+
+        <!-- rings, strike, pointers -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rbrn" style="stroke:#b8235a;stroke-width:6" d="M1040 466 C1036 412 1296 408 1296 462 C1296 518 1030 522 1034 456" />
+          <path id="s-strike" style="stroke:#b8235a;stroke-width:10" d="M1532 600 L1790 470" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+        <svg id="s-pen" class="s-abs s-hide" viewBox="0 0 84 84"><path d="M6 78 L12 56 L58 10 Q66 4 74 12 Q82 20 74 28 L28 72 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><path d="M6 78 L12 56 L28 72 Z" fill="#0e0c1d" /><path d="M50 18 L66 34" stroke="#0e0c1d" stroke-width="5" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.441, 0.731, 1.033, 1.173, 1.904, 2.322, 2.763, 3.355, 3.785, 4.075, 4.818, 5.074, 5.259, 5.538, 5.677, 6.002, 6.177, 6.548, 7.175, 7.349, 7.895, 8.081, 8.975, 9.265, 9.671, 9.88, 10.182, 10.437, 10.716, 10.832, 11.355, 11.575, 12.771, 13.108, 13.386, 13.491, 13.851, 13.978, 14.234, 14.721, 15.163, 15.325, 15.906, 16.568, 17.16, 18.007, 18.193, 18.414, 18.901, 19.749, 19.935, 20.062, 20.178, 20.596, 20.84, 20.979, 21.13, 21.502, 22.326, 22.477, 22.698, 22.814, 23.267, 23.429, 23.603, 24.521, 24.683, 25.159, 25.786, 26.007, 26.576, 26.866, 27.597, 27.76, 28.224, 28.398, 28.526, 28.723, 29.188, 29.908, 30.093, 30.604, 31.034, 31.649, 31.823, 32.253, 32.798, 33.379, 33.634, 34.284, 34.702, 35.399, 35.62, 35.921, 36.188, 36.339, 36.676, 36.85, 37.779, 38.069, 38.185, 38.58, 38.835, 39.683, 39.857, 40.031, 40.287, 40.438, 41.599, 41.935, 42.33, 42.62, 43.015, 43.259, 43.851, 44.072, 44.234, 44.675, 45.639, 45.801, 46.045, 46.115, 46.661, 46.823, 47.16, 47.264, 47.52, 47.985, 48.519, 48.89, 49.587, 49.738, 50.051, 50.376, 50.55, 51.409, 51.584, 52.048, 52.594, 53.604, 53.952, 54.266, 55.821, 56.204, 56.413, 56.738, 57.284, 57.574, 57.702, 57.853, 58.631, 59.026, 59.351, 60.361, 60.686, 61.034];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, at + 0.08);
+      };
+      const stamp = (sel, at, rot) => tl.fromTo(sel, { opacity: 0, scale: 2.2, rotation: 4 }, { opacity: 1, scale: 1, rotation: rot, duration: 0.3, ease: "power4.in", immediateRender: false }, at);
+      const draw = (sel, at, d) => {
+        const p = document.querySelector(sel);
+        const L = p.getTotalLength() + 2;
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: L });
+        tl.set(p, { strokeDashoffset: L, opacity: 1 }, at);
+        tl.to(p, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out" }, at + 0.01);
+      };
+      const type = (sel, at, d, steps) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "steps(" + steps + ")" }, at);
+      const pen = (x, y) => ({ x: x - 6, y: y - 78 }); // the pen's tip sits at (6, 78)
+
+      /* ---- 1. An order: cookie, cookie, cake ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.3);
+      pop("#s-name", t(0) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-clip", { opacity: 0, y: -160, rotation: 5 }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.4)" }, t(4) - 0.15);
+      tl.fromTo("#s-it1", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(5));
+      tl.fromTo("#s-it2", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(6));
+      tl.fromTo("#s-it3", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(7));
+      tl.fromTo("#s-count", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(7) + 0.3);
+      tl.fromTo("#s-price", { opacity: 0, scale: 0.3, rotation: -10 }, { opacity: 1, scale: 1, rotation: 7, duration: 0.4, ease: "back.out(2)" }, t(8));
+
+      /* ---- 2. One list, three jobs holding it ---- */
+      tl.to("#s-clip", { scale: 1.05, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(12));
+      tl.fromTo("#s-kit", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.4)" }, t(20) - 0.1);
+      draw("#s-sK", t(20) + 0.1, 0.5);
+      tl.fromTo("#s-rec", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.4)" }, t(22) - 0.1);
+      draw("#s-sR", t(22) + 0.1, 0.4);
+      tl.to("#s-price", { x: -520, y: 720, rotation: 0, scale: 0.7, duration: 0.5, ease: "power3.in" }, t(22) - 0.1);
+      out("#s-price", t(22) + 0.3, 0.12);
+      tl.fromTo("#s-amt", { scale: 1.3 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t(22) + 0.4);
+      tl.fromTo("#s-off", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.4)" }, t(24) - 0.1);
+      draw("#s-sO", t(24) + 0.1, 0.4);
+      pop("#s-q", t(28), { from: 0.8, d: 0.35 });
+      pop("#s-yes", t(31), { from: 0.5, d: 0.3 });
+      pop("#s-no", t(31) + 0.12, { from: 0.5, d: 0.3 });
+
+      /* ---- 3. Sam wants a copy: preview = order ---- */
+      out(["#s-maya", "#s-name"], t(33) - 0.45, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(33) - 0.2);
+      pop("#s-tagO", t(33) + 0.2, { from: 0.4 });
+      draw("#s-sA", t(33) + 0.45, 0.4);
+      pop("#s-ghost", t(36), { from: 0.7 });
+      type("#s-l2", t(43), 1.6, 15);
+      pop("#s-tagP", t(43) + 0.1, { from: 0.4 });
+      draw("#s-strike", t(48), 0.35);
+      out(["#s-ghost", "#s-strike"], t(49) + 0.45, 0.3);
+      draw("#s-sB", t(53), 0.5);
+      tl.to(["#s-tagO", "#s-tagP"], { scale: 1.12, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.12 }, t(54));
+      pop("#s-same", t(57), { from: 0.4 });
+      tl.to("#s-clip", { scale: 1.05, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(57) + 0.1);
+
+      /* ---- 4. The brownie goes onto the real order ---- */
+      out("#s-same", t(59), 0.2);
+      type("#s-l3", t(59) - 0.1, 0.9, 25);
+      tl.fromTo("#s-pen", { opacity: 0, ...pen(1640, 250) }, { opacity: 1, ...pen(1585, 334), duration: 0.25, ease: "power2.out" }, t(59) - 0.2);
+      tl.to("#s-pen", { ...pen(1058, 478), duration: 0.34, ease: "power2.inOut" }, t(62) - 0.35);
+      type("#s-it4", t(62), 0.6, 7);
+      tl.to("#s-pen", { ...pen(1232, 478), duration: 0.6, ease: "none" }, t(62));
+      swap("#s-count .c3", "#s-count .c4", t(62) + 0.6);
+      swap("#s-q .q1", "#s-q .q2", t(62) + 0.2);
+      tl.to("#s-pen", { opacity: 0, ...pen(1330, 400), duration: 0.4, ease: "power2.in" }, t(63) + 0.3);
+      tl.to("#s-no", { scale: 0.9, duration: 0.1, ease: "power2.in", yoyo: true, repeat: 1 }, t(69));
+      tl.to("#s-nop", { opacity: 1, duration: 0.12 }, t(69) + 0.1);
+      tl.to("#s-not", { opacity: 0, duration: 0.12 }, t(69) + 0.1);
+      draw("#s-rbrn", t(74), 0.55);
+      tl.to("#s-sK", { stroke: "#b8235a", duration: 0.3 }, t(81));
+      tl.fromTo("#s-brn", { opacity: 0, scale: 0.2, svgOrigin: "396 81" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, t(82));
+      stamp("#s-notord", t(83), -3);
+      tl.to("#s-sR", { stroke: "#b8235a", duration: 0.3 }, t(85));
+      swap("#s-rc .c3", "#s-rc .c4", t(85) + 0.1);
+      swap("#s-amt .a26", "#s-amt .a28", t(87));
+      stamp("#s-should", t(89) + 0.2, -3);
+      tl.fromTo("#s-noerr", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(90));
+
+      /* ---- 5. Seal it: a tuple ---- */
+      out(["#s-rbrn", "#s-it4", "#s-brn", "#s-notord", "#s-should", "#s-nop"], t(92) - 0.1, 0.3);
+      tl.to("#s-not", { opacity: 1, duration: 0.3 }, t(92));
+      out("#s-noerr", t(94), 0.25);
+      tl.to(["#s-sK", "#s-sR"], { stroke: "#0e0c1d", duration: 0.3 }, t(92));
+      swap("#s-count .c4", "#s-count .c3", t(92));
+      swap("#s-rc .c4", "#s-rc .c3", t(92));
+      swap("#s-amt .a28", "#s-amt .a26", t(92));
+      tl.fromTo("#s-cursor", { opacity: 0, x: 420, y: 470 }, { opacity: 1, x: 332, y: 214, duration: 0.7, ease: "power3.out" }, t(93));
+      swap("#s-k1 .on", "#s-k1 .nw", t(98));
+      swap("#s-k2 .on", "#s-k2 .nw", t(98) + 0.22);
+      tl.fromTo("#s-tuple", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(98) + 0.3);
+      tl.to("#s-cursor", { opacity: 0, x: 380, y: 300, duration: 0.4, ease: "power2.in" }, t(99) - 0.2);
+      tl.fromTo("#s-glass", { opacity: 0, y: -620 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.in" }, t(103) - 0.35);
+      tl.to("#s-clip", { y: 8, duration: 0.07, ease: "power1.out", yoyo: true, repeat: 1 }, t(103) + 0.15);
+      pop("#s-lock", t(103) + 0.25, { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-sealed", t(103) + 0.4, { from: 0.4 });
+      tl.to("#s-lock", { scale: 1.25, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(106));
+
+      /* ---- 6. Sam's line fails at once ---- */
+      tl.fromTo("#s-l3bg", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(110));
+      tl.fromTo("#s-pen", { opacity: 0, ...pen(1640, 250), rotation: 0 }, { opacity: 1, ...pen(1560, 380), rotation: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, t(110));
+      tl.to("#s-pen", { ...pen(1236, 470), duration: 0.3, ease: "power3.in" }, t(112) - 0.3);
+      tl.to("#s-pen", { ...pen(1470, 330), rotation: 38, duration: 0.55, ease: "back.out(2.2)" }, t(112));
+      tl.fromTo("#s-skid", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.14, ease: "power2.out" }, t(112));
+      out("#s-skid", t(112) + 0.5, 0.3);
+      tl.to(["#s-glass", "#s-clip"], { x: 9, duration: 0.05, ease: "none", yoyo: true, repeat: 5 }, t(112) + 0.02);
+      stamp("#s-cant", t(112) + 0.2, -4);
+      stamp("#s-err", t(114), 0);
+
+      /* ---- 7. A fresh copy for Sam ---- */
+      out(["#s-pen", "#s-cant", "#s-tuple"], t(119) - 0.15, 0.25);
+      out("#s-err", t(121), 0.25);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 600, y: 470 }, { opacity: 1, x: 520, y: 252, duration: 0.6, ease: "power3.out", immediateRender: false }, t(123));
+      swap("#s-k3 .on", "#s-k3 .nw", t(126));
+      out(["#s-l3", "#s-l3bg"], t(126), 0.3);
+      tl.to("#s-cursor", { opacity: 0, x: 560, y: 360, duration: 0.4, ease: "power2.in" }, t(127) + 0.2);
+      tl.fromTo("#s-copy", { opacity: 0, x: -490, y: -290, scale: 1.18, transformOrigin: "0% 0%" }, { opacity: 1, x: -440, y: -250, scale: 1.18, duration: 0.25, ease: "power2.out" }, t(128) - 0.1);
+      tl.to("#s-copy", { x: 0, y: 0, scale: 1, duration: 0.6, ease: "power3.inOut" }, t(128) + 0.2);
+      tl.fromTo("#s-cl4", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(130));
+      out("#s-sB", t(131), 0.25);
+      tl.to("#s-tagP", { y: 68, duration: 0.5, ease: "back.out(1.6)" }, t(133));
+      tl.to("#s-clip", { scale: 1.04, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, t(137));
+      pop("#s-kit .s-ok", t(138), { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      pop("#s-rec .s-ok", t(138) + 0.2, { from: 0.2, ease: "back.out(2.4)", d: 0.3 });
+      stamp("#s-untouched", t(139), -4);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 53.68);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

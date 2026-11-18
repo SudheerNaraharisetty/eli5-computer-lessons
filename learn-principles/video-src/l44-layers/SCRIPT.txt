@@ -1,0 +1,15 @@
+Maya's shop program has grown. Ten files now. And the arrows between them go everywhere.
+
+An arrow means, this file mentions that one. The tax rule imports the web page. The web page imports the database. The database imports the tax rule. A loop.
+
+Now Maya wants a phone app. But the shop's rules are smeared across the web page and the database code. She would have to copy them out.
+
+The fix. Sort the same files into three rings. In the centre, the shop's rules. Around them, the things the shop does. Outside, everything that touches the world.
+
+Then one rule. Arrows may only point inward. Any arrow that points out gets turned around.
+
+Now drop in the phone app. Swap the database. Files changed in the centre: zero.
+
+To check, read the imports at the top of a centre file. It must name nothing from outside.
+
+That is the dependency rule. Arrows point inward.

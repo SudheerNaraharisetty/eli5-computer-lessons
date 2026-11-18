@@ -1,0 +1,127 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all, #t-cards { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-mono { font-family: "JetBrains Mono", monospace; font-weight: 700; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .t-card { position: absolute; top: 84px; width: 600px; height: 380px; background: #fff; border-radius: 28px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-a { left: 110px; }
+    #t-b { left: 770px; }
+    .t-btn { position: absolute; left: 36px; top: 32px; height: 72px; padding: 0 28px; border-radius: 18px; background: #3b37e6; color: #fff; font-size: 34px; line-height: 72px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .t-pips { position: absolute; right: 36px; top: 44px; display: flex; gap: 12px; }
+    .t-pips > i { width: 48px; height: 48px; border-radius: 50%; background: #ece7df; font-style: normal; font-size: 28px; line-height: 48px; text-align: center; color: #3e3b52; box-shadow: 0 0 0 4px #0e0c1d; }
+    .t-pips > i > b { display: block; width: 48px; height: 48px; border-radius: 50%; background: #ffc24b; color: #0e0c1d; opacity: 0; }
+    .t-codeln { position: absolute; left: 36px; top: 134px; width: 528px; height: 58px; padding: 0 20px; border-radius: 12px; background: #15132b; color: #eceaff; font-size: 30px; line-height: 58px; white-space: nowrap; }
+    .t-codeln .st { color: #ffc24b; }
+    .t-val { position: absolute; left: 36px; top: 212px; width: 330px; height: 140px; font-size: 88px; line-height: 140px; }
+    .t-val > b { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+    .t-tag { position: absolute; right: 30px; top: 290px; height: 54px; padding: 0 20px; border-radius: 999px; font-size: 28px; line-height: 54px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    #t-atag { background: #fbe0ea; color: #b8235a; }
+    #t-btag { background: #ddefe6; color: #1f7a5c; }
+    #t-head { left: 110px; top: 506px; font: 700 140px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; color: #3b37e6; opacity: 0; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 110px; top: 700px; font: 700 64px/1.25 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub span { display: inline-block; opacity: 0; }
+    #t-next { left: 110px; top: 912px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="14.25" data-track-index="1">
+      <div id="t-cards">
+      <div class="t-card" id="t-a">
+        <div class="t-btn" id="t-abtn">add 10 points</div>
+        <div class="t-pips"><i>1<b id="t-a1" style="margin-top:-48px">1</b></i><i>2<b id="t-a2" style="margin-top:-48px">2</b></i><i>3<b id="t-a3" style="margin-top:-48px">3</b></i></div>
+        <div class="t-codeln t-mono">points = points + 10</div>
+        <div class="t-val t-mono" id="t-av"><b id="t-av0">0</b><b id="t-av1">10</b><b id="t-av2">20</b><b id="t-av3">30</b></div>
+        <div class="t-tag" id="t-atag">grows every time</div>
+      </div>
+      <div class="t-card" id="t-b">
+        <div class="t-btn" id="t-bbtn">set to paid</div>
+        <div class="t-pips"><i>1<b id="t-b1" style="margin-top:-48px">1</b></i><i>2<b id="t-b2" style="margin-top:-48px">2</b></i><i>3<b id="t-b3" style="margin-top:-48px">3</b></i></div>
+        <div class="t-codeln t-mono">status = <span class="st">"paid"</span></div>
+        <div class="t-val t-mono" id="t-bv"><b id="t-bv0">new</b><b id="t-bv1">paid</b></div>
+        <div class="t-tag" id="t-btag">same every time</div>
+      </div>
+      </div>
+      <div id="t-head" class="t-abs">Idempotent.</div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M116 672 Q500 696 930 664" /></svg>
+      <div id="t-sub" class="t-abs">
+        <span>Doing</span> <span>it</span> <span>twice</span> <span>is</span> <span>the</span> <span>same</span><br />
+        <span>as</span> <span>doing</span> <span>it</span> <span>once.</span>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 38: Least privilege</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 52.75;
+      const g = { add: 52.868, ten: 53.228, three1: 54.064, times1: 54.377, thirty: 55.294, set: 56.386, paid: 56.78, three2: 57.233, times2: 57.57, still: 58.452, paid2: 58.812, idem: 60.194,
+        sub: [61.807, 62.121, 62.225, 62.678, 62.794, 62.922, 63.189, 63.328, 63.595, 63.746], end: 64.6 };
+      const tl = gsap.timeline({ paused: true });
+      const press = (btn, pip, at) => {
+        tl.to(btn, { scale: 0.9, duration: 0.08, ease: "power2.in" }, at);
+        tl.to(btn, { scale: 1, duration: 0.25, ease: "back.out(3)" }, at + 0.08);
+        tl.fromTo(pip, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2.4)" }, at + 0.05);
+      };
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.1, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, at + 0.07);
+      };
+      gsap.set(["#t-av0", "#t-bv0"], { opacity: 1 });
+      tl.fromTo("#t-cards", { scale: 1.25, x: 82, y: 195, transformOrigin: "0 0" }, { scale: 1, x: 0, y: 0, duration: 0.6, ease: "power3.inOut" }, 59.5 - S);
+
+      /* add 10 points, three times */
+      tl.fromTo("#t-a", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.02);
+      press("#t-abtn", "#t-a1", g.ten - S); swap("#t-av0", "#t-av1", g.ten - S + 0.1);
+      press("#t-abtn", "#t-a2", g.three1 - S); swap("#t-av1", "#t-av2", g.three1 - S + 0.1);
+      press("#t-abtn", "#t-a3", g.times1 - S + 0.15); swap("#t-av2", "#t-av3", g.times1 - S + 0.25);
+      tl.fromTo("#t-av3", { scale: 1 }, { scale: 1.2, color: "#b8235a", transformOrigin: "0% 50%", duration: 0.2, ease: "power2.out", immediateRender: false }, g.thirty - S);
+      tl.to("#t-av3", { scale: 1, duration: 0.25, ease: "power2.inOut" }, g.thirty - S + 0.2);
+      tl.fromTo("#t-atag", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, g.thirty - S + 0.3);
+
+      /* set to paid, three times */
+      tl.fromTo("#t-b", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.set - S - 0.15);
+      press("#t-bbtn", "#t-b1", g.paid - S); swap("#t-bv0", "#t-bv1", g.paid - S + 0.1);
+      [g.three2, g.times2 + 0.15].forEach((at, i) => {
+        press("#t-bbtn", i ? "#t-b3" : "#t-b2", at - S);
+        tl.fromTo("#t-bv1", { scale: 1 }, { scale: 1.1, transformOrigin: "0% 50%", duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at - S + 0.6);
+      });
+      tl.to("#t-bv1", { color: "#1f7a5c", duration: 0.2 }, g.still - S);
+      tl.fromTo("#t-btag", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, g.paid2 - S);
+
+      /* the word, and the one-line takeaway */
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, g.idem - S - 0.1);
+      tl.fromTo("#t-head", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.idem - S - 0.05);
+      const u = document.querySelector("#t-under");
+      const L = u.getTotalLength() + 2;
+      gsap.set(u, { strokeDasharray: L, strokeDashoffset: L });
+      tl.set(u, { opacity: 1 }, g.idem - S + 0.6);
+      tl.to(u, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, g.idem - S + 0.61);
+      gsap.utils.toArray("#t-sub span").forEach((w, i) => tl.fromTo(w, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, g.sub[i] - S - 0.05));
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

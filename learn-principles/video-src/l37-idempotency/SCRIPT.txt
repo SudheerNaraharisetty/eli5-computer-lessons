@@ -1,0 +1,19 @@
+A customer is buying cookies from Maya's shop online. Ten dollars ninety. They click Pay.
+
+The shop charges the card, and saves the order.
+
+But on the way back, the reply gets lost. The screen just spins.
+
+So they click Pay again. Anyone would.
+
+The shop does it all again. A second charge. A second order. They paid twice.
+
+The code did its job. It just was not safe to run twice.
+
+The fix is a ticket. Before the first click, this purchase gets one number. Forty-eight seventeen. Every try carries it.
+
+Play it again. Click. One charge, and the ticket goes on the done board. The reply is lost. Click again. Same ticket. The shop finds it on the board, and hands back the same thank you. Still one charge.
+
+Add ten points, three times, makes thirty. Set to paid, three times, is still paid.
+
+That is what idempotent means. Doing it twice is the same as doing it once.

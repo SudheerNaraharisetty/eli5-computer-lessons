@@ -1,0 +1,485 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* Maya */
+    #s-maya { left: 1240px; top: 300px; width: 400px; height: 520px; }
+    #s-name { left: 1536px; top: 436px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+
+    /* the form on the website */
+    #s-form { left: 96px; top: 96px; width: 430px; height: 320px; background: #fff; border-radius: 22px; }
+    #s-fbar { position: absolute; left: 0; top: 0; width: 430px; height: 56px; background: #ece7df; border-radius: 22px 22px 0 0; box-shadow: 0 4px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 20px; gap: 9px; }
+    #s-fbar > i { width: 14px; height: 14px; border-radius: 50%; background: #0e0c1d; }
+    #s-fbar > span { margin-left: 10px; font-size: 28px; line-height: 1; }
+    #s-flabel { left: 28px; top: 76px; font: 700 38px/1.3 "Fraunces", serif; letter-spacing: -0.01em; white-space: nowrap; }
+    #s-in { left: 28px; top: 142px; width: 240px; height: 76px; background: #fbf8f4; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-in > b { position: absolute; left: 18px; top: 0; font: 700 36px/76px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; opacity: 0; }
+    #s-in > b.f6 { color: #b8235a; }
+    #s-caret { position: absolute; left: 18px; top: 16px; width: 5px; height: 44px; background: #0e0c1d; }
+    #s-btn { left: 286px; top: 142px; width: 116px; height: 76px; background: #3b37e6; color: #fff; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; font-size: 30px; line-height: 76px; text-align: center; }
+    #s-note { left: 28px; top: 234px; width: 374px; height: 74px; padding: 4px 14px; background: #fbebd2; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d; font-size: 28px; line-height: 33px; color: #7a4a0c; white-space: nowrap; }
+    #s-notetxt { display: block; }
+
+    /* envelopes: one per visitor */
+    .s-env { width: 190px; height: 96px; background: #fbf8f4; border-radius: 12px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    .s-env > svg { position: absolute; left: 0; top: 0; width: 190px; height: 96px; }
+    .s-env > svg > path { fill: none; stroke: #0e0c1d; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .s-env > b { position: absolute; left: 0; top: 46px; width: 190px; text-align: center; font: 700 30px/42px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+    .s-env > b.em { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 28px; color: #5d596e; }
+    .s-env > b.sy { color: #b8235a; }
+    .s-tag { position: absolute; right: -22px; top: -34px; padding: 0 16px; height: 44px; line-height: 44px; font: 800 28px/44px "Manrope", sans-serif; background: #0e0c1d; color: #fff; border-radius: 999px; white-space: nowrap; }
+    .s-rej { position: absolute; right: -6px; top: -22px; width: 44px; height: 44px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-rej > svg { position: absolute; left: 0; top: 0; width: 44px; height: 44px; }
+    #s-num { left: 596px; top: 202px; width: 110px; height: 96px; background: #3b37e6; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+    #s-num > b { position: absolute; left: 0; top: 0; width: 110px; text-align: center; color: #fff; font: 700 60px/96px "JetBrains Mono", monospace; }
+    #s-tnum { background: #1f7a5c; right: -52px; }
+
+    /* code panel */
+    #s-code { left: 880px; top: 96px; width: 944px; height: 250px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 944px; height: 60px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-pill { position: absolute; right: 20px; top: 8px; padding: 0 20px; height: 44px; border-radius: 999px; color: #fff; font-size: 28px; line-height: 44px; white-space: nowrap; }
+    #s-nocheck { background: #b8235a; }
+    #s-onegate { background: #1f7a5c; }
+    #s-hot { left: 14px; top: 126px; width: 916px; height: 56px; border-radius: 12px; background: #6b1c44; }
+    #s-lines { left: 30px; top: 76px; width: 900px; font: 500 30px/52px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    .s-ln { height: 52px; display: flex; white-space: pre; }
+    .s-ln > i { width: 50px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    #s-tok { position: relative; display: inline-block; width: 17ch; height: 52px; vertical-align: top; }
+    #s-tok > b { position: absolute; left: 0; top: 0; font-weight: 500; white-space: pre; }
+    #s-tok > b.b { opacity: 0; }
+    #s-tok > b.b > em { font-style: normal; font-weight: 700; color: #7cf0b5; }
+
+    /* the three rooms inside */
+    .s-wire { position: absolute; top: 351px; width: 6px; height: 89px; background: #0e0c1d; }
+    .s-room { position: absolute; top: 440px; width: 298px; height: 440px; background: #fff; border-radius: 24px; }
+    .s-rt { position: absolute; left: 26px; top: 18px; font: 700 44px/1.3 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-scr { position: absolute; left: 24px; top: 92px; width: 250px; height: 190px; background: #15132b; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-scr > b { position: absolute; left: 0; top: 0; width: 250px; height: 190px; text-align: center; font: 700 48px/190px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-scr > b.v0 { opacity: 1; color: #a9a5d6; }
+    .s-scr > b.v1 { color: #7cf0b5; }
+    .s-scr > b.v2, .s-scr > b.v3 { color: #ff8fa8; }
+    .s-scr > b.v3 { font-size: 34px; }
+    .s-cap { position: absolute; left: 26px; top: 322px; font-size: 30px; line-height: 84px; color: #3e3b52; white-space: nowrap; }
+    .s-ok { position: absolute; right: -20px; top: -22px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    .s-mg { position: absolute; left: 186px; top: 312px; width: 84px; height: 109px; opacity: 0; }
+    #s-flood { left: 1486px; top: 700px; width: 378px; height: 290px; overflow: visible; }
+    #s-flood > g { opacity: 0; }
+    #s-inside, #s-trusted, #s-outside { top: 918px; padding: 0 22px; height: 52px; line-height: 52px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-inside { left: 880px; background: #1f7a5c; color: #fff; letter-spacing: 0.06em; }
+    #s-trusted { left: 1196px; background: #ddefe6; color: #14553f; }
+    #s-outside { left: 96px; background: #fbebd2; color: #7a4a0c; letter-spacing: 0.06em; }
+
+    /* wall, gate, guard, checklist */
+    #s-wallsvg { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-walltop, #s-wallbot, #s-gatebar, #s-posts { opacity: 0; }
+    #s-guard { left: 650px; top: 312px; width: 100px; height: 130px; }
+    #s-sign { left: 520px; top: 446px; width: 320px; height: 226px; background: #fff; border-radius: 20px; }
+    #s-sign > small { position: absolute; left: 22px; top: 12px; font-size: 28px; line-height: 40px; letter-spacing: 0.08em; color: #5d596e; white-space: nowrap; }
+    .s-row { position: absolute; left: 22px; width: 290px; height: 44px; display: flex; align-items: center; gap: 14px; opacity: 0; }
+    .s-row > b { font-size: 32px; line-height: 44px; white-space: nowrap; }
+    .s-box { position: relative; flex: none; width: 40px; height: 40px; border-radius: 9px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-box > svg { position: absolute; left: 0; top: 0; width: 40px; height: 40px; opacity: 0; }
+    #s-once { right: -26px; top: -26px; padding: 0 18px; height: 48px; line-height: 48px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* marks and stamps */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path, #s-marks polygon { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; }
+    .s-cross { fill: none; stroke: #b8235a; stroke-width: 10; stroke-linecap: round; }
+    #s-crash, #s-runme { left: 1612px; top: 164px; padding: 0 18px; height: 54px; line-height: 54px; background: #b8235a; color: #fff; font-size: 34px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-runme { left: 1560px; letter-spacing: 0; font-size: 30px; background: #fbe0ea; color: #8a1742; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.85" data-track-index="1">
+      <div id="s-wrap">
+        <!-- Maya -->
+        <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+          <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+          <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+          <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+          <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+          <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+          <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <div id="s-name" class="s-abs s-hide">Maya</div>
+
+        <!-- the code that receives the text -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-hot" class="s-abs s-hide"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>website.py</span></div>
+          <div id="s-nocheck" class="s-pill s-hide">no check</div>
+          <div id="s-onegate" class="s-pill s-hide">the one gate</div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i>1</i><span><span class="kw">def</span> <span class="fn">order_form</span>(name, text):</span></div>
+            <div class="s-ln"><i>2</i><span>    count = </span><span id="s-tok"><b class="a">int(text)</b><b class="b"><em>clean_count</em>(text)</b></span></div>
+            <div class="s-ln"><i>3</i><span>    place_order(name, count)</span></div>
+          </div>
+        </div>
+
+        <!-- inside the program -->
+        <div id="s-rooms" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-wire" style="left:1026px"></div>
+          <div class="s-wire" style="left:1349px"></div>
+          <div class="s-wire" style="left:1672px"></div>
+          <div class="s-room s-ol" id="s-till" style="left:880px">
+            <div class="s-rt">Till</div>
+            <div class="s-scr"><b class="v0">--</b><b class="v1">$9</b><b class="v2">-$15</b><b class="v3">$3,000,000</b></div>
+            <div class="s-cap">the total</div>
+            <svg class="s-mg" viewBox="0 0 100 130"><path d="M14 130 V92 Q14 66 50 66 Q86 66 86 92 V130 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" /><circle cx="50" cy="42" r="24" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" /><path d="M24 34 Q24 8 50 8 Q76 8 76 34 Z" fill="#0e0c1d" /><rect x="16" y="30" width="68" height="9" rx="4" fill="#0e0c1d" /><circle cx="42" cy="50" r="4" fill="#0e0c1d" /><circle cx="58" cy="50" r="4" fill="#0e0c1d" /></svg>
+            <div class="s-ok"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-room s-ol" id="s-sales" style="left:1203px">
+            <div class="s-rt">Sales file</div>
+            <div class="s-scr"><b class="v0">--</b><b class="v1">+$9</b><b class="v2">-$15</b></div>
+            <div class="s-cap">saved</div>
+            <svg class="s-mg" viewBox="0 0 100 130"><path d="M14 130 V92 Q14 66 50 66 Q86 66 86 92 V130 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" /><circle cx="50" cy="42" r="24" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" /><path d="M24 34 Q24 8 50 8 Q76 8 76 34 Z" fill="#0e0c1d" /><rect x="16" y="30" width="68" height="9" rx="4" fill="#0e0c1d" /><circle cx="42" cy="50" r="4" fill="#0e0c1d" /><circle cx="58" cy="50" r="4" fill="#0e0c1d" /></svg>
+            <div class="s-ok"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="s-room s-ol" id="s-kit" style="left:1526px">
+            <div class="s-rt">Kitchen</div>
+            <div class="s-scr"><b class="v0">--</b><b class="v1">3</b><b class="v2">-5</b><b class="v3">1,000,000</b></div>
+            <div class="s-cap">to bake</div>
+            <svg class="s-mg" viewBox="0 0 100 130"><path d="M14 130 V92 Q14 66 50 66 Q86 66 86 92 V130 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" /><circle cx="50" cy="42" r="24" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" /><path d="M24 34 Q24 8 50 8 Q76 8 76 34 Z" fill="#0e0c1d" /><rect x="16" y="30" width="68" height="9" rx="4" fill="#0e0c1d" /><circle cx="42" cy="50" r="4" fill="#0e0c1d" /><circle cx="58" cy="50" r="4" fill="#0e0c1d" /></svg>
+            <div class="s-ok"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+        </div>
+        <svg id="s-flood" class="s-abs" viewBox="0 0 378 290" data-layout-allow-overflow>
+<!--COOKIES-->
+          <g><circle cx="44" cy="246" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="35" cy="240" r="4" fill="#5a3418" /><circle cx="52" cy="248" r="4" fill="#5a3418" /><circle cx="42" cy="257" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="105" cy="236" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="96" cy="230" r="4" fill="#5a3418" /><circle cx="113" cy="238" r="4" fill="#5a3418" /><circle cx="103" cy="247" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="169" cy="243" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="160" cy="237" r="4" fill="#5a3418" /><circle cx="177" cy="245" r="4" fill="#5a3418" /><circle cx="167" cy="254" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="234" cy="237" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="225" cy="231" r="4" fill="#5a3418" /><circle cx="242" cy="239" r="4" fill="#5a3418" /><circle cx="232" cy="248" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="283" cy="236" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="274" cy="230" r="4" fill="#5a3418" /><circle cx="291" cy="238" r="4" fill="#5a3418" /><circle cx="281" cy="247" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="347" cy="247" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="338" cy="241" r="4" fill="#5a3418" /><circle cx="355" cy="249" r="4" fill="#5a3418" /><circle cx="345" cy="258" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="74" cy="201" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="65" cy="195" r="4" fill="#5a3418" /><circle cx="82" cy="203" r="4" fill="#5a3418" /><circle cx="72" cy="212" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="126" cy="202" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="117" cy="196" r="4" fill="#5a3418" /><circle cx="134" cy="204" r="4" fill="#5a3418" /><circle cx="124" cy="213" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="183" cy="193" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="174" cy="187" r="4" fill="#5a3418" /><circle cx="191" cy="195" r="4" fill="#5a3418" /><circle cx="181" cy="204" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="259" cy="191" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="250" cy="185" r="4" fill="#5a3418" /><circle cx="267" cy="193" r="4" fill="#5a3418" /><circle cx="257" cy="202" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="318" cy="201" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="309" cy="195" r="4" fill="#5a3418" /><circle cx="326" cy="203" r="4" fill="#5a3418" /><circle cx="316" cy="212" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="378" cy="195" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="369" cy="189" r="4" fill="#5a3418" /><circle cx="386" cy="197" r="4" fill="#5a3418" /><circle cx="376" cy="206" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="37" cy="142" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="28" cy="136" r="4" fill="#5a3418" /><circle cx="45" cy="144" r="4" fill="#5a3418" /><circle cx="35" cy="153" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="97" cy="143" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="88" cy="137" r="4" fill="#5a3418" /><circle cx="105" cy="145" r="4" fill="#5a3418" /><circle cx="95" cy="154" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="160" cy="154" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="151" cy="148" r="4" fill="#5a3418" /><circle cx="168" cy="156" r="4" fill="#5a3418" /><circle cx="158" cy="165" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="231" cy="144" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="222" cy="138" r="4" fill="#5a3418" /><circle cx="239" cy="146" r="4" fill="#5a3418" /><circle cx="229" cy="155" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="296" cy="143" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="287" cy="137" r="4" fill="#5a3418" /><circle cx="304" cy="145" r="4" fill="#5a3418" /><circle cx="294" cy="154" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="357" cy="144" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="348" cy="138" r="4" fill="#5a3418" /><circle cx="365" cy="146" r="4" fill="#5a3418" /><circle cx="355" cy="155" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="59" cy="101" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="50" cy="95" r="4" fill="#5a3418" /><circle cx="67" cy="103" r="4" fill="#5a3418" /><circle cx="57" cy="112" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="122" cy="97" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="113" cy="91" r="4" fill="#5a3418" /><circle cx="130" cy="99" r="4" fill="#5a3418" /><circle cx="120" cy="108" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="188" cy="102" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="179" cy="96" r="4" fill="#5a3418" /><circle cx="196" cy="104" r="4" fill="#5a3418" /><circle cx="186" cy="113" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="257" cy="102" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="248" cy="96" r="4" fill="#5a3418" /><circle cx="265" cy="104" r="4" fill="#5a3418" /><circle cx="255" cy="113" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="320" cy="98" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="311" cy="92" r="4" fill="#5a3418" /><circle cx="328" cy="100" r="4" fill="#5a3418" /><circle cx="318" cy="109" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="371" cy="100" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="362" cy="94" r="4" fill="#5a3418" /><circle cx="379" cy="102" r="4" fill="#5a3418" /><circle cx="369" cy="111" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="43" cy="52" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="34" cy="46" r="4" fill="#5a3418" /><circle cx="51" cy="54" r="4" fill="#5a3418" /><circle cx="41" cy="63" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="101" cy="46" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="92" cy="40" r="4" fill="#5a3418" /><circle cx="109" cy="48" r="4" fill="#5a3418" /><circle cx="99" cy="57" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="168" cy="53" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="159" cy="47" r="4" fill="#5a3418" /><circle cx="176" cy="55" r="4" fill="#5a3418" /><circle cx="166" cy="64" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="231" cy="50" r="27" fill="#e2ad6b" stroke="#0e0c1d" stroke-width="5" /><circle cx="222" cy="44" r="4" fill="#5a3418" /><circle cx="239" cy="52" r="4" fill="#5a3418" /><circle cx="229" cy="61" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="288" cy="50" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="279" cy="44" r="4" fill="#5a3418" /><circle cx="296" cy="52" r="4" fill="#5a3418" /><circle cx="286" cy="61" r="3.5" fill="#5a3418" /></g>
+          <g><circle cx="348" cy="57" r="27" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="339" cy="51" r="4" fill="#5a3418" /><circle cx="356" cy="59" r="4" fill="#5a3418" /><circle cx="346" cy="68" r="3.5" fill="#5a3418" /></g>
+        </svg>
+        <div id="s-inside" class="s-abs s-hide">INSIDE THE WALL</div>
+        <div id="s-trusted" class="s-abs s-hide">no more checks needed</div>
+
+        <!-- the wall with one gate -->
+        <svg id="s-wallsvg" class="s-abs" viewBox="0 0 1920 1080">
+          <g id="s-wallbot">
+            <rect x="760" y="350" width="60" height="720" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M760 390 H820 M760 430 H820 M760 470 H820 M760 690 H820 M760 730 H820 M760 770 H820 M760 810 H820 M760 850 H820 M760 890 H820 M760 930 H820 M760 970 H820 M760 1010 H820 M790 350 V390 M775 390 V430 M805 430 V470 M790 690 V730 M775 730 V770 M805 770 V810 M790 810 V850 M775 850 V890 M805 890 V930 M790 930 V970 M775 970 V1010" fill="none" stroke="#8d8576" stroke-width="3" />
+          </g>
+          <g id="s-walltop">
+            <rect x="760" y="-20" width="60" height="170" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M760 30 H820 M760 70 H820 M760 110 H820 M790 -10 V30 M775 30 V70 M805 70 V110 M790 110 V150" fill="none" stroke="#8d8576" stroke-width="3" />
+          </g>
+          <g id="s-gatebar">
+            <rect x="774" y="152" width="32" height="196" rx="6" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M774 196 H806 M774 240 H806 M774 284 H806 M774 328 H806" stroke="#0e0c1d" stroke-width="10" />
+          </g>
+          <g id="s-posts">
+            <rect x="744" y="138" width="92" height="16" rx="6" fill="#0e0c1d" />
+            <rect x="744" y="346" width="92" height="16" rx="6" fill="#0e0c1d" />
+          </g>
+        </svg>
+        <div id="s-outside" class="s-abs s-hide">OUTSIDE</div>
+        <svg id="s-guard" class="s-abs s-hide" viewBox="0 0 100 130">
+          <path d="M14 130 V92 Q14 66 50 66 Q86 66 86 92 V130 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" />
+          <circle cx="50" cy="42" r="24" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" />
+          <path d="M24 34 Q24 8 50 8 Q76 8 76 34 Z" fill="#0e0c1d" />
+          <rect x="16" y="30" width="68" height="9" rx="4" fill="#0e0c1d" />
+          <circle cx="42" cy="50" r="4" fill="#0e0c1d" /><circle cx="58" cy="50" r="4" fill="#0e0c1d" />
+          <circle cx="66" cy="96" r="8" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" />
+        </svg>
+        <div id="s-sign" class="s-abs s-ol s-hide">
+          <small>AT THE GATE</small>
+          <div class="s-row" id="s-q1" style="top:62px"><span class="s-box"><svg class="t" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1f7a5c" /><path d="M10 21 L17 28 L30 12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg><svg class="x" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#b8235a" /><path d="M12 12 L28 28 M28 12 L12 28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></span><b>Is it there?</b></div>
+          <div class="s-row" id="s-q2" style="top:114px"><span class="s-box"><svg class="t" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1f7a5c" /><path d="M10 21 L17 28 L30 12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg><svg class="x" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#b8235a" /><path d="M12 12 L28 28 M28 12 L12 28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></span><b>A number?</b></div>
+          <div class="s-row" id="s-q3" style="top:166px"><span class="s-box"><svg class="t" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1f7a5c" /><path d="M10 21 L17 28 L30 12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg><svg class="x" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#b8235a" /><path d="M12 12 L28 28 M28 12 L12 28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></span><b>1 to 100?</b></div>
+          <div id="s-once" class="s-abs s-hide">once</div>
+        </div>
+
+        <!-- the form on Maya's website -->
+        <div id="s-form" class="s-abs s-ol">
+          <div id="s-fbar"><i></i><i></i><i></i><span>Maya's Cookies</span></div>
+          <div id="s-flabel" class="s-abs s-hide">How many cookies?</div>
+          <div id="s-in" class="s-abs s-hide"><b class="f1">3</b><b class="f3">three</b><b class="f4">-5</b><b class="f5">1000000</b><b class="f6">§#@!%</b><i id="s-caret"></i></div>
+          <div id="s-btn" class="s-abs s-hide">Order</div>
+          <div id="s-note" class="s-abs s-hide"><span id="s-notetxt">Please enter a whole<br />number from 1 to 100</span></div>
+        </div>
+
+        <!-- visitors' envelopes, parked at their place in the queue -->
+        <div class="s-env s-abs s-hide" id="s-e1" style="left:96px;top:500px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b>3</b><span class="s-tag s-hide" id="s-ttext">text</span></div>
+        <div class="s-env s-abs s-hide" id="s-e2" style="left:306px;top:500px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b class="em">(empty)</b><i class="s-rej"><svg viewBox="0 0 44 44"><path d="M14 14 L30 30 M30 14 L14 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></i></div>
+        <div class="s-env s-abs s-hide" id="s-e3" style="left:96px;top:620px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b>three</b><i class="s-rej"><svg viewBox="0 0 44 44"><path d="M14 14 L30 30 M30 14 L14 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></i></div>
+        <div class="s-env s-abs s-hide" id="s-e4" style="left:306px;top:620px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b>-5</b><i class="s-rej"><svg viewBox="0 0 44 44"><path d="M14 14 L30 30 M30 14 L14 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></i></div>
+        <div class="s-env s-abs s-hide" id="s-e5" style="left:96px;top:740px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b>1000000</b><i class="s-rej"><svg viewBox="0 0 44 44"><path d="M14 14 L30 30 M30 14 L14 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></i></div>
+        <div class="s-env s-abs s-hide" id="s-e6" style="left:306px;top:740px"><svg viewBox="0 0 190 96"><path d="M5 7 L95 44 L185 7" /></svg><b class="sy">§#@!%</b><i class="s-rej"><svg viewBox="0 0 44 44"><path d="M14 14 L30 30 M30 14 L14 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></i></div>
+        <div id="s-num" class="s-abs s-hide"><b>3</b><span class="s-tag" id="s-tnum">number</span></div>
+
+        <!-- rings, arrows, stamps -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-feed" class="s-ring" d="M1492 250 H1346" />
+          <polygon id="s-feedh" points="1328,250 1350,238 1350,262" fill="#ff6b8b" />
+          <path id="s-tring" class="s-ring" d="M1232 252 C1230 208 1336 206 1336 250 C1336 294 1228 296 1230 244" />
+          <path id="s-gring" class="s-ring" style="stroke:#3b37e6" d="M790 108 C884 108 884 392 790 392 C696 392 696 110 798 110" />
+          <path id="s-x1a" class="s-cross" d="M1052 744 L1164 866" /><path id="s-x1b" class="s-cross" d="M1164 744 L1052 866" />
+          <path id="s-x2a" class="s-cross" d="M1375 744 L1487 866" /><path id="s-x2b" class="s-cross" d="M1487 744 L1375 866" />
+          <path id="s-x3a" class="s-cross" d="M1698 744 L1810 866" /><path id="s-x3b" class="s-cross" d="M1810 744 L1698 866" />
+        </svg>
+        <div id="s-crash" class="s-abs s-hide">CRASH</div>
+        <div id="s-runme" class="s-abs s-hide">"run this"</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds); t(i) adds the 0.6 s lead-in.
+      const W = [0.0, 0.441, 0.94, 1.277, 1.602, 2.31, 2.519, 2.763, 3.762, 4.238, 4.331, 4.725, 5.097, 5.561, 5.851, 6.676, 6.861, 6.989, 7.303, 7.767, 8.336, 8.649, 8.847, 9.23, 9.741, 10.519, 11.134, 11.401, 11.796, 12.353, 13.142, 13.305, 13.595, 14.176, 14.907, 15.36, 16.149, 16.358, 16.834, 17.531, 17.844, 18.703, 18.889, 19.319, 19.783, 20.805, 21.025, 21.397, 21.768, 22.244, 22.941, 23.312, 23.428, 23.928, 24.148, 24.392, 25.158, 25.391, 25.716, 26.087, 26.18, 26.668, 26.946, 27.271, 28.281, 28.723, 28.943, 29.524, 29.709, 30.162, 30.638, 31.683, 31.927, 32.055, 32.74, 32.972, 33.088, 33.204, 33.97, 34.203, 34.318, 34.736, 35.027, 35.282, 35.537, 36.339, 36.768, 38.045, 38.208, 38.603, 39.055, 39.253, 39.589, 40.1, 40.402, 40.797, 41.47, 41.644, 41.911, 42.051, 42.387, 42.736, 42.945, 43.061, 43.653, 44.698, 45.127, 45.476, 45.569, 45.87, 46.184, 46.451, 46.706, 46.997, 47.229, 48.308, 48.982, 49.11, 49.597, 49.783, 50.433, 50.607, 50.99, 51.165, 51.293, 51.734, 52.233, 52.709, 53.173, 53.382, 53.545, 53.673, 54.485, 54.787, 55.124, 55.286, 55.681, 56.413, 56.691, 56.865, 57.481, 58.386, 58.688, 58.99, 59.199, 59.466, 59.663, 60.65, 60.952, 61.103, 61.533, 61.742, 61.869];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const stamp = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 2.2, rotation: 3 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.26, ease: "power4.in" }, at - 0.22);
+
+      /* hand-drawn strokes: draw by real length */
+      const LEN = {};
+      document.querySelectorAll("#s-marks path").forEach((p) => {
+        const L = Math.ceil(p.getTotalLength()) || 600;
+        LEN["#" + p.id] = L;
+        p.style.strokeDasharray = L + " " + (L + 40);
+      });
+      const draw = (sel, at, d) => {
+        tl.set(sel, { opacity: 1 }, at);
+        tl.fromTo(sel, { strokeDashoffset: LEN[sel] }, { strokeDashoffset: 0, duration: d || 0.4, ease: "power2.out" }, at);
+      };
+
+      /* what the box on the form shows: one value at a time, or the caret when empty */
+      const box = (cls, at) => {
+        tl.to(["#s-in > b", "#s-caret"], { opacity: 0, duration: 0.08 }, at - 0.1);
+        if (cls) tl.fromTo("#s-in > b." + cls, { opacity: 0, scale: 1.3, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, at);
+        else tl.to("#s-caret", { opacity: 1, duration: 0.08 }, at);
+      };
+      /* room screens */
+      const val = (room, from, to, at) => swap(room + " .s-scr > b." + from, room + " .s-scr > b." + to, at);
+
+      /* envelopes: slot in the queue, the landing spot beside line 2, and the spot in front of the gate */
+      const SLOT = { 1: [96, 500], 2: [306, 500], 3: [96, 620], 4: [306, 620], 5: [96, 740], 6: [306, 740] };
+      const LAND = [1500, 202], GATE = [556, 202], BOX = [244, 276];
+      const e = (i) => "#s-e" + i;
+      const dx = (i, p) => p[0] - SLOT[i][0], dy = (i, p) => p[1] - SLOT[i][1];
+      // out of the box on the form, across to line 2 of the code
+      const send = (i, at, d) => {
+        tl.fromTo(e(i), { opacity: 0 }, { opacity: 1, duration: 0.15 }, at);
+        tl.fromTo(e(i), { x: BOX[0] - 95 - SLOT[i][0], y: BOX[1] - 48 - SLOT[i][1], scale: 0.3 }, { x: dx(i, LAND), y: dy(i, LAND), scale: 1, duration: d || 0.65, ease: "power2.inOut" }, at);
+      };
+      const used = (i, at) => tl.to(e(i), { opacity: 0, scale: 0.6, duration: 0.2, ease: "power2.in" }, at);
+
+      gsap.set("#s-form", { x: 60, y: 150, scale: 1.5, transformOrigin: "0px 0px" });
+      gsap.set("#s-gatebar", { svgOrigin: "790 152" });
+
+      /* ---- 1. One box on Maya's website ---- */
+      pop("#s-name", t(0) - 0.05, { from: 0.4 });
+      pop("#s-in", t(3), { from: 0.7 });
+      pop("#s-btn", t(4), { from: 0.7 });
+      tl.fromTo("#s-flabel", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.75, ease: "steps(17)" }, t(5));
+      tl.to("#s-caret", { opacity: 0, duration: 0.01, repeat: 3, repeatDelay: 0.4, yoyo: true }, t(8) - 0.3);
+      box("f1", t(11));
+      // the first envelope comes out of the box and hangs in the air
+      tl.fromTo(e(1), { opacity: 0 }, { opacity: 1, duration: 0.15 }, t(12) - 0.05);
+      tl.fromTo(e(1), { x: 187, y: -32, scale: 0.3 }, { x: 819, y: -148, scale: 1.3, duration: 0.6, ease: "back.out(1.3)" }, t(12) - 0.05);
+      pop("#s-ttext", t(14) - 0.05, { from: 0.3, ease: "back.out(2.4)" });
+      // the code arrives and takes it as it is
+      out(["#s-maya", "#s-name"], t(15) - 0.15, 0.3);
+      tl.to("#s-form", { x: 0, y: 0, scale: 1, duration: 0.7, ease: "power3.inOut" }, t(15) - 0.15);
+      tl.fromTo("#s-code", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, t(16));
+      tl.to(e(1), { x: dx(1, LAND), y: dy(1, LAND), scale: 1, duration: 0.6, ease: "power2.inOut" }, t(17));
+      draw("#s-feed", t(18) - 0.05, 0.3);
+      tl.fromTo("#s-feedh", { opacity: 0 }, { opacity: 1, duration: 0.1 }, t(18) + 0.2);
+      draw("#s-tring", t(18) + 0.2, 0.4);
+      pop("#s-nocheck", t(18) + 0.35, { from: 0.4 });
+
+      /* ---- 2. Watch who turns up ---- */
+      tl.fromTo("#s-rooms", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(20) - 0.05);
+      tl.fromTo(".s-room", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.4)", stagger: 0.13 }, t(20) - 0.05);
+      tl.fromTo(".s-wire", { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 0.3, ease: "power2.out", stagger: 0.13 }, t(20) + 0.1);
+      // "3": fine
+      tl.to(e(1), { scale: 1.18, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 }, t(24));
+      val("#s-till", "v0", "v1", t(25) - 0.1);
+      val("#s-sales", "v0", "v1", t(25) + 0.05);
+      val("#s-kit", "v0", "v1", t(25) + 0.2);
+      tl.fromTo(".s-ok", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2.4)", stagger: 0.1 }, t(25) + 0.2);
+      // an empty box: crash
+      used(1, t(26) + 0.1);
+      box(null, t(26));
+      send(2, t(27) - 0.1, 0.7);
+      tl.to("#s-hot", { opacity: 1, duration: 0.12 }, t(29) - 0.05);
+      stamp("#s-crash", t(29) + 0.1);
+      tl.to(e(2), { x: "+=10", duration: 0.05, yoyo: true, repeat: 5 }, t(29) + 0.1);
+      // the word "three": crash
+      out(["#s-crash", "#s-hot"], t(30) - 0.1, 0.15);
+      used(2, t(30) - 0.1);
+      box("f3", t(30) + 0.05);
+      send(3, t(31), 0.65);
+      tl.to("#s-hot", { opacity: 1, duration: 0.12 }, t(33) - 0.05);
+      stamp("#s-crash", t(33) + 0.1);
+      tl.to(e(3), { x: "+=10", duration: 0.05, yoyo: true, repeat: 5 }, t(33) + 0.1);
+      // -5: a negative total
+      out(["#s-crash", "#s-hot"], t(34) - 0.1, 0.15);
+      used(3, t(34) - 0.1);
+      box("f4", t(34) + 0.05);
+      send(4, t(35) - 0.2, 0.65);
+      tl.to("#s-till .s-ok", { opacity: 0, duration: 0.15 }, t(37) - 0.1);
+      val("#s-till", "v1", "v2", t(37));
+      tl.to("#s-sales .s-ok", { opacity: 0, duration: 0.15 }, t(38) - 0.1);
+      val("#s-sales", "v1", "v2", t(38));
+      tl.to("#s-kit .s-ok", { opacity: 0, duration: 0.15 }, t(38) + 0.2);
+      val("#s-kit", "v1", "v2", t(38) + 0.3);
+      // one million: the kitchen floods
+      used(4, t(39) - 0.1);
+      box("f5", t(39) + 0.05);
+      send(5, t(40) - 0.15, 0.6);
+      val("#s-till", "v2", "v3", t(40) + 0.55);
+      val("#s-kit", "v2", "v3", t(42) - 0.1);
+      tl.fromTo("#s-flood > g", { opacity: 0, scale: 0.2, y: -90, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.6)", stagger: 0.035 }, t(44) - 0.15);
+      // strange symbols
+      used(5, t(47) - 0.1);
+      box("f6", t(47) + 0.2);
+      send(6, t(49) - 0.1, 0.65);
+      pop("#s-runme", t(53) - 0.1, { from: 0.4 });
+      tl.to(e(6), { rotation: -5, duration: 0.12, yoyo: true, repeat: 3, ease: "power1.inOut" }, t(54));
+
+      /* ---- 3. A wall with one gate ---- */
+      out(["#s-runme", "#s-feed", "#s-feedh", "#s-tring", "#s-nocheck"], t(56) - 0.15, 0.2);
+      tl.to("#s-flood > g", { opacity: 0, y: 60, duration: 0.25, ease: "power2.in", stagger: 0.008 }, t(56) - 0.15);
+      val("#s-till", "v3", "v0", t(56));
+      val("#s-sales", "v2", "v0", t(56) + 0.08);
+      val("#s-kit", "v3", "v0", t(56) + 0.16);
+      box(null, t(56));
+      // every visitor is pulled back outside, into a queue
+      [6, 5, 4, 3, 2, 1].forEach((i, k) => {
+        tl.to(e(i), { x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, t(56) + 0.05 + k * 0.07);
+      });
+      tl.fromTo("#s-walltop", { opacity: 0, y: -200 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.in" }, t(59) - 0.15);
+      tl.fromTo("#s-wallbot", { opacity: 0, y: 700 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.in" }, t(59) - 0.2);
+      tl.to("#s-wrap", { y: 6, duration: 0.05, yoyo: true, repeat: 3 }, t(60) + 0.02);
+      tl.fromTo("#s-posts", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(62) - 0.05);
+      tl.fromTo("#s-gatebar", { opacity: 0, scaleY: 0.05 }, { opacity: 1, scaleY: 1, duration: 0.3, ease: "power3.in" }, t(62));
+      draw("#s-gring", t(63) - 0.05, 0.55);
+      pop("#s-guard", t(63) + 0.25, { from: 0.4 });
+      swap("#s-tok > b.a", "#s-tok > b.b", t(63) + 0.45);
+      pop("#s-onegate", t(63) + 0.6, { from: 0.4 });
+      tl.to(".s-env", { y: -12, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, stagger: 0.06 }, t(64));
+      pop("#s-outside", t(66) - 0.05, { from: 0.4 });
+      out("#s-gring", t(68) - 0.2, 0.2);
+      tl.fromTo("#s-sign", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, t(68) - 0.05);
+      pop("#s-once", t(70), { from: 0.3, ease: "back.out(2.4)" });
+      pop("#s-q1", t(71), { from: 0.7, d: 0.35 });
+      pop("#s-q2", t(74), { from: 0.7, d: 0.35 });
+      pop("#s-q3", t(78), { from: 0.7, d: 0.35 });
+
+      /* ---- 4. Three passes. The rest are handed back ---- */
+      box("f1", t(85) - 0.25);
+      tl.to(e(1), { x: dx(1, GATE), y: dy(1, GATE), duration: 0.5, ease: "power2.inOut" }, t(85) - 0.1);
+      ["#s-q1", "#s-q2", "#s-q3"].forEach((q, k) => {
+        tl.fromTo(q + " svg.t", { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.4)" }, t(86) + k * 0.2);
+      });
+      tl.to("#s-gatebar", { scaleY: 0.05, duration: 0.3, ease: "power2.out" }, t(86) + 0.75);
+      // the text becomes a real number
+      tl.to("#s-ttext", { scale: 1.25, duration: 0.15, yoyo: true, repeat: 1 }, t(88));
+      tl.to(e(1), { opacity: 0, scale: 0.7, duration: 0.15, ease: "power2.in" }, t(91) - 0.1);
+      tl.fromTo("#s-num", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, t(91) - 0.02);
+      tl.fromTo("#s-tnum", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2.4)" }, t(92));
+      tl.to("#s-num", { x: 904, duration: 0.6, ease: "power2.inOut" }, t(94) - 0.1);
+      val("#s-till", "v0", "v1", t(95) + 0.15);
+      val("#s-sales", "v0", "v1", t(95) + 0.27);
+      val("#s-kit", "v0", "v1", t(95) + 0.39);
+      // the rest
+      tl.to("#s-gatebar", { scaleY: 1, duration: 0.18, ease: "power3.in" }, t(96) - 0.15);
+      tl.to(".s-box svg.t", { opacity: 0, duration: 0.15 }, t(96) - 0.1);
+      box("f3", t(97));
+      [[2, 1], [3, 2], [4, 3], [5, 3], [6, 2]].forEach(([i, q], k) => {
+        const at = t(96) + 0.12 + k * 0.42;
+        tl.to(e(i), { x: dx(i, GATE), y: dy(i, GATE), duration: 0.24, ease: "power2.in" }, at);
+        tl.fromTo("#s-q" + q + " svg.x", { opacity: 0 }, { opacity: 1, duration: 0.06 }, at + 0.22);
+        tl.to("#s-gatebar", { x: 5, duration: 0.04, yoyo: true, repeat: 1 }, at + 0.24);
+        tl.to(e(i), { x: 0, y: 0, duration: 0.32, ease: "back.out(1.4)" }, at + 0.3);
+        tl.to("#s-q" + q + " svg.x", { opacity: 0, duration: 0.1 }, at + 0.4);
+        tl.fromTo(e(i) + " .s-rej", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.4)" }, at + 0.5);
+      });
+      // with a kind note
+      pop("#s-note", t(103) - 0.05, { from: 0.7, d: 0.35 });
+      tl.set("#s-notetxt", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.fromTo("#s-notetxt", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: t(109) - t(105), ease: "steps(20)" }, t(105));
+
+      /* ---- 5. Inside the wall, the rooms simply trust ---- */
+      pop("#s-inside", t(115), { from: 0.4 });
+      [["#s-kit", t(119)], ["#s-till", t(121)], ["#s-sales", t(124)]].forEach(([r, at]) => {
+        tl.to(r, { y: -16, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1 }, at - 0.05);
+        tl.fromTo(r + " .s-ok", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2.4)" }, at + 0.05);
+      });
+      pop("#s-trusted", t(127) - 0.05, { from: 0.4 });
+      tl.fromTo(".s-mg", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.8)", stagger: 0.13 }, t(133) - 0.05);
+      [["#s-x1a", "#s-x1b"], ["#s-x2a", "#s-x2b"], ["#s-x3a", "#s-x3b"]].forEach(([a, b], k) => {
+        const at = t(135) - 0.05 + k * 0.2;
+        draw(a, at, 0.14);
+        draw(b, at + 0.1, 0.14);
+      });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.28, ease: "power2.in" }, 56.55);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

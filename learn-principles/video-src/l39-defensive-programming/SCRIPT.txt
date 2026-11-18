@@ -1,0 +1,11 @@
+Maya's website has one box. How many cookies? Whatever a visitor types arrives as text, and the code trusts it.
+
+Watch who turns up. Three. Fine. An empty box. Crash. The word three. Crash. Minus five. A negative total. One million. The kitchen screen floods. And someone types strange symbols, hoping the program will run them.
+
+So Maya builds a wall, with one gate. Everything from outside is checked there, once. Is it there? Is it a number? Is it between one and one hundred?
+
+Three passes. The text becomes a real number, and walks in. The rest are handed back, with a kind note. Please enter a whole number from one to one hundred.
+
+Inside the wall, the kitchen, the till and the sales file simply trust what they are given. No guard in every room.
+
+That is defensive programming. Never trust what comes from outside. Check it once, at the gate.

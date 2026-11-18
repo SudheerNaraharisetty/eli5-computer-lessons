@@ -1,0 +1,15 @@
+Every evening, Maya's cookie shop runs one job. It is called close shop.
+
+It started small. Now it is forty-two lines long. Count the till. Find the unsold cookies. Mark them half price. Back up the sales. Lock up. All in one long scroll.
+
+Then a customer complains. Day-old cookies should be half price. One dollar fifty. The tag says two dollars fifty.
+
+Where is the mistake? Maya starts at the top and reads. Line after line. Sum after sum. Twenty-two lines down, she finds it. One wrong character.
+
+She fixes it. Then she fixes the real problem. Each chunk is cut out into its own small function, and named after its comment.
+
+Now close shop is just five steps. It reads like a list.
+
+Next time something breaks, Maya reads five names, opens one, and sees the whole thing at once.
+
+That is the idea of small functions. Each function does one thing, and is small enough to see whole.

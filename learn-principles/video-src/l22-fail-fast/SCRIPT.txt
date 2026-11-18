@@ -1,0 +1,13 @@
+Sam takes a phone order at Maya's cookie shop. Three cakes. But his finger slips, and he types minus three.
+
+The order job does not check. So the bad number rolls on, quietly.
+
+The total becomes minus sixty dollars. The sales file saves it. The baking plan loses three cakes. And the weekly report comes out wrong. Nothing crashes.
+
+Three weeks later, the accountant finds a hole in the books. Maya spends two days tracing it back, station by station, to one mistyped number.
+
+The fix is one check at the door. If the count is zero or less, raise an error. That means, stop right here, and say what is wrong.
+
+Play it again. Minus three goes in. The gate slams shut. The message says, count must be at least one, got minus three. Sam fixes it in seconds, and every later station stays clean.
+
+That is fail fast. Stop at the first sign of trouble, and say so loudly.

@@ -1,0 +1,78 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #root * { box-sizing: border-box; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 96px; font: 700 170px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-sub { left: 114px; top: 330px; font: 700 70px/1.22 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #t-sub span { display: inline-block; opacity: 0; }
+    #t-sub .ac { color: #b8235a; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-line path { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-err { left: 114px; top: 600px; width: 1180px; height: 120px; background: #15132b; border-radius: 20px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-errbar { left: 0; top: 0; width: 22px; height: 120px; background: #e0356f; border-radius: 20px 0 0 20px; }
+    #t-errtxt { left: 54px; top: 32px; font: 700 36px/56px "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; color: #fff; }
+    #t-errtxt i { font-style: normal; color: #ff6b8b; }
+    #t-next { left: 114px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-maya { left: 1410px; top: 470px; width: 470px; height: 611px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.85" data-track-index="1">
+      <div id="t-head" class="t-abs"><span class="ac">Fail</span> <span class="ac">fast.</span></div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M118 290 Q420 312 800 284" /></svg>
+      <div id="t-sub" class="t-abs">
+        <span>Stop</span> <span>at</span> <span>the</span> <span>first</span> <span>sign</span> <span>of</span> <span>trouble,</span><br />
+        <span>and</span> <span class="ac">say</span> <span class="ac">so</span> <span class="ac">loudly.</span>
+      </div>
+      <div id="t-err" class="t-abs">
+        <div id="t-errbar" class="t-abs"></div>
+        <div id="t-errtxt" class="t-abs"><i>ValueError: </i>count must be at least 1, got -3</div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 23: Explicit over implicit</div>
+      <svg id="t-maya" class="t-abs" viewBox="0 0 400 520" data-layout-allow-overflow>
+        <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+        <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+        <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+        <path d="M160 174 Q170 162 180 174 M220 174 Q230 162 240 174" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+        <path d="M166 198 Q200 236 234 198 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 57.45;
+      const g = { fail: 57.86, stop: 59.37, and: 61.0, loudly: 61.97, end: 62.95 };
+      const tl = gsap.timeline({ paused: true });
+      const sub = gsap.utils.toArray("#t-sub span");
+      const u = document.querySelector("#t-under");
+      const L = Math.ceil(u.getTotalLength()) || 700;
+      u.style.strokeDasharray = L + " " + (L + 40);
+      tl.fromTo("#t-maya", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.05);
+      tl.fromTo("#t-head span", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", stagger: 0.45 }, g.fail - S - 0.05);
+      tl.set("#t-under", { opacity: 1 }, g.fail - S + 0.9);
+      tl.fromTo("#t-under", { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, g.fail - S + 0.9);
+      tl.fromTo(sub.slice(0, 7), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out", stagger: 0.19 }, g.stop - S - 0.05);
+      tl.fromTo(sub.slice(7), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out", stagger: 0.3 }, g.and - S - 0.05);
+      tl.fromTo("#t-err", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.loudly - S + 0.25);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

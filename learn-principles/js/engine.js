@@ -52,11 +52,15 @@
   function code(lines, o) {
     o = o || {};
     const paint = src => {
-      const cut = src.indexOf('#');
+      const m = src.match(/^((?:[^"'#]|"[^"]*"|'[^']*')*)#/);
+      const cut = m ? m[1].length : -1;
       const main = cut < 0 ? src : src.slice(0, cut), cmt = cut < 0 ? '' : src.slice(cut);
-      const html = esc(main)
-        .replace(/\b(def|return|if|else|for|in|import|class|not|and|or)\b/g, '<span class="k">$1</span>')
-        .replace(/\b([A-Z][A-Z_]{2,}|\d+(?:\.\d+)?)\b/g, '<span class="nm">$1</span>');
+      // Colour keywords and numbers, but leave the insides of "strings" alone.
+      const html = main.split(/("[^"]*"|'[^']*')/).map((seg, i) => i % 2
+        ? `<span class="st">${esc(seg)}</span>`
+        : esc(seg)
+          .replace(/\b(def|return|if|elif|else|for|while|in|import|from|class|not|and|or|is|raise|try|except|pass|True|False|None)\b/g, '<span class="k">$1</span>')
+          .replace(/\b([A-Z][A-Z_]{2,}|\d+(?:\.\d+)?)\b/g, '<span class="nm">$1</span>')).join('');
       return html + (cmt ? `<span class="cmt">${esc(cmt)}</span>` : '');
     };
     const body = lines.map((l, i) => {

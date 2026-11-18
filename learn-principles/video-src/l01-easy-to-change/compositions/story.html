@@ -1,0 +1,359 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #s-all, #s-wrap, #s-shop { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* shop */
+    #s-counter { left: 96px; top: 740px; width: 1054px; height: 244px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 740px; width: 1054px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-maya { left: 150px; top: 236px; width: 420px; height: 546px; }
+    #s-sign { left: 590px; top: 110px; padding: 20px 38px; background: #fff; border-radius: 22px; font: 700 64px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-name { left: 506px; top: 388px; padding: 6px 26px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-cookies { left: 596px; top: 664px; width: 210px; height: 80px; }
+    #s-lapscreen { left: 840px; top: 528px; width: 270px; height: 180px; background: #15132b; border-radius: 14px; }
+    #s-lapbase { left: 812px; top: 714px; width: 326px; height: 26px; background: #fff; border-radius: 8px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-bar { position: absolute; left: 26px; height: 14px; border-radius: 7px; }
+
+    /* right panel */
+    #s-right { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-rtitle { left: 40px; top: 24px; font: 700 54px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-notice, #s-compare { left: 40px; top: 108px; width: 534px; height: 132px; border-radius: 20px; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; display: flex; align-items: center; }
+    #s-notice { background: #fbebd2; padding: 0 26px; justify-content: space-between; }
+    #s-notice small { display: block; font-size: 28px; letter-spacing: 0.03em; color: #b9741a; line-height: 1.3; }
+    #s-notice b { display: block; font-size: 36px; line-height: 1.25; }
+    .s-rates { position: relative; width: 250px; height: 76px; font: 700 50px/76px "Fraunces", serif; }
+    .s-rates > span { position: absolute; right: 0; top: 0; white-space: nowrap; }
+    .s-rates i { font-style: normal; color: #3b37e6; display: inline-block; }
+    #s-compare { background: #fff; justify-content: center; gap: 30px; }
+    .s-cmp { text-align: center; }
+    .s-cmp b { display: block; font: 700 50px/1.15 "JetBrains Mono", monospace; }
+    .s-cmp small { display: block; font-size: 28px; color: #3e3b52; line-height: 1.2; }
+    #s-neq { font: 700 76px/1 "Fraunces", serif; color: #b8235a; }
+    #s-wrong { right: -24px; top: -52px; padding: 4px 18px; background: #b8235a; color: #fff; font-size: 32px; letter-spacing: 0.08em; border-radius: 10px; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-dev { position: absolute; left: 40px; width: 534px; height: 164px; display: flex; align-items: center; gap: 26px; }
+    .s-obj { position: relative; width: 270px; height: 150px; flex: none; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+    .s-dev > span { font-size: 34px; line-height: 1.15; }
+    .s-scr { background: #15132b; color: #eceaff; }
+    .s-rdr { background: #fff; justify-content: flex-start; }
+    .s-mini { margin-left: 16px; width: 178px; height: 94px; border-radius: 12px; background: #15132b; color: #eceaff; display: flex; align-items: center; justify-content: center; }
+    .s-keys { margin-left: 16px; display: grid; grid-template-columns: repeat(3, 10px); gap: 9px; }
+    .s-keys i { width: 10px; height: 10px; border-radius: 50%; background: #3e3b52; }
+    .s-rcp { flex-direction: column; }
+    .s-rcp > svg { position: absolute; left: -5px; top: -5px; width: 280px; height: 172px; }
+    .s-rcp small { position: relative; font-size: 28px; letter-spacing: 0.12em; color: #6f6b80; line-height: 1.2; }
+    .s-amt { position: relative; display: block; width: 6ch; height: 1.2em; line-height: 1.2em; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 50px; }
+    .s-mini .s-amt { font-size: 38px; }
+    .s-rcp .s-amt { font-size: 46px; }
+    .s-amt b { position: absolute; left: 0; top: 0; opacity: 0; }
+    .s-amt b.m0 { opacity: 1; }
+    .s-tag { position: absolute; right: -22px; top: -24px; padding: 2px 16px; background: #3b37e6; color: #fff; font: 800 30px/1.4 "Manrope", sans-serif; border-radius: 999px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    .s-ok { position: absolute; right: -24px; bottom: -22px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-ok > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    .s-wire { position: absolute; left: 1150px; width: 60px; height: 6px; background: #0e0c1d; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; color: #fff; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 10px; }
+    #s-bar > i { width: 16px; height: 16px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px "JetBrains Mono", monospace; color: #a9a5d6; }
+    #s-noerr { right: 22px; top: 10px; padding: 0 18px; height: 44px; border-radius: 999px; background: #1f7a5c; color: #fff; font-size: 28px; line-height: 44px; white-space: nowrap; }
+    .s-strip { position: absolute; left: 14px; width: 1026px; height: 156px; border-radius: 14px; background: #211e40; }
+    #s-lines { left: 36px; top: 104px; width: 1000px; font: 500 30px/52px "JetBrains Mono", monospace; }
+    .s-ln { height: 52px; display: flex; white-space: pre; }
+    .s-ln > i { width: 60px; flex: none; font-style: normal; color: #8480b8; }
+    .s-ln .kw { color: #c9c6ff; }
+    .s-ln .fn { color: #7cf0b5; }
+    .s-ln .cm { color: #8e8ac0; }
+    .s-tok { position: relative; display: inline-block; width: 4ch; font-weight: 700; }
+    .s-tok b { position: absolute; left: 0; top: 0; opacity: 0; display: inline-block; }
+    .s-tok b.v8 { opacity: 1; color: #ffc24b; }
+    .s-tok b.v9, .s-tok b.v10 { color: #7cf0b5; }
+    .s-tok b.vn { color: #ffc24b; }
+    #s-k0 b.v9 { opacity: 1; }
+    #s-taxline { display: inline-block; height: 52px; }
+    #s-k0 { height: 52px; vertical-align: top; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path, #s-marks polygon { opacity: 0; }
+    .s-ring { fill: none; stroke: #ff6b8b; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; }
+    .s-badge { position: absolute; left: 802px; width: 50px; height: 50px; border-radius: 50%; background: #ff6b8b; color: #0e0c1d; font-size: 30px; line-height: 50px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-missed { left: 814px; top: 825px; padding: 0 20px; height: 50px; line-height: 50px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-oneplace { left: 956px; top: 254px; padding: 0 20px; height: 48px; line-height: 48px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 28px; white-space: nowrap; }
+    #s-cursor { left: 0; top: 0; width: 48px; height: 48px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.55" data-track-index="1">
+      <div id="s-wrap">
+        <!-- the shop -->
+        <div id="s-shop">
+          <svg id="s-maya" class="s-abs" viewBox="0 0 400 520">
+            <circle cx="200" cy="44" r="42" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="200" cy="150" r="104" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" />
+            <g id="s-arm">
+              <path d="M296 340 L366 232" stroke="#0e0c1d" stroke-width="50" stroke-linecap="round" />
+              <path d="M296 340 L366 232" stroke="#f2c9a5" stroke-width="38" stroke-linecap="round" />
+            </g>
+            <rect x="178" y="226" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 520 C70 340 130 268 200 268 C270 268 330 340 330 520 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 520 V366 Q200 338 268 366 V520 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 366 L160 282 M268 366 L240 282" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="162" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M117 150 Q146 66 226 78 Q280 88 284 152 Q240 112 190 120 Q150 124 117 150 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="198" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="172" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="172" r="8" fill="#0e0c1d" />
+            <path d="M172 202 Q200 228 228 202" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <div id="s-name" class="s-abs s-hide">Maya</div>
+          <div id="s-sign" class="s-abs s-ol s-hide">Maya's Cookies</div>
+          <svg id="s-cookies" class="s-abs s-hide" viewBox="0 0 210 80">
+            <ellipse cx="105" cy="68" rx="100" ry="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <g stroke="#0e0c1d" stroke-width="5">
+              <circle cx="56" cy="40" r="28" fill="#d9a05b" />
+              <circle cx="150" cy="40" r="28" fill="#d9a05b" />
+              <circle cx="103" cy="32" r="30" fill="#e2ad6b" />
+            </g>
+            <g fill="#5a3418">
+              <circle cx="94" cy="24" r="5" /><circle cx="114" cy="36" r="5" /><circle cx="98" cy="44" r="4" />
+              <circle cx="48" cy="34" r="4" /><circle cx="160" cy="46" r="4" /><circle cx="146" cy="30" r="4" />
+            </g>
+          </svg>
+          <div id="s-laptop" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+            <div id="s-lapscreen" class="s-abs s-ol">
+              <span class="s-bar" style="top:30px;width:120px;background:#c9c6ff"></span>
+              <span class="s-bar" style="top:58px;left:52px;width:170px;background:#7cf0b5"></span>
+              <span class="s-bar" style="top:86px;left:52px;width:110px;background:#ffc24b"></span>
+              <span class="s-bar" style="top:114px;width:140px;background:#c9c6ff"></span>
+              <span class="s-bar" style="top:142px;left:52px;width:150px;background:#7cf0b5"></span>
+            </div>
+            <div id="s-lapbase" class="s-abs"></div>
+          </div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div class="s-strip" style="top:260px"></div>
+          <div class="s-strip" style="top:468px"></div>
+          <div class="s-strip" style="top:676px"></div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>shop.py</span></div>
+          <div id="s-noerr" class="s-abs s-hide">runs with no errors</div>
+          <div id="s-lines" class="s-abs">
+            <div class="s-ln"><i>1</i><span class="dm cm"># Maya's cookie shop</span></div>
+            <div class="s-ln"><i>2</i><span id="s-taxline"><span>TAX_RATE = </span><span class="s-tok" id="s-k0"><b class="v9">0.09</b><b class="v10">0.10</b></span></span></div>
+            <div class="s-ln"><i>3</i></div>
+            <div class="s-ln"><i>4</i><span class="dm"><span class="kw">def</span> <span class="fn">show_price</span>(price):</span></div>
+            <div class="s-ln"><i>5</i><span class="dm">    total = price + price * </span><span class="s-tok" id="s-k1"><b class="v8">0.08</b><b class="v9">0.09</b><b class="vn">TAX_RATE</b></span></div>
+            <div class="s-ln"><i>6</i><span class="dm">    display(total)</span></div>
+            <div class="s-ln"><i>7</i></div>
+            <div class="s-ln"><i>8</i><span class="dm"><span class="kw">def</span> <span class="fn">take_payment</span>(price):</span></div>
+            <div class="s-ln"><i>9</i><span class="dm">    total = price + price * </span><span class="s-tok" id="s-k2"><b class="v8">0.08</b><b class="v9">0.09</b><b class="vn">TAX_RATE</b></span></div>
+            <div class="s-ln"><i>10</i><span class="dm">    charge_card(total)</span></div>
+            <div class="s-ln"><i>11</i></div>
+            <div class="s-ln"><i>12</i><span class="dm"><span class="kw">def</span> <span class="fn">print_receipt</span>(price):</span></div>
+            <div class="s-ln"><i>13</i><span class="dm">    total = price + price * </span><span class="s-tok" id="s-k3"><b class="v8">0.08</b><b class="v9">0.09</b><b class="vn">TAX_RATE</b></span></div>
+            <div class="s-ln"><i>14</i><span class="dm">    print_paper(total)</span></div>
+          </div>
+        </div>
+        <div id="s-wires" class="s-abs s-hide" style="left:0;top:0">
+          <div class="s-wire" style="top:431px"></div>
+          <div class="s-wire" style="top:639px"></div>
+          <div class="s-wire" style="top:847px"></div>
+        </div>
+
+        <!-- what the shop shows -->
+        <div id="s-right" class="s-abs s-ol s-hide">
+          <div id="s-rtitle" class="s-abs">In the shop</div>
+          <div id="s-notice" class="s-abs s-hide">
+            <div><small>CITY NOTICE</small><b>Sales tax</b></div>
+            <div class="s-rates">
+              <span id="s-rateA"><span id="s-ra1">8%</span><i id="s-ra2">&nbsp;→ 9%</i></span>
+              <span id="s-rateB" class="s-hide">9% → <i>10%</i></span>
+            </div>
+          </div>
+          <div id="s-compare" class="s-abs s-hide">
+            <div class="s-cmp" id="s-cmpL"><b>$10.90</b><small>screen</small></div>
+            <div id="s-neq" class="s-hide">≠</div>
+            <div class="s-cmp s-hide" id="s-cmpR"><b>$10.80</b><small>receipt</small></div>
+            <div id="s-wrong" class="s-abs s-hide">WRONG</div>
+          </div>
+
+          <div class="s-dev s-hide" id="s-d1" style="top:256px">
+            <div class="s-obj s-scr s-ol">
+              <span class="s-amt" id="s-a1"><b class="m0">$10.00</b><b class="m8">$10.80</b><b class="m9">$10.90</b><b class="m10">$11.00</b></span>
+              <div class="s-tag s-hide">+8% tax</div>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <span>Screen</span>
+          </div>
+          <div class="s-dev s-hide" id="s-d2" style="top:464px">
+            <div class="s-obj s-rdr s-ol">
+              <div class="s-mini"><span class="s-amt" id="s-a2"><b class="m0">$10.00</b><b class="m8">$10.80</b><b class="m9">$10.90</b><b class="m10">$11.00</b></span></div>
+              <div class="s-keys"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="s-tag s-hide">+8% tax</div>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <span>Card reader</span>
+          </div>
+          <div class="s-dev s-hide" id="s-d3" style="top:672px">
+            <div class="s-obj s-rcp">
+              <svg viewBox="0 0 280 172"><path d="M5 15 H275 V150 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#0e0c1d" /><path d="M5 5 H275 V140 l-15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 -15 -12 -15 12 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+              <small>TOTAL</small>
+              <span class="s-amt" id="s-a3"><b class="m0">$10.00</b><b class="m8">$10.80</b><b class="m9">$10.90</b><b class="m10">$11.00</b></span>
+              <div class="s-tag s-hide">+8% tax</div>
+              <div class="s-ok s-hide"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            </div>
+            <span>Receipt</span>
+          </div>
+        </div>
+
+        <!-- circles, arrows, pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-r1" class="s-ring" pathLength="1" d="M670 436 C668 392 796 390 796 434 C796 478 664 480 666 428" />
+          <path id="s-r2" class="s-ring" pathLength="1" d="M670 644 C668 600 796 598 796 642 C796 686 664 688 666 636" />
+          <path id="s-r3" class="s-ring" pathLength="1" d="M670 852 C668 808 796 806 796 850 C796 894 664 896 666 844" />
+          <path id="s-r3m" d="M670 852 C668 808 796 806 796 850 C796 894 664 896 666 844" fill="none" stroke="#ff6b8b" stroke-width="6" stroke-linecap="round" stroke-dasharray="14 12" />
+          <path id="s-rrcp" class="s-ring" pathLength="1" style="stroke:#b8235a" d="M1240 852 C1236 752 1534 748 1534 850 C1534 952 1232 956 1236 838" />
+          <path id="s-under" class="s-ring" pathLength="1" style="stroke:#7cf0b5" d="M192 306 Q330 314 466 303" />
+          <path id="s-rail" class="s-ring" pathLength="1" style="stroke:#c9c6ff;stroke-width:4" d="M480 278 H914 Q930 278 930 294 V850 H866" />
+          <path id="s-br1" class="s-ring" pathLength="1" style="stroke:#c9c6ff;stroke-width:4" d="M930 434 H866" />
+          <path id="s-br2" class="s-ring" pathLength="1" style="stroke:#c9c6ff;stroke-width:4" d="M930 642 H866" />
+          <polygon id="s-ah1" points="852,434 870,424 870,444" fill="#c9c6ff" />
+          <polygon id="s-ah2" points="852,642 870,632 870,652" fill="#c9c6ff" />
+          <polygon id="s-ah3" points="852,850 870,840 870,860" fill="#c9c6ff" />
+        </svg>
+        <div class="s-badge s-hide" id="s-b1" style="top:378px">1</div>
+        <div class="s-badge s-hide" id="s-b2" style="top:586px">2</div>
+        <div class="s-badge s-hide" id="s-b3" style="top:794px">3</div>
+        <div id="s-missed" class="s-abs s-hide">missed</div>
+        <div id="s-oneplace" class="s-abs s-hide">one place</div>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds), offset by the 0.6 s lead-in.
+      const W = [0.0, 0.337, 1.405, 1.602, 1.892, 1.974, 2.31, 2.624, 3.019, 3.239, 3.39, 3.68, 3.785, 4.098, 4.656, 4.818, 5.05, 5.735, 5.898, 6.432, 6.734, 7.14, 8.127, 8.313, 8.615, 8.731, 9.288, 9.648, 9.764, 10.472, 10.716, 11.064, 11.204, 12.481, 12.806, 13.189, 13.677, 14.013, 14.466, 14.93, 16.184, 16.521, 16.684, 16.811, 17.543, 17.833, 19.017, 19.203, 19.865, 20.422, 20.77, 21.444, 21.897, 22.164, 22.582, 22.767, 23.185, 23.661, 24.671, 24.915, 25.031, 25.403, 25.844, 25.96, 26.332, 26.575, 26.935, 28.143, 28.514, 28.932, 29.072, 29.443, 29.675, 30.221, 30.918, 31.428, 31.742, 32.427, 32.671, 32.856, 33.228, 33.379, 33.75, 34.517, 34.842, 34.981, 35.365, 35.736, 36.003, 36.572, 36.758, 36.862, 37.338, 37.733, 38.801, 39.277, 40.032, 40.206, 40.554, 40.694, 40.961, 41.576, 42.447, 42.621, 43.004, 43.236, 44.316, 44.583, 44.711, 45.198, 45.5, 45.999, 46.243, 46.487, 47.195, 47.393, 47.613, 48.02, 48.356, 48.6, 48.879, 49.842, 50.156, 50.446, 50.574, 50.98, 51.862, 52.257, 52.838, 53.151, 54.045, 54.359, 54.858, 55.218];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const pop = (sel, at, o) => {
+        o = o || {};
+        tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at);
+      };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.2, ease: "power2.in" }, at);
+      const swap = (a, b, at) => {
+        tl.to(a, { opacity: 0, duration: 0.12, ease: "power2.in" }, at);
+        tl.fromTo(b, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.08);
+      };
+      const draw = (sel, at, d) => tl.fromTo(sel, { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: d || 0.45, ease: "power2.out" }, at);
+
+      /* ---- 1. Meet Maya ---- */
+      tl.to("#s-arm", { rotation: -16, svgOrigin: "296 340", duration: 0.2, ease: "power1.inOut", yoyo: true, repeat: 5 }, 0.55);
+      pop("#s-name", t(1) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-sign", { opacity: 0, y: -150, rotation: -9 }, { opacity: 1, y: 0, rotation: -3, duration: 0.6, ease: "back.out(1.3)" }, t(6) - 0.1);
+      pop("#s-cookies", t(7) + 0.25, { from: 0.5 });
+      tl.fromTo("#s-laptop", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(10) - 0.05);
+      tl.fromTo(".s-bar", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3, ease: "power3.out", stagger: 0.16 }, t(12));
+
+      /* ---- 2. Three jobs, each adds 8% ---- */
+      tl.fromTo("#s-right", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, t(17) - 0.05);
+      pop("#s-d1", t(23), { from: 0.75 });
+      pop("#s-d2", t(26), { from: 0.75 });
+      pop("#s-d3", t(30), { from: 0.75 });
+      [["#s-d1", t(33)], ["#s-d2", t(35)], ["#s-d3", t(36)]].forEach(([d, at], i) => {
+        pop(d + " .s-tag", at, { from: 0.3, ease: "back.out(2.2)", d: 0.4 });
+        const sw = t(38) + i * 0.14;
+        tl.to(d + " .s-tag", { opacity: 0, scale: 0.4, x: -110, y: 70, duration: 0.28, ease: "power3.in" }, sw - 0.2);
+        swap(d + " .m0", d + " .m8", sw);
+      });
+
+      /* ---- 3. Here is the code ---- */
+      tl.to("#s-shop", { opacity: 0, x: -90, filter: "blur(12px)", duration: 0.4, ease: "power3.in" }, t(40) - 0.55);
+      tl.fromTo("#s-code", { opacity: 0, y: 44, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power4.out" }, t(40) - 0.2);
+      tl.fromTo("#s-lines .s-ln", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out", stagger: 0.055 }, t(40) + 0.05);
+      tl.set("#s-taxline", { opacity: 0 }, 0);
+      tl.fromTo("#s-wires", { opacity: 0 }, { opacity: 1, duration: 0.3 }, t(40) + 0.5);
+      tl.to("#s-lines .dm", { opacity: 0.38, duration: 0.5, ease: "power2.inOut" }, t(44));
+      draw("#s-r1", t(48) - 0.05, 0.5);
+      pop("#s-b1", t(48) + 0.35, { from: 0.3 });
+      draw("#s-r2", t(55) - 0.1, 0.4);
+      pop("#s-b2", t(55) + 0.2, { from: 0.3 });
+      draw("#s-r3", t(56) + 0.1, 0.4);
+      pop("#s-b3", t(57), { from: 0.3 });
+
+      /* ---- 4. Tax goes up; Maya fixes two of three ---- */
+      out(["#s-r1", "#s-r2", "#s-r3", "#s-b1", "#s-b2", "#s-b3"], t(58) - 0.1, 0.25);
+      tl.to("#s-lines .dm", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(58));
+      tl.fromTo("#s-notice", { opacity: 0, y: -50, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, t(59));
+      tl.set("#s-ra2", { opacity: 0 }, 0);
+      tl.fromTo("#s-ra2", { opacity: 0, scale: 1.8 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, t(65) - 0.05);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 560, y: 1010 }, { opacity: 1, x: 620, y: 560, duration: 0.7, ease: "power3.out" }, t(68));
+      tl.to("#s-cursor", { x: 748, y: 452, duration: 0.55, ease: "power2.inOut" }, t(74) - 0.6);
+      swap("#s-k1 .v8", "#s-k1 .v9", t(74));
+      swap("#s-a1 .m8", "#s-a1 .m9", t(74) + 0.25);
+      tl.to("#s-cursor", { x: 748, y: 660, duration: 0.45, ease: "power2.inOut" }, t(76) - 0.5);
+      swap("#s-k2 .v8", "#s-k2 .v9", t(76));
+      swap("#s-a2 .m8", "#s-a2 .m9", t(76) + 0.25);
+      tl.to("#s-cursor", { x: 1010, y: 190, opacity: 0, duration: 0.7, ease: "power2.in" }, t(77));
+      tl.fromTo("#s-r3m", { opacity: 0, scale: 1.5, svgOrigin: "732 850" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(81) - 0.1);
+      pop("#s-missed", t(81) + 0.2, { from: 0.4 });
+
+      /* ---- 5. Quietly wrong ---- */
+      tl.to("#s-notice", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, t(85) - 0.3);
+      tl.fromTo("#s-compare", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(86));
+      pop("#s-cmpR", t(92), { from: 0.5 });
+      pop("#s-neq", t(93), { from: 0.2, ease: "back.out(2.4)" });
+      draw("#s-rrcp", t(93) + 0.1, 0.6);
+      tl.fromTo("#s-noerr", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(94));
+      tl.fromTo("#s-wrong", { opacity: 0, scale: 2.4, rotation: 4 }, { opacity: 1, scale: 1, rotation: -7, duration: 0.3, ease: "power4.in" }, t(101) - 0.25);
+
+      /* ---- 6. One name, one place ---- */
+      out(["#s-compare", "#s-rrcp", "#s-r3m", "#s-missed", "#s-noerr"], t(102) + 0.1, 0.3);
+      tl.fromTo("#s-taxline", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "steps(15)" }, t(106));
+      draw("#s-under", t(111), 0.45);
+      pop("#s-oneplace", t(112) + 0.1, { from: 0.4 });
+      swap("#s-k1 .v9", "#s-k1 .vn", t(116));
+      swap("#s-k2 .v9", "#s-k2 .vn", t(116) + 0.35);
+      swap("#s-k3 .v8", "#s-k3 .vn", t(116) + 0.7);
+      swap("#s-a3 .m8", "#s-a3 .m9", t(116) + 0.95);
+      draw("#s-rail", t(119) - 0.1, 0.7);
+      draw("#s-br1", t(119) + 0.15, 0.25);
+      draw("#s-br2", t(119) + 0.3, 0.25);
+      tl.fromTo(["#s-ah1", "#s-ah2", "#s-ah3"], { opacity: 0 }, { opacity: 1, duration: 0.15, stagger: 0.12 }, t(119) + 0.4);
+
+      /* ---- 7. Next change: one line ---- */
+      tl.to("#s-rateA", { opacity: 0, duration: 0.01 }, t(102) + 0.5);
+      tl.to("#s-rateB", { opacity: 1, duration: 0.01 }, t(102) + 0.5);
+      tl.to("#s-notice", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, t(123) - 0.1);
+      tl.set("#s-cursor", { x: 640, y: 1010 }, t(125));
+      tl.to("#s-cursor", { opacity: 1, x: 446, y: 296, duration: 0.8, ease: "power3.out" }, t(126) - 0.1);
+      swap("#s-k0 .v9", "#s-k0 .v10", t(128) + 0.1);
+      ["#s-a1", "#s-a2", "#s-a3"].forEach((a, i) => swap(a + " .m9", a + " .m10", t(129) + 0.05 + i * 0.13));
+      tl.to("#s-cursor", { opacity: 0, x: 520, y: 220, duration: 0.5, ease: "power2.in" }, t(130) - 0.3);
+      pop("#s-d1 .s-ok", t(131), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-d2 .s-ok", t(132), { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-d3 .s-ok", t(133), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, 56.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

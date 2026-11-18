@@ -1,0 +1,15 @@
+Meet Maya. She runs a small cookie shop, and she wrote a little program to run it.
+
+The program does three jobs. It shows the price, takes the payment, and prints the receipt. Each job adds eight percent sales tax.
+
+Here is the code. Look closely. The tax, zero point zero eight, is typed in three separate places.
+
+Then the city raises the tax to nine percent. Maya opens the code and fixes it. Here. And here. But she misses the third one.
+
+Now the screen shows one price, and the receipt prints another. Nothing crashed. The code is just quietly wrong.
+
+The fix is small. Give the tax one name, in one place, and let every job use that name.
+
+Next time the tax changes, Maya changes one line. And nothing gets missed.
+
+That is what good code means. Code that is easy to change. Every principle in this course is one more way to keep it that way.

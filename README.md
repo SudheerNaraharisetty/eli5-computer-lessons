@@ -5,3 +5,4 @@ Beginner courses with big pictures, few words, and interactive quizzes. Open a t
 ## Topics
 
 - [Learn GitHub](learn-github/): Git and GitHub from zero to expert, all from the terminal.
+- [Learn Principles](learn-principles/): software engineering principles, the 25 most used first, each with a short video.

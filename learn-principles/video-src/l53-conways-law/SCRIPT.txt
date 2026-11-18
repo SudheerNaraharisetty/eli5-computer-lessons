@@ -1,0 +1,15 @@
+Maya's cookie shop is a company now. It has three small teams. Website. Kitchen. And Money.
+
+Website and Money share an office, and talk all day. The Kitchen team is across town. They hardly ever talk to Website.
+
+Nobody planned the software. But look at it a year later. Three programs. One for each team.
+
+And the links between them? Website and Money, a smooth live link. Website and Kitchen, one file a night, copied by hand.
+
+Slide the two drawings together. They match, line for line.
+
+So an order with a note, no nuts, travels fine inside the website. Then it falls into the gap. The kitchen never sees it.
+
+The fix starts with people. Give Website and Kitchen a weekly meeting, and one clear agreement. The gap closes. Now every order reaches the kitchen at once, note and all.
+
+That is Conway's law. Software copies the team that built it. So if you want a different shape, start with who talks to whom.

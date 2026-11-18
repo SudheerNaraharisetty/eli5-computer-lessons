@@ -1,0 +1,15 @@
+Maya's loyalty card has one shop rule. Points can never go below zero.
+
+In her code, the points sit like a jar on an open shelf. Four jobs reach in and change the number themselves.
+
+Then a fifth job arrives. Refunds. It takes twenty points back, and it never checks.
+
+Ben had eight points. Now he has minus twelve. Days later, Maya sees it on a receipt. Five jobs touch that jar. Which one did it?
+
+The fix. Move the points behind a counter, with two small doors. Earn, and spend. Nothing else can touch them.
+
+Spend checks first. Not enough points? It says no.
+
+Now run the refund again. Twenty from eight? Refused. Ben keeps his eight points. And the rule lives in one place.
+
+That is encapsulation. Keep the insides private, and let the doors check the rules.

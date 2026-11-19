@@ -1,0 +1,11 @@
+Open your pantry. The jars say x, stuff, and misc. Which one is the flour? You have to open every jar to find out.
+
+Code can look just the same. x equals one hundred forty. But one hundred forty what?
+
+So peel off the old label, and write a clear one. Ben protein target, g for grams. Now you know what is inside, and the unit. Python's style guide asks for small letters, with underscores between the words.
+
+Units matter. A jar says cook time, twenty. Your friend meant twenty minutes. You read twenty seconds. The rice is still raw. Call it cook minutes, and nobody has to guess.
+
+One more trap. Never take a name Python already uses. Label a jar print, and it swallows the print tool. The next print stops with a type error. A string is not callable.
+
+A good label says what is inside, and how it is measured.

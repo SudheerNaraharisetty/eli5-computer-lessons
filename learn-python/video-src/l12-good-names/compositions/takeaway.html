@@ -1,0 +1,47 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 100px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h1 { top: 140px; }
+    #t-h2 { top: 290px; }
+    .t-card { top: 520px; padding: 0 34px; height: 104px; line-height: 104px; background: #fff; border-radius: 26px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; font: 700 44px/104px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .t-card b { color: #1f7a5c; }
+    .t-card i { font-style: normal; color: #b9741a; }
+    #t-c1 { left: 110px; }
+    #t-c2 { left: 960px; }
+    #t-next { left: 110px; top: 780px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="6.2" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">A good label says <span class="a">what is inside,</span></div>
+      <div id="t-h2" class="t-abs t-head">and <span class="a">how it is measured.</span></div>
+      <div id="t-c1" class="t-abs t-card">ben_protein_target<b>_g</b> = <i>140</i></div>
+      <div id="t-c2" class="t-abs t-card">cook<b>_minutes</b> = <i>20</i></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 13: Types and converting</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 57.2;
+      const g = { good: 57.326, inside: 58.708, how: 59.718 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.good - S - 0.1));
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.inside - S);
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.how - S - 0.5);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.how - S + 0.4);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 4.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

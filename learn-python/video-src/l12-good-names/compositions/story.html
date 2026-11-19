@@ -1,0 +1,320 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the pantry shelf and its jars */
+    #shelf { left: 60px; top: 548px; width: 1800px; height: 22px; background: #b9741a; border-radius: 6px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-jar { position: absolute; top: 96px; width: 520px; height: 452px; }
+    #j1 { left: 96px; }
+    #j2 { left: 700px; }
+    #j3 { left: 1304px; }
+    .s-lid { position: absolute; left: 130px; top: 0; width: 260px; height: 56px; border-radius: 14px; background: #b9741a; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-body { position: absolute; left: 30px; top: 52px; width: 460px; height: 400px; border-radius: 64px; background: #e6e3ff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-lab { position: absolute; left: 50px; top: 120px; width: 420px; height: 100px; border-radius: 18px; text-align: center; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-lab.messy { background: #ece7df; color: #3e3b52; font: 800 60px/100px "Manrope", sans-serif; }
+    .s-lab.good { background: #fff; color: #1f7a5c; font: 700 40px/100px "JetBrains Mono", monospace; }
+    .s-lab.good.long { font-size: 32px; }
+    .s-lab.vague { background: #fff; color: #b9741a; font: 700 40px/100px "JetBrains Mono", monospace; }
+    .s-lab.bad { background: #fbe0ea; color: #b8235a; font: 700 52px/100px "JetBrains Mono", monospace; }
+    .s-in { position: absolute; left: 30px; top: 250px; width: 460px; height: 120px; text-align: center; font: 700 96px/120px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    .s-in.q { color: #6f6b80; }
+    #c1p { left: 90px; top: 372px; width: 340px; height: 56px; line-height: 56px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #k2 { left: 436px; top: 96px; width: 72px; height: 72px; border-radius: 50%; background: #1f7a5c; color: #fff; font: 800 44px/72px "Manrope", sans-serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* the big question */
+    #s-q { left: 0; top: 700px; width: 1920px; text-align: center; font: 700 110px/1.1 "Fraunces", serif; letter-spacing: -0.03em; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 600px; width: 1728px; height: 384px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 860px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; opacity: 0; }
+    #s-div { position: absolute; left: 820px; top: 64px; width: 3px; height: 320px; background: #2e2a58; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .b { color: #ff9fb6; }
+    #E4 { position: absolute; left: 860px; top: 276px; font: 500 30px/64px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+    .s-u { position: absolute; top: 140px; width: 24px; height: 8px; border-radius: 4px; background: #ffc24b; opacity: 0; }
+
+    /* style card */
+    #s-style { left: 960px; top: 680px; width: 820px; height: 270px; background: #fff; border-radius: 26px; }
+    #st1 { left: 40px; top: 30px; font-size: 36px; color: #3e3b52; white-space: nowrap; }
+    #st1 b { color: #3b37e6; }
+    #st2 { left: 40px; top: 110px; font: 700 80px/120px "JetBrains Mono", monospace; color: #1f7a5c; white-space: nowrap; }
+    #st3 { left: 600px; top: 120px; width: 100px; height: 100px; border-radius: 50%; background: #1f7a5c; color: #fff; font: 800 60px/100px "Manrope", sans-serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* rice timer */
+    #s-timer { left: 1304px; top: 96px; width: 520px; height: 452px; background: #fff; border-radius: 28px; }
+    #tt { left: 36px; top: 22px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #lcd { left: 36px; top: 104px; width: 448px; height: 150px; border-radius: 18px; background: #15132b; overflow: hidden; }
+    .s-tm { position: absolute; left: 0; top: 0; width: 448px; height: 150px; text-align: center; font: 700 104px/150px "JetBrains Mono", monospace; opacity: 0; }
+    #tm1 { color: #7cf0b5; }
+    #tm2 { color: #ff6b8b; }
+    .s-tag { left: 36px; top: 284px; height: 66px; padding: 0 28px; line-height: 66px; border-radius: 999px; font-size: 38px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #tg1 { background: #ddefe6; color: #1f7a5c; }
+    #tg2 { background: #fbe0ea; color: #b8235a; }
+    #s-raw { left: 60px; top: 366px; height: 70px; padding: 0 26px; line-height: 62px; border: 5px solid #b8235a; border-radius: 14px; background: #fff; color: #b8235a; font-size: 40px; white-space: nowrap; letter-spacing: 0.04em; }
+
+    /* the print tool */
+    #s-tool { left: 780px; top: 170px; width: 360px; height: 230px; background: #15132b; border-radius: 28px; }
+    #tool1 { left: 0; top: 34px; width: 360px; text-align: center; font: 700 80px/1.2 "JetBrains Mono", monospace; color: #ffc24b; }
+    #tool2 { left: 0; top: 150px; width: 360px; text-align: center; font-size: 30px; color: #c9c6ff; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="shelf" class="s-abs"></div>
+
+        <!-- jar 1: x, then ben_protein_target_g -->
+        <div id="j1" class="s-jar">
+          <div class="s-body"></div>
+          <div class="s-lid" id="lid1"></div>
+          <div class="s-in q" id="c1q">?</div>
+          <div class="s-in s-hide" id="c1v">140</div>
+          <div class="s-abs s-hide" id="c1p">grams? minutes?</div>
+          <div class="s-lab messy s-hide" id="l1a">x</div>
+          <div class="s-lab good long s-hide" id="l1b">ben_protein_target_g</div>
+        </div>
+
+        <!-- jar 2: stuff, then cook_time, then cook_minutes -->
+        <div id="j2" class="s-jar">
+          <div class="s-body"></div>
+          <div class="s-lid" id="lid2"></div>
+          <div class="s-in q" id="c2q">?</div>
+          <div class="s-in s-hide" id="c2v">20</div>
+          <div class="s-lab messy s-hide" id="l2a">stuff</div>
+          <div class="s-lab vague s-hide" id="l2b">cook_time</div>
+          <div class="s-lab good s-hide" id="l2c">cook_minutes</div>
+          <div class="s-abs s-hide" id="k2">✓</div>
+        </div>
+
+        <!-- jar 3: misc, then print -->
+        <div id="j3" class="s-jar">
+          <div class="s-body"></div>
+          <div class="s-lid" id="lid3"></div>
+          <div class="s-in q" id="c3q">?</div>
+          <div class="s-in s-hide" id="c3v">"hi"</div>
+          <div class="s-lab messy s-hide" id="l3a">misc</div>
+          <div class="s-lab bad s-hide" id="l3b">print</div>
+        </div>
+
+        <!-- the rice timer (stands in jar 3's place for a moment) -->
+        <div id="s-timer" class="s-abs s-ol s-hide">
+          <div id="tt" class="s-abs">Rice timer</div>
+          <div id="lcd" class="s-abs">
+            <div class="s-tm" id="tm1">20:00</div>
+            <div class="s-tm" id="tm2">00:20</div>
+          </div>
+          <div id="tg1" class="s-abs s-tag s-hide">20 minutes</div>
+          <div id="tg2" class="s-abs s-tag s-hide">20 seconds</div>
+          <div id="s-raw" class="s-abs s-hide">RICE STILL RAW</div>
+        </div>
+
+        <!-- Python's print tool -->
+        <div id="s-tool" class="s-abs s-ol s-hide">
+          <div id="tool1" class="s-abs">print()</div>
+          <div id="tool2" class="s-abs">Python's own tool</div>
+        </div>
+
+        <div id="s-q" class="s-abs s-hide">Which one is the flour?</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen_coach.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <div class="s-ln" id="L1a" style="top:84px">x = <span class="n">140</span></div>
+          <div class="s-ln" id="L1b" style="top:84px">ben_protein_target_g = <span class="n">140</span></div>
+          <div class="s-u" id="u1" style="left:112px"></div>
+          <div class="s-u" id="u2" style="left:304px"></div>
+          <div class="s-u" id="u3" style="left:472px"></div>
+          <div class="s-ln" id="L2a" style="top:148px">cook_time = <span class="n">20</span></div>
+          <div class="s-ln" id="L2b" style="top:148px">cook_minutes = <span class="n">20</span></div>
+          <div class="s-ln" id="L3" style="top:212px"><span class="b">print</span> = <span class="s">"hi"</span></div>
+          <div class="s-ln" id="L4" style="top:276px"><span class="k">print</span>(cook_minutes)</div>
+          <div id="E4">TypeError: 'str' object is not callable</div>
+        </div>
+
+        <!-- Python's style guide -->
+        <div id="s-style" class="s-abs s-ol s-hide">
+          <div id="st1" class="s-abs s-hide">Python's style guide: <b>PEP 8</b></div>
+          <div id="st2" class="s-abs s-hide">snake_case</div>
+          <div id="st3" class="s-abs s-hide">✓</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-xl" style="stroke:#b8235a" />
+          <path id="r-x" style="stroke:#ffc24b" />
+          <path id="r-gl" style="stroke:#3b37e6" />
+          <path id="r-gc" style="stroke:#ffc24b" />
+          <path id="r-min" style="stroke:#3b37e6" />
+          <path id="r-j3" style="stroke:#b8235a" />
+          <path id="r-pr" style="stroke:#ffc24b" />
+          <path id="r-te" style="stroke:#ffc24b" />
+          <path id="r-nc" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.383, 0.58, 1.556, 1.73, 2.067, 2.531, 2.949, 3.402, 3.68, 4.702, 5.004, 5.201, 5.387, 5.503, 6.246, 6.42, 6.571, 6.699, 6.989, 7.361, 7.651, 7.779, 8.092, 8.858, 9.242, 9.392, 9.625, 9.915, 10.043, 10.902, 11.146, 11.726, 12.016, 12.411, 13.282, 13.514, 13.723, 14.106, 14.988, 15.999, 16.44, 16.718, 16.869, 16.997, 17.171, 17.6, 17.821, 18.099, 18.192, 18.494, 19.11, 19.458, 19.969, 20.863, 21.188, 21.35, 22.523, 22.767, 22.894, 23.069, 23.254, 23.394, 24.009, 24.23, 24.427, 25.553, 26.099, 26.505, 26.819, 27.213, 27.399, 27.759, 28.56, 28.804, 29.477, 29.884, 30.0, 31.312, 31.788, 32.716, 32.891, 33.181, 33.668, 34.005, 34.609, 35.874, 36.083, 36.374, 36.664, 37.094, 37.987, 38.208, 38.429, 38.858, 39.671, 39.845, 40.135, 40.251, 40.565, 41.563, 41.819, 41.97, 42.26, 42.643, 42.829, 43.2, 43.409, 43.537, 44.663, 44.895, 45.093, 45.975, 46.254, 46.498, 46.579, 46.857, 47.275, 47.635, 48.773, 49.168, 49.296, 49.586, 50.132, 50.34, 50.445, 50.851, 50.967, 51.258, 52.14, 52.303, 52.57, 52.849, 53.208, 53.383, 53.51, 53.893, 54.544, 54.706, 55.113, 55.414, 55.751, 56.726, 56.889, 57.098, 57.458, 57.76, 57.957, 58.108, 58.781, 59.118, 59.327, 59.466, 59.629];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Jars: centres x 356, 960, 1564; label centre y 266.
+      // Code panel at (96, 600): 40px mono = 24px per char from x=136; line centres y=716, 780, 844, 908.
+      // The error line is 30px mono = 18px per char from x=956, on the fourth line (y=908).
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-xl", 356, 266, 74, 64);     // the x label on jar 1
+      ring("r-x", 148, 716, 28, 36);      // x on code line 1, col 0
+      ring("r-gl", 529, 266, 38, 40);     // _g at the end of the jar 1 label (32px mono, cols 18-19)
+      ring("r-gc", 592, 716, 42, 36);     // _g on code line 1, cols 18-19
+      ring("r-min", 1020, 266, 100, 42);  // minutes in the cook_minutes label (40px mono, cols 5-11)
+      ring("r-j3", 1564, 266, 160, 66);   // the print label on jar 3
+      ring("r-pr", 196, 844, 76, 36);     // print on code line 3, cols 0-4
+      ring("r-te", 1037, 908, 98, 32);    // TypeError, cols 0-8
+      ring("r-nc", 1550, 908, 124, 32);   // not callable, cols 27-38
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.05, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // An old label peels off its top-left corner and drops away.
+      const peel = (sel, at) => tl.fromTo(sel, { opacity: 1, rotation: 0, y: 0 }, { rotation: 24, y: 160, opacity: 0, transformOrigin: "0% 0%", duration: 0.55, ease: "power2.in", immediateRender: false }, at);
+      // A new label is pressed onto the jar.
+      const stick = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 1.25, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, at);
+      const hop = (sel, at) => tl.fromTo(sel, { y: 0, rotation: 0 }, { y: -46, rotation: -8, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. A pantry of vague labels: x, stuff, misc ---- */
+      stick("#l1a", t(6) - 0.05);
+      stick("#l2a", t(7) - 0.05);
+      stick("#l3a", t(9) - 0.05);
+      pop("#s-q", t(10), { from: 0.8 });
+      hop("#lid1", t(18)); hop("#lid2", t(19)); hop("#lid3", t(20));
+
+      /* ---- 2. Code looks the same: x = 140. 140 what? ---- */
+      out("#s-q", t(24) - 0.2, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(24));
+      tl.to(["#j2", "#j3"], { opacity: 0.35, duration: 0.3 }, t(28));
+      type("#L1a", t(30), 7);
+      draw("r-x", t(30) + 0.1, 0.4);
+      draw("r-xl", t(30) + 0.2, 0.45);
+      swap("#c1q", "#c1v", t(32));
+      pop("#c1p", t(39), { from: 0.5, ease: "back.out(2.2)" });
+
+      /* ---- 3. Peel off the old label, write a clear one ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 560 }, { opacity: 1, x: 150, y: 230, duration: 0.5, ease: "power3.out", immediateRender: false }, t(40));
+      out(["#r-x", "#r-xl", "#c1p"], t(41), 0.2);
+      peel("#l1a", t(41) + 0.1);
+      tl.to("#s-cursor", { x: 260, y: 420, duration: 0.5, ease: "power2.inOut" }, t(41) + 0.1);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(47));
+      stick("#l1b", t(51) - 0.05);
+      swap("#L1a", "#L1b", t(51));
+      draw("r-gl", t(54) - 0.05, 0.4);
+      draw("r-gc", t(54) + 0.1, 0.4);
+      bump("#l1b", t(60));
+      bump("#c1v", t(62));
+      out(["#r-gl", "#r-gc"], t(65) + 0.5, 0.25);
+      pop("#s-style", t(66) - 0.1, { from: 0.85 });
+      pop("#st1", t(67), { from: 0.8 });
+      pop("#st2", t(71), { from: 0.7 });
+      pop("#st3", t(72), { from: 0.3, ease: "back.out(2.4)" });
+      pop("#u1", t(74), { from: 0.2 }); pop("#u2", t(74) + 0.12, { from: 0.2 }); pop("#u3", t(74) + 0.24, { from: 0.2 });
+
+      /* ---- 4. Units matter: cook_time 20, minutes or seconds? ---- */
+      out("#s-style", t(78) - 0.1, 0.3);
+      out(["#u1", "#u2", "#u3"], t(78) - 0.1, 0.3);
+      tl.to("#j1", { opacity: 0.35, duration: 0.3 }, t(78));
+      tl.to("#j2", { opacity: 1, duration: 0.3 }, t(78));
+      bump("#j2", t(81));
+      out("#l2a", t(83) - 0.15, 0.15);
+      stick("#l2b", t(83));
+      type("#L2a", t(83), 14);
+      swap("#c2q", "#c2v", t(85));
+      tl.to("#j3", { opacity: 0, duration: 0.3 }, t(86) - 0.3);
+      pop("#s-timer", t(86), { from: 0.85 });
+      pop("#tm1", t(89), { from: 0.7 });
+      pop("#tg1", t(90), { from: 0.6 });
+      swap("#tm1", "#tm2", t(93));
+      out("#tg1", t(94) - 0.1, 0.12); pop("#tg2", t(94), { from: 0.6 });
+      tl.fromTo("#s-raw", { opacity: 0, scale: 1.6, rotation: -6 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power3.in", immediateRender: false }, t(99) - 0.15);
+      shake("#s-timer", t(99) + 0.15);
+      out("#l2b", t(102) - 0.15, 0.15);
+      stick("#l2c", t(102));
+      swap("#L2a", "#L2b", t(102));
+      draw("r-min", t(103), 0.45);
+      out(["#s-raw", "#tg2"], t(103), 0.2);
+      swap("#tm2", "#tm1", t(103) + 0.1);
+      pop("#tg1", t(103) + 0.2, { from: 0.6 });
+      pop("#k2", t(105), { from: 0.3, ease: "back.out(2.4)" });
+
+      /* ---- 5. The trap: a jar labelled print swallows the print tool ---- */
+      out(["#r-min", "#s-timer"], t(109), 0.3);
+      tl.to("#j3", { opacity: 1, duration: 0.3 }, t(109) + 0.2);
+      tl.to(["#j1", "#j2"], { opacity: 0, duration: 0.3 }, t(112));
+      pop("#s-tool", t(116), { from: 0.6 });
+      out("#l3a", t(119) - 0.15, 0.15);
+      stick("#l3b", t(122) - 0.1);
+      type("#L3", t(119), 12);
+      swap("#c3q", "#c3v", t(122) + 0.2);
+      // the jar swallows the tool: the lid lifts, the tool flies in, the lid drops back
+      tl.fromTo("#lid3", { y: 0, rotation: 0 }, { y: -70, rotation: 14, duration: 0.25, ease: "power2.out", immediateRender: false }, t(124));
+      tl.fromTo("#s-tool", { x: 0, y: 0, scale: 1 }, { x: 784, y: 60, scale: 0.12, duration: 0.55, ease: "power2.in", immediateRender: false }, t(125));
+      tl.to("#s-tool", { opacity: 0, duration: 0.1 }, t(125) + 0.5);
+      tl.to("#lid3", { y: 0, rotation: 0, duration: 0.2, ease: "power3.in" }, t(125) + 0.6);
+      bump("#j3", t(125) + 0.8);
+      draw("r-j3", t(127), 0.45);
+      draw("r-pr", t(127) + 0.15, 0.4);
+      type("#L4", t(130), 19);
+      show(["#s-div", "#s-outlbl"], t(130), 0.3);
+      shake("#s-code", t(132));
+      show("#E4", t(132) + 0.05, 0.2);
+      draw("r-te", t(135) - 0.1, 0.45);
+      draw("r-nc", t(140), 0.5);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 56.9);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

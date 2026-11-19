@@ -1,0 +1,15 @@
+Learning to code is like a cooking class. You watch the chef. You taste. You cook it yourself. And you get feedback.
+
+This course works the same way. Every lesson starts with a one minute video. That is watching the chef.
+
+Every code box has a Run button. Press it, then change something and run it again. That is tasting. You cannot break anything. Reset brings it all back.
+
+Next comes the quiz. You drag, type, and fix real code. That is cooking it yourself.
+
+Last, an exercise in VS Code. Run it, read the hint, fix it, until it says pass. That is your feedback.
+
+Lesson by lesson, Kitchen Coach grows. First it prints a menu. Then it remembers, decides, and saves. In the end, it plans every meal for Ana, Ben and Chloe.
+
+But reading about cooking never made anyone a cook. Cooking did.
+
+So press Run, and cook.

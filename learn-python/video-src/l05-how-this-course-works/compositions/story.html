@@ -1,0 +1,530 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-weight: 500; white-space: pre; font-variant-ligatures: none; }
+    .k { color: #c9c6ff; }
+    .st { color: #a8e6c4; }
+
+    /* the rail: four tiles of the cooking class */
+    #s-rail { position: absolute; inset: 0; }
+    .s-tile { position: absolute; top: 74px; width: 400px; height: 206px; background: #fff; border-radius: 24px; }
+    .s-tbg { position: absolute; inset: 0; border-radius: 24px; opacity: 0; }
+    .s-n { position: absolute; left: 18px; top: 18px; width: 52px; height: 52px; border-radius: 50%; background: #0e0c1d; color: #fff; font-size: 30px; line-height: 52px; text-align: center; }
+    .s-ic { position: absolute; left: 30px; top: 78px; width: 110px; height: 110px; }
+    .s-word { position: absolute; left: 140px; top: 28px; font: 700 50px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-pill { position: absolute; left: 140px; top: 120px; height: 58px; padding: 0 24px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 32px; line-height: 58px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-arr { position: absolute; top: 160px; width: 52px; height: 30px; }
+
+    /* beat 1: the cooking class */
+    #s-class { position: absolute; inset: 0; }
+    #s-counter { left: 96px; top: 800px; width: 1728px; height: 184px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 800px; width: 1728px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-chef { left: 240px; top: 360px; width: 330px; height: 441px; }
+    #s-pot { left: 640px; top: 618px; width: 300px; height: 190px; }
+    #s-sign { left: 1040px; top: 470px; padding: 18px 44px; background: #fff; border-radius: 22px; font: 700 84px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-same { left: 1080px; top: 650px; padding: 0 28px; height: 70px; line-height: 70px; background: #e6e3ff; color: #3b37e6; border-radius: 999px; font-size: 38px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* beat 2: the video */
+    #s-player { left: 460px; top: 352px; width: 1000px; height: 590px; border-radius: 26px; background: #15132b; }
+    #s-screen { position: absolute; left: 30px; top: 30px; width: 940px; height: 440px; border-radius: 16px; background: #211e40; overflow: hidden; }
+    #s-mchef { position: absolute; left: 360px; top: 70px; width: 220px; height: 294px; }
+    #s-play { position: absolute; left: 400px; top: 150px; width: 140px; height: 140px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-play > svg { position: absolute; left: 0; top: 0; width: 140px; height: 140px; }
+    #s-track { position: absolute; left: 30px; top: 512px; width: 760px; height: 16px; border-radius: 8px; background: #3e3b52; }
+    #s-fill { position: absolute; left: 0; top: 0; width: 760px; height: 16px; border-radius: 8px; background: #7cf0b5; transform-origin: 0% 50%; }
+    #s-time { position: absolute; left: 820px; top: 494px; font: 500 34px/52px "JetBrains Mono", monospace; color: #eceaff; }
+    #s-1min { left: 1330px; top: 320px; height: 70px; padding: 0 28px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 38px; line-height: 70px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* beat 3: Run */
+    #s-runs { position: absolute; inset: 0; }
+    .s-panel { position: absolute; top: 340px; height: 600px; border-radius: 24px; }
+    .s-dark { background: #15132b; }
+    .s-bar { position: absolute; left: 0; top: 0; right: 0; height: 76px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    .s-bar > i { position: absolute; top: 29px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .s-bar > i:nth-child(1) { left: 26px; }
+    .s-bar > i:nth-child(2) { left: 56px; background: #ffc24b; }
+    .s-bar > i:nth-child(3) { left: 86px; background: #4bd69b; }
+    .s-bar > span { position: absolute; left: 126px; top: 0; font: 500 32px/76px "JetBrains Mono", monospace; color: #c9c6ff; white-space: nowrap; }
+    #s-code { left: 96px; width: 1054px; }
+    .s-ln { position: absolute; left: 50px; font: 500 40px/80px "JetBrains Mono", monospace; color: #8480b8; }
+    .s-line { position: absolute; left: 120px; font: 500 40px/80px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .s-swap { display: inline-block; position: relative; vertical-align: top; height: 80px; }
+    .s-swap > span { position: absolute; left: 0; top: 0; }
+    #s-swap { width: 72px; }
+    #s-paren { display: inline-block; }
+    .s-btn { position: absolute; top: 470px; width: 210px; height: 76px; border-radius: 999px; font-size: 36px; line-height: 76px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-runb { left: 50px; background: #7cf0b5; color: #0e0c1d; }
+    #s-reset { left: 290px; background: #2e2a58; color: #eceaff; }
+    #s-safe { left: 556px; top: 476px; height: 64px; padding: 0 26px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 32px; line-height: 64px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-out { left: 1210px; width: 614px; background: #fbf8f4; }
+    .s-ohead { position: absolute; left: 36px; top: 26px; font: 700 48px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-oline { position: absolute; left: 36px; font: 500 36px/60px "JetBrains Mono", monospace; color: #0e0c1d; white-space: pre; }
+    #s-oswap { width: 65px; height: 60px; }
+    #s-oerr { left: 24px; top: 130px; width: 566px; height: 250px; border-radius: 18px; background: #fbe0ea; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-oerr .s-pstop { position: absolute; left: 24px; top: 24px; height: 56px; padding: 0 22px; border-radius: 999px; background: #b8235a; color: #fff; font-size: 30px; line-height: 56px; white-space: nowrap; }
+    #s-oerr .s-etext { position: absolute; left: 24px; top: 104px; font: 500 30px/52px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; }
+
+    /* beat 4: quiz */
+    #s-quiz { position: absolute; inset: 0; }
+    .s-qcard { position: absolute; top: 360px; width: 540px; height: 560px; background: #fff; border-radius: 24px; }
+    .s-qh { position: absolute; left: 36px; top: 28px; font: 700 60px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-qsub { position: absolute; left: 36px; top: 112px; font-size: 30px; color: #3e3b52; white-space: nowrap; }
+    .s-qcode { position: absolute; font: 500 34px/70px "JetBrains Mono", monospace; white-space: pre; color: #0e0c1d; }
+    #s-slot { left: 160px; top: 230px; width: 150px; height: 70px; border-radius: 14px; border: 4px dashed #3b37e6; background: #e6e3ff; }
+    #s-chip { left: 174px; top: 410px; width: 124px; height: 62px; border-radius: 14px; background: #fff; font: 500 34px/62px "JetBrains Mono", monospace; text-align: center; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-input { left: 36px; top: 222px; width: 468px; height: 86px; border-radius: 16px; background: #15132b; }
+    #s-prompt { left: 22px; top: 0; font: 500 34px/86px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; }
+    #s-typed { left: 104px; top: 0; width: 225px; font: 500 34px/86px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    #s-fixbox { left: 24px; top: 226px; width: 492px; height: 80px; border-radius: 14px; background: #fbe0ea; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-fixline { left: 24px; top: 0; font: 500 34px/80px "JetBrains Mono", monospace; white-space: pre; color: #0e0c1d; }
+    #s-pswap { width: 21px; height: 80px; }
+    .s-good { position: absolute; left: 36px; top: 440px; height: 66px; padding: 0 26px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 34px; line-height: 66px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; opacity: 0; }
+
+    /* beat 5: the exercise */
+    #s-ex { position: absolute; inset: 0; }
+    #s-edit { left: 96px; width: 1054px; }
+    #s-vsrun { position: absolute; left: 940px; top: 12px; width: 90px; height: 52px; border-radius: 12px; background: #7cf0b5; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-vsrun > svg { position: absolute; left: 0; top: 0; width: 90px; height: 52px; }
+    .s-eln { position: absolute; left: 40px; font: 500 34px/76px "JetBrains Mono", monospace; color: #8480b8; }
+    .s-eline { position: absolute; left: 110px; font: 500 34px/76px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    #s-l3b { width: 408px; opacity: 0; }
+    #s-edhint { position: absolute; left: 40px; top: 420px; font: 600 30px/1.3 "Manrope", sans-serif; color: #c9c6ff; white-space: nowrap; }
+    #s-term { left: 1210px; width: 614px; }
+    .s-tl { position: absolute; left: 30px; font: 500 28px/46px "JetBrains Mono", monospace; white-space: pre; color: #eceaff; }
+    .s-hint { color: #ffc24b; }
+    .s-pass { color: #7cf0b5; }
+    #s-passst { left: 860px; top: 800px; height: 90px; padding: 0 40px; border-radius: 20px; background: #1f7a5c; color: #fff; font: 700 60px/90px "Fraunces", serif; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* beat 6: the road */
+    #s-road { position: absolute; inset: 0; }
+    #s-rtitle { left: 96px; top: 90px; font: 700 76px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-rtitle span { color: #3b37e6; }
+    #s-rsvg { left: 0; top: 0; width: 1920px; height: 1080px; }
+    .s-stop { position: absolute; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; font-size: 34px; line-height: 80px; text-align: center; }
+    .s-mname { position: absolute; width: 280px; margin-left: -140px; text-align: center; font-size: 30px; line-height: 40px; white-space: nowrap; }
+    .s-can { position: absolute; height: 54px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font-size: 29px; line-height: 54px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-can > span { display: block; }
+    #s-coach { left: 0; top: 0; width: 120px; height: 138px; }
+    .s-fr { position: absolute; left: 96px; width: 250px; height: 100px; }
+    .s-fr > svg { position: absolute; left: 0; top: 0; width: 100px; height: 100px; }
+    .s-fr > b { position: absolute; left: 114px; top: 22px; font: 700 44px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+
+    /* beat 7: the catch */
+    #s-catch { position: absolute; inset: 0; }
+    #s-book { left: 330px; top: 300px; width: 520px; height: 380px; }
+    #s-pan { left: 1090px; top: 300px; width: 560px; height: 380px; }
+    .s-cap { position: absolute; top: 740px; height: 84px; padding: 0 36px; border-radius: 999px; font-size: 44px; line-height: 84px; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    #s-cap1 { left: 380px; background: #fbe0ea; color: #b8235a; }
+    #s-cap2 { left: 1120px; background: #ddefe6; color: #1f7a5c; }
+    #s-x { left: 720px; top: 250px; width: 130px; height: 130px; }
+    #s-ok { left: 1560px; top: 250px; width: 130px; height: 130px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 7; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- beat 1: the cooking class -->
+        <div id="s-class">
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <svg id="s-chef" class="s-abs" viewBox="0 0 400 535">
+            <path d="M118 96 C88 96 78 50 112 40 C112 6 160 -2 178 22 C196 -6 250 0 252 34 C292 30 306 86 270 98 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <rect x="126" y="86" width="148" height="44" rx="8" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="241" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 535 C70 355 130 283 200 283 C270 283 330 355 330 535 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 535 V381 Q200 353 268 381 V535 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 381 L160 297 M268 381 L240 297" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="182" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M120 160 Q136 128 170 132 Q200 120 232 132 Q270 128 282 160 Q240 144 200 150 Q160 144 120 160 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="218" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="218" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="192" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="192" r="8" fill="#0e0c1d" />
+            <path d="M172 222 Q200 248 228 222" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <svg id="s-pot" class="s-abs" viewBox="0 0 300 190">
+            <path id="s-steam" d="M120 40 Q110 20 124 6 M150 40 Q140 20 154 6 M180 40 Q170 20 184 6" fill="none" stroke="#8e8ac0" stroke-width="6" stroke-linecap="round" />
+            <rect x="30" y="66" width="240" height="20" rx="10" fill="#3e3b52" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M44 86 H256 V150 Q256 180 226 180 H74 Q44 180 44 150 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M44 104 H8 M256 104 H292" stroke="#0e0c1d" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          <div id="s-sign" class="s-abs s-ol">Cooking class</div>
+          <div id="s-same" class="s-abs s-hide">This course works the same way</div>
+        </div>
+
+        <!-- beat 2: the one-minute video -->
+        <div id="s-player" class="s-abs s-ol s-hide">
+          <div id="s-screen">
+            <svg id="s-mchef" viewBox="0 0 400 535">
+              <path d="M118 96 C88 96 78 50 112 40 C112 6 160 -2 178 22 C196 -6 250 0 252 34 C292 30 306 86 270 98 Z" fill="#fff" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+              <rect x="126" y="86" width="148" height="44" rx="8" fill="#fff" stroke="#0e0c1d" stroke-width="8" />
+              <path d="M70 535 C70 355 130 283 200 283 C270 283 330 355 330 535 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="8" />
+              <circle cx="200" cy="182" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="8" />
+              <circle cx="170" cy="192" r="9" fill="#0e0c1d" /><circle cx="230" cy="192" r="9" fill="#0e0c1d" />
+              <path d="M172 222 Q200 248 228 222" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+            </svg>
+            <div id="s-play"><svg viewBox="0 0 140 140"><path d="M56 42 L100 70 L56 98 Z" fill="#3b37e6" /></svg></div>
+          </div>
+          <div id="s-track"><div id="s-fill"></div></div>
+          <div id="s-time">1:00</div>
+        </div>
+        <div id="s-1min" class="s-abs s-hide">1 minute</div>
+
+        <!-- beat 3: press Run, change, break, Reset -->
+        <div id="s-runs" class="s-hide">
+          <div id="s-code" class="s-panel s-dark s-ol">
+            <div class="s-bar"><i></i><i></i><i></i><span>kitchen_coach.py</span></div>
+            <div class="s-ln" style="top:120px">1</div>
+            <div class="s-ln" style="top:210px">2</div>
+            <div class="s-line" style="top:120px"><span class="k">print</span>(<span class="st">"Cook: Sam"</span>)</div>
+            <div class="s-line" style="top:210px"><span class="k">print</span>(<span class="st">"First meal: <span id="s-swap" class="s-swap"><span id="s-ana">Ana</span><span id="s-ben" class="s-hide">Ben</span></span>"</span><span id="s-paren">)</span></div>
+            <div id="s-runb" class="s-btn">▶ Run</div>
+            <div id="s-reset" class="s-btn">Reset</div>
+            <div id="s-safe" class="s-abs s-hide">You cannot break anything</div>
+          </div>
+          <div id="s-out" class="s-panel s-ol">
+            <div class="s-ohead">Output</div>
+            <div id="s-o1" class="s-oline s-hide" style="top:120px">Cook: Sam</div>
+            <div id="s-o2" class="s-oline s-hide" style="top:184px">First meal: <span id="s-oswap" class="s-swap"><span id="s-oana">Ana</span><span id="s-oben" class="s-hide">Ben</span></span></div>
+            <div id="s-oerr" class="s-abs s-hide"><div class="s-pstop">Python stopped</div><div class="s-etext">SyntaxError:
+'(' was never closed</div></div>
+          </div>
+        </div>
+
+        <!-- beat 4: the quiz -->
+        <div id="s-quiz" class="s-hide">
+          <div id="s-q1" class="s-qcard s-ol" style="left:96px">
+            <div class="s-qh">Drag</div><div class="s-qsub">fill the blank</div>
+            <div class="s-qcode" style="left:36px;top:230px"><span style="color:#3b37e6">print</span>(</div>
+            <div id="s-slot" class="s-abs"></div>
+            <div class="s-qcode" style="left:318px;top:230px">)</div>
+            <div id="s-chip" class="s-abs">"Ben"</div>
+            <div id="s-g1" class="s-good">Correct</div>
+          </div>
+          <div id="s-q2" class="s-qcard s-ol" style="left:690px">
+            <div class="s-qh">Type</div><div class="s-qsub">write the line</div>
+            <div id="s-input" class="s-abs"><div id="s-prompt" class="s-abs">&gt;&gt;&gt;</div><div id="s-typed" class="s-abs">print("Hi")</div></div>
+            <div id="s-g2" class="s-good">Correct</div>
+          </div>
+          <div id="s-q3" class="s-qcard s-ol" style="left:1284px">
+            <div class="s-qh">Fix</div><div class="s-qsub">repair the code</div>
+            <div id="s-fixbox" class="s-abs"><div id="s-fixline" class="s-abs"><span id="s-pswap" class="s-swap"><span id="s-pbig" style="color:#b8235a">P</span><span id="s-psmall" class="s-hide" style="color:#1f7a5c">p</span></span>rint("Ana")</div></div>
+            <div id="s-g3" class="s-good">Correct</div>
+          </div>
+        </div>
+
+        <!-- beat 5: the exercise -->
+        <div id="s-ex" class="s-hide">
+          <div id="s-edit" class="s-panel s-dark s-ol">
+            <div class="s-bar"><i></i><i></i><i></i><span>l05_my_plan.py</span></div>
+            <div id="s-vsrun"><svg viewBox="0 0 90 52"><path d="M37 13 L59 26 L37 39 Z" fill="#0e0c1d" /></svg></div>
+            <div class="s-eln" style="top:120px">1</div>
+            <div class="s-eln" style="top:196px">2</div>
+            <div class="s-eln" style="top:272px">3</div>
+            <div class="s-eline" style="top:120px">my_name = <span class="st">"Sam"</span></div>
+            <div class="s-eline" style="top:196px">minutes_per_day = <span class="st">"20"</span></div>
+            <div id="s-l3a" class="s-eline" style="top:272px">first_friend = <span class="st">""</span></div>
+            <div id="s-l3b" class="s-eline" style="top:272px">first_friend = <span class="st">"Ana"</span></div>
+            <div id="s-edhint">fill in between the quote marks</div>
+          </div>
+          <div id="s-term" class="s-panel s-dark s-ol">
+            <div class="s-bar"><i></i><i></i><i></i><span>terminal</span></div>
+            <div id="s-tm1" class="s-tl s-hide" style="top:110px"><span class="s-pass">$</span> python3 l05_my_plan.py</div>
+            <div id="s-tm2" class="s-tl s-hint s-hide" style="top:180px">HINT: first_friend is
+still empty.</div>
+            <div id="s-tm3" class="s-tl s-hide" style="top:300px"><span class="s-pass">$</span> python3 l05_my_plan.py</div>
+            <div id="s-tm4" class="s-tl s-pass s-hide" style="top:370px">PASS: Kitchen Coach
+plans Ana's meal first.</div>
+          </div>
+          <div id="s-passst" class="s-abs s-hide">PASS</div>
+        </div>
+
+        <!-- beat 6: the road -->
+        <div id="s-road" class="s-hide">
+          <div id="s-rtitle" class="s-abs">11 modules. <span>One app that grows.</span></div>
+          <svg id="s-rsvg" class="s-abs" viewBox="0 0 1920 1080">
+            <path id="s-rpath" d="M200 400 H1720 C1880 400 1880 760 1720 760 H360" fill="none" stroke="#ece7df" stroke-width="30" stroke-linecap="round" />
+            <path d="M200 400 H1720 C1880 400 1880 760 1720 760 H360" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-dasharray="12 14" />
+          </svg>
+          <div id="s-stops"></div>
+          <div id="s-cans">
+            <div id="s-c0" class="s-can s-hide" style="left:200px;top:500px">prints a menu</div>
+            <div id="s-c1" class="s-can s-hide" style="left:504px;top:500px">remembers</div>
+            <div id="s-c2" class="s-can s-hide" style="left:808px;top:500px">decides</div>
+            <div id="s-c5" class="s-can s-hide" style="left:1720px;top:500px">saves</div>
+            <div id="s-c10" class="s-can s-hide" style="left:504px;top:860px;background:#ddefe6;color:#1f7a5c">plans every meal</div>
+          </div>
+          <div id="s-f1" class="s-fr s-hide" style="top:600px"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" /><path d="M90 40 Q116 52 104 84" fill="none" stroke="#5a3418" stroke-width="12" stroke-linecap="round" /><path d="M24 120 Q28 84 62 84 Q96 84 100 120 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" /><circle cx="62" cy="52" r="26" fill="#e0a77e" stroke="#0e0c1d" stroke-width="5" /><path d="M36 50 Q40 22 66 24 Q90 26 88 50 Q70 36 36 50 Z" fill="#5a3418" stroke="#0e0c1d" stroke-width="4" /></svg><b>Ana</b></div>
+          <div id="s-f2" class="s-fr s-hide" style="top:720px"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#ddefe6" stroke="#0e0c1d" stroke-width="5" /><path d="M16 120 Q18 80 62 80 Q106 80 108 120 Z" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="5" /><circle cx="62" cy="50" r="27" fill="#a86f4c" stroke="#0e0c1d" stroke-width="5" /><path d="M36 44 Q38 20 62 20 Q86 20 88 44 Q74 32 36 44 Z" fill="#1b1430" stroke="#0e0c1d" stroke-width="4" /></svg><b>Ben</b></div>
+          <div id="s-f3" class="s-fr s-hide" style="top:840px"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="5" /><g fill="#d9a05b" stroke="#0e0c1d" stroke-width="4"><circle cx="38" cy="44" r="14" /><circle cx="86" cy="44" r="14" /><circle cx="44" cy="70" r="12" /><circle cx="80" cy="70" r="12" /><circle cx="62" cy="30" r="16" /></g><path d="M24 120 Q28 84 62 84 Q96 84 100 120 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" /><circle cx="62" cy="54" r="25" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" /></svg><b>Chloe</b></div>
+          <svg id="s-coach" class="s-abs s-hide" viewBox="0 0 200 230">
+            <path d="M52 66 C26 66 22 26 52 22 C56 -4 96 -6 104 14 C116 -6 158 0 154 26 C182 26 182 66 152 66 Z" fill="#fff" stroke="#0e0c1d" stroke-width="7" stroke-linejoin="round" />
+            <rect x="34" y="62" width="132" height="98" rx="24" fill="#fff" stroke="#0e0c1d" stroke-width="7" />
+            <circle cx="76" cy="104" r="10" fill="#0e0c1d" /><circle cx="124" cy="104" r="10" fill="#0e0c1d" />
+            <path d="M80 132 Q100 148 120 132" fill="none" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+            <rect x="52" y="166" width="96" height="60" rx="14" fill="#3b37e6" stroke="#0e0c1d" stroke-width="7" />
+            <circle cx="100" cy="196" r="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+          </svg>
+        </div>
+
+        <!-- beat 7: reading is not cooking -->
+        <div id="s-catch">
+          <svg id="s-book" class="s-abs s-hide" viewBox="0 0 520 380">
+            <path d="M40 60 q110 -40 220 0 v290 q-110 -40 -220 0 z" fill="#fff" stroke="#0e0c1d" stroke-width="7" stroke-linejoin="round" />
+            <path d="M260 60 q110 -40 220 0 v290 q-110 -40 -220 0 z" fill="#fff" stroke="#0e0c1d" stroke-width="7" stroke-linejoin="round" />
+            <path d="M80 120 h140 M80 170 h140 M80 220 h140 M80 270 h100 M300 120 h140 M300 170 h140 M300 220 h140 M300 270 h100" stroke="#ece7df" stroke-width="14" stroke-linecap="round" />
+          </svg>
+          <svg id="s-pan" class="s-abs s-hide" viewBox="0 0 560 380">
+            <path d="M150 120 q-14 -30 0 -60 M220 120 q-14 -30 0 -60 M290 120 q-14 -30 0 -60" fill="none" stroke="#8e8ac0" stroke-width="10" stroke-linecap="round" />
+            <ellipse cx="220" cy="170" rx="170" ry="30" fill="#fbebd2" stroke="#0e0c1d" stroke-width="7" />
+            <path d="M50 170 h340 v50 q0 110 -110 110 h-120 q-110 0 -110 -110 z" fill="#b8235a" stroke="#0e0c1d" stroke-width="7" stroke-linejoin="round" />
+            <path d="M390 200 h150" stroke="#0e0c1d" stroke-width="22" stroke-linecap="round" />
+          </svg>
+          <svg id="s-x" class="s-abs s-hide" viewBox="0 0 130 130"><circle cx="65" cy="65" r="58" fill="#b8235a" stroke="#0e0c1d" stroke-width="6" /><path d="M42 42 L88 88 M88 42 L42 88" stroke="#fff" stroke-width="12" stroke-linecap="round" /></svg>
+          <svg id="s-ok" class="s-abs s-hide" viewBox="0 0 130 130"><circle cx="65" cy="65" r="58" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="6" /><path d="M38 67 L57 86 L93 46" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div id="s-cap1" class="s-cap s-hide">Reading: still no dinner</div>
+          <div id="s-cap2" class="s-cap s-hide">Cooking: now you can</div>
+        </div>
+
+        <!-- the rail of four tiles, on top of every beat until the road -->
+        <div id="s-rail">
+          <div class="s-tile s-ol" id="s-t0" style="left:96px"><div class="s-tbg" style="background:#e6e3ff"></div><div class="s-n">1</div>
+            <svg class="s-ic" viewBox="0 0 110 110"><rect x="8" y="22" width="94" height="66" rx="10" fill="#fff" stroke="#0e0c1d" stroke-width="6" /><path d="M44 38 L72 55 L44 72 Z" fill="#3b37e6" /></svg>
+            <div class="s-word">Watch</div><div class="s-pill">Video</div></div>
+          <div class="s-tile s-ol" id="s-t1" style="left:540px"><div class="s-tbg" style="background:#fbebd2"></div><div class="s-n">2</div>
+            <svg class="s-ic" viewBox="0 0 110 110"><ellipse cx="38" cy="44" rx="26" ry="20" fill="#fff" stroke="#0e0c1d" stroke-width="6" /><path d="M60 56 L100 90" stroke="#0e0c1d" stroke-width="11" stroke-linecap="round" /></svg>
+            <div class="s-word">Taste</div><div class="s-pill">Run</div></div>
+          <div class="s-tile s-ol" id="s-t2" style="left:984px"><div class="s-tbg" style="background:#fbe0ea"></div><div class="s-n">3</div>
+            <svg class="s-ic" viewBox="0 0 110 110"><path d="M34 30 q-8 -12 0 -24 M54 30 q-8 -12 0 -24" fill="none" stroke="#8e8ac0" stroke-width="5" stroke-linecap="round" /><path d="M6 46 h76 v14 q0 30 -30 30 h-16 q-30 0 -30 -30 z" fill="#b8235a" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" /><path d="M82 56 h22" stroke="#0e0c1d" stroke-width="10" stroke-linecap="round" /></svg>
+            <div class="s-word">Cook</div><div class="s-pill">Quiz</div></div>
+          <div class="s-tile s-ol" id="s-t3" style="left:1428px"><div class="s-tbg" style="background:#ddefe6"></div><div class="s-n">4</div>
+            <svg class="s-ic" viewBox="0 0 110 110"><circle cx="55" cy="55" r="42" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="6" /><path d="M34 56 L49 71 L77 40" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <div class="s-word">Feedback</div><div class="s-pill">Exercise</div></div>
+          <svg class="s-arr" style="left:500px" viewBox="0 0 52 30"><path d="M6 15 H34" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" /><path d="M32 4 L48 15 L32 26 Z" fill="#0e0c1d" /></svg>
+          <svg class="s-arr" style="left:944px" viewBox="0 0 52 30"><path d="M6 15 H34" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" /><path d="M32 4 L48 15 L32 26 Z" fill="#0e0c1d" /></svg>
+          <svg class="s-arr" style="left:1388px" viewBox="0 0 52 30"><path d="M6 15 H34" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" /><path d="M32 4 L48 15 L32 26 Z" fill="#0e0c1d" /></svg>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rAna" style="stroke:#ff6b8b" />
+          <path id="s-rHint" style="stroke:#ffc24b" />
+          <path id="s-rPass" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.615, 1.045, 1.289, 1.521, 1.637, 2.078, 2.81, 3.03, 3.297, 3.413, 4.052, 4.307, 4.946, 5.178, 5.41, 5.526, 6.397, 6.745, 6.908, 7.152, 8.452, 8.766, 9.114, 9.462, 9.613, 9.95, 10.844, 11.215, 11.587, 12.005, 12.19, 12.341, 12.632, 12.934, 13.862, 14.408, 14.698, 15.151, 15.29, 16.347, 16.753, 17.113, 17.52, 17.752, 17.914, 18.205, 18.971, 19.354, 19.563, 19.842, 20.248, 20.724, 20.956, 21.188, 21.351, 22.303, 22.674, 22.941, 23.882, 24.079, 24.416, 24.741, 25.403, 26.053, 26.401, 26.54, 26.842, 27.62, 28.003, 28.363, 28.572, 29.466, 29.71, 30.163, 30.569, 30.825, 31.393, 31.777, 32.473, 32.763, 33.03, 33.425, 33.564, 34.76, 35.271, 35.492, 36.246, 36.525, 37.071, 38.011, 38.243, 38.545, 38.801, 38.94, 39.52, 39.95, 40.275, 40.565, 40.67, 41.169, 42.051, 42.33, 42.493, 42.655, 43.804, 44.164, 44.35, 44.919, 45.43, 45.871, 46.928, 47.276, 47.392, 47.705, 47.81, 48.507, 48.727, 48.843, 49.551, 50.248, 50.527, 51.63, 51.804, 51.943, 52.256, 52.442, 52.825, 53.29, 53.638, 53.835, 54.358, 54.764, 55.112, 55.983, 56.18, 56.482, 56.761, 57.156, 57.399, 57.655, 57.968, 58.05, 58.642, 59.071, 59.64, 59.93, 60.314, 60.813, 61.196];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Road stops (built here so the 11 stops share one layout; they are static, not timed clips).
+      const STOPS = [[200, 400], [504, 400], [808, 400], [1112, 400], [1416, 400], [1720, 400], [1720, 760], [1416, 760], [1112, 760], [808, 760], [504, 760]];
+      const NAMES = ["Start here", "Values", "Decisions", "Collections", "Functions", "Files", "Classes", "Pythonic", "Pro tools", "Advanced", "Projects"];
+      const host = document.getElementById("s-stops");
+      STOPS.forEach(([x, y], i) => {
+        host.insertAdjacentHTML("beforeend",
+          `<div class="s-stop" id="s-st${i}" style="left:${x}px;top:${y}px">${i}</div>` +
+          `<div class="s-mname" id="s-mn${i}" style="left:${x}px;top:${y + 48}px">${NAMES[i]}</div>`);
+      });
+
+      // Hand-drawn ring around a point, in page pixels.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("s-rAna", 732, 590, 64, 40);       // "Ana" on code line 2: cols 20-22, x 696-768
+      ring("s-rHint", 1500, 538, 300, 66);    // HINT lines in the terminal
+      ring("s-rPass", 1500, 758, 300, 66);    // PASS lines in the terminal
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const enter = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, at);
+      const leave = (sel, at) => tl.to(sel, { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, at);
+      const click = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 0.88, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, at);
+      // cursor: tip is at (4,3) of the 56px box
+      const cur = (x, y, at, d) => tl.to("#s-cursor", { x: x - 5, y: y - 4, duration: d || 0.5, ease: "power3.inOut" }, at);
+
+      // Tiles light up as they are named. Only one is lit at a time.
+      const tiles = ["#s-t0", "#s-t1", "#s-t2", "#s-t3"];
+      const light = (i, at) => {
+        tiles.forEach((s, j) => { if (j !== i) tl.to(s + " .s-tbg", { opacity: 0, duration: 0.25 }, at); });
+        tl.to(tiles[i] + " .s-tbg", { opacity: 1, duration: 0.2 }, at);
+        tl.fromTo(tiles[i], { scale: 1 }, { scale: 1.07, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, at);
+      };
+      const unlight = (at) => tiles.forEach(s => tl.to(s + " .s-tbg", { opacity: 0, duration: 0.3 }, at));
+
+      /* ---- 1. A cooking class: watch, taste, cook, feedback ---- */
+      tl.fromTo("#s-steam", { y: 0 }, { y: -8, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 13 }, 0.2);
+      tl.fromTo("#s-sign", { rotation: -3 }, { rotation: 0, duration: 0.6, ease: "back.out(2)" }, t(6));
+      light(0, t(9) - 0.05);
+      light(1, t(13) - 0.05);
+      light(2, t(15) - 0.05);
+      light(3, t(21) - 0.05);
+
+      /* ---- 2. The same in this course; the video is watching the chef ---- */
+      pop("#s-same", t(22), { from: 0.5 });
+      unlight(t(22));
+      tiles.forEach((s, i) => pop(s + " .s-pill", t(23) + i * 0.3, { from: 0.4, ease: "back.out(2.2)" }));
+      tl.to("#s-class", { opacity: 0, x: -80, duration: 0.4, ease: "power3.in" }, t(28) - 0.45);
+      enter("#s-player", t(28));
+      pop("#s-1min", t(33) - 0.05, { from: 0.4 });
+      tl.to("#s-play", { opacity: 0, scale: 0.6, duration: 0.3, ease: "power2.in" }, t(35));
+      tl.fromTo("#s-fill", { scaleX: 0 }, { scaleX: 1, duration: 2.6, ease: "none", immediateRender: false }, t(35));
+      tl.fromTo("#s-mchef", { y: 0 }, { y: -14, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut", immediateRender: false }, t(35));
+      light(0, t(38) - 0.05);
+
+      /* ---- 3. Run: press it, change something, run again; nothing breaks; Reset ---- */
+      leave(["#s-player", "#s-1min"], t(41) - 0.35);
+      enter("#s-runs", t(41));
+      tl.set("#s-cursor", { x: 1300, y: 1000 }, 0);
+      show("#s-cursor", t(46) - 0.4, 0.2);
+      cur(256, 816, t(46) - 0.4, 0.6);
+      click("#s-runb", t(48));
+      tl.fromTo(["#s-o1", "#s-o2"], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out", stagger: 0.2, immediateRender: false }, t(48) + 0.15);
+      cur(740, 600, t(51) - 0.45, 0.45);
+      draw("s-rAna", t(51), 0.45);
+      tl.to("#s-ana", { opacity: 0, y: -30, duration: 0.2, ease: "power2.in" }, t(52));
+      tl.fromTo("#s-ben", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)", immediateRender: false }, t(52) + 0.15);
+      out("#s-rAna", t(53), 0.2);
+      cur(256, 816, t(54) - 0.45, 0.4);
+      click("#s-runb", t(54));
+      tl.to("#s-oana", { opacity: 0, duration: 0.15 }, t(55));
+      tl.fromTo("#s-oben", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, t(55));
+      light(1, t(59) - 0.05);
+      // break it: the closing bracket falls off, Python stops
+      cur(804, 600, t(61) - 0.3, 0.35);
+      tl.to("#s-paren", { y: 120, rotation: 60, opacity: 0, duration: 0.45, ease: "power2.in" }, t(62));
+      out(["#s-o1", "#s-o2"], t(62) + 0.3, 0.15);
+      tl.fromTo("#s-oerr", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, t(62) + 0.35);
+      pop("#s-safe", t(63) - 0.1, { from: 0.4 });
+      // Reset brings it all back
+      cur(486, 816, t(64) - 0.45, 0.4);
+      click("#s-reset", t(64));
+      tl.to("#s-paren", { y: 0, rotation: 0, opacity: 1, duration: 0.35, ease: "back.out(2)" }, t(65));
+      tl.to("#s-ben", { opacity: 0, duration: 0.15 }, t(65));
+      tl.to("#s-ana", { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, t(65));
+      out("#s-oerr", t(65), 0.3);
+      tl.to("#s-oben", { opacity: 0, duration: 0.05 }, t(65));
+      tl.to("#s-oana", { opacity: 1, duration: 0.05 }, t(65));
+      out("#s-cursor", t(68), 0.3);
+
+      /* ---- 4. The quiz: drag, type, fix ---- */
+      leave("#s-runs", t(69) - 0.35);
+      enter("#s-quiz", t(69));
+      light(2, t(72) - 0.1);
+      tl.to("#s-chip", { y: -176, duration: 0.5, ease: "power3.inOut" }, t(74) - 0.1);
+      tl.to("#s-chip", { backgroundColor: "#ddefe6", duration: 0.2 }, t(74) + 0.45);
+      pop("#s-g1", t(74) + 0.5, { from: 0.5 });
+      tl.fromTo("#s-typed", { clipPath: "inset(0px 225px 0px 0px)" }, { clipPath: "inset(0px 0px 0px 0px)", duration: 0.6, ease: "steps(11)", immediateRender: false }, t(75) - 0.05);
+      tl.set("#s-typed", { clipPath: "inset(0px 225px 0px 0px)" }, 0);
+      pop("#s-g2", t(76), { from: 0.5 });
+      tl.to("#s-pbig", { opacity: 0, y: -30, duration: 0.2, ease: "power2.in" }, t(77));
+      tl.fromTo("#s-psmall", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)", immediateRender: false }, t(77) + 0.15);
+      tl.to("#s-fixbox", { backgroundColor: "#ddefe6", duration: 0.3 }, t(77) + 0.3);
+      pop("#s-g3", t(78), { from: 0.5 });
+      light(2, t(82) - 0.05);
+
+      /* ---- 5. The exercise: run, read the hint, fix, PASS ---- */
+      leave("#s-quiz", t(85) - 0.35);
+      enter("#s-ex", t(85));
+      light(3, t(87) - 0.05);
+      tl.set("#s-cursor", { x: 1300, y: 900 }, t(85));
+      show("#s-cursor", t(89), 0.2);
+      cur(1086, 380, t(89), 0.6);
+      click("#s-vsrun", t(91));
+      show("#s-tm1", t(91) + 0.1, 0.15);
+      tl.fromTo("#s-tm2", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, t(91) + 0.35);
+      draw("s-rHint", t(95) - 0.1, 0.5);
+      cur(550, 620, t(96) - 0.35, 0.35);
+      tl.to("#s-l3a", { opacity: 0, duration: 0.05 }, t(96));
+      tl.fromTo("#s-l3b", { opacity: 1, clipPath: "inset(0px 82px 0px 0px)" }, { opacity: 1, clipPath: "inset(0px 0px 0px 0px)", duration: 0.6, ease: "steps(4)", immediateRender: false }, t(96));
+      out("#s-rHint", t(97), 0.2);
+      cur(1086, 380, t(98) - 0.4, 0.45);
+      click("#s-vsrun", t(99));
+      tl.to("#s-tm2", { opacity: 0.35, duration: 0.2 }, t(99));
+      show("#s-tm3", t(99) + 0.1, 0.15);
+      tl.fromTo("#s-tm4", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, t(101) - 0.05);
+      draw("s-rPass", t(101) + 0.2, 0.5);
+      out("#s-cursor", t(102), 0.3);
+      tl.fromTo("#s-passst", { opacity: 0, scale: 2, rotation: -12 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, t(105) - 0.05);
+      light(3, t(105) - 0.05);
+
+      /* ---- 6. The road: Kitchen Coach grows ---- */
+      leave(["#s-ex", "#s-rail", "#s-passst"], t(106) - 0.35);
+      out("#s-rPass", t(106) - 0.35, 0.3);
+      tl.set("#s-road", { opacity: 1 }, t(106));
+      tl.fromTo("#s-rtitle", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(106));
+      tl.fromTo("#s-rsvg", { opacity: 0 }, { opacity: 1, duration: 0.5, immediateRender: false }, t(106) + 0.1);
+      STOPS.forEach((s, i) => {
+        tl.fromTo("#s-st" + i, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, t(106) + 0.2 + i * 0.13);
+        tl.fromTo("#s-mn" + i, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, t(106) + 0.3 + i * 0.13);
+      });
+      tl.set(".s-can", { xPercent: -50 }, 0);
+      const at = ([x, y]) => ({ x: x - 60, y: y - 44 - 138 });
+      tl.set("#s-coach", at(STOPS[0]), 0);
+      pop("#s-coach", t(109) - 0.05, { from: 0.3 });
+      tl.to("#s-st0", { backgroundColor: "#3b37e6", color: "#fff", duration: 0.2 }, t(109));
+      tl.fromTo("#s-coach", { scale: 1 }, { scale: 1.25, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(111));
+      pop("#s-c0", t(114), { from: 0.5 });
+      const go = (i, when, d) => {
+        tl.to("#s-coach", Object.assign(at(STOPS[i]), { duration: d || 0.4, ease: "power2.inOut" }), when);
+        tl.to("#s-st" + i, { backgroundColor: "#3b37e6", color: "#fff", duration: 0.2 }, when + (d || 0.4) - 0.1);
+      };
+      go(1, t(119) - 0.4); pop("#s-c1", t(119), { from: 0.5 });
+      go(2, t(120) - 0.4); pop("#s-c2", t(120), { from: 0.5 });
+      go(5, t(122) - 0.6, 0.6); [3, 4].forEach((i, k) => tl.to("#s-st" + i, { backgroundColor: "#3b37e6", color: "#fff", duration: 0.2 }, t(122) - 0.45 + k * 0.15));
+      pop("#s-c5", t(122), { from: 0.5 });
+      // to the end of the road: down the bend, then left along the second row
+      tl.to("#s-coach", Object.assign(at(STOPS[6]), { duration: 0.45, ease: "power2.inOut" }), t(123));
+      tl.to("#s-coach", Object.assign(at(STOPS[10]), { duration: 0.9, ease: "power2.inOut" }), t(123) + 0.45);
+      [6, 7, 8, 9, 10].forEach((i, k) => tl.to("#s-st" + i, { backgroundColor: i === 10 ? "#1f7a5c" : "#3b37e6", color: "#fff", duration: 0.2 }, t(123) + 0.4 + k * 0.2));
+      pop("#s-c10", t(127), { from: 0.5 });
+      pop("#s-f1", t(131) - 0.05, { from: 0.4 });
+      pop("#s-f2", t(132) - 0.05, { from: 0.4 });
+      pop("#s-f3", t(134) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-coach", { y: at(STOPS[10]).y }, { y: at(STOPS[10]).y - 24, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(134) + 0.2);
+
+      /* ---- 7. Reading about cooking never made anyone a cook ---- */
+      out("#s-road", t(135) - 0.3, 0.3);
+      tl.fromTo("#s-book", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(136) - 0.05);
+      tl.fromTo("#s-book", { rotation: 0 }, { rotation: 3, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, t(136) + 0.4);
+      pop("#s-x", t(139) - 0.05, { from: 1.8, ease: "back.out(1.6)" });
+      pop("#s-cap1", t(139) + 0.3, { from: 0.5 });
+      tl.fromTo("#s-pan", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(144) - 0.1);
+      pop("#s-ok", t(145) - 0.1, { from: 1.8, ease: "back.out(1.6)" });
+      pop("#s-cap2", t(144) - 0.05, { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 59.98);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

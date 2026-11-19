@@ -1,0 +1,377 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the round table: three plates around a pot */
+    #s-table { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #tbl { left: 1270px; top: 310px; width: 460px; height: 460px; border-radius: 50%; background: #ece7df; }
+    #pot { left: 1440px; top: 480px; width: 120px; height: 120px; border-radius: 50%; background: #fbebd2; box-shadow: 0 0 0 5px #0e0c1d; text-align: center; font-size: 28px; line-height: 120px; color: #b9741a; }
+    .plate { width: 124px; height: 124px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .plate i { position: absolute; left: 20px; top: 20px; width: 84px; height: 84px; border-radius: 50%; background: #e3a548; box-shadow: 0 0 0 4px #b9741a; opacity: 0; }
+    #plA { left: 1438px; top: 326px; } #plB { left: 1570px; top: 554px; } #plC { left: 1306px; top: 554px; }
+    .name { width: 170px; height: 62px; border-radius: 999px; background: #fff; text-align: center; font-size: 34px; line-height: 62px; white-space: nowrap; }
+    #nmA { left: 1415px; top: 205px; color: #3b37e6; } #nmB { left: 1645px; top: 769px; color: #1f7a5c; } #nmC { left: 1185px; top: 769px; color: #b8235a; }
+    .badge { width: 48px; height: 48px; border-radius: 50%; background: #0e0c1d; color: #fff; text-align: center; font-size: 28px; line-height: 48px; }
+    #bA { left: 1395px; top: 186px; } #bB { left: 1625px; top: 750px; } #bC { left: 1165px; top: 750px; }
+    #spoon { left: 1465px; top: 505px; width: 160px; height: 70px; }
+    .pill { height: 64px; line-height: 64px; border-radius: 999px; text-align: center; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #p-left { left: 1280px; top: 880px; width: 440px; background: #fbebd2; color: #b9741a; }
+    #p-end { left: 1260px; top: 880px; width: 480px; background: #0e0c1d; color: #fff; box-shadow: none; }
+
+    /* the jar that adds things up */
+    .meal { left: 1170px; width: 240px; height: 120px; border-radius: 18px; background: #fff; }
+    .meal span { position: absolute; left: 0; top: 10px; width: 240px; text-align: center; font: 600 28px/36px "Manrope", sans-serif; color: #3e3b52; }
+    .meal b { position: absolute; left: 0; top: 50px; width: 240px; text-align: center; font: 700 50px/60px "JetBrains Mono", monospace; color: #b9741a; }
+    #m1 { top: 260px; } #m2 { top: 430px; } #m3 { top: 600px; }
+    #lid { left: 1490px; top: 250px; width: 300px; height: 40px; border-radius: 10px; background: #0e0c1d; }
+    #jar { left: 1500px; top: 300px; width: 280px; height: 440px; border-radius: 16px 16px 48px 48px; background: #fff; overflow: hidden; }
+    #fill { position: absolute; left: 0; top: 0; width: 280px; height: 440px; background: #f3d19c; transform-origin: 50% 100%; }
+    #jlabel { left: 1530px; top: 420px; width: 220px; height: 150px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #jlabel span { position: absolute; left: 0; top: 10px; width: 220px; text-align: center; font-size: 30px; line-height: 40px; color: #3e3b52; }
+    #jlabel b { position: absolute; left: 0; top: 58px; width: 220px; text-align: center; font: 700 64px/76px "JetBrains Mono", monospace; color: #b9741a; opacity: 0; }
+    .bub { left: 1170px; width: 250px; height: 90px; border-radius: 45px; background: #fbe0ea; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 50px/90px "JetBrains Mono", monospace; color: #b8235a; }
+    #bu1 { top: 300px; } #bu2 { top: 420px; } #bu3 { top: 540px; }
+    #p-shout { left: 1170px; top: 800px; width: 610px; background: #fbe0ea; color: #b8235a; }
+
+    /* code panel on the left: 38px mono = 22.8px per char, text at page x 136, rows 60px from panel y 88 */
+    #s-code { left: 96px; top: 96px; width: 1000px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1000px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-hl { position: absolute; left: 16px; top: 88px; width: 968px; height: 60px; background: #2e2a58; border-radius: 10px; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    #s-div { position: absolute; left: 40px; top: 590px; width: 920px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 598px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .o1 { top: 644px; } .o2 { top: 704px; } .o3 { top: 764px; }
+    .s-note { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #n-ok { background: #ddefe6; color: #1f7a5c; }
+    #s-indent { position: absolute; left: 36px; top: 272px; width: 96px; height: 52px; border-radius: 8px; border: 4px dashed #ffc24b; opacity: 0; }
+    .wlbl { position: absolute; left: 40px; top: 400px; font: 800 28px/36px "Manrope", sans-serif; color: #c9c6ff; opacity: 0; }
+    .watch { position: absolute; left: 40px; top: 444px; height: 76px; border-radius: 14px; background: #2e2a58; box-shadow: 0 0 0 3px #6c68ff; opacity: 0; }
+    #wA { width: 400px; } #wB { width: 420px; }
+    .watch > span { position: absolute; left: 24px; top: 0; font: 500 38px/76px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .watch > b { position: absolute; top: 0; font: 500 38px/76px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    #wA > b { left: 206px; color: #7cf0b5; }
+    #wB > b { left: 275px; color: #ffc24b; }
+    .ob { position: absolute; left: 170px; width: 44px; height: 44px; border-radius: 50%; background: #ff6b8b; color: #15132b; text-align: center; font: 800 28px/44px "Manrope", sans-serif; opacity: 0; }
+    .strike { position: absolute; left: 30px; width: 112px; height: 6px; border-radius: 3px; background: #ff6b8b; transform-origin: 0 50%; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.88" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the table -->
+        <div id="s-table" class="s-abs">
+          <div id="tbl" class="s-abs s-ol"></div>
+          <div id="plA" class="s-abs plate"><i></i></div>
+          <div id="plB" class="s-abs plate"><i></i></div>
+          <div id="plC" class="s-abs plate"><i></i></div>
+          <div id="pot" class="s-abs">dinner</div>
+          <div id="nmA" class="s-abs name s-ol">Ana</div>
+          <div id="nmB" class="s-abs name s-ol">Ben</div>
+          <div id="nmC" class="s-abs name s-ol">Chloe</div>
+          <div id="bA" class="s-abs badge s-hide">1</div>
+          <div id="bB" class="s-abs badge s-hide">2</div>
+          <div id="bC" class="s-abs badge s-hide">3</div>
+          <svg id="spoon" class="s-abs s-hide" viewBox="0 0 160 70"><path d="M60 30 L152 14" stroke="#0e0c1d" stroke-width="12" stroke-linecap="round" /><path d="M60 30 L150 14" stroke="#b9741a" stroke-width="5" stroke-linecap="round" /><ellipse cx="35" cy="35" rx="30" ry="22" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><ellipse cx="35" cy="37" rx="18" ry="11" fill="#e3a548" /></svg>
+          <div id="p-left" class="s-abs pill s-hide">No guests left</div>
+          <div id="p-end" class="s-abs pill s-hide">The loop ends by itself</div>
+        </div>
+
+        <!-- the jar -->
+        <div id="m1" class="s-abs meal s-ol s-hide"><span>breakfast</span><b>450</b></div>
+        <div id="m2" class="s-abs meal s-ol s-hide"><span>lunch</span><b>700</b></div>
+        <div id="m3" class="s-abs meal s-ol s-hide"><span>dinner</span><b>600</b></div>
+        <div id="lid" class="s-abs s-hide"></div>
+        <div id="jar" class="s-abs s-ol s-hide"><div id="fill"></div></div>
+        <div id="jlabel" class="s-abs s-hide"><span>total</span><b id="j0">0</b><b id="j1">450</b><b id="j2">1150</b><b id="j3">1750</b></div>
+        <div id="bu1" class="s-abs bub s-hide">450</div>
+        <div id="bu2" class="s-abs bub s-hide">1150</div>
+        <div id="bu3" class="s-abs bub s-hide">1750</div>
+        <div id="p-shout" class="s-abs pill s-hide">a total after every spoonful</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span id="tA">table.py</span><span id="tB" style="opacity:0">calories.py</span></div>
+          <div id="s-hl"></div>
+          <div class="s-ln" id="A1" style="top:88px">guests = [<span class="s">"Ana"</span>, <span class="s">"Ben"</span>, <span class="s">"Chloe"</span>]</div>
+          <div class="s-ln" id="A3" style="top:208px"><span class="k">for</span> guest <span class="k">in</span> guests:</div>
+          <div class="s-ln" id="A4" style="top:268px">    <span class="k">print</span>(<span class="s">f"Serve {guest}"</span>)</div>
+          <div class="s-ln" id="B1" style="top:88px">meal_calories = [<span class="n">450</span>, <span class="n">700</span>, <span class="n">600</span>]</div>
+          <div class="s-ln" id="B2" style="top:148px">total = <span class="n">0</span></div>
+          <div class="s-ln" id="B3" style="top:208px"><span class="k">for</span> calories <span class="k">in</span> meal_calories:</div>
+          <div class="s-ln" id="B4" style="top:268px">    total += calories</div>
+          <div class="s-ln" id="B5" style="top:328px"><span class="k">print</span>(total)</div>
+          <div class="s-note" id="n-list" style="left:300px; top:152px">a list: lesson 31</div>
+          <div id="s-indent"></div>
+          <div class="s-note" id="n-once" style="left:680px; top:272px">once per guest</div>
+          <div class="wlbl" id="wlA">the loop variable, right now</div>
+          <div class="watch" id="wA"><span>guest = </span><b id="vA">"Ana"</b><b id="vB">"Ben"</b><b id="vC">"Chloe"</b></div>
+          <div class="wlbl" id="wlB">the loop variable, right now</div>
+          <div class="watch" id="wB"><span>calories = </span><b id="v1">450</b><b id="v2">700</b><b id="v3">600</b></div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out o1" id="oA">Serve Ana</div>
+          <div class="s-out o2" id="oB">Serve Ben</div>
+          <div class="s-out o3" id="oC">Serve Chloe</div>
+          <div class="s-out o1" id="oT">1750</div>
+          <div class="s-note" id="n-ok" style="left:300px; top:648px">once, after the loop</div>
+          <div class="s-out o1" id="x1">450</div>
+          <div class="s-out o2" id="x2">1150</div>
+          <div class="s-out o3" id="x3">1750</div>
+          <div class="ob" id="ob1" style="top:652px">1</div>
+          <div class="ob" id="ob2" style="top:712px">2</div>
+          <div class="ob" id="ob3" style="top:772px">3</div>
+          <div class="strike" id="st1" style="top:671px"></div>
+          <div class="strike" id="st2" style="top:731px; width:136px"></div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-for" style="stroke:#ffc24b" />
+          <path id="r-guest" style="stroke:#ffc24b" />
+          <path id="r-guests" style="stroke:#ffc24b" />
+          <path id="r-colon" style="stroke:#ffc24b" />
+          <path id="r-pA" style="stroke:#3b37e6" />
+          <path id="r-pB" style="stroke:#1f7a5c" />
+          <path id="r-pC" style="stroke:#b8235a" />
+          <path id="r-zero" style="stroke:#ffc24b" />
+          <path id="r-add" style="stroke:#ffc24b" />
+          <path id="r-total" style="stroke:#1f7a5c" />
+          <path id="r-print" style="stroke:#ff6b8b" />
+          <path id="r-shout" style="stroke:#b8235a" />
+          <path id="r-last" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.418, 0.72, 1.614, 2.067, 2.368, 2.589, 3.019, 3.262, 3.46, 3.564, 3.855, 4.598, 4.795, 4.946, 5.259, 5.561, 5.979, 6.223, 7.198, 7.419, 7.93, 8.162, 8.313, 8.464, 8.8, 9.381, 9.578, 9.903, 10.043, 10.67, 11.726, 11.889, 12.214, 12.527, 12.701, 13.108, 13.502, 13.677, 13.944, 14.721, 15.302, 15.72, 16.045, 16.858, 17.032, 17.473, 17.81, 17.984, 18.692, 19.005, 19.365, 19.934, 20.573, 20.898, 21.873, 22.152, 22.581, 23.104, 23.301, 23.429, 23.707, 23.951, 24.172, 25.263, 25.426, 25.681, 25.844, 26.018, 26.343, 26.552, 27.574, 27.968, 28.27, 28.607, 28.99, 29.396, 29.605, 30.337, 30.685, 30.778, 31.138, 31.393, 32.496, 32.786, 33.123, 33.739, 34.133, 34.435, 35.143, 35.422, 35.735, 35.898, 36.687, 37.07, 37.779, 38.197, 39.265, 39.636, 39.776, 40.228, 40.553, 40.693, 41.029, 42.063, 42.318, 42.829, 43.189, 43.537, 43.7, 44.095, 45.174, 45.465, 45.743, 45.952, 46.324, 46.997, 47.136, 47.926, 48.1, 48.379, 48.75, 48.959, 49.493, 49.923, 50.376, 51.304, 51.641, 52.326, 52.57, 52.802, 52.953, 53.336, 53.626, 53.858, 54.067, 54.439, 55.379, 55.577, 55.878, 56.447, 56.738, 56.854, 57.364, 57.597, 57.724, 57.898, 58.595, 58.897, 59.036];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 22.8 px per char. Row r centre y = 214 + (r - 1) * 60.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-for", 170, 334, 50, 34);        // for, row 3, cols 0-2
+      ring("r-guest", 284, 334, 70, 34);      // guest, row 3, cols 4-8
+      ring("r-guests", 501, 334, 82, 34);     // guests, row 3, cols 13-18
+      ring("r-colon", 581, 334, 24, 34);      // the colon, row 3, col 19
+      ring("r-pA", 1500, 388, 84, 84);        // Ana's plate
+      ring("r-pB", 1632, 616, 84, 84);        // Ben's plate
+      ring("r-pC", 1368, 616, 84, 84);        // Chloe's plate
+      ring("r-zero", 330, 274, 28, 34);       // 0, row 2, col 8
+      ring("r-add", 387, 394, 40, 34);        // +=, row 4, cols 10-11
+      ring("r-total", 1640, 495, 140, 100);   // the jar's label
+      ring("r-print", 364, 454, 168, 38);     // print(total), row 5, after it moves 4 columns right
+      ring("r-shout", 1295, 482, 170, 230);   // the three shouts
+      ring("r-last", 182, 890, 66, 36);       // output row 3: 1750
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at) => tl.to("#s-hl", { y: (row - 1) * 60, duration: 0.22, ease: "power2.inOut" }, at);
+      // The spoon: its bowl sits on the pot at x 0, y 0. Plate offsets from the pot.
+      const PLATE = { A: [0, -152], B: [132, 76], C: [-132, 76] };
+      const serve = (k, at) => {
+        tl.to("#spoon", { x: PLATE[k][0], y: PLATE[k][1], duration: 0.45, ease: "power2.inOut" }, at);
+        pop(`#pl${k} i`, at + 0.4, { from: 0.2, d: 0.35 });
+        tl.to("#spoon", { x: 0, y: 0, duration: 0.4, ease: "power2.inOut" }, at + 0.9);
+      };
+      // A meal card drops into the jar; the jar fills and its label shows the new total.
+      const drop = (card, cy, at) => {
+        tl.to(card, { x: 1640 - 1290, y: 330 - cy, scale: 0.3, duration: 0.45, ease: "power2.in" }, at);
+        tl.to(card, { opacity: 0, duration: 0.12 }, at + 0.38);
+      };
+      const level = (v, at) => tl.to("#fill", { scaleY: v, duration: 0.4, ease: "power2.out" }, at);
+
+      tl.set("#fill", { scaleY: 0 }, 0);
+      tl.set("#s-hl", { y: 120 }, 0);
+
+      /* ---- 1. Dinner is ready. Ana, Ben and Chloe at a round table. Serve each guest in turn ---- */
+      bump("#nmA", t(3));
+      bump("#nmB", t(4));
+      bump("#nmC", t(6));
+      bump("#tbl", t(10));
+      pop("#bA", t(14), { from: 0.3 });
+      pop("#bB", t(15), { from: 0.3 });
+      pop("#bC", t(16), { from: 0.3 });
+
+      /* ---- 2. A for loop. for guest in guests, colon. The line pushed in runs once per guest ---- */
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(20));
+      type("#A1", t(21), 32, 0.5);
+      type("#A3", t(24), 20, 0.4);
+      draw("r-for", t(26), 0.35);
+      draw("r-guest", t(27), 0.35);
+      draw("r-guests", t(29), 0.35);
+      pop("#n-list", t(29), { from: 0.6 });
+      draw("r-colon", t(30), 0.3);
+      out(["#r-for", "#r-guest", "#r-guests", "#r-colon", "#n-list"], t(31) - 0.1, 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 760, y: 700 }, { opacity: 1, x: 140, y: 290, duration: 0.45, ease: "power3.out", immediateRender: false }, t(31) - 0.3);
+      type("#A4", t(31) + 0.2, 27, 0.4);
+      show("#s-indent", t(33), 0.2);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.25 }, t(35));
+      pop("#n-once", t(36), { from: 0.6 });
+      out("#s-indent", t(39), 0.2);
+
+      /* ---- 3. guest is Ana, the spoon fills her plate. Then Ben. Then Chloe. No guests left: the loop ends ---- */
+      out(["#bA", "#bB", "#bC"], t(40), 0.2);
+      show("#s-hl", t(40), 0.2);
+      show(["#wlA", "#wA"], t(41), 0.3);
+      pop("#vA", t(43), { from: 0.6 });
+      draw("r-pA", t(43), 0.45);
+      show("#spoon", t(44), 0.2);
+      hlTo(4, t(44));
+      serve("A", t(45));
+      show("#oA", t(46) + 0.1, 0.2);
+      out("#r-pA", t(48) + 0.3, 0.2);
+
+      hlTo(3, t(49));
+      swap("#vA", "#vB", t(51));
+      draw("r-pB", t(52) - 0.2, 0.4);
+      hlTo(4, t(52));
+      serve("B", t(52));
+      show("#oB", t(52) + 0.5, 0.2);
+      out("#r-pB", t(53) + 0.2, 0.2);
+
+      hlTo(3, t(53) + 0.15);
+      swap("#vB", "#vC", t(54));
+      draw("r-pC", t(54), 0.4);
+      hlTo(4, t(54) + 0.3);
+      serve("C", t(54) + 0.2);
+      show("#oC", t(54) + 0.7, 0.2);
+      out("#r-pC", t(55), 0.2);
+
+      hlTo(3, t(55));
+      dim("#vC", t(56), 0.3);
+      pop("#p-left", t(56), { from: 0.6 });
+      out(["#s-hl", "#spoon"], t(60), 0.25);
+      swap("#p-left", "#p-end", t(61));
+
+      /* ---- 4. A loop can add things up. Three meals. A jar at zero. Add one meal each time round ---- */
+      out(["#s-table", "#A1", "#A3", "#A4", "#wlA", "#wA", "#oA", "#oB", "#oC", "#n-once"], t(64) - 0.1, 0.3);
+      out("#tA", t(64), 0.2);
+      show("#tB", t(64) + 0.2, 0.2);
+      type("#B1", t(71), 32, 0.5);
+      pop("#m1", t(73), { from: 0.5 });
+      pop("#m2", t(73) + 0.15, { from: 0.5 });
+      pop("#m3", t(73) + 0.3, { from: 0.5 });
+      type("#B2", t(78), 9, 0.25);
+      pop(["#lid", "#jar"], t(80), { from: 0.7 });
+      show("#jlabel", t(80) + 0.2, 0.25);
+      pop("#j0", t(82), { from: 0.5 });
+      draw("r-zero", t(82), 0.35);
+      type("#B3", t(83), 30, 0.45);
+      out("#r-zero", t(85), 0.2);
+      type("#B4", t(86) - 0.2, 21, 0.35);
+      draw("r-add", t(86) + 0.1, 0.35);
+      show(["#wlB", "#wB"], t(87), 0.3);
+      out("#r-add", t(88), 0.2);
+
+      tl.set("#s-hl", { y: 120 }, t(88));
+      show("#s-hl", t(88), 0.15);
+      pop("#v1", t(89), { from: 0.6 });
+      hlTo(4, t(89) + 0.2);
+      drop("#m1", 320, t(89));
+      level(450 / 1750, t(89) + 0.4);
+      swap("#j0", "#j1", t(89) + 0.5);
+
+      hlTo(3, t(93) - 0.35);
+      swap("#v1", "#v2", t(93));
+      hlTo(4, t(93) + 0.2);
+      drop("#m2", 490, t(93));
+      level(1150 / 1750, t(93) + 0.4);
+      swap("#j1", "#j2", t(93) + 0.5);
+
+      hlTo(3, t(95) - 0.35);
+      swap("#v2", "#v3", t(95));
+      hlTo(4, t(95) + 0.2);
+      drop("#m3", 660, t(95));
+      level(1, t(95) + 0.4);
+      swap("#j2", "#j3", t(95) + 0.5);
+
+      /* ---- 5. After the loop, print the jar once. 1750 calories ---- */
+      out("#s-hl", t(97) - 0.2, 0.15);
+      type("#B5", t(97), 12, 0.3);
+      tl.set("#s-hl", { y: 240 }, t(100) - 0.1);
+      show("#s-hl", t(100), 0.2);
+      show("#oT", t(103), 0.2);
+      draw("r-total", t(104), 0.5);
+      pop("#n-ok", t(103) + 0.3, { from: 0.6 });
+
+      /* ---- 6. Push the print inside the loop. The jar shouts after every spoonful. Only the last is real ---- */
+      out(["#r-total", "#n-ok", "#oT", "#s-hl", "#wlB", "#wB"], t(111) - 0.1, 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 700 }, { opacity: 1, x: 138, y: 450, duration: 0.4, ease: "power3.out", immediateRender: false }, t(111));
+      tl.to("#B5", { x: 91.2, duration: 0.5, ease: "power2.inOut" }, t(112));
+      tl.to("#s-cursor", { x: 229, duration: 0.5, ease: "power2.inOut" }, t(112));
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(115));
+      draw("r-print", t(115), 0.45);
+      level(0, t(116));
+      swap("#j3", "#j0", t(116) + 0.1);
+
+      const shout = (k, v, jFrom, jTo, at) => {
+        tl.set("#s-hl", { y: 180 }, at - 0.3);
+        tl.set("#s-hl", { opacity: 1 }, at - 0.3);
+        tl.set("#s-hl", { y: 240 }, at);
+        level(v, at);
+        swap(jFrom, jTo, at + 0.1);
+        pop(`#bu${k}`, at + 0.15, { from: 0.4, ease: "back.out(2.2)" });
+        show(`#x${k}`, at + 0.15, 0.15);
+      };
+      shout(1, 450 / 1750, "#j0", "#j1", t(120));
+      shout(2, 1150 / 1750, "#j1", "#j2", t(123));
+      shout(3, 1, "#j2", "#j3", t(125) + 0.2);
+      draw("r-shout", t(125) + 0.6, 0.5);
+      out("#s-hl", t(126), 0.2);
+      pop("#ob1", t(126), { from: 0.4 });
+      pop("#ob2", t(126) + 0.2, { from: 0.4 });
+      pop("#ob3", t(127), { from: 0.4 });
+      out("#r-shout", t(128), 0.2);
+      pop("#p-shout", t(128), { from: 0.6 });
+      tl.fromTo(["#st1", "#st2"], { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, t(129));
+      dim(["#x1", "#x2", "#ob1", "#ob2", "#bu1", "#bu2"], t(129), 0.35);
+      draw("r-last", t(131), 0.45);
+      bump("#jlabel", t(135));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 55.6);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

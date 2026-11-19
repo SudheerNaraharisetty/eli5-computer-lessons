@@ -1,0 +1,13 @@
+Dinner is ready. Ana, Ben and Chloe sit at a round table, and you serve each guest in turn.
+
+In Python, that is a for loop. For guest in guests, colon. The line pushed in runs once for each guest.
+
+First, guest is Ana. The spoon fills her plate. Then guest becomes Ben. Then Chloe. No guests left, so the loop ends by itself.
+
+A loop can add things up too. Ana eats three meals before her race. Start a jar at zero. Each time round, add one meal. Four hundred and fifty. Seven hundred. Six hundred.
+
+After the loop, print the jar once. One thousand seven hundred and fifty calories.
+
+Now push that print inside the loop. The jar shouts its total after every spoonful. Three numbers, and only the last one is the real total.
+
+For each item, run the block. Add it up inside. Print it after.

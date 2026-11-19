@@ -1,0 +1,283 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panel, left */
+    #s-code { left: 96px; top: 96px; width: 900px; height: 888px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 900px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 36px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln span { display: inline-block; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-ln .bad { color: #ff6b8b; }
+    .s-err { position: absolute; left: 40px; font: 500 28px/46px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+    #s-store { left: 540px; top: 186px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; background: #3b37e6; color: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* right: Kitchen Coach's shelf */
+    #s-head { left: 1040px; top: 100px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-pill { padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-forget { left: 1040px; top: 200px; background: #fbe0ea; color: #b8235a; }
+    #s-one { left: 1040px; top: 220px; background: #e6e3ff; color: #3b37e6; }
+    #s-made { z-index: 5; left: 1180px; top: 800px; background: #fbe0ea; color: #b8235a; }
+
+    .s-jar { position: absolute; top: 300px; height: 330px; }
+    .s-lid { position: absolute; top: 0; height: 40px; background: #b9741a; border-radius: 10px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-glass { position: absolute; left: 0; top: 34px; height: 296px; background: #e6e3ff; border-radius: 40px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-lab { position: absolute; left: 8px; top: 74px; height: 60px; background: #fff; border-radius: 8px; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 28px/60px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-val { position: absolute; top: 180px; width: 140px; height: 100px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 60px/100px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+    .s-val.red { color: #b8235a; }
+    #s-j1 { left: 1040px; width: 220px; }
+    #s-j2 { left: 1280px; width: 220px; }
+    #s-j3 { left: 1520px; width: 270px; }
+    #s-j1 .s-lid, #s-j2 .s-lid { left: 35px; width: 150px; }
+    #s-j3 .s-lid { left: 60px; width: 150px; }
+    #s-j1 .s-glass, #s-j2 .s-glass { width: 220px; }
+    #s-j3 .s-glass { width: 270px; }
+    #s-j1 .s-lab, #s-j2 .s-lab { width: 204px; }
+    #s-j3 .s-lab { width: 254px; }
+    #s-j1 .s-val, #s-j2 .s-val { left: 40px; }
+    #s-j3 .s-val { left: 65px; }
+    #s-shelf { left: 1016px; top: 630px; width: 800px; height: 24px; background: #fbebd2; border-radius: 6px; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    #s-ghost { left: 1040px; top: 214px; width: 220px; height: 60px; border-radius: 8px; background: #fff; border: 4px dashed #b8235a; text-align: center; font: 700 28px/52px "JetBrains Mono", monospace; color: #b8235a; white-space: nowrap; }
+    #s-nojar { left: 1290px; top: 216px; background: #b8235a; color: #fff; }
+
+    /* output card */
+    #s-out { left: 1040px; top: 700px; width: 750px; height: 284px; background: #fff; border-radius: 24px; }
+    #s-outlbl { position: absolute; left: 28px; top: 16px; font-size: 30px; color: #3e3b52; }
+    .s-o { position: absolute; left: 28px; top: 80px; font: 700 64px/1.2 "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #s-o2 { color: #b8235a; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cross { left: 1250px; top: 214px; width: 60px; height: 60px; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i></i><i></i><i></i><span id="f1">coach.py</span><span id="f2" style="position:absolute;left:142px;top:13px;margin:0;opacity:0">shopping.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px">ben_protein <span class="o">=</span> <span class="n">140</span></div>
+          <div class="s-ln" id="L2" style="top:148px">ana_carbs <span class="o">=</span> <span class="n">350</span></div>
+          <div class="s-ln" id="L3" style="top:208px">chloe_desserts <span class="o">=</span> <span class="n">2</span></div>
+          <div class="s-ln" id="L4" style="top:288px"><span class="k">print</span>(ben_protein <span class="o">-</span> <span class="n">20</span>)</div>
+          <div class="s-ln" id="L5" style="top:368px">ben_protein <span class="o">=</span> <span class="n">150</span></div>
+          <div class="s-ln" id="L6" style="top:448px"><span class="k">print</span>(ben_prot<span class="bad">ie</span>n)</div>
+          <div class="s-err" id="E1" style="top:530px">NameError: name 'ben_protien' is not defined.</div>
+          <div class="s-err" id="E2" style="top:576px">Did you mean: 'ben_protein'?</div>
+          <!-- the catch -->
+          <div class="s-ln" id="C1" style="top:88px">price <span class="o">=</span> <span class="n">3</span></div>
+          <div class="s-ln" id="C2" style="top:148px">total <span class="o">=</span> price <span class="o">*</span> <span class="n">2</span></div>
+          <div class="s-ln" id="C3" style="top:208px">price <span class="o">=</span> <span class="n">4</span></div>
+          <div class="s-ln" id="C4" style="top:288px"><span class="k">print</span>(total)</div>
+        </div>
+        <div id="s-store" class="s-abs s-hide">= means store</div>
+
+        <!-- Kitchen Coach's shelf -->
+        <div id="s-head" class="s-abs">Kitchen Coach</div>
+        <div id="s-forget" class="s-abs s-pill s-hide">forgets everything</div>
+        <div id="s-one" class="s-abs s-pill s-hide">one value at a time</div>
+        <div id="s-made" class="s-abs s-pill s-hide">made when price was 3</div>
+        <div id="s-ghost" class="s-abs s-hide">ben_protien</div>
+        <div id="s-nojar" class="s-abs s-pill s-hide">no jar has this label</div>
+
+        <div id="s-shelfset">
+          <div id="s-j1" class="s-jar s-hide">
+            <div class="s-lid" id="lid1"></div>
+            <div class="s-glass"></div>
+            <div class="s-lab" id="lab1">ben_protein</div>
+            <div class="s-lab" id="labP">price</div>
+            <div class="s-val" id="v1a">140</div>
+            <div class="s-val" id="v1b">150</div>
+            <div class="s-val" id="vPa">3</div>
+            <div class="s-val" id="vPb">4</div>
+          </div>
+          <div id="s-j2" class="s-jar s-hide">
+            <div class="s-lid"></div>
+            <div class="s-glass"></div>
+            <div class="s-lab" id="lab2">ana_carbs</div>
+            <div class="s-lab" id="labT">total</div>
+            <div class="s-val" id="v2">350</div>
+            <div class="s-val red" id="vT">6</div>
+          </div>
+          <div id="s-j3" class="s-jar s-hide">
+            <div class="s-lid"></div>
+            <div class="s-glass"></div>
+            <div class="s-lab" id="lab3">chloe_desserts</div>
+            <div class="s-val" id="v3">2</div>
+          </div>
+          <div id="s-shelf" class="s-abs s-hide"></div>
+        </div>
+
+        <div id="s-out" class="s-abs s-ol">
+          <div id="s-outlbl">output</div>
+          <div class="s-o" id="s-o1">120</div>
+          <div class="s-o" id="s-o2">6</div>
+        </div>
+
+        <!-- rings, arrows and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="a-link" style="stroke:#3b37e6" />
+          <path id="a-head" style="stroke:#3b37e6" />
+          <path id="r-eq" style="stroke:#ffc24b" />
+          <path id="r-name" style="stroke:#ffc24b" />
+          <path id="r-typo" style="stroke:#ff6b8b" />
+          <path id="r-ne" style="stroke:#ffc24b" />
+          <path id="r-mean" style="stroke:#ffc24b" />
+          <path id="r-stale" style="stroke:#b8235a" />
+          <path id="a-watch" style="stroke:#6f6b80; stroke-dasharray: 14 12" />
+        </svg>
+        <svg id="s-cross" class="s-abs s-hide" viewBox="0 0 60 60"><path d="M10 10 L50 50 M50 10 L10 50" stroke="#b8235a" stroke-width="9" stroke-linecap="round" fill="none" /></svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.778, 0.987, 1.091, 1.846, 2.043, 2.473, 3.355, 3.576, 3.762, 3.889, 3.982, 4.331, 4.481, 5.735, 5.898, 6.49, 6.722, 6.873, 7.361, 7.523, 7.651, 8.615, 8.928, 9.601, 10.298, 10.553, 10.948, 12.051, 12.33, 12.562, 13.073, 13.479, 13.769, 14.733, 14.988, 15.197, 15.581, 16.01, 16.149, 16.289, 16.823, 17.369, 17.728, 18.576, 18.994, 19.307, 20.259, 20.573, 21.165, 21.49, 21.931, 22.813, 23.231, 23.963, 24.961, 25.31, 25.588, 25.728, 26.296, 26.575, 27.109, 27.562, 27.725, 28.758, 29.048, 29.582, 29.988, 30.546, 30.813, 31.068, 31.451, 32.473, 32.647, 32.961, 33.321, 33.576, 33.878, 34.11, 34.226, 35.097, 35.41, 35.608, 35.735, 35.933, 36.292, 37.035, 37.279, 37.685, 37.941, 38.359, 39.311, 39.648, 39.764, 40.089, 40.391, 40.658, 41.134, 41.911, 43.142, 43.351, 43.607, 44.152, 44.396, 44.547, 44.802, 45.093, 45.998, 46.416, 46.59, 47.217, 47.693, 48.053, 48.819, 49.295, 49.446, 49.783, 50.189, 50.631, 50.909, 51.768, 52.012, 52.117, 52.453, 52.732, 52.918, 53.092, 53.742, 54.276, 54.485, 54.833, 55.623, 55.867, 56.389, 56.737, 57.062, 57.179, 57.666, 57.933, 58.537, 58.711, 58.908, 59.059, 59.326, 59.454, 59.942, 60.104, 60.708, 60.929, 61.08, 61.439, 61.614, 61.706, 62.589, 62.995, 63.123, 63.518, 63.75, 63.982, 64.11];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Code panel at (96, 96). 36px mono = 21.6px per char, text starts at x=136.
+      // Line centres: L1 214, L2 274, L3 334, L4 414, L5 494, L6 574. Error lines (28px, 16.8px per char): 649, 695.
+      const prep = (id, d) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const ring = (id, cx, cy, rx, ry) => prep(id, `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`);
+      ring("r-eq", 406, 214, 24, 34);          // the = on line 1, col 12
+      ring("r-name", 384, 414, 132, 36);       // ben_protein on line 4, cols 6-16
+      ring("r-typo", 427, 574, 86, 36);        // protien on line 6, cols 10-16
+      ring("r-ne", 212, 649, 86, 28);          // NameError, error cols 0-8
+      ring("r-mean", 371, 695, 248, 30);       // Did you mean: 'ben_protein'?  cols 0-27
+      ring("r-stale", 1390, 530, 104, 70);     // the 6 in the total jar
+      prep("a-link", "M392 192 C640 70 880 300 1030 392");
+      prep("a-head", "M1004 396 L1032 394 L1016 371");
+      prep("a-watch", "M1150 286 Q1270 170 1390 286");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.045 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // A label is written and stuck on: it swings in from above.
+      const stick = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -220, rotation: -12 }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.4)", immediateRender: false }, at);
+      // A value drops into its jar.
+      const drop = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -300 }, { opacity: 1, y: 0, duration: 0.6, ease: "bounce.out", immediateRender: false }, at);
+      const shake = (at) => tl.fromTo("#s-code", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. Kitchen Coach forgets everything. A shelf of jars. ---- */
+      pop("#s-forget", t(6), { from: 0.5, ease: "back.out(2)" });
+      bump("#s-head", t(4));
+      out("#s-forget", t(12) - 0.1, 0.25);
+      show("#s-shelf", t(12) - 0.1, 0.25);
+      tl.fromTo(["#s-j1", "#s-j2", "#s-j3"], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", stagger: 0.12, immediateRender: false }, t(13));
+
+      /* ---- 2. A variable is a label on a jar: ben_protein = 140 ---- */
+      stick("#lab1", t(19));
+      type("#L1", t(23), 17);
+      draw("r-eq", t(25), 0.4);
+      bump("#L1 .n", t(26), 1.25);
+      bump("#s-j1", t(28), 1.04);
+      bump("#L1 .o", t(31), 1.4);
+      pop("#s-store", t(34) - 0.05, { from: 0.5, ease: "back.out(2)" });
+      out("#r-eq", t(35), 0.2);
+      drop("#v1a", t(36));
+      draw("a-link", t(42) - 0.1, 0.6);
+      draw("a-head", t(42) + 0.45, 0.2);
+      bump("#lab1", t(43) + 0.1);
+
+      /* ---- 3. Fill two more ---- */
+      out(["#a-link", "#a-head", "#s-store"], t(45) - 0.1, 0.3);
+      type("#L2", t(48), 15);
+      stick("#lab2", t(48));
+      drop("#v2", t(50));
+      type("#L3", t(53), 18);
+      stick("#lab3", t(53));
+      drop("#v3", t(55));
+
+      /* ---- 4. Use the name: Python opens the jar ---- */
+      type("#L4", t(57), 23);
+      draw("r-name", t(59), 0.45);
+      tl.fromTo("#lid1", { y: 0, rotation: 0 }, { y: -46, rotation: -14, duration: 0.3, ease: "power2.out", immediateRender: false }, t(62));
+      bump("#v1a", t(63), 1.15);
+      tl.to("#lid1", { y: 0, rotation: 0, duration: 0.3, ease: "power2.in" }, t(65));
+      pop("#s-o1", t(70), { from: 0.5 });
+      out("#r-name", t(71), 0.25);
+
+      /* ---- 5. One thing at a time: tip out 140, store 150 ---- */
+      pop("#s-one", t(75), { from: 0.6 });
+      bump("#s-j1", t(75), 1.04);
+      tl.to("#s-j1", { rotation: 22, transformOrigin: "100% 100%", duration: 0.35, ease: "power2.out" }, t(81));
+      tl.to("#v1a", { x: 170, y: 120, rotation: 50, opacity: 0, duration: 0.7, ease: "power2.in" }, t(81) + 0.25);
+      tl.to("#s-j1", { rotation: 0, duration: 0.35, ease: "power2.inOut" }, t(86) + 0.2);
+      type("#L5", t(87), 17);
+      drop("#v1b", t(89));
+      out("#s-one", t(91), 0.25);
+
+      /* ---- 6. Spell the label wrong: NameError ---- */
+      type("#L6", t(92), 18);
+      draw("r-typo", t(95), 0.4);
+      shake(t(98));
+      show("#E1", t(98) + 0.05, 0.2);
+      pop("#s-ghost", t(98) + 0.2, { from: 0.6 });
+      pop("#s-nojar", t(98) + 0.4, { from: 0.6 });
+      draw("r-ne", t(99), 0.4);
+      show("#E2", t(103) - 0.1, 0.2);
+      draw("r-mean", t(103), 0.5);
+      bump("#lab1", t(106), 1.12);
+
+      /* ---- 7. The catch: total does not update ---- */
+      const old = ["#L1", "#L2", "#L3", "#L4", "#L5", "#L6", "#E1", "#E2", "#r-typo", "#r-ne", "#r-mean", "#s-ghost", "#s-nojar", "#s-o1", "#lab1", "#lab2", "#v1b", "#v2"];
+      out(old, t(108), 0.3);
+      out("#s-j3", t(108), 0.3);
+      out("#f1", t(108), 0.2); show("#f2", t(108) + 0.3, 0.2);
+      type("#C1", t(111), 9);
+      stick("#labP", t(111));
+      drop("#vPa", t(113));
+      type("#C2", t(114), 17);
+      stick("#labT", t(114));
+      drop("#vT", t(120));
+      type("#C3", t(123), 9);
+      tl.to("#vPa", { y: -260, opacity: 0, duration: 0.3, ease: "power2.in" }, t(126));
+      drop("#vPb", t(127));
+      type("#C4", t(128), 12);
+      pop("#s-o2", t(130), { from: 0.5 });
+      draw("r-stale", t(131), 0.5);
+      pop("#s-made", t(137), { from: 0.6 });
+      draw("a-watch", t(140), 0.5);
+      pop("#s-cross", t(143), { from: 0.3, ease: "back.out(2.4)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 60.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,15 @@
+Kitchen Coach has a problem. It forgets everything. So give it a shelf of jars.
+
+A variable is a label on a jar. Ben protein, equals, one hundred forty. Read the equals sign as store. Put one hundred forty in the jar labelled Ben protein.
+
+Fill two more. Ana carbs, three hundred fifty. Chloe desserts, two.
+
+Now use the name, and Python opens the jar. Ben protein minus twenty is one hundred twenty.
+
+A jar holds one thing at a time. Tip out the one hundred forty, and store one hundred fifty.
+
+Spell the label wrong, and Python stops. NameError. It even asks, did you mean Ben protein?
+
+Now the catch. Pasta costs three. Total is price times two, so six. Then the price goes up to four. Total is still six. The equals sign stored a copy, back then. It does not watch the price.
+
+A variable is a name for a value. Label the jar, and use it later.

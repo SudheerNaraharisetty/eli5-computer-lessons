@@ -1,0 +1,11 @@
+The recipe says, bake at one hundred eighty degrees or more. Your oven climbs. One seventy. One seventy five. One eighty. Ready? Your program says, not yet.
+
+Look at the sign. It asks, is the oven more than one eighty? At exactly one eighty, the answer is False. The oven is ready, and the program never says so.
+
+Read the recipe out loud. At least one eighty. That is more than, or equal to. One extra character, and the edge counts. True.
+
+Ana runs in zone two, from one hundred fourteen to one hundred thirty three beats a minute. Python lets you write that like maths, with the heart rate in the middle. At one twenty eight, True. At one forty, False.
+
+Text is strict too. A guest types ANA, in capitals, with spaces. Is that equal to ana? False. Strip the spaces, lower the letters, then compare. True.
+
+Say the question out loud. Then pick the sign that says it.

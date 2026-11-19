@@ -1,0 +1,419 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panel, left */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { left: 56px; background: #ffc24b; }
+    #s-bar > i:nth-child(3) { left: 86px; background: #4bd69b; }
+    #s-bar > i:nth-child(1) { left: 26px; }
+    .s-file { position: absolute; left: 130px; top: 0; font: 700 30px/64px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    #s-div { position: absolute; left: 0; top: 600px; width: 1054px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 612px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-grp { position: absolute; left: 0; top: 0; width: 1054px; height: 888px; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-ln .sp { background: #7a2e4c; }
+    .s-out { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-out.t { color: #7cf0b5; }
+    .s-out.f { color: #ff6b8b; }
+    .s-tok { position: absolute; font: 500 40px/64px "JetBrains Mono", monospace; color: #ffc24b; white-space: pre; opacity: 0; }
+    .s-chip { position: absolute; height: 52px; padding: 0 18px; border-radius: 999px; font: 700 32px/52px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-chip.f { background: #ff6b8b; color: #15132b; }
+    .s-chip.t { background: #7cf0b5; color: #15132b; }
+    #s-never { left: 520px; top: 218px; height: 52px; padding: 0 18px; border-radius: 999px; border: 3px dashed #ff6b8b; color: #ff9fb6; font: 800 30px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+
+    /* the big recipe card at the start, then its slot on the right */
+    #s-recipe { left: 1250px; top: 200px; width: 538px; height: 128px; background: #fff; border-radius: 22px; transform-origin: 0 0; }
+    #s-recipe .lbl { position: absolute; left: 28px; top: 14px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #s-recipe .txt { position: absolute; left: 28px; top: 58px; font: 800 38px/52px "Manrope", sans-serif; white-space: nowrap; }
+    #s-recipe .txt u { text-decoration: none; position: relative; color: #3b37e6; }
+    #s-under { position: absolute; left: 0; bottom: -6px; width: 100%; height: 8px; border-radius: 4px; background: #b9741a; transform-origin: 0 50%; }
+
+    /* right panel */
+    #s-right { left: 1214px; top: 96px; width: 610px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    .s-title { position: absolute; left: 36px; top: 26px; font: 700 50px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    .s-gauge { position: absolute; left: 25px; top: 250px; width: 560px; height: 400px; overflow: visible; }
+    .s-read { position: absolute; left: 0; top: 596px; width: 610px; height: 90px; }
+    .s-rv { position: absolute; left: 0; top: 0; width: 610px; text-align: center; font: 700 72px/90px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-rv.dim { color: #6f6b80; }
+    .s-pills { position: absolute; left: 0; top: 730px; width: 610px; height: 84px; }
+    .s-pill { position: absolute; left: 0; top: 0; height: 84px; padding: 0 36px; border-radius: 999px; font: 800 40px/84px "Manrope", sans-serif; white-space: nowrap; opacity: 0; right: 0; margin: 0 auto; width: fit-content; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.q { background: #ece7df; color: #3e3b52; }
+    .s-pill.f { background: #f7d5e1; color: #b8235a; }
+    .s-pill.t { background: #ddefe6; color: #1f7a5c; }
+    #s-zone { position: absolute; left: 36px; top: 104px; width: 538px; height: 104px; background: #fff; border-radius: 22px; opacity: 0; }
+    #s-zone .lbl { position: absolute; left: 28px; top: 8px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #s-zone .txt { position: absolute; left: 28px; top: 46px; font: 800 36px/48px "Manrope", sans-serif; color: #1f7a5c; white-space: nowrap; }
+
+    /* guest list: name cards */
+    .s-ncard { position: absolute; left: 36px; width: 538px; height: 150px; background: #fff; border-radius: 22px; opacity: 0; }
+    #s-typed { top: 130px; }
+    #s-list { top: 470px; }
+    .s-ncard .lbl { position: absolute; left: 28px; top: 14px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; }
+    .s-nv { position: absolute; left: 30px; top: 62px; font: 700 64px/76px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-nv .sp { background: #f7d5e1; }
+    .s-nv.on { opacity: 1; }
+    #s-sign { left: 36px; top: 330px; width: 538px; height: 120px; }
+    #s-eq { position: absolute; left: 30px; top: 10px; font: 700 80px/100px "JetBrains Mono", monospace; opacity: 0; }
+    .s-stamp { position: absolute; left: 190px; top: 18px; height: 84px; padding: 0 30px; border-radius: 18px; font: 700 52px/84px "JetBrains Mono", monospace; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-stamp.f { background: #f7d5e1; color: #b8235a; }
+    .s-stamp.t { background: #ddefe6; color: #1f7a5c; }
+    .s-tool { position: absolute; top: 700px; height: 80px; padding: 0 26px; border-radius: 18px; background: #e6e3ff; color: #3b37e6; font: 700 40px/80px "JetBrains Mono", monospace; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tstrip { left: 36px; }
+    #s-tlower { left: 316px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right panel: oven dial, heart-rate gauge, name cards -->
+        <div id="s-right" class="s-abs s-ol">
+          <!-- beat 1: the oven -->
+          <div id="b1" class="s-abs" style="left:0;top:0;width:610px;height:888px">
+            <div class="s-title" id="ti1" style="opacity:1">The oven</div>
+            <svg class="s-gauge" id="g-oven" viewBox="0 0 560 400">
+              <path id="g1-arc" stroke="#0e0c1d" stroke-width="6" fill="none" />
+              <g id="g1-ticks"></g>
+              <path id="g1-needle" d="M280 300 L280 172" stroke="#b8235a" stroke-width="10" stroke-linecap="round" />
+              <circle cx="280" cy="300" r="20" fill="#0e0c1d" />
+            </svg>
+            <div class="s-read">
+              <div class="s-rv dim" id="o0" style="opacity:1">--°C</div>
+              <div class="s-rv" id="o170">170°C</div>
+              <div class="s-rv" id="o175">175°C</div>
+              <div class="s-rv" id="o180">180°C</div>
+            </div>
+            <div class="s-pills">
+              <div class="s-pill f" id="p1f">Not yet</div>
+              <div class="s-pill t" id="p1t">Ready</div>
+            </div>
+          </div>
+          <!-- beat 2: Ana's heart rate -->
+          <div id="b2" class="s-abs" style="left:0;top:0;width:610px;height:888px;opacity:0">
+            <div class="s-title" id="ti2" style="opacity:1">Ana's heart rate</div>
+            <div id="s-zone" class="s-ol"><div class="lbl">zone 2, beats a minute</div><div class="txt" id="zt">from 114 to 133</div></div>
+            <svg class="s-gauge" id="g-hr" viewBox="0 0 560 400">
+              <path id="g2-arc" stroke="#0e0c1d" stroke-width="6" fill="none" />
+              <path id="g2-band" stroke="#1f7a5c" stroke-width="34" fill="none" opacity="0" />
+              <g id="g2-ticks"></g>
+              <g id="g2-l114" opacity="0"></g>
+              <g id="g2-l133" opacity="0"></g>
+              <path id="g2-needle" d="M280 300 L280 172" stroke="#3b37e6" stroke-width="10" stroke-linecap="round" />
+              <circle cx="280" cy="300" r="20" fill="#0e0c1d" />
+            </svg>
+            <div class="s-read">
+              <div class="s-rv dim" id="h0" style="opacity:1">-- bpm</div>
+              <div class="s-rv" id="h128">128 bpm</div>
+              <div class="s-rv" id="h140">140 bpm</div>
+            </div>
+            <div class="s-pills">
+              <div class="s-pill t" id="p2t">in zone 2</div>
+              <div class="s-pill f" id="p2f">too fast</div>
+            </div>
+          </div>
+          <!-- beat 3: the guest list -->
+          <div id="b3" class="s-abs" style="left:0;top:0;width:610px;height:888px;opacity:0">
+            <div class="s-title" id="ti3" style="opacity:1">The guest list</div>
+            <div id="s-typed" class="s-ncard s-ol">
+              <div class="lbl">typed by the guest</div>
+              <div class="s-nv on" id="n1">"<span class="sp">  </span>ANA<span class="sp"> </span>"</div>
+              <div class="s-nv" id="n2">"ANA"</div>
+              <div class="s-nv" id="n3" style="color:#1f7a5c">"ana"</div>
+            </div>
+            <div id="s-sign" class="s-abs">
+              <div id="s-eq">==</div>
+              <div class="s-stamp f" id="st-f">False</div>
+              <div class="s-stamp t" id="st-t">True</div>
+            </div>
+            <div id="s-list" class="s-ncard s-ol">
+              <div class="lbl">on the guest list</div>
+              <div class="s-nv on">"ana"</div>
+            </div>
+            <div class="s-tool" id="s-tstrip">.strip()</div>
+            <div class="s-tool" id="s-tlower">.lower()</div>
+          </div>
+        </div>
+
+        <!-- code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i>
+            <span class="s-file" id="f1" style="opacity:1">oven.py</span>
+            <span class="s-file" id="f2">zone.py</span>
+            <span class="s-file" id="f3">guest.py</span>
+          </div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+
+          <!-- beat 1 code -->
+          <div class="s-grp" id="c1">
+            <div class="s-ln" style="top:84px;opacity:1">oven_c <span class="o">=</span> <span class="n">180</span></div>
+            <div class="s-ln" id="L1a" style="top:148px;opacity:1"><span class="k">if</span> oven_c <span class="o">&gt;</span> <span class="n">180</span>:</div>
+            <div class="s-ln" id="L1b" style="top:148px"><span class="k">if</span> oven_c <span class="o">&gt;=</span> <span class="n">180</span>:</div>
+            <div class="s-ln" id="L2" style="top:212px;opacity:1">    <span class="k">print</span>(<span class="s">"Ready"</span>)</div>
+            <div class="s-ln" style="top:276px;opacity:1"><span class="k">else</span>:</div>
+            <div class="s-ln" style="top:340px;opacity:1">    <span class="k">print</span>(<span class="s">"Not yet"</span>)</div>
+            <div class="s-chip f" id="k1f" style="left:500px;top:154px">→ False</div>
+            <div class="s-chip t" id="k1t" style="left:500px;top:154px">→ True</div>
+            <div class="s-abs" id="s-never">never runs</div>
+            <div class="s-out f" id="O1f" style="top:664px">Not yet</div>
+            <div class="s-out t" id="O1t" style="top:664px">Ready</div>
+          </div>
+
+          <!-- beat 2 code -->
+          <div class="s-grp" id="c2" style="opacity:0">
+            <div class="s-ln" style="top:84px;opacity:1">ana_bpm <span class="o">=</span> </div>
+            <div class="s-tok" id="v128" style="left:280px;top:84px;opacity:1">128</div>
+            <div class="s-tok" id="v140" style="left:280px;top:84px">140</div>
+            <div class="s-ln" id="L21" style="top:148px"><span class="k">print</span>(<span class="n">114</span> <span class="o">&lt;=</span> ana_bpm <span class="o">&lt;=</span> <span class="n">133</span>)</div>
+            <div class="s-out t" id="O2t" style="top:664px">True</div>
+            <div class="s-out f" id="O2f" style="top:664px">False</div>
+          </div>
+
+          <!-- beat 3 code -->
+          <div class="s-grp" id="c3" style="opacity:0">
+            <div class="s-ln" id="L30" style="top:84px">typed <span class="o">=</span> <span class="s">"<span class="sp">  </span>ANA<span class="sp"> </span>"</span></div>
+            <div class="s-ln" id="L31" style="top:148px"><span class="k">print</span>(typed <span class="o">==</span> <span class="s">"ana"</span>)</div>
+            <div class="s-ln" id="L32" style="top:212px"><span class="k">print</span>(typed.strip().lower() <span class="o">==</span> <span class="s">"ana"</span>)</div>
+            <div class="s-out f" id="O3a" style="top:664px">False</div>
+            <div class="s-out t" id="O3b" style="top:728px">True</div>
+          </div>
+        </div>
+
+        <!-- the recipe card: big on the left at first, then it moves to the right panel -->
+        <div id="s-recipe" class="s-abs s-ol s-hide">
+          <div class="lbl">Recipe</div>
+          <div class="txt">bake at 180 °C <u>or more<span id="s-under"></span></u></div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-gt" style="stroke:#ffc24b" />
+          <path id="r-ge" style="stroke:#7cf0b5" />
+          <path id="r-edge" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="r-edge2" style="stroke:#1f7a5c" />
+          <path id="r-mid" style="stroke:#ffc24b" />
+          <path id="r-le1" style="stroke:#ff9fb6" />
+          <path id="r-le2" style="stroke:#ff9fb6" />
+          <path id="r-caps" style="stroke:#b9741a" />
+          <path id="r-strip" style="stroke:#ffc24b" />
+          <path id="r-lower" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.209, 0.627, 1.173, 1.521, 1.683, 1.892, 2.241, 2.531, 2.972, 3.239, 3.936, 4.191, 4.54, 5.433, 5.712, 6.536, 6.815, 7.245, 7.918, 8.266, 8.975, 9.822, 10.077, 10.588, 11.169, 11.459, 12.074, 12.341, 12.434, 12.574, 13.444, 13.677, 14.211, 14.42, 14.559, 14.884, 15.116, 15.337, 15.581, 16.579, 16.834, 17.484, 17.763, 18.309, 18.518, 19.052, 19.412, 20.306, 20.491, 20.735, 20.921, 21.35, 21.525, 21.641, 22.186, 22.523, 22.825, 23.649, 23.928, 24.056, 24.532, 24.81, 25.414, 25.635, 25.936, 26.273, 27.121, 27.353, 27.527, 27.759, 28.049, 28.386, 28.827, 29.768, 30.104, 30.546, 31.103, 31.347, 31.567, 31.916, 32.624, 33.785, 34.156, 34.481, 34.655, 35.085, 35.852, 36.107, 36.328, 36.711, 37.28, 37.489, 37.698, 38.092, 38.545, 38.905, 39.265, 39.416, 40.322, 40.809, 41.041, 41.192, 41.471, 41.761, 42.156, 42.748, 42.957, 43.085, 43.329, 43.596, 43.7, 43.805, 44.64, 44.908, 45.175, 45.639, 46.057, 47.079, 47.357, 47.636, 48.367, 49.029, 49.552, 49.761, 50.19, 51.189, 51.351, 51.687, 52.163, 52.965, 53.208, 53.986, 54.265, 55.681, 55.925, 56.146, 56.54, 56.773, 57.504, 58.363, 58.711, 58.828, 59.501, 59.803, 59.919, 60.523, 60.824, 61.997, 62.961, 63.239, 63.355, 63.831, 64.145, 64.737, 65.027, 65.306, 65.434, 65.724, 65.91, 66.212];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const NS = "http://www.w3.org/2000/svg";
+
+      /* ---- gauge geometry (static, built once). Needle points up at the middle value. ---- */
+      // Gauge svg sits at page (1239, 346); its centre (280, 300) is page (1519, 646).
+      const CX = 280, CY = 300, R = 230;
+      const pt = (deg, r) => { const a = deg * Math.PI / 180; return [CX + r * Math.sin(a), CY - r * Math.cos(a)]; };
+      const arc = (d0, d1, r) => { const p0 = pt(d0, r), p1 = pt(d1, r); return `M${p0[0].toFixed(1)} ${p0[1].toFixed(1)} A${r} ${r} 0 ${d1 - d0 > 180 ? 1 : 0} 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`; };
+      const label = (g, deg, r, txt, col, size) => {
+        const p = pt(deg, r), el = document.createElementNS(NS, "text");
+        el.setAttribute("x", p[0].toFixed(1)); el.setAttribute("y", (p[1] + size * 0.36).toFixed(1));
+        el.setAttribute("text-anchor", "middle"); el.setAttribute("font-family", "JetBrains Mono, monospace");
+        el.setAttribute("font-weight", "700"); el.setAttribute("font-size", size); el.setAttribute("fill", col);
+        el.textContent = txt; g.appendChild(el);
+      };
+      const tick = (g, deg, len, w) => {
+        const a = pt(deg, R), b = pt(deg, R - len), el = document.createElementNS(NS, "line");
+        el.setAttribute("x1", a[0].toFixed(1)); el.setAttribute("y1", a[1].toFixed(1));
+        el.setAttribute("x2", b[0].toFixed(1)); el.setAttribute("y2", b[1].toFixed(1));
+        el.setAttribute("stroke", "#0e0c1d"); el.setAttribute("stroke-width", w); el.setAttribute("stroke-linecap", "round");
+        g.appendChild(el);
+      };
+      // oven: 100 to 260 °C, 180 straight up
+      const ovenDeg = (v) => (v - 180) / 160 * 180;
+      document.getElementById("g1-arc").setAttribute("d", arc(-90, 90, R));
+      const g1 = document.getElementById("g1-ticks");
+      for (let v = 100; v <= 260; v += 20) tick(g1, ovenDeg(v), v % 40 === 20 ? 40 : 26, v === 180 ? 8 : 5);
+      [100, 140, 180, 220, 260].forEach(v => label(g1, ovenDeg(v), R - 74, String(v), "#0e0c1d", 30));
+      // heart rate: 60 to 200 bpm, 130 straight up
+      const hrDeg = (v) => (v - 130) / 140 * 180;
+      document.getElementById("g2-arc").setAttribute("d", arc(-90, 90, R));
+      const band = document.getElementById("g2-band");
+      band.setAttribute("d", arc(hrDeg(114), hrDeg(133), R + 22));
+      const g2 = document.getElementById("g2-ticks");
+      for (let v = 60; v <= 200; v += 20) tick(g2, hrDeg(v), 26, 5);
+      [60, 200].forEach(v => label(g2, hrDeg(v), R - 64, String(v), "#0e0c1d", 30));
+      label(document.getElementById("g2-l114"), hrDeg(114) - 7, R + 72, "114", "#1f7a5c", 32);
+      label(document.getElementById("g2-l133"), hrDeg(133) + 7, R + 72, "133", "#1f7a5c", 32);
+      const bl = band.getTotalLength(); band.style.strokeDasharray = bl; band.style.strokeDashoffset = bl;
+
+      /* ---- rings (page pixels) ---- */
+      // Code: 40px mono, 24px per char, text from x=136; line i centre y = 212 + 64*i.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.style.strokeDasharray) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      ring("r-gt", 388, 276, 24, 36);      // > on line 1, col 10
+      ring("r-ge", 400, 276, 40, 36);      // >= on line 1, cols 10-11
+      ring("r-edge", 1519, 466, 50, 62);   // the 180 tick and label at the top of the dial
+      ring("r-edge2", 1519, 466, 58, 70);
+      ring("r-mid", 532, 276, 100, 38);    // ana_bpm in the middle, cols 13-19
+      ring("r-le1", 400, 276, 36, 34);     // first <=, cols 10-11
+      ring("r-le2", 664, 276, 36, 34);     // second <=, cols 21-22
+      ring("r-caps", 1453, 326, 78, 46);   // ANA on the typed card (64px mono, 38.4px per char, from x=1280)
+      ring("r-strip", 496, 340, 108, 36);  // .strip() on line 2, cols 11-18
+      ring("r-lower", 688, 340, 108, 36);  // .lower() on line 2, cols 19-26
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id), dashed = id === "r-edge";
+        tl.set(p, { opacity: 1 }, at);
+        if (dashed) tl.fromTo(p, { opacity: 0, scale: 0.7, svgOrigin: "1519 466" }, { opacity: 1, scale: 1, duration: d || 0.4, ease: "back.out(1.8)", immediateRender: false }, at);
+        else tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.04, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const needle = (id, deg, at, d, ease) => tl.to(id, { rotation: deg, svgOrigin: "280 300", duration: d, ease: ease || "power2.inOut" }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. The recipe says at least 180. The oven climbs. ---- */
+      tl.set("#g1-needle", { rotation: ovenDeg(100), svgOrigin: "280 300" }, 0);
+      tl.set("#g2-needle", { rotation: hrDeg(60), svgOrigin: "280 300" }, 0);
+      tl.set("#s-under", { scaleX: 0 }, 0);
+      tl.set("#s-recipe", { x: -1110, y: 220, scale: 1.8 }, 0);
+      tl.fromTo("#s-recipe", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, t(1) - 0.1);
+      tl.to("#s-under", { scaleX: 1, duration: 0.4, ease: "power2.out" }, t(9));
+      bump("#ti1", t(12));
+      needle("#g1-needle", ovenDeg(170), t(13), t(15) - t(13), "power1.inOut");
+      swap("#o0", "#o170", t(15));
+      needle("#g1-needle", ovenDeg(175), t(16), 0.6);
+      swap("#o170", "#o175", t(17));
+      needle("#g1-needle", ovenDeg(180), t(19) - 0.3, 0.5, "power2.out");
+      swap("#o175", "#o180", t(19));
+      bump("#o180", t(21));
+
+      /* ---- 2. The program says not yet ---- */
+      tl.to("#s-recipe", { x: 0, y: 0, scale: 1, duration: 0.7, ease: "expo.inOut" }, t(22) - 0.3);
+      tl.fromTo("#s-code", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(23));
+      pop("#O1f", t(25), { from: 0.7, d: 0.3 });
+      pop("#p1f", t(25) + 0.1, { from: 0.6 });
+
+      /* ---- 3. Look at the sign: more than 180? At exactly 180, False ---- */
+      draw("r-gt", t(30) - 0.1, 0.4);
+      bump("#L1a", t(36));
+      draw("r-edge", t(41));
+      pop("#k1f", t(47) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      bump("#b1", t(51));
+      pop("#s-never", t(55), { from: 0.6 });
+      shake("#O1f", t(55));
+
+      /* ---- 4. At least 180 is more than, or equal to ---- */
+      bump("#s-recipe", t(58));
+      tl.to("#s-under", { backgroundColor: "#3b37e6", duration: 0.2 }, t(63));
+      bump("#s-recipe", t(63) + 0.1);
+      out("#r-gt", t(67), 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 620 }, { opacity: 1, x: 384, y: 266, duration: 0.6, ease: "power3.out", immediateRender: false }, t(67));
+      swap("#L1a", "#L1b", t(75));
+      draw("r-ge", t(75) + 0.2, 0.4);
+      tl.to("#s-cursor", { opacity: 0, x: 520, y: 620, duration: 0.4, ease: "power2.in" }, t(77));
+      out("#r-edge", t(79) - 0.1, 0.15);
+      draw("r-edge2", t(79), 0.45);
+      out("#s-never", t(81) - 0.1, 0.15);
+      swap("#k1f", "#k1t", t(81));
+      swap("#O1f", "#O1t", t(81) + 0.1);
+      swap("#p1f", "#p1t", t(81) + 0.15);
+      tl.to("#g1-needle", { stroke: "#1f7a5c", duration: 0.2 }, t(81));
+
+      /* ---- 5. Ana's zone 2: a chained comparison ---- */
+      out(["#b1", "#s-recipe", "#r-ge", "#r-edge2"], t(82) - 0.3, 0.3);
+      out(["#c1", "#f1"], t(82) - 0.3, 0.3);
+      show("#b2", t(82));
+      show("#f2", t(82));
+      show("#c2", t(82));
+      pop("#s-zone", t(85), { from: 0.7 });
+      tl.set("#g2-band", { opacity: 1 }, t(85));
+      tl.to("#g2-band", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, t(85));
+      show("#g2-l114", t(90));
+      show("#g2-l133", t(94));
+      type("#L21", t(101), 28);
+      draw("r-le1", t(105), 0.35);
+      draw("r-le2", t(105) + 0.3, 0.35);
+      out(["#r-le1", "#r-le2"], t(107), 0.2);
+      draw("r-mid", t(108), 0.45);
+      needle("#g2-needle", hrDeg(128), t(113), t(115) - t(113) + 0.2);
+      swap("#h0", "#h128", t(115));
+      bump("#v128", t(115));
+      pop("#O2t", t(117), { from: 0.7, d: 0.3 });
+      pop("#p2t", t(117) + 0.1, { from: 0.6 });
+      out("#r-mid", t(118) - 0.2, 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 620 }, { opacity: 1, x: 330, y: 226, duration: 0.5, ease: "power3.out", immediateRender: false }, t(118) - 0.4);
+      swap("#v128", "#v140", t(119));
+      needle("#g2-needle", hrDeg(140), t(119), 0.6);
+      swap("#h128", "#h140", t(120));
+      tl.to("#s-cursor", { opacity: 0, x: 520, y: 620, duration: 0.4, ease: "power2.in" }, t(120));
+      swap("#O2t", "#O2f", t(121));
+      swap("#p2t", "#p2f", t(121) + 0.05);
+      tl.to("#g2-needle", { stroke: "#b8235a", duration: 0.2 }, t(121));
+
+      /* ---- 6. Text is strict: ANA with spaces against ana ---- */
+      out(["#b2", "#c2", "#f2"], t(122) - 0.3, 0.3);
+      show("#b3", t(122));
+      show("#f3", t(122));
+      show("#c3", t(122));
+      pop("#s-typed", t(128), { from: 0.7 });
+      type("#L30", t(128), 16);
+      draw("r-caps", t(131), 0.4);
+      bump("#n1", t(133));
+      out("#r-caps", t(134) - 0.2, 0.2);
+      type("#L31", t(134), 21);
+      pop("#s-eq", t(136), { from: 0.5 });
+      pop("#s-list", t(138), { from: 0.7 });
+      pop("#O3a", t(139), { from: 0.7, d: 0.3 });
+      pop("#st-f", t(139) + 0.05, { from: 0.4, ease: "back.out(2.4)" });
+      // the tidy tools
+      type("#L32", t(140) - 0.3, 37);
+      draw("r-strip", t(140) + 0.3, 0.4);
+      pop("#s-tstrip", t(140), { from: 0.5 });
+      out("#st-f", t(141), 0.2);
+      swap("#n1", "#n2", t(142));
+      draw("r-lower", t(143), 0.4);
+      pop("#s-tlower", t(143), { from: 0.5 });
+      swap("#n2", "#n3", t(145));
+      bump("#s-eq", t(147));
+      pop("#O3b", t(148), { from: 0.7, d: 0.3 });
+      pop("#st-t", t(148) + 0.05, { from: 0.4, ease: "back.out(2.4)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 63.08);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

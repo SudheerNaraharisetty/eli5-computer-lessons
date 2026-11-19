@@ -57,7 +57,7 @@
       T(300, 156, '$30.00, less 10% is $27.00, plus 9% tax is $29.43', { s: 12.5, w: 700, f: P.ink2 })) + `</div>`;
 
   // The long first line needs room, so this picture is drawn slightly smaller.
-  const fixPic = `<div style="width:100%;zoom:0.9">${code(renamedCode, { title: 'orders.py, after renaming', bad: [7] })}${code(fixedCode, { title: 'orders.py, fixed', good: [7] })}</div>`;
+  const fixPic = `<div style="width:100%;min-width:0">${code(renamedCode, { title: 'orders.py, after renaming', bad: [7] })}${code(fixedCode, { title: 'orders.py, fixed', good: [7] })}</div>`;
 
   const guideRows = [
     ['x', 'cookie_count', 'say what it holds'],

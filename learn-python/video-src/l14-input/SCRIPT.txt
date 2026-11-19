@@ -1,0 +1,13 @@
+Tonight, you are the waiter. Notepad in hand, you go round the table and ask each friend what they would like.
+
+In Python, your waiter is input. It shows a question, waits for the guest to type and press Enter, then hands back exactly what was typed.
+
+How many cookies, Ana? She types four. Now look at the notepad. The four sits in quotes. Input always gives back text, even when it looks like a number.
+
+Ben and Chloe want the same, so times three. You expect twelve. Python prints four, four, four. Text times three just repeats the text.
+
+The fix is int. Wrap the answer in it, and the text four becomes the number four. Four cookies land on the plate. Times three is twelve.
+
+One last catch. A guest can type anything at all. Chloe types four, in words. Int cannot read that, so Python stops with a ValueError.
+
+Input asks, and hands back text. Convert it before you count.

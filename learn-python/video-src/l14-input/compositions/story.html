@@ -1,0 +1,318 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the waiter */
+    #s-waiter { left: 96px; top: 96px; width: 330px; height: 440px; overflow: visible; }
+    #s-you { left: 118px; top: 452px; padding: 0 24px; height: 58px; line-height: 58px; border-radius: 999px; background: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* the notepad */
+    #s-pad { left: 480px; top: 104px; width: 410px; height: 420px; background: #fffdf6; border-radius: 22px; overflow: hidden; }
+    #s-pad .rule { position: absolute; left: 0; width: 410px; height: 2px; background: #ece7df; }
+    #s-pad .spir { position: absolute; left: 0; top: 0; width: 410px; height: 46px; background: #0e0c1d; }
+    #s-pad .spir i { position: absolute; top: 12px; width: 22px; height: 22px; border-radius: 50%; background: #fffdf6; }
+    #s-padt { position: absolute; left: 32px; top: 64px; font: 700 48px/1.1 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-who { position: absolute; left: 32px; top: 140px; font-size: 32px; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    .s-pv { position: absolute; left: 0; top: 186px; width: 410px; height: 120px; text-align: center; font: 700 100px/120px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #pv1 { color: #1f7a5c; }
+    #pv2 { color: #3b37e6; }
+    #pv3 { color: #b8235a; }
+    .s-tag { position: absolute; left: 32px; top: 336px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; font-size: 30px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    #tg1, #tg3 { background: #ddefe6; color: #1f7a5c; }
+    #tg2 { background: #e6e3ff; color: #3b37e6; }
+
+    /* speech bubble and the plate */
+    #s-bub { left: 930px; top: 150px; width: 372px; height: 100px; line-height: 100px; text-align: center; background: #fff; border-radius: 26px; font-size: 34px; white-space: nowrap; }
+    #s-plate { left: 930px; top: 104px; width: 372px; height: 420px; overflow: visible; }
+    #s-times { left: 1006px; top: 452px; padding: 0 24px; height: 62px; line-height: 62px; border-radius: 999px; background: #1f7a5c; color: #fff; font: 700 36px/62px "JetBrains Mono", monospace; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    #s-any { left: 912px; top: 200px; width: 398px; height: 150px; padding: 22px 28px; background: #fff; border-radius: 24px; font-size: 32px; line-height: 52px; white-space: nowrap; }
+    #s-any .mono { font: 700 34px/52px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; }
+
+    /* the three friends */
+    .s-fr { position: absolute; left: 1336px; width: 488px; height: 124px; background: #fbf8f4; border-radius: 24px; }
+    #f-ana { top: 96px; }
+    #f-ben { top: 254px; }
+    #f-chloe { top: 412px; }
+    .s-av { position: absolute; left: 22px; top: 20px; width: 84px; height: 84px; border-radius: 50%; color: #fff; text-align: center; font: 700 44px/84px "Fraunces", serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-fn { position: absolute; left: 128px; top: 14px; font: 700 44px/1.2 "Fraunces", serif; white-space: nowrap; }
+    .s-fd { position: absolute; left: 128px; top: 72px; font-size: 28px; color: #3e3b52; white-space: nowrap; }
+    .s-say { position: absolute; right: 22px; top: 30px; padding: 0 20px; height: 64px; line-height: 64px; border-radius: 16px; background: #fff; font: 700 40px/64px "JetBrains Mono", monospace; color: #1f7a5c; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-say.r { color: #b8235a; }
+    .s-say.m { font: 800 30px/64px "Manrope", sans-serif; color: #3e3b52; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 600px; width: 1728px; height: 384px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 1160px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; }
+    #s-div { position: absolute; left: 1120px; top: 64px; width: 3px; height: 320px; background: #2e2a58; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-out { position: absolute; left: 1160px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out.a { left: 1592px; color: #7cf0b5; }
+    .s-out.bad { color: #ff6b8b; }
+    .s-out.good { color: #7cf0b5; }
+    .s-out.dim { color: #a9a5c8; font: 800 30px/64px "Manrope", sans-serif; }
+    #s-caret { position: absolute; left: 1594px; top: 94px; width: 22px; height: 44px; background: #eceaff; opacity: 0; }
+    #s-enter { left: 1500px; top: 762px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 14px; background: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #s-err { position: absolute; left: 40px; top: 212px; font: 500 30px/64px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+    #s-wrong { left: 1470px; top: 770px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 12px; background: #b8235a; color: #fff; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- you, the waiter -->
+        <svg id="s-waiter" class="s-abs" viewBox="0 0 330 440">
+          <path d="M60 440 L82 268 Q165 226 248 268 L270 440 Z" fill="#0e0c1d" />
+          <path d="M132 252 L165 352 L198 252 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+          <path d="M140 270 L165 282 L140 294 Z M190 270 L165 282 L190 294 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+          <rect x="146" y="206" width="38" height="44" rx="10" fill="#f3d9c2" stroke="#0e0c1d" stroke-width="5" />
+          <circle cx="165" cy="150" r="66" fill="#f3d9c2" stroke="#0e0c1d" stroke-width="5" />
+          <path d="M101 140 Q104 78 165 80 Q228 80 230 142 Q206 112 165 116 Q122 116 101 140 Z" fill="#0e0c1d" />
+          <circle cx="142" cy="156" r="7" fill="#0e0c1d" />
+          <circle cx="188" cy="156" r="7" fill="#0e0c1d" />
+          <path d="M146 184 Q165 198 184 184" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" />
+          <g>
+            <rect x="236" y="300" width="74" height="96" rx="8" fill="#fffdf6" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M250 330 H296 M250 350 H296 M250 370 H284" stroke="#3b37e6" stroke-width="4" stroke-linecap="round" />
+            <circle cx="236" cy="390" r="20" fill="#f3d9c2" stroke="#0e0c1d" stroke-width="5" />
+          </g>
+          <rect x="28" y="300" width="56" height="80" rx="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+        </svg>
+        <div id="s-you" class="s-abs s-hide">you, the waiter</div>
+
+        <!-- the notepad -->
+        <div id="s-pad" class="s-abs s-ol s-hide">
+          <div class="spir"><i style="left:40px"></i><i style="left:110px"></i><i style="left:180px"></i><i style="left:250px"></i><i style="left:320px"></i></div>
+          <div class="rule" style="top:130px"></div>
+          <div class="rule" style="top:320px"></div>
+          <div id="s-padt">Order</div>
+          <div class="s-who" id="who1">Ana says</div>
+          <div class="s-who" id="who2">Chloe says</div>
+          <div class="s-pv" id="pv1">"4"</div>
+          <div class="s-pv" id="pv2">4</div>
+          <div class="s-pv" id="pv3">"four"</div>
+          <div class="s-tag" id="tg1">text (str)</div>
+          <div class="s-tag" id="tg2">number (int)</div>
+          <div class="s-tag" id="tg3">text (str)</div>
+        </div>
+
+        <!-- the question, then the plate -->
+        <div id="s-bub" class="s-abs s-ol s-hide">How many cookies?</div>
+        <svg id="s-plate" class="s-abs s-hide" viewBox="0 0 372 420">
+          <circle cx="186" cy="196" r="160" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+          <circle cx="186" cy="196" r="118" fill="none" stroke="#ece7df" stroke-width="5" />
+          <g id="ck1"><circle cx="136" cy="146" r="46" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="122" cy="134" r="7" fill="#4a2a12" /><circle cx="150" cy="158" r="7" fill="#4a2a12" /><circle cx="146" cy="128" r="6" fill="#4a2a12" /></g>
+          <g id="ck2"><circle cx="236" cy="146" r="46" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="222" cy="134" r="7" fill="#4a2a12" /><circle cx="250" cy="158" r="7" fill="#4a2a12" /><circle cx="246" cy="128" r="6" fill="#4a2a12" /></g>
+          <g id="ck3"><circle cx="136" cy="246" r="46" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="122" cy="234" r="7" fill="#4a2a12" /><circle cx="150" cy="258" r="7" fill="#4a2a12" /><circle cx="146" cy="228" r="6" fill="#4a2a12" /></g>
+          <g id="ck4"><circle cx="236" cy="246" r="46" fill="#d9a05b" stroke="#0e0c1d" stroke-width="5" /><circle cx="222" cy="234" r="7" fill="#4a2a12" /><circle cx="250" cy="258" r="7" fill="#4a2a12" /><circle cx="246" cy="228" r="6" fill="#4a2a12" /></g>
+        </svg>
+        <div id="s-times" class="s-abs s-hide">4 × 3 = 12</div>
+        <div id="s-any" class="s-abs s-ol s-hide"><div>A guest can type:</div><div class="mono">4  four  4.5  yes</div></div>
+
+        <!-- the friends -->
+        <div id="f-ana" class="s-fr s-ol s-hide">
+          <div class="s-av" style="background:#3b37e6">A</div>
+          <div class="s-fn">Ana</div><div class="s-fd">half-marathon</div>
+          <div class="s-say" id="say1">4</div>
+        </div>
+        <div id="f-ben" class="s-fr s-ol s-hide">
+          <div class="s-av" style="background:#1f7a5c">B</div>
+          <div class="s-fn">Ben</div><div class="s-fd">vegetarian, lifts</div>
+          <div class="s-say m" id="say2">same</div>
+        </div>
+        <div id="f-chloe" class="s-fr s-ol s-hide">
+          <div class="s-av" style="background:#b8235a">C</div>
+          <div class="s-fn">Chloe</div><div class="s-fd">gluten-free</div>
+          <div class="s-say m" id="say3">same</div>
+          <div class="s-say r" id="say4">four</div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>order.py</span></div>
+          <div id="s-outlbl">terminal</div>
+          <div id="s-div"></div>
+          <div class="s-ln" id="L1a" style="top:84px">cookies = <span class="k">input</span>(<span class="s">"How many cookies? "</span>)</div>
+          <div class="s-ln" id="L1b" style="top:84px">cookies = <span class="k">int</span>(<span class="k">input</span>(<span class="s">"How many cookies? "</span>))</div>
+          <div class="s-ln" id="L2" style="top:148px"><span class="k">print</span>(cookies * <span class="n">3</span>)</div>
+          <div id="s-err">ValueError: invalid literal for int() with base 10: 'four'</div>
+          <div class="s-out" id="Op" style="top:84px">How many cookies?</div>
+          <div class="s-out a" id="Oa1" style="top:84px">4</div>
+          <div class="s-out a" id="Oa2" style="top:84px">four</div>
+          <div id="s-caret"></div>
+          <div class="s-out dim" id="Oexp" style="top:148px">you expect 12</div>
+          <div class="s-out bad" id="O444" style="top:148px">444</div>
+          <div class="s-out good" id="O12" style="top:148px">12</div>
+        </div>
+        <div id="s-enter" class="s-abs s-hide">Enter ↵</div>
+        <div id="s-wrong" class="s-abs s-hide">text, repeated</div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-input" style="stroke:#ffc24b" />
+          <path id="r-prompt" style="stroke:#ffc24b" />
+          <path id="r-var" style="stroke:#ffc24b" />
+          <path id="r-quotes" style="stroke:#b9741a" />
+          <path id="r-444" style="stroke:#ff6b8b" />
+          <path id="r-int" style="stroke:#ffc24b" />
+          <path id="r-int2" style="stroke:#ffc24b" />
+          <path id="r-ve" style="stroke:#ff6b8b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.778, 1.08, 1.242, 1.382, 2.485, 2.984, 3.135, 3.576, 3.762, 3.959, 4.238, 4.354, 4.783, 4.981, 5.283, 5.596, 5.909, 6.118, 6.281, 6.49, 7.512, 7.755, 8.313, 8.557, 8.986, 9.288, 10.53, 10.728, 11.029, 11.122, 11.819, 12.179, 12.318, 12.458, 12.806, 12.957, 13.328, 13.526, 13.909, 14.594, 14.884, 15.209, 15.488, 16.219, 16.451, 16.672, 17.903, 18.146, 18.425, 18.901, 19.899, 20.074, 20.526, 21.386, 21.583, 21.734, 21.803, 21.92, 22.837, 23.011, 23.278, 23.649, 23.94, 24.95, 25.403, 25.797, 26.064, 26.32, 27.121, 27.376, 27.527, 27.608, 27.829, 28.015, 28.131, 29.071, 29.338, 29.478, 29.849, 30.058, 30.197, 30.766, 31.022, 31.44, 32.369, 32.566, 32.984, 33.692, 34.203, 34.725, 35.271, 35.805, 36.745, 37.175, 37.57, 37.918, 38.173, 38.649, 38.765, 39.497, 39.694, 40.054, 40.356, 41.215, 41.552, 41.738, 42.167, 42.341, 42.713, 42.91, 43.026, 43.421, 43.758, 44.35, 44.559, 44.93, 45.975, 46.277, 46.811, 47.183, 47.368, 47.485, 48.158, 48.599, 49.04, 49.354, 50.155, 50.445, 50.805, 51.652, 51.815, 52.14, 52.326, 52.663, 53.115, 53.278, 53.998, 54.358, 54.764, 55.17, 55.426, 56.413, 56.772, 57.202, 57.504, 57.922, 58.177, 58.642, 59.094, 59.292, 59.454, 60.952, 61.451, 62.032, 62.322, 62.647, 62.926, 63.855, 64.423, 64.563, 65.085, 65.259];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel at (96, 600): 40px mono = 24px per char, code starts at x=136, line centres y=716, 780, 844.
+      // Terminal side starts at x=1256. The error line is 30px mono (18px per char) from x=136, centre y=844.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-input", 436, 716, 74, 36);     // input, cols 10-14 of line 1
+      ring("r-prompt", 1460, 716, 218, 36);  // How many cookies?  (terminal cols 0-16)
+      ring("r-var", 220, 716, 96, 36);       // cookies, cols 0-6
+      ring("r-quotes", 685, 351, 120, 70);   // "4" on the notepad (pad x 480..890, value row y 290..410)
+      ring("r-444", 1292, 780, 64, 36);      // 444 in the terminal
+      ring("r-int", 412, 716, 52, 36);       // int, cols 10-12 of the fixed line 1
+      ring("r-int2", 412, 716, 52, 36);
+      ring("r-ve", 226, 844, 104, 32);       // ValueError, error cols 0-9
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.04, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. You are the waiter. Notepad in hand, ask each friend ---- */
+      pop("#s-you", t(4), { from: 0.7 });
+      tl.fromTo("#s-pad", { opacity: 0, y: 40, rotation: -4 }, { opacity: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.6)", immediateRender: false }, t(5));
+      tl.fromTo("#f-ana", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(12));
+      tl.fromTo("#f-ben", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(15));
+      tl.fromTo("#f-chloe", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(16));
+
+      /* ---- 2. Your waiter is input: shows a question, waits, hands back ---- */
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(21));
+      type("#L1a", t(24), 37);
+      draw("r-input", t(26), 0.45);
+      out("#r-input", t(30) - 0.3, 0.2);
+      type("#Op", t(28), 17);
+      draw("r-prompt", t(30), 0.45);
+      out("#r-prompt", t(31), 0.2);
+      tl.fromTo("#s-caret", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 7, immediateRender: false }, t(31));
+      pop("#s-enter", t(39) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      draw("r-var", t(41), 0.45);
+      out("#r-var", t(46) + 0.4, 0.2);
+      out("#s-enter", t(47) - 0.2, 0.2);
+
+      /* ---- 3. How many cookies, Ana? She types 4. The notepad says "4" ---- */
+      pop("#s-bub", t(47), { from: 0.6 });
+      dim(["#f-ben", "#f-chloe"], t(50), 0.35);
+      bump("#f-ana", t(50));
+      tl.set("#s-caret", { opacity: 0 }, t(52));
+      type("#Oa1", t(52) + 0.1, 1);
+      pop("#say1", t(53) - 0.1, { from: 0.4, ease: "back.out(2.2)" });
+      bump("#s-pad", t(58));
+      pop("#who1", t(58) + 0.1, { from: 0.8 });
+      pop("#pv1", t(60) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      draw("r-quotes", t(63) - 0.1, 0.5);
+      pop("#tg1", t(68) - 0.05, { from: 0.6 });
+      out("#r-quotes", t(75), 0.25);
+
+      /* ---- 4. Ben and Chloe want the same, times 3. Python prints 444 ---- */
+      dim(["#f-ben", "#f-chloe"], t(76), 1);
+      bump("#f-ben", t(76)); pop("#say2", t(76) + 0.1, { from: 0.6 });
+      bump("#f-chloe", t(78)); pop("#say3", t(78) + 0.1, { from: 0.6 });
+      out("#s-bub", t(82), 0.25);
+      type("#L2", t(83), 18);
+      pop("#Oexp", t(87) - 0.05, { from: 0.8 });
+      out("#Oexp", t(89), 0.2);
+      pop("#O444", t(90) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      draw("r-444", t(91), 0.45);
+      shake("#s-code", t(92));
+      tl.fromTo("#s-wrong", { opacity: 0, scale: 1.6, rotation: -6 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.3, ease: "power3.out", immediateRender: false }, t(97));
+
+      /* ---- 5. The fix is int: "4" becomes 4, four cookies land, 12 ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 1000 }, { opacity: 1, x: 384, y: 722, duration: 0.5, ease: "power3.out", immediateRender: false }, t(102));
+      swap("#L1a", "#L1b", t(104));
+      draw("r-int", t(105), 0.45);
+      tl.to("#s-cursor", { opacity: 0, x: 600, y: 1000, duration: 0.4, ease: "power2.in" }, t(108));
+      out("#r-int", t(113), 0.2);
+      swap("#pv1", "#pv2", t(115));
+      swap("#tg1", "#tg2", t(115) + 0.1);
+      out(["#O444", "#r-444", "#s-wrong"], t(117) - 0.1, 0.25);
+      show("#s-plate", t(117) - 0.1, 0.25);
+      ["#ck1", "#ck2", "#ck3", "#ck4"].forEach((id, i) => {
+        tl.fromTo(id, { opacity: 0, y: -260 }, { opacity: 1, y: 0, duration: 0.55, ease: "bounce.out", immediateRender: false }, t(119) + i * 0.16);
+      });
+      pop("#O12", t(126) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      pop("#s-times", t(126), { from: 0.5, ease: "back.out(2.2)" });
+
+      /* ---- 6. The catch: Chloe types "four". ValueError ---- */
+      dim("#s-plate", t(129), 0.3);
+      out("#s-times", t(129), 0.25);
+      pop("#s-any", t(133), { from: 0.6 });
+      out("#s-any", t(137) - 0.2, 0.2);
+      dim(["#f-ana", "#f-ben"], t(137), 0.35);
+      bump("#f-chloe", t(137));
+      out("#say3", t(138) - 0.1, 0.12);
+      pop("#say4", t(138), { from: 0.4, ease: "back.out(2.2)" });
+      out("#Oa1", t(138), 0.12);
+      type("#Oa2", t(138) + 0.1, 4);
+      out("#who1", t(139) - 0.1, 0.12); pop("#who2", t(139), { from: 0.8 });
+      swap("#pv2", "#pv3", t(139) + 0.1);
+      swap("#tg2", "#tg3", t(139) + 0.2);
+      draw("r-int2", t(142), 0.45);
+      shake("#s-code", t(144));
+      out("#O12", t(144), 0.2);
+      out("#s-plate", t(144), 0.3);
+      show("#s-err", t(144) + 0.1, 0.2);
+      draw("r-ve", t(151), 0.45);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 60.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

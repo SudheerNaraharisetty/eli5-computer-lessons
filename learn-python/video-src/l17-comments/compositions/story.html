@@ -1,0 +1,304 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* 1. grandma's recipe book */
+    #book { left: 200px; top: 90px; width: 1520px; height: 880px; background: #fbf8f4; border-radius: 28px; }
+    #bk-t { left: 70px; top: 50px; font: 700 72px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #bk-line { left: 1010px; top: 40px; width: 4px; height: 800px; background: #b8235a; opacity: 0.55; }
+    .bk-s { left: 70px; font: 600 44px/1.3 "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .bk-s b { font-weight: 800; color: #0e0c1d; }
+    #bk-what { left: 70px; top: 520px; height: 70px; padding: 0 30px; line-height: 70px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font-size: 38px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #bk-why { left: 1110px; top: 520px; height: 70px; padding: 0 30px; line-height: 70px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 38px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #bk-cake { left: 70px; top: 640px; width: 420px; height: 200px; }
+    .rot { position: absolute; }
+    #bn-rot { left: 1050px; top: 170px; width: 420px; height: 270px; transform: rotate(-4deg); }
+    .note { position: absolute; inset: 0; border-radius: 10px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; padding: 26px 30px; }
+    .note.y { background: #fbebd2; }
+    .note.g { background: #ddefe6; }
+    #bn { font: 800 44px/1.3 "Manrope", sans-serif; }
+
+    /* the hash key */
+    #kc { left: 700px; top: 130px; width: 260px; height: 260px; border-radius: 34px; background: #fff; text-align: center; font: 700 190px/250px "JetBrains Mono", monospace; color: #3b37e6; }
+    #kcl { left: 1010px; top: 190px; font: 700 80px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #kcs { left: 1010px; top: 300px; height: 70px; padding: 0 30px; line-height: 70px; border-radius: 999px; background: #0e0c1d; color: #fff; font-size: 34px; white-space: nowrap; }
+    #kcs b { color: #c9c6ff; }
+
+    /* 3. two sticky notes */
+    #n1-rot { left: 220px; top: 150px; width: 460px; height: 230px; transform: rotate(-3deg); }
+    #n1 { text-align: center; font: 700 96px/176px "JetBrains Mono", monospace; color: #3e3b52; }
+    #n2-rot { left: 800px; top: 120px; width: 900px; height: 290px; transform: rotate(2deg); }
+    #n2 { font: 800 56px/1.3 "Manrope", sans-serif; color: #0e0c1d; padding: 50px 46px; }
+    .badge { width: 96px; height: 96px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 56px/96px "Manrope", sans-serif; box-shadow: 0 0 0 5px #0e0c1d; }
+    #k3 { left: 1660px; top: 84px; }
+
+    /* 4. the tax jar */
+    #jar { left: 200px; top: 96px; width: 520px; height: 452px; }
+    .s-lid { position: absolute; left: 130px; top: 0; width: 260px; height: 56px; border-radius: 14px; background: #b9741a; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-body { position: absolute; left: 30px; top: 52px; width: 460px; height: 400px; border-radius: 64px; background: #e6e3ff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-lab { position: absolute; left: 50px; top: 120px; width: 420px; height: 100px; border-radius: 18px; text-align: center; background: #fff; color: #1f7a5c; font: 700 48px/100px "JetBrains Mono", monospace; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-in { position: absolute; left: 30px; top: 250px; width: 460px; height: 120px; text-align: center; font: 700 104px/120px "JetBrains Mono", monospace; color: #3b37e6; }
+    #tx-rot { left: 790px; top: 170px; width: 380px; height: 220px; transform: rotate(4deg); }
+    .txv { position: absolute; left: 0; top: 0; width: 380px; height: 220px; text-align: center; font: 800 76px/220px "Manrope", sans-serif; }
+    #news { left: 1250px; top: 110px; width: 560px; height: 250px; background: #fff; border-radius: 26px; }
+    #news1 { left: 40px; top: 34px; font-size: 38px; color: #3e3b52; white-space: nowrap; }
+    #news2 { left: 40px; top: 100px; font: 700 100px/1.2 "Fraunces", serif; color: #3b37e6; white-space: nowrap; letter-spacing: -0.02em; }
+    #wr-rot { left: 300px; top: 470px; width: 340px; height: 96px; transform: rotate(-8deg); }
+    #wrong { position: absolute; inset: 0; border: 6px solid #b8235a; border-radius: 14px; background: #fff; color: #b8235a; text-align: center; font: 800 56px/84px "Manrope", sans-serif; letter-spacing: 0.08em; }
+    #lie { left: 820px; top: 440px; height: 70px; padding: 0 30px; line-height: 70px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 38px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #k4 { left: 1120px; top: 120px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 600px; width: 1728px; height: 384px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 860px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; opacity: 0; }
+    #s-div { position: absolute; left: 820px; top: 64px; width: 3px; height: 320px; background: #2e2a58; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .c, .s-ln.c { color: #9a96cc; }
+    .s-out { position: absolute; left: 860px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    #ub { left: 544px; top: 140px; width: 360px; height: 8px; border-radius: 4px; background: #ffc24b; opacity: 0; transform-origin: 0% 50%; }
+    #skp { left: 950px; top: 92px; height: 48px; padding: 0 22px; line-height: 48px; border-radius: 999px; background: #ffc24b; color: #15132b; font-size: 30px; white-space: nowrap; opacity: 0; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- 1. grandma's recipe book: the steps say what, the margin note says why -->
+        <div id="book" class="s-abs s-ol">
+          <div id="bk-t" class="s-abs">Grandma's sponge cake</div>
+          <div id="bk-line" class="s-abs"></div>
+          <div class="s-abs bk-s" style="top:200px"><b>1.</b> Beat 3 eggs with 200 g sugar</div>
+          <div class="s-abs bk-s" style="top:290px"><b>2.</b> Fold in 200 g flour</div>
+          <div id="bk3" class="s-abs bk-s" style="top:380px"><b>3.</b> Bake at 180 °C for 25 minutes</div>
+          <div id="bk-what" class="s-abs s-hide">WHAT to do</div>
+          <div id="bk-why" class="s-abs s-hide">WHY</div>
+          <svg id="bk-cake" class="s-abs" viewBox="0 0 420 200">
+            <rect x="40" y="70" width="340" height="110" rx="18" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M40 112 h340" stroke="#b8235a" stroke-width="10" />
+            <path d="M60 70 q30 -34 60 0 q30 -34 60 0 q30 -34 60 0 q30 -34 60 0 q30 -34 60 0" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          </svg>
+          <div id="bn-rot" class="rot"><div id="bn" class="note y s-hide">Use less sugar.<br />The oven<br />runs hot.</div></div>
+        </div>
+
+        <!-- the hash key -->
+        <div id="kc" class="s-abs s-ol s-hide">#</div>
+        <div id="kcl" class="s-abs s-hide">the hash sign</div>
+        <div id="kcs" class="s-abs s-hide">VS Code: <b>Cmd + /</b> on Mac, <b>Ctrl + /</b> elsewhere</div>
+
+        <!-- 3. a what-note and a why-note -->
+        <div id="n1-rot" class="rot"><div id="n1" class="note y s-hide">add 20</div></div>
+        <div id="n2-rot" class="rot"><div id="n2" class="note g s-hide">Ben trains on Mondays,<br />so he needs 20 g more.</div></div>
+        <div id="k3" class="s-abs badge s-hide">✓</div>
+
+        <!-- 4. the tax jar and its out-of-date note -->
+        <div id="jar" class="s-abs s-hide">
+          <div class="s-body"></div>
+          <div class="s-lid"></div>
+          <div class="s-lab">TAX_RATE</div>
+          <div class="s-in" id="jv8">0.08</div>
+          <div class="s-in s-hide" id="jv9">0.09</div>
+        </div>
+        <div id="tx-rot" class="rot">
+          <div id="tx" class="note y s-hide" style="padding:0">
+            <div class="txv" id="tx8">8% tax</div>
+            <div class="txv s-hide" id="tx9" style="color:#1f7a5c">9% tax</div>
+          </div>
+        </div>
+        <div id="news" class="s-abs s-ol s-hide">
+          <div id="news1" class="s-abs">City sales tax, from today</div>
+          <div id="news2" class="s-abs">now 9%</div>
+        </div>
+        <div id="wr-rot" class="rot"><div id="wrong" class="s-hide">WRONG</div></div>
+        <div id="lie" class="s-abs s-hide">this note lies</div>
+        <div id="k4" class="s-abs badge s-hide">✓</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen_coach.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <!-- beat 2 and 3 -->
+          <div class="s-ln" id="B1" style="top:84px">ben_protein_g = <span class="n">140</span>  <span class="c"># grams per day</span></div>
+          <div class="s-ln c" id="B2a" style="top:148px"># add 20</div>
+          <div class="s-ln c" id="B2b" style="top:148px"># Ben trains on Mondays, so he needs 20 g more</div>
+          <div class="s-ln" id="B3" style="top:212px">ben_protein_g = ben_protein_g + <span class="n">20</span></div>
+          <div id="ub" class="s-abs"></div>
+          <div id="skp" class="s-abs">Python skips this</div>
+          <!-- beat 4: one line, built from pieces so the value and the note can swap (24px per column) -->
+          <div class="s-ln" id="T1" style="top:84px">TAX_RATE = </div>
+          <div class="s-ln" id="Tv8" style="top:84px;left:304px"><span class="n">0.08</span></div>
+          <div class="s-ln" id="Tv9" style="top:84px;left:304px"><span class="n">0.09</span></div>
+          <div class="s-ln c" id="T2" style="top:84px;left:448px"># </div>
+          <div class="s-ln c" id="Tp8" style="top:84px;left:496px">8%</div>
+          <div class="s-ln" id="Tp9" style="top:84px;left:496px;color:#7cf0b5">9%</div>
+          <div class="s-ln c" id="T3" style="top:84px;left:544px"> sales tax</div>
+          <!-- beat 5 -->
+          <div class="s-ln" id="D1" style="top:84px"><span class="k">print</span>(<span class="s">"Ana: pasta"</span>)</div>
+          <div class="s-ln" id="D2" style="top:148px"><span class="k">print</span>(<span class="s">"DEBUG carbs:"</span>, <span class="n">380</span>)</div>
+          <div class="s-ln c" id="D2c" style="top:148px"># print("DEBUG carbs:", 380)</div>
+          <div class="s-ln" id="D3" style="top:212px"><span class="k">print</span>(<span class="s">"Ben: bean chili"</span>)</div>
+          <div class="s-out" id="O1" style="top:84px">Ana: pasta</div>
+          <div class="s-out" id="O2" style="top:148px">DEBUG carbs: 380</div>
+          <div class="s-out" id="O3" style="top:212px">Ben: bean chili</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-note" style="stroke:#3b37e6" />
+          <path id="r-add" style="stroke:#ffc24b" />
+          <path id="r-plus" style="stroke:#ffc24b" />
+          <path id="r-tx" style="stroke:#b8235a" />
+          <path id="r-tp" style="stroke:#ff6b8b" />
+          <path id="r-tv" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.43, 0.964, 1.382, 1.985, 2.159, 2.276, 2.891, 3.1, 4.191, 4.54, 4.783, 5.329, 5.515, 5.828, 6.165, 6.966, 7.152, 7.593, 8.034, 8.301, 8.475, 9.102, 9.311, 9.601, 10.147, 11.331, 11.807, 12.04, 12.469, 12.794, 13.7, 13.955, 14.292, 14.478, 14.605, 14.907, 15.766, 16.242, 16.672, 17.241, 17.427, 17.566, 18.076, 18.251, 18.39, 18.657, 18.773, 18.901, 19.922, 20.317, 20.84, 21.118, 21.292, 21.49, 22.558, 22.837, 23.092, 23.556, 23.87, 24.833, 24.996, 25.286, 25.727, 26.006, 26.528, 26.819, 26.97, 27.806, 27.968, 28.177, 28.409, 28.85, 29.164, 29.57, 29.733, 30.429, 30.673, 30.789, 31.091, 31.532, 31.974, 32.705, 33.03, 33.332, 34.423, 34.795, 34.969, 35.457, 35.817, 36.525, 36.687, 36.978, 37.21, 37.546, 38.011, 38.324, 38.8, 39.485, 39.659, 39.787, 40.031, 40.403, 40.832, 41.146, 42.388, 42.783, 43.27, 43.409, 43.711, 43.944, 44.443, 44.57, 44.919, 45.975, 46.138, 46.347, 46.556, 47.148, 47.461, 47.891, 48.146, 48.46, 49.377, 49.586, 49.702, 50.016, 50.712, 51.153, 51.304, 52.349, 52.535, 52.895, 53.092, 53.487, 53.847, 53.963, 54.346, 55.217, 55.484, 55.762, 55.89, 56.122, 56.238, 56.343, 56.842, 57.051, 57.179, 57.562, 58.781, 59.094, 59.222, 59.779, 60.012, 60.221, 60.673, 61.73, 62.171, 62.74, 63.03, 63.982, 64.238, 64.632, 65.132, 65.515];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel at (96, 600): 40px mono = 24px per char from x=136; line centres y=716, 780, 844.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-note", 1460, 395, 270, 180);  // the margin note in the book
+      ring("r-add", 232, 780, 112, 36);     // "# add 20" on line 2, cols 0-7
+      ring("r-plus", 880, 844, 66, 36);     // "+ 20" on line 3, cols 29-32
+      ring("r-tx", 980, 280, 230, 150);     // the "8% tax" sticky note
+      ring("r-tp", 616, 716, 38, 32);       // "8%" in the comment, cols 19-20
+      ring("r-tv", 448, 716, 66, 34);       // the value 0.0x, cols 11-14
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const stick = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 1.25, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, at);
+      const peel = (sel, at) => tl.fromTo(sel, { opacity: 1, rotation: 0, y: 0 }, { rotation: 24, y: 220, opacity: 0, transformOrigin: "0% 0%", duration: 0.6, ease: "power2.in", immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.5, ease: "power2.inOut" }, at);
+
+      /* ---- 1. Grandma's book: the steps say what, the margin note says why ---- */
+      stick("#bn", t(6) - 0.05);
+      bump("#bn", t(10));
+      tl.fromTo("#bk3", { color: "#3e3b52", x: 0 }, { color: "#b8235a", x: 14, duration: 0.3, ease: "power2.out", immediateRender: false }, t(13));
+      tl.to("#bk3", { color: "#3e3b52", x: 0, duration: 0.3, ease: "power2.inOut" }, t(16));
+      pop("#bk-what", t(19) - 0.1, { from: 0.5 });
+      draw("r-note", t(23), 0.55);
+      pop("#bk-why", t(25) - 0.05, { from: 0.4, ease: "back.out(2.2)" });
+
+      /* ---- 2. Python's margin notes start with # ---- */
+      out("#r-note", t(26) - 0.4, 0.2);
+      tl.to("#book", { opacity: 0, y: -60, duration: 0.4, ease: "power2.in" }, t(26) - 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(26) + 0.1);
+      type("#B1", t(31), 36);
+      pop("#kc", t(35) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      show("#kcl", t(35) + 0.2, 0.3);
+      pop("#skp", t(38), { from: 0.6 });
+      tl.fromTo("#ub", { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 1.4, ease: "power1.inOut", immediateRender: false }, t(40));
+
+      /* ---- 3. A what-note gets peeled off, a why-note stays ---- */
+      out(["#kc", "#kcl", "#skp", "#ub"], t(49) - 0.3, 0.25);
+      type("#B3", t(49), 34);
+      stick("#n1", t(56) - 0.05);
+      type("#B2a", t(58), 8);
+      draw("r-add", t(60), 0.4);
+      draw("r-plus", t(62), 0.4);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 520 }, { opacity: 1, x: 300, y: 230, duration: 0.45, ease: "power3.out", immediateRender: false }, t(64) - 0.4);
+      out(["#r-add", "#r-plus"], t(65), 0.2);
+      peel("#n1", t(65) + 0.05);
+      tl.to("#s-cursor", { x: 380, y: 470, duration: 0.55, ease: "power2.in" }, t(65) + 0.05);
+      out("#B2a", t(66), 0.25);
+      out("#s-cursor", t(67) + 0.4, 0.25);
+      stick("#n2", t(70) - 0.05);
+      type("#B2b", t(72), 46);
+      pop("#k3", t(84) - 0.05, { from: 0.3, ease: "back.out(2.4)" });
+      bump("#n2", t(84) + 0.1);
+
+      /* ---- 4. The tax goes up, the note does not ---- */
+      out(["#n2", "#k3", "#B1", "#B2b", "#B3"], t(85) - 0.3, 0.25);
+      pop("#jar", t(85), { from: 0.85 });
+      stick("#tx", t(85) + 0.2);
+      show(["#T1", "#Tv8", "#T2", "#Tp8", "#T3"], t(85) + 0.1, 0.3);
+      pop("#news", t(88) - 0.05, { from: 0.7 });
+      swap("#jv8", "#jv9", t(94));
+      swap("#Tv8", "#Tv9", t(94) + 0.15);
+      draw("r-tv", t(94) + 0.2, 0.35);
+      out("#r-tv", t(102) - 0.4, 0.2);
+      draw("r-tx", t(103) - 0.05, 0.5);
+      draw("r-tp", t(103) + 0.15, 0.4);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 1000 }, { opacity: 1, x: 456, y: 728, duration: 0.6, ease: "power3.out", immediateRender: false }, t(106));
+      swap("#Tv9", "#Tv8", t(112));
+      swap("#jv9", "#jv8", t(112) + 0.2);
+      tl.fromTo("#wrong", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.in", immediateRender: false }, t(113) - 0.05);
+      shake("#jar", t(113) + 0.25);
+      out("#s-cursor", t(114), 0.25);
+      pop("#lie", t(117) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      shake("#tx", t(117) + 0.1);
+      out(["#wrong", "#lie"], t(125) - 0.3, 0.2);
+      swap("#Tv8", "#Tv9", t(125));
+      swap("#jv8", "#jv9", t(125) + 0.2);
+      out(["#r-tx", "#r-tp"], t(127) - 0.2, 0.2);
+      swap("#tx8", "#tx9", t(127) + 0.05);
+      swap("#Tp8", "#Tp9", t(127) + 0.2);
+      pop("#k4", t(129) - 0.1, { from: 0.3, ease: "back.out(2.4)" });
+
+      /* ---- 5. # switches a line off, and back on ---- */
+      out(["#jar", "#tx", "#news", "#k4", "#T1", "#Tv9", "#T2", "#Tp9", "#T3"], t(130) - 0.3, 0.25);
+      show(["#D1", "#D2", "#D3", "#s-div", "#s-outlbl", "#O1", "#O2", "#O3"], t(130), 0.3);
+      pop("#kc", t(131) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      pop("#kcs", t(134), { from: 0.7 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 1000 }, { opacity: 1, x: 66, y: 770, duration: 0.6, ease: "power3.out", immediateRender: false }, t(138));
+      swap("#D2", "#D2c", t(144) - 0.05);
+      bump("#kc", t(144) - 0.1);
+      out("#O2", t(148) - 0.1, 0.25);
+      tl.to("#O3", { y: -64, duration: 0.35, ease: "power2.inOut" }, t(148) + 0.1);
+      swap("#D2c", "#D2", t(151));
+      tl.to("#O3", { y: 0, duration: 0.3, ease: "power2.inOut" }, t(154) - 0.1);
+      pop("#O2", t(154) + 0.1, { from: 0.7 });
+      out("#s-cursor", t(155), 0.25);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 61.9);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

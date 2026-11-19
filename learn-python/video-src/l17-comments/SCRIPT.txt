@@ -1,0 +1,11 @@
+Open grandma's recipe book. In the margin, a note. Use less sugar, the oven runs hot. The recipe says what to do. The note says why.
+
+Python has margin notes too. They start with a hash sign. Python skips everything from the hash to the end of the line.
+
+Ben's protein goes up by twenty. One note says, add twenty. The code already says that. Peel it off. The other note says, Ben trains on Mondays, so he needs twenty grams more. That one stays.
+
+Then the tax goes up. The jar now holds zero point zero nine, but the note still says eight percent. Someone believes the note and changes the number back. A note that lies is worse than no note. When the code changes, change the note.
+
+A hash can also switch a line off. Put one in front of a print, and it goes quiet. Take it away, and it runs again.
+
+Write why, not what. And keep every note true.

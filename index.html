@@ -2,47 +2,242 @@
 <html lang="en">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ELI5 Computer Lessons</title>
-<meta name="description" content="Beginner courses with big pictures, few words, and interactive quizzes.">
+<meta name="description" content="Free beginner courses with big pictures, few words, and interactive quizzes: software engineering principles told through Maya's cookie shop, and Git + GitHub from the terminal.">
 <meta name="theme-color" content="#F6F1EB">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#F6F1EB;--ink:#0E0C1D;--ink2:#3E3B52;--accent:#3B37E6;--accent-tint:#E6E3FF;--ok:#1F7A5C;--ok-tint:#DDEFE6;--r:22px;--shadow:0 4px 0 var(--ink);--shadow2:0 7px 0 var(--ink)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 "Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+/* Inkpaper tokens, same as the course pages */
+:root{color-scheme:light;
+  --paper:#F6F1EB;--paper2:#FBF8F4;--ink:#0E0C1D;--ink2:#3E3B52;--mute:#6F6B80;
+  --accent:#3B37E6;--accent-tint:#E6E3FF;--danger:#B8235A;--danger-tint:#FBE0EA;
+  --warn:#B9741A;--warn-tint:#FBEBD2;--ok:#1F7A5C;--ok-tint:#DDEFE6;--sand:#ECE7DF;
+  --night:#15132B;--night2:#211E40;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:22px;--r2:16px;--shadow:0 4px 0 var(--ink);--shadow2:0 7px 0 var(--ink)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 "Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:900px;margin:0 auto;padding:calc(48px + env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom))}
-h1,h2{font-family:"Fraunces",Georgia,serif;font-weight:800;letter-spacing:-.02em;margin:0}
-h1{font-size:clamp(38px,8vw,60px);line-height:1}
-.lede{margin:14px 0 34px;font-size:18px;color:var(--ink2);max-width:600px}
-.grid{display:grid;gap:18px;grid-template-columns:repeat(2,1fr)}
-@media(max-width:640px){.grid{grid-template-columns:1fr}}
-.card{display:flex;flex-direction:column;gap:10px;background:#fff;border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow);padding:22px;transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
-.card:hover{transform:translate(-1px,-3px);box-shadow:var(--shadow2)}
-.card:active{transform:translate(0,1px);box-shadow:0 2px 0 var(--ink)}
-.icon{width:56px;height:56px;border-radius:14px;border:2px solid var(--ink);display:grid;place-items:center;font:800 22px "Manrope",sans-serif;background:var(--accent-tint);color:var(--accent)}
-.card.ok .icon{background:var(--ok-tint);color:var(--ok)}
-h2{font-size:28px;line-height:1.1}
-.card p{margin:0;color:var(--ink2)}
-.meta{margin-top:auto;padding-top:6px;font-weight:800;font-size:14px;color:var(--accent)}
-.card.ok .meta{color:var(--ok)}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;letter-spacing:-.02em;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+@media(max-width:600px){.wrap{padding:0 16px}}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top);background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:2px solid var(--ink)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:66px}
+.brand{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand i{height:30px;padding:0 9px;border-radius:999px;background:var(--accent);display:inline-grid;place-items:center;color:#fff;font:700 12px "Manrope",sans-serif;font-style:normal;border:2px solid var(--ink)}
+nav.pills{display:flex;gap:6px;margin-left:auto;overflow-x:auto;scrollbar-width:none}nav.pills::-webkit-scrollbar{display:none}
+.pill{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;border:2px solid transparent;font-weight:700;font-size:13.5px;white-space:nowrap;color:var(--ink2);transition:background .15s,transform .15s}
+.pill:hover{background:var(--sand);transform:translateY(-1px)}
+@media(max-width:480px){.brand span{display:none}}
+
+/* hero */
+.hero{padding:52px 0 8px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:40px;align-items:center}
+.kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:800;font-size:12.5px;background:var(--sand);color:var(--ink);white-space:nowrap}
+.tag.accent{background:var(--accent-tint);color:var(--accent)}.tag.ok{background:var(--ok-tint);color:var(--ok)}.tag.warn{background:var(--warn-tint);color:var(--warn)}.tag.ink{background:var(--ink);color:#fff}
+h1{font-size:clamp(42px,6.4vw,74px);line-height:.98;font-variation-settings:"opsz" 144,"SOFT" 30;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{margin:16px 0 0;font-size:18px;color:var(--ink2);max-width:580px}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:999px;border:2px solid var(--ink);background:#fff;font:800 14.5px "Manrope",sans-serif;color:var(--ink);box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s,background .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}.btn:active{transform:translateY(1px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--ink);color:#fff}.btn.primary:hover{background:var(--accent)}
+.btn.green{background:var(--ok);color:#fff}
+/* hero collage */
+.collage{position:relative;height:340px}
+.collage .c{position:absolute;background:#fff;border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.c.poster{left:0;top:10px;width:78%;transform:rotate(-2.5deg)}
+.c.poster img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.c.poster .cap{padding:10px 14px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;border-top:2px solid var(--ink)}
+.play{width:26px;height:26px;border-radius:50%;background:var(--accent);border:2px solid var(--ink);display:grid;place-items:center;flex:none}
+.play:after{content:"";border-left:8px solid #fff;border-top:5px solid transparent;border-bottom:5px solid transparent;margin-left:2px}
+.c.term{right:0;bottom:6px;width:64%;background:var(--night);transform:rotate(2deg)}
+.c.quizc{right:6%;top:-6px;padding:10px 14px;font-weight:800;font-size:13px;transform:rotate(4deg);background:var(--ok-tint);border-color:var(--ink)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:28px}.collage{height:300px;max-width:520px}}
+@media(max-width:480px){.collage{height:250px}.c.term .tbody{font-size:11.5px}}
+
+/* terminal */
+.tb{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--night2);border-bottom:2px solid var(--ink)}
+.tb i{width:10px;height:10px;border-radius:50%;background:#FF6B8B;display:block}.tb i:nth-child(2){background:#FFC24B}.tb i:nth-child(3){background:#4BD69B}
+.tb span{margin-left:6px;font:700 11px var(--mono);color:#A9A5D6;letter-spacing:.04em}
+.tbody{padding:10px 14px;font:12.5px/1.65 var(--mono);color:#CFCBF5;white-space:pre;overflow:hidden}
+.tbody .c1{color:#fff;font-weight:700}.tbody .c1:before{content:"$ ";color:#7CF0B5}
+.tbody .m{color:#8E8AC0}
+
+/* section heads */
+.sec{margin:58px 0 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec h3{font:800 13px/1 "Manrope",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+
+/* course cards */
+.course{background:#fff;border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:28px}
+.course .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.course .media{background:var(--paper2);border-right:2px solid var(--ink);padding:22px;display:flex;flex-direction:column;gap:14px;justify-content:flex-start}
+.course .body{padding:26px 28px;display:flex;flex-direction:column;gap:14px}
+@media(max-width:860px){.course .grid{grid-template-columns:1fr}.course .media{border-right:0;border-bottom:2px solid var(--ink)}}
+@media(max-width:600px){.course .body{padding:20px}.course .media{padding:16px}}
+.course h2{font-size:clamp(30px,4vw,40px);line-height:1.05}
+.course h2 .ic{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:2px solid var(--ink);font:800 16px "Manrope",sans-serif;vertical-align:6px;margin-right:10px;background:var(--accent);color:#fff}
+.course.gh h2 .ic{background:var(--ok)}
+.course p{margin:0;font-size:16px;line-height:1.6;color:var(--ink2)}
+.course p b{color:var(--ink)}
+.vidframe{position:relative;border:2px solid var(--ink);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);background:var(--night)}
+.vidframe img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.vidframe .badge{position:absolute;left:12px;bottom:12px;display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:4px 12px 4px 5px;font-weight:800;font-size:12.5px}
+.story{border:2px solid var(--ink);border-radius:var(--r2);background:var(--warn-tint);padding:12px 14px;font-weight:600;font-size:14.5px;line-height:1.5}
+.story b{font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stats div{border:2px solid var(--ink);border-radius:14px;background:var(--paper2);padding:10px 12px}
+.stats b{display:block;font-family:"Fraunces",Georgia,serif;font-size:28px;line-height:1;letter-spacing:-.03em}
+.stats span{display:block;margin-top:5px;font-weight:700;font-size:12.5px;color:var(--ink2);line-height:1.3}
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.mods{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mods li{display:flex;gap:10px;align-items:baseline;font-weight:700;font-size:14px}
+.mods li i{font-style:normal;flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px}
+.mods li span{color:var(--mute);font-weight:600}
+@media(max-width:520px){.mods li{flex-wrap:wrap;column-gap:10px;row-gap:0}.mods li span{flex-basis:100%;padding-left:32px;font-size:13px}}
+.prog{display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;color:var(--ink2)}
+.prog .bar{flex:1;height:10px;border:2px solid var(--ink);border-radius:999px;background:var(--paper);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.course.gh .prog .bar i{background:var(--ok)}
+.course .term{background:var(--night);border:2px solid var(--ink);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.course .term .tbody{white-space:pre-wrap;font-size:13px}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{background:#fff;border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px}
+.step .n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;border:2px solid var(--ink);font-weight:800;margin-bottom:12px}
+.step:nth-child(2) .n{background:var(--warn)}.step:nth-child(3) .n{background:var(--ok)}
+.step b{display:block;font-size:17px;font-weight:800;margin-bottom:4px}
+.step p{margin:0;color:var(--ink2);font-size:14.5px}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+
+footer{color:var(--mute);font-size:13px;padding:50px 0 calc(60px + env(safe-area-inset-bottom));border-top:2px solid var(--sand);margin-top:60px}
+footer a{color:var(--accent);font-weight:700}
+
+.rv{opacity:0;transform:translateY(14px);animation:rv .6s cubic-bezier(.2,.8,.2,1) forwards}.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@keyframes rv{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none}*{transition:none!important}}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
 </style>
-<div class="wrap">
-  <h1>ELI5 Computer Lessons</h1>
-  <p class="lede">Beginner courses with big pictures, few words, and interactive quizzes.</p>
-  <div class="grid">
-    <a class="card" href="learn-principles/">
-      <div class="icon">P</div>
-      <h2>Learn Principles</h2>
-      <p>Software engineering principles, the most used first, each with a short video.</p>
-      <div class="meta">63 lessons →</div>
-    </a>
-    <a class="card ok" href="learn-github/">
-      <div class="icon">G</div>
-      <h2>Learn GitHub</h2>
-      <p>Git and GitHub from zero to expert, all from the terminal.</p>
-      <div class="meta">7 modules →</div>
-    </a>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#"><i>ELI5</i><span>Computer Lessons</span></a>
+  <nav class="pills"><a class="pill" href="#principles">Principles</a><a class="pill" href="#github">GitHub</a><a class="pill" href="#how">How it works</a></nav>
+</div></div>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="rv">
+      <div class="kicker"><span class="tag accent">Free</span><span class="tag">Beginner to expert</span><span class="tag ok">Works on your phone</span></div>
+      <h1>Computers, explained like you're <em>five.</em></h1>
+      <p class="lede">Two courses with big pictures, few words, and quizzes you tap, drag or type. No sign-up, and your progress stays saved on this device.</p>
+      <div class="btnrow">
+        <a class="btn primary" href="learn-principles/">Start Principles</a>
+        <a class="btn" href="learn-github/">Start GitHub</a>
+      </div>
+    </div>
+    <div class="collage rv d2" aria-hidden="true">
+      <div class="c poster"><img src="learn-principles/videos/l01-easy-to-change.jpg" alt=""><div class="cap"><span class="play"></span>Meet Maya</div></div>
+      <div class="c term"><div class="tb"><i></i><i></i><i></i><span>terminal</span></div><div class="tbody"><span class="c1">git switch -c new-menu</span>
+<span class="m">Switched to a new branch</span>
+<span class="c1">git commit -m "Add cookies"</span>
+<span class="c1">git push</span></div></div>
+      <div class="c quizc">✓ Quiz passed</div>
+    </div>
+  </section>
+
+  <div class="sec" id="principles"><h3>Course 1 · Software engineering principles</h3><span class="tag ink">With videos</span></div>
+  <article class="course rv d1">
+    <div class="grid">
+      <div class="media">
+        <a class="vidframe" href="learn-principles/#l01" aria-label="Open lesson 1, Easy to change">
+          <img src="learn-principles/videos/l01-easy-to-change.jpg" alt="Lesson 1 video: Maya's cookie shop" loading="lazy">
+          <span class="badge"><span class="play"></span>Lesson 1 video</span>
+        </a>
+        <div class="story"><b>One story, start to finish.</b> Maya runs a small cookie shop and writes the program that runs it. As the shop grows, her code meets a new problem in each video. Each lesson's principle is how she fixes it.</div>
+      </div>
+      <div class="body">
+        <div class="kicker" style="margin:0"><span class="tag accent">Core 25 first</span><span class="tag">SOLID included</span><span class="tag warn">Made with Claude Code</span></div>
+        <h2><span class="ic">P</span>Learn Principles</h2>
+        <p>The ideas good programmers use to decide what <b>"good code"</b> is. It starts with the <b>25 most widely used software engineering principles</b>, like KISS, DRY, YAGNI and SOLID, then moves on to bigger design ideas and the laws about teams and projects.</p>
+        <p>Every lesson opens with a <b>one-minute animated video, made with Claude Code</b>, then gives you a few pictures, real code before and after, and a quiz.</p>
+        <div class="stats">
+          <div><b>63</b><span>lessons</span></div>
+          <div><b>25</b><span>core principles</span></div>
+          <div><b>57</b><span>short videos</span></div>
+          <div><b>7</b><span>modules</span></div>
+        </div>
+        <ul class="mods">
+          <li><i>0</i>Start here <span>· what "good code" means</span></li>
+          <li><i>1</i>Keep it simple <span>· KISS, DRY, YAGNI</span></li>
+          <li><i>2</i>Shape one piece of code <span>· single responsibility</span></li>
+          <li><i>3</i>Connect the pieces <span>· all of SOLID</span></li>
+          <li><i>4</i>Code that survives <span>· when things go wrong</span></li>
+          <li><i>5</i>Bigger structure <span>· whole systems</span></li>
+          <li><i>6</i>Laws about teams <span>· Conway, Brooks, Hofstadter</span></li>
+        </ul>
+        <div class="prog" data-key="learn-principles-v1" data-total="63"><span class="lbl">0 of 63 done</span><div class="bar"><i></i></div></div>
+        <div class="btnrow" style="margin-top:4px"><a class="btn primary" href="learn-principles/">Open course</a></div>
+      </div>
+    </div>
+  </article>
+
+  <div class="sec" id="github"><h3>Course 2 · Git and GitHub</h3><span class="tag ink">Hands-on</span></div>
+  <article class="course gh rv d2">
+    <div class="grid">
+      <div class="media">
+        <div class="term"><div class="tb"><i></i><i></i><i></i><span>your first repo</span></div><div class="tbody"><span class="c1">git init</span>
+<span class="m">Initialized empty Git repository</span>
+<span class="c1">git add recipe.txt</span>
+<span class="c1">git commit -m "First save point"</span>
+<span class="m">[main (root-commit) 3f2a1c9] First save point</span>
+<span class="c1">gh pr create</span>
+<span class="m">Pull request ready for review</span></div></div>
+        <div class="story" style="background:var(--ok-tint)"><b>Try it safely.</b> There's a built-in playground where you can type real Git commands and watch what happens, without breaking anything.</div>
+      </div>
+      <div class="body">
+        <div class="kicker" style="margin:0"><span class="tag ok">Zero to expert</span><span class="tag">All from the terminal</span></div>
+        <h2><span class="ic">G</span>Learn GitHub</h2>
+        <p>You know nothing about Git yet. That's the starting line. Learn <b>save points, branches, merging and pull requests</b>, then go pro with GitHub Actions, rescue tricks like reflog, and how Git works inside.</p>
+        <p>Every lesson is a few big pictures, a handful of words, <b>the real commands</b>, and a quiz you click, drag or type.</p>
+        <div class="stats">
+          <div><b>38</b><span>lessons</span></div>
+          <div><b>538</b><span>commands taught</span></div>
+          <div><b>293</b><span>quiz questions</span></div>
+          <div><b>5</b><span>modules</span></div>
+        </div>
+        <ul class="mods">
+          <li><i>0</i>Start here <span>· what Git is, setup</span></li>
+          <li><i>1</i>Your first repo <span>· save, look back, undo</span></li>
+          <li><i>2</i>Branches <span>· merge, rebase, stash</span></li>
+          <li><i>3</i>GitHub <span>· push, pull requests, forks</span></li>
+          <li><i>4</i>Pro level <span>· Actions, rescue, internals</span></li>
+        </ul>
+        <div class="prog" data-key="learn-github-v1" data-total="38"><span class="lbl">0 of 38 done</span><div class="bar"><i></i></div></div>
+        <div class="btnrow" style="margin-top:4px"><a class="btn green" href="learn-github/">Open course</a><a class="btn" href="learn-github/#play">Open the playground</a></div>
+      </div>
+    </div>
+  </article>
+
+  <div class="sec" id="how"><h3>How every lesson works</h3></div>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><b>See the big picture</b><p>A drawing or short video shows the idea before any words do.</p></div>
+    <div class="step"><span class="n">2</span><b>Read a few words</b><p>Short explanations, plus real code or commands you can copy.</p></div>
+    <div class="step"><span class="n">3</span><b>Prove it with a quiz</b><p>Tap, drag or type your answer. Finish the quiz and the lesson is marked done.</p></div>
   </div>
-</div>
+
+  <footer>Free and open source. Lessons and videos are on <a href="https://github.com/SudheerNaraharisetty/eli5-computer-lessons">GitHub</a>. Progress is saved in this browser only.</footer>
+</main>
+
+<script>
+document.querySelectorAll('.prog').forEach(function (el) {
+  var total = +el.dataset.total, n = 0;
+  try { var d = (JSON.parse(localStorage.getItem(el.dataset.key) || '{}').done) || {}; n = Object.keys(d).filter(function (k) { return d[k]; }).length; } catch (e) {}
+  n = Math.min(n, total);
+  el.querySelector('.lbl').textContent = n + ' of ' + total + ' done';
+  requestAnimationFrame(function () { setTimeout(function () { el.querySelector('.bar i').style.width = (100 * n / total) + '%'; }, 250); });
+});
+</script>
 </html>

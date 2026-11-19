@@ -57,11 +57,11 @@
   // Colour one line of Python: keywords, CONSTANTS and numbers, "strings", # comments.
   const KW = /\b(def|return|if|elif|else|for|while|in|import|from|class|not|and|or|is|raise|try|except|finally|pass|break|continue|with|as|lambda|yield|match|case|async|await|del|global|nonlocal|assert|True|False|None)\b/g;
   function paint(src) {
-    const m = src.match(/^((?:[^"'#]|"[^"]*"|'[^']*')*)#/);
+    const m = src.match(/^((?:[^"'#]|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')*)#/);
     const cut = m ? m[1].length : -1;
     const main = cut < 0 ? src : src.slice(0, cut), cmt = cut < 0 ? '' : src.slice(cut);
     // Colour keywords and numbers, but leave the insides of "strings" alone.
-    const html = main.split(/("[^"]*"|'[^']*')/).map((seg, i) => i % 2
+    const html = main.split(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/).map((seg, i) => i % 2
       ? `<span class="st">${esc(seg)}</span>`
       : esc(seg)
         .replace(KW, '<span class="k">$1</span>')

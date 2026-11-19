@@ -1,0 +1,17 @@
+On a recipe card, you write words. On a scale, you read numbers. Python keeps the two apart.
+
+In Python, words are called strings. A string is text inside quotes. The quotes hold the words, like two clips.
+
+Single or double quotes both work. But Chloe's cake has an apostrophe inside. So use double quotes, and it fits.
+
+A plus sign joins two strings. A star repeats one. An equals sign, times twenty, prints a divider line.
+
+And len counts the characters. Lasagne has seven.
+
+Now the trouble. You label the flour. Two hundred, plus fifty. But both are in quotes, so Python does not add. It glues. Two, zero, zero, five, zero.
+
+And text plus a real number? Python stops with a TypeError.
+
+The fix is S T R, short for string. It turns the number three into text, so the label can join it.
+
+Words go in quotes. Numbers do not.

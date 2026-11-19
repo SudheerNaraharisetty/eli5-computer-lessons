@@ -1,0 +1,17 @@
+Tonight, you are cooking for three friends. Ana is training for a half marathon. Ben lifts weights and eats no meat. Chloe skips gluten, but never dessert.
+
+You follow a recipe. Exact steps, in order.
+
+A computer is a cook too. A very fast one. But it follows every step exactly as written, and it never guesses.
+
+So if the recipe says, add some salt, the computer freezes. How much is some?
+
+A program is a recipe, written in a language the computer reads. This one is Python.
+
+Each line says print, and then the words to show. Run it, and the menu appears, one line at a time, for each friend.
+
+Now one letter goes missing. Print, without the i. Python stops, and tells you the line, the problem, and even a guess at the fix.
+
+Fix the letter, and dinner is served.
+
+A program is a recipe. Exact steps, in order, for a cook who never guesses.

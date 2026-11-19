@@ -1,0 +1,371 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* phase A: you, the cook */
+    #s-kitchen { position: absolute; inset: 0; }
+    #s-counter { left: 96px; top: 760px; width: 1054px; height: 224px; background: #ece7df; border-radius: 24px; }
+    #s-lip { left: 96px; top: 760px; width: 1054px; height: 34px; background: #fbf8f4; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; }
+    #s-cook { left: 170px; top: 196px; width: 440px; height: 588px; }
+    #s-sign { left: 640px; top: 150px; padding: 18px 40px; background: #fff; border-radius: 22px; font: 700 72px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-you { left: 668px; top: 330px; padding: 6px 28px; background: #3b37e6; color: #fff; border-radius: 999px; font-size: 40px; line-height: 1.3; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; white-space: nowrap; }
+    #s-pot { left: 700px; top: 580px; width: 300px; height: 190px; }
+
+    /* the card: recipe first, then code */
+    #s-card { left: 96px; top: 96px; width: 1054px; height: 888px; border-radius: 24px; }
+    #s-paper, #s-dark { position: absolute; inset: 0; border-radius: 24px; }
+    #s-paper { background: #fbebd2; }
+    #s-dark { background: #15132b; opacity: 0; }
+    #s-rtitle { left: 60px; top: 46px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 76px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 12px; opacity: 0; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 32px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-pylang { left: 420px; top: 14px; padding: 0 20px; height: 48px; line-height: 48px; border-radius: 999px; background: #ffc24b; color: #0e0c1d; font-size: 30px; }
+    #s-run { left: 846px; top: 12px; width: 180px; height: 52px; line-height: 52px; text-align: center; border-radius: 999px; background: #7cf0b5; color: #0e0c1d; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-hl { left: 24px; top: 200px; width: 1006px; height: 100px; border-radius: 16px; background: #fff6e6; box-shadow: inset 6px 0 0 #3b37e6; }
+    .s-row { position: absolute; left: 0; width: 1054px; height: 100px; }
+    .s-badge { position: absolute; left: 50px; top: 18px; width: 64px; height: 64px; border-radius: 50%; background: #0e0c1d; color: #fff; font-size: 34px; line-height: 64px; text-align: center; }
+    .s-rec { position: absolute; left: 150px; top: 0; font-size: 46px; line-height: 100px; white-space: nowrap; color: #0e0c1d; }
+    .s-num { position: absolute; left: 62px; top: 0; font: 500 40px/100px "JetBrains Mono", monospace; color: #8480b8; opacity: 0; }
+    .s-code { position: absolute; left: 150px; top: 0; font: 500 40px/100px "JetBrains Mono", monospace; white-space: pre; color: #eceaff; opacity: 0; }
+    .s-code .k { color: #c9c6ff; }
+    .s-code .st { color: #a8e6c4; }
+    #s-i { display: inline-block; }
+    #s-lineB { opacity: 0; }
+    #s-salt { top: 680px; }
+    #s-salt .s-badge { background: #b9741a; }
+    #s-salt .s-rec { color: #0e0c1d; }
+    #s-some { display: inline-block; position: relative; margin: 0 18px; }
+    #s-someR { left: -24px; top: 14px; width: 160px; height: 74px; border: 6px dashed #b8235a; border-radius: 50%; }
+    #s-howmuch { left: 520px; top: 700px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 34px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-robot { left: 810px; top: 610px; width: 220px; height: 253px; }
+    #s-speed { left: 700px; top: 700px; width: 110px; height: 110px; }
+    #s-qm { left: 930px; top: 520px; width: 96px; height: 96px; border-radius: 50%; background: #fff; color: #b8235a; font: 700 68px/96px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 5px #0e0c1d; }
+
+    /* error panel */
+    #s-err { left: 24px; top: 680px; width: 720px; height: 184px; border-radius: 18px; background: #fbe0ea; box-shadow: 0 0 0 5px #0e0c1d; padding: 20px 28px; font: 500 28px/48px "JetBrains Mono", monospace; white-space: pre; color: #0e0c1d; }
+    #s-err b { color: #b8235a; font-weight: 700; }
+    #s-stopped { left: 470px; top: -30px; padding: 0 20px; height: 52px; line-height: 52px; border-radius: 999px; background: #b8235a; color: #fff; font: 800 30px/52px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-missing { left: 612px; top: 342px; padding: 0 20px; height: 56px; line-height: 56px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 32px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* the table */
+    #s-table { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-tt { left: 36px; top: 30px; width: 560px; height: 76px; font: 700 58px/76px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-tt > span { position: absolute; left: 0; top: 0; }
+    #s-tt2 { opacity: 0; color: #3b37e6; }
+    .s-guest { position: absolute; left: 0; width: 614px; height: 230px; }
+    .s-guest + .s-guest::before { content: ""; position: absolute; left: 36px; right: 36px; top: -16px; height: 4px; border-radius: 2px; background: #ece7df; }
+    .s-av { position: absolute; left: 28px; top: 4px; width: 124px; height: 124px; }
+    .s-gname { position: absolute; left: 172px; top: 0; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-tag { position: absolute; left: 172px; top: 76px; padding: 0 16px; height: 46px; line-height: 46px; border-radius: 999px; background: #ece7df; color: #3e3b52; font-size: 28px; white-space: nowrap; }
+    .s-dish { position: absolute; left: 172px; top: 140px; font: 700 32px/1.2 "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; opacity: 0; }
+    .s-plate { position: absolute; left: 454px; top: 10px; width: 136px; height: 136px; }
+    .s-food { opacity: 0; }
+    .s-check { position: absolute; left: 548px; top: -4px; width: 56px; height: 56px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-check > svg { position: absolute; left: 0; top: 0; width: 56px; height: 56px; }
+    #s-cake { position: absolute; left: 104px; top: 80px; width: 64px; height: 64px; opacity: 0; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- phase A: you are the cook -->
+        <div id="s-kitchen">
+          <svg id="s-cook" class="s-abs" viewBox="0 0 400 535">
+            <path d="M118 96 C88 96 78 50 112 40 C112 6 160 -2 178 22 C196 -6 250 0 252 34 C292 30 306 86 270 98 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <rect x="126" y="86" width="148" height="44" rx="8" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="178" y="241" width="44" height="50" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M70 535 C70 355 130 283 200 283 C270 283 330 355 330 535 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 535 V381 Q200 353 268 381 V535 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M132 381 L160 297 M268 381 L240 297" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <circle cx="200" cy="182" r="84" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M120 160 Q136 128 170 132 Q200 120 232 132 Q270 128 282 160 Q240 144 200 150 Q160 144 120 160 Z" fill="#2a2140" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <circle cx="150" cy="218" r="13" fill="#f5a8a0" />
+            <circle cx="250" cy="218" r="13" fill="#f5a8a0" />
+            <circle cx="170" cy="192" r="8" fill="#0e0c1d" />
+            <circle cx="230" cy="192" r="8" fill="#0e0c1d" />
+            <path d="M172 222 Q200 248 228 222" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-counter" class="s-abs s-ol"></div>
+          <div id="s-lip" class="s-abs"></div>
+          <svg id="s-pot" class="s-abs" viewBox="0 0 300 190">
+            <path d="M120 40 Q110 20 124 6 M150 40 Q140 20 154 6 M180 40 Q170 20 184 6" fill="none" stroke="#8e8ac0" stroke-width="6" stroke-linecap="round" />
+            <rect x="30" y="66" width="240" height="20" rx="10" fill="#3e3b52" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M44 86 H256 V150 Q256 180 226 180 H74 Q44 180 44 150 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M44 104 H8 M256 104 H292" stroke="#0e0c1d" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          <div id="s-sign" class="s-abs s-ol">Dinner for 3</div>
+          <div id="s-you" class="s-abs s-hide">You, the cook</div>
+        </div>
+
+        <!-- the card: recipe, then code -->
+        <div id="s-card" class="s-abs s-ol s-hide">
+          <div id="s-paper"></div>
+          <div id="s-dark"></div>
+          <div id="s-hl" class="s-abs s-hide"></div>
+          <div id="s-rtitle" class="s-abs">Tonight's dinner</div>
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>menu.py</span></div>
+          <div id="s-pylang" class="s-abs s-hide">Python</div>
+          <div id="s-run" class="s-abs s-hide">▶ Run</div>
+
+          <div class="s-row" id="s-r1" style="top:200px"><div class="s-badge">1</div><div class="s-num">1</div><div class="s-rec">Announce the menu</div><div class="s-code"><span class="k">print</span>(<span class="st">"Tonight's menu"</span>)</div></div>
+          <div class="s-row" id="s-r2" style="top:320px"><div class="s-badge">2</div><div class="s-num">2</div><div class="s-rec">Serve Ana: pasta</div>
+            <div class="s-code" id="s-lineA"><span class="k">pr<span id="s-i">i</span>nt</span>(<span class="st">"Ana: pasta"</span>)</div>
+            <div class="s-code" id="s-lineB"><span class="k" style="color:#ff6b8b">prnt</span>(<span class="st">"Ana: pasta"</span>)</div>
+          </div>
+          <div class="s-row" id="s-r3" style="top:440px"><div class="s-badge">3</div><div class="s-num">3</div><div class="s-rec">Serve Ben: bean chili</div><div class="s-code"><span class="k">print</span>(<span class="st">"Ben: bean chili"</span>)</div></div>
+          <div class="s-row" id="s-r4" style="top:560px"><div class="s-badge">4</div><div class="s-num">4</div><div class="s-rec">Serve Chloe: rice pudding</div><div class="s-code"><span class="k">print</span>(<span class="st">"Chloe: rice pudding"</span>)</div></div>
+          <div class="s-row s-hide" id="s-salt"><div class="s-badge">5</div><div class="s-rec" id="s-saltt">Add <span id="s-some">some<span id="s-someR" class="s-abs s-hide"></span></span> salt</div></div>
+          <div id="s-howmuch" class="s-abs s-hide">how much?</div>
+
+          <svg id="s-speed" class="s-abs s-hide" viewBox="0 0 110 110"><path d="M10 30 H90 M30 56 H100 M10 82 H80" stroke="#3b37e6" stroke-width="8" stroke-linecap="round" /></svg>
+          <svg id="s-robot" class="s-abs s-hide" viewBox="0 0 200 230">
+            <path d="M52 66 C26 66 22 26 52 22 C56 -4 96 -6 104 14 C116 -6 158 0 154 26 C182 26 182 66 152 66 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <rect x="34" y="62" width="132" height="98" rx="24" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect id="s-frost" x="34" y="62" width="132" height="98" rx="24" fill="#c9c6ff" stroke="#0e0c1d" stroke-width="6" opacity="0" />
+            <g id="s-eyes"><circle cx="76" cy="104" r="10" fill="#0e0c1d" /><circle cx="124" cy="104" r="10" fill="#0e0c1d" /></g>
+            <g id="s-xeyes" opacity="0" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round"><path d="M66 94 L86 114 M86 94 L66 114 M114 94 L134 114 M134 94 L114 114" /></g>
+            <path id="s-smile" d="M80 132 Q100 148 120 132" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+            <path id="s-flat" d="M80 138 H120" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" opacity="0" />
+            <rect x="52" y="166" width="96" height="60" rx="14" fill="#3b37e6" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="100" cy="196" r="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <path d="M52 186 L22 210 M148 186 L178 210" stroke="#0e0c1d" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          <div id="s-qm" class="s-abs s-hide">?</div>
+
+          <div id="s-err" class="s-abs s-hide">File "menu.py", <span id="s-eline">line 2</span>
+<b>NameError: name 'prnt' is not defined.</b>
+Did you mean: 'print'?<div id="s-stopped" class="s-abs">Python stopped</div></div>
+          <div id="s-missing" class="s-abs s-hide">missing i</div>
+        </div>
+
+        <!-- the dinner table -->
+        <div id="s-table" class="s-abs s-ol s-hide">
+          <div id="s-tt" class="s-abs"><span id="s-tt1">Dinner table</span><span id="s-tt2">Tonight's menu</span></div>
+
+          <div class="s-guest" id="s-g1" style="top:150px">
+            <svg class="s-av s-hide" viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" /><path d="M90 40 Q116 52 104 84" fill="none" stroke="#5a3418" stroke-width="12" stroke-linecap="round" /><path d="M24 120 Q28 84 62 84 Q96 84 100 120 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" /><rect x="48" y="96" width="28" height="20" rx="3" fill="#fff" stroke="#0e0c1d" stroke-width="3" /><circle cx="62" cy="52" r="26" fill="#e0a77e" stroke="#0e0c1d" stroke-width="5" /><path d="M36 50 Q40 22 66 24 Q90 26 88 50 Q70 36 36 50 Z" fill="#5a3418" stroke="#0e0c1d" stroke-width="4" /></svg>
+            <div class="s-gname s-hide">Ana</div>
+            <div class="s-tag s-hide">half-marathon</div>
+            <div class="s-dish">pasta</div>
+            <svg class="s-plate" viewBox="0 0 136 136"><circle cx="68" cy="68" r="62" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="68" cy="68" r="42" fill="none" stroke="#ece7df" stroke-width="5" />
+              <g class="s-food"><circle cx="68" cy="68" r="36" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" /><path d="M42 62 Q54 48 66 62 T92 62 M44 78 Q56 64 68 78 T94 76" fill="none" stroke="#b9741a" stroke-width="5" stroke-linecap="round" /><circle cx="60" cy="56" r="6" fill="#b8235a" /><circle cx="80" cy="72" r="6" fill="#b8235a" /></g></svg>
+            <div class="s-check"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+
+          <div class="s-guest" id="s-g2" style="top:400px">
+            <svg class="s-av s-hide" viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#ddefe6" stroke="#0e0c1d" stroke-width="5" /><path d="M16 120 Q18 80 62 80 Q106 80 108 120 Z" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="5" /><circle cx="62" cy="50" r="27" fill="#a86f4c" stroke="#0e0c1d" stroke-width="5" /><path d="M36 44 Q38 20 62 20 Q86 20 88 44 Q74 32 36 44 Z" fill="#1b1430" stroke="#0e0c1d" stroke-width="4" /></svg>
+            <div class="s-gname s-hide">Ben</div>
+            <div class="s-tag s-hide">no meat, lifts</div>
+            <div class="s-dish">bean chili</div>
+            <svg class="s-plate" viewBox="0 0 136 136"><circle cx="68" cy="68" r="62" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="68" cy="68" r="42" fill="none" stroke="#ece7df" stroke-width="5" />
+              <g class="s-food"><circle cx="68" cy="68" r="36" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" /><ellipse cx="56" cy="60" rx="8" ry="5" fill="#5a3418" /><ellipse cx="78" cy="58" rx="8" ry="5" fill="#5a3418" /><ellipse cx="66" cy="80" rx="8" ry="5" fill="#5a3418" /><circle cx="84" cy="78" r="5" fill="#ffc24b" /></g></svg>
+            <div class="s-check"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+
+          <div class="s-guest" id="s-g3" style="top:650px">
+            <svg class="s-av s-hide" viewBox="0 0 124 124"><circle cx="62" cy="62" r="58" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="5" /><g fill="#d9a05b" stroke="#0e0c1d" stroke-width="4"><circle cx="38" cy="44" r="14" /><circle cx="86" cy="44" r="14" /><circle cx="44" cy="70" r="12" /><circle cx="80" cy="70" r="12" /><circle cx="62" cy="30" r="16" /></g><path d="M24 120 Q28 84 62 84 Q96 84 100 120 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" /><circle cx="62" cy="54" r="25" fill="#f2c9a5" stroke="#0e0c1d" stroke-width="5" /></svg>
+            <div class="s-gname s-hide">Chloe</div>
+            <div class="s-tag s-hide">gluten-free</div>
+            <svg id="s-cake" viewBox="0 0 64 64"><path d="M14 34 H50 L44 60 H20 Z" fill="#fbebd2" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /><path d="M10 34 Q12 14 32 14 Q52 14 54 34 Z" fill="#ff6b8b" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="10" r="6" fill="#b8235a" stroke="#0e0c1d" stroke-width="3" /></svg>
+            <div class="s-dish">rice pudding</div>
+            <svg class="s-plate" viewBox="0 0 136 136"><circle cx="68" cy="68" r="62" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="68" cy="68" r="42" fill="none" stroke="#ece7df" stroke-width="5" />
+              <g class="s-food"><circle cx="68" cy="68" r="36" fill="#fbebd2" stroke="#0e0c1d" stroke-width="4" /><g fill="#d9a05b"><circle cx="50" cy="66" r="4" /><circle cx="62" cy="80" r="4" /><circle cx="56" cy="52" r="3" /><circle cx="76" cy="86" r="3" /><circle cx="68" cy="64" r="3" /><circle cx="48" cy="80" r="3" /></g><path d="M74 46 L92 74" fill="none" stroke="#5a3418" stroke-width="8" stroke-linecap="round" /><path d="M84 44 L98 66" fill="none" stroke="#5a3418" stroke-width="6" stroke-linecap="round" /></g></svg>
+            <div class="s-check"><svg viewBox="0 0 56 56"><path d="M16 29 L25 38 L41 20" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rPrint" style="stroke:#ff6b8b" />
+          <path id="s-rWords" style="stroke:#7cf0b5" />
+          <path id="s-rPrnt" style="stroke:#ff6b8b;stroke-dasharray:16 12" />
+          <path id="s-rLine" style="stroke:#b8235a" />
+          <path id="s-rProb" style="stroke:#b8235a" />
+          <path id="s-rFix" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.569, 0.708, 0.836, 1.196, 1.347, 1.695, 2.67, 3.042, 3.193, 3.587, 3.762, 3.878, 4.214, 5.224, 5.538, 5.84, 6.211, 6.385, 6.769, 7.07, 7.964, 8.394, 8.824, 9.485, 9.741, 10.054, 11.192, 11.413, 11.726, 11.831, 12.794, 13.456, 14.06, 14.303, 15.372, 15.534, 16.126, 16.266, 16.382, 16.776, 17.45, 17.647, 17.972, 18.356, 18.971, 19.157, 19.273, 19.691, 20.085, 20.469, 21.258, 21.397, 22.048, 22.257, 22.419, 22.756, 24.01, 24.219, 24.311, 24.439, 24.857, 25.356, 25.658, 25.925, 26.622, 26.784, 27.446, 28.77, 29.014, 29.385, 29.71, 30.384, 30.546, 31.092, 31.266, 31.428, 32.171, 32.624, 32.764, 32.868, 33.379, 33.507, 34.192, 35.224, 35.515, 35.782, 36.084, 37.349, 37.674, 38.022, 38.324, 38.882, 39.067, 39.242, 39.358, 39.706, 39.868, 40.902, 41.157, 41.389, 41.575, 41.691, 42.016, 42.666, 42.91, 43.212, 43.409, 43.514, 44.071, 44.303, 44.594, 45.743, 46.103, 46.335, 46.66, 46.962, 48.077, 48.692, 49.098, 49.296, 50.283, 50.793, 51.304, 51.548, 51.873, 52.001, 52.129, 52.604, 52.767, 53.498, 53.742, 53.986, 54.102, 54.485, 54.648, 54.799, 55.96, 56.343, 56.494, 56.946, 57.283, 57.724, 57.98, 58.676, 58.85, 59.443, 59.686, 59.861, 60.836, 61.405, 61.904, 62.148, 62.635, 62.867, 62.972, 63.262, 63.529, 63.901];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels. Mono code is 0.6em per character,
+      // so token positions come from their column: 40px code starts at x=246 (24px per char).
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        if (!p.style.strokeDasharray) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; }
+      };
+      ring("s-rPrint", 306, 346, 84, 42);          // print on line 1 (cols 0-4)
+      ring("s-rWords", 582, 346, 214, 44);         // "Tonight's menu" (cols 6-21)
+      ring("s-rPrnt", 294, 466, 70, 40);           // prnt on line 2 (cols 0-3)
+      ring("s-rLine", 467, 818, 70, 28);           // line 2, error line 1 (28px mono, x=148, 16.8px per char)
+      ring("s-rProb", 467, 866, 344, 30);          // NameError line
+      ring("s-rFix", 333, 914, 204, 30);           // Did you mean: 'print'?
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)" }, at); };
+      const show = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const dashIn = (id, at) => { const p = document.getElementById(id); p.style.strokeDashoffset = 0; tl.fromTo(p, { opacity: 0, scale: 1.4, svgOrigin: "294 466" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at); };
+      const serve = (g, at) => {
+        tl.fromTo(g + " .s-food", { opacity: 0, scale: 0.3, svgOrigin: "68 68" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, at);
+        tl.fromTo(g + " .s-dish", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out", immediateRender: false }, at + 0.1);
+      };
+      const tick = (g, at) => tl.fromTo(g + " .s-check", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)", immediateRender: false }, at);
+      const unserve = (g, at) => out([g + " .s-food", g + " .s-dish", g + " .s-check"], at, 0.3);
+
+      /* ---- 1. You, the cook, and three friends ---- */
+      pop("#s-you", t(1), { from: 0.4 });
+      tl.fromTo("#s-pot path:first-child", { y: 0 }, { y: -8, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 9 }, 0.2);
+      tl.fromTo("#s-table", { opacity: 0, x: 90 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, t(5));
+      [["#s-g1", 7, 12], ["#s-g2", 14, 15], ["#s-g3", 21, 23]].forEach(([g, a, b]) => {
+        pop(g + " .s-av", t(a) - 0.05, { from: 0.4 });
+        tl.fromTo(g + " .s-gname", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t(a) + 0.05);
+        pop(g + " .s-tag", t(b), { from: 0.5 });
+      });
+      pop("#s-cake", t(26), { from: 0.2, ease: "back.out(2.4)" });
+
+      /* ---- 2. A recipe: exact steps, in order ---- */
+      tl.to("#s-kitchen", { opacity: 0, x: -80, duration: 0.4, ease: "power3.in" }, t(30) - 0.45);
+      tl.fromTo("#s-card", { opacity: 0, y: 50, rotation: -2 }, { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.3)" }, t(30) - 0.05);
+      tl.fromTo("#s-r1 .s-rec, #s-r2 .s-rec, #s-r3 .s-rec, #s-r4 .s-rec", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: 0.12 }, t(31));
+      tl.fromTo("#s-r1 .s-badge, #s-r2 .s-badge, #s-r3 .s-badge, #s-r4 .s-badge", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)", stagger: 0.18 }, t(33));
+
+      /* ---- 3. The computer: a fast cook that follows exactly ---- */
+      pop("#s-robot", t(39) - 0.1, { from: 0.4 });
+      tl.fromTo("#s-speed", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, t(43));
+      out("#s-speed", t(45), 0.3);
+      tl.set("#s-hl", { y: 0 }, 0);
+      show("#s-hl", t(47) - 0.1, 0.2);
+      [1, 2, 3].forEach(i => tl.to("#s-hl", { y: i * 120, duration: 0.3, ease: "power2.inOut" }, t(47) + i * 0.5));
+      ["#s-r1", "#s-r2", "#s-r3", "#s-r4"].forEach((r, i) => tl.to(r + " .s-badge", { backgroundColor: "#1f7a5c", duration: 0.2 }, t(47) + i * 0.5 + 0.25));
+      out("#s-hl", t(52), 0.3);
+      tl.to(".s-row .s-badge", { backgroundColor: "#0e0c1d", duration: 0.3 }, t(56));
+
+      /* ---- 4. "Add some salt": the computer freezes ---- */
+      tl.set("#s-salt", { opacity: 1 }, t(61));
+      tl.fromTo("#s-salt .s-badge", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, t(62) - 0.15);
+      tl.fromTo("#s-saltt", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, ease: "steps(13)", immediateRender: false }, t(62));
+      tl.fromTo("#s-someR", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, t(63) + 0.25);
+      tl.to("#s-frost", { opacity: 1, duration: 0.3 }, t(67));
+      tl.to("#s-eyes", { opacity: 0, duration: 0.1 }, t(67));
+      tl.to("#s-xeyes", { opacity: 1, duration: 0.1 }, t(67));
+      tl.to("#s-smile", { opacity: 0, duration: 0.1 }, t(67));
+      tl.to("#s-flat", { opacity: 1, duration: 0.1 }, t(67));
+      tl.fromTo("#s-robot", { x: 0 }, { x: 8, duration: 0.06, ease: "none", yoyo: true, repeat: 7, immediateRender: false }, t(67) + 0.05);
+      pop("#s-qm", t(67) + 0.25, { from: 0.2, ease: "back.out(2.4)" });
+      pop("#s-howmuch", t(69) - 0.05, { from: 0.4 });
+
+      /* ---- 5. A program is a recipe in a language: Python ---- */
+      out(["#s-salt", "#s-howmuch", "#s-qm"], t(72), 0.3);
+      tl.to("#s-frost", { opacity: 0, duration: 0.3 }, t(72));
+      tl.to("#s-eyes", { opacity: 1, duration: 0.1 }, t(72));
+      tl.to("#s-xeyes", { opacity: 0, duration: 0.1 }, t(72));
+      tl.to("#s-smile", { opacity: 1, duration: 0.1 }, t(72));
+      tl.to("#s-flat", { opacity: 0, duration: 0.1 }, t(72));
+      tl.to("#s-dark", { opacity: 1, duration: 0.6, ease: "power2.inOut" }, t(80));
+      tl.to("#s-r1 .s-rec, #s-r2 .s-rec, #s-r3 .s-rec, #s-r4 .s-rec", { color: "#eceaff", duration: 0.6, ease: "power2.inOut" }, t(80));
+      out("#s-rtitle", t(80), 0.3);
+      tl.fromTo("#s-bar", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, t(83));
+      ["#s-r1", "#s-r2", "#s-r3", "#s-r4"].forEach((r, i) => {
+        const at = t(87) + i * 0.22;
+        tl.to(r + " .s-badge", { opacity: 0, scale: 0.4, duration: 0.2, ease: "power2.in" }, at);
+        tl.fromTo(r + " .s-num", { opacity: 0 }, { opacity: 1, duration: 0.25 }, at + 0.15);
+        tl.to(r + " .s-rec", { opacity: 0, x: 40, duration: 0.2, ease: "power2.in" }, at);
+        const c = i === 1 ? "#s-lineA" : r + " .s-code";
+        tl.fromTo(c, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "steps(14)" }, at + 0.1);
+      });
+      pop("#s-pylang", t(87) - 0.05, { from: 0.3, ease: "back.out(2.2)" });
+
+      /* ---- 6. print and the words; Run; the menu appears ---- */
+      draw("s-rPrint", t(91) - 0.05, 0.45);
+      draw("s-rWords", t(95), 0.55);
+      out(["#s-rPrint", "#s-rWords"], t(98) - 0.3, 0.25);
+      pop("#s-run", t(97) - 0.3, { from: 0.4 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1180, y: 520 }, { opacity: 1, x: 1040, y: 130, duration: 0.6, ease: "power3.out" }, t(97) - 0.3);
+      tl.to("#s-run", { scale: 0.88, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, t(98));
+      tl.to("#s-run", { backgroundColor: "#ffc24b", duration: 0.15 }, t(98));
+      tl.to("#s-cursor", { opacity: 0, x: 1120, y: 60, duration: 0.5, ease: "power2.in" }, t(99) + 0.2);
+      tl.to("#s-tt1", { opacity: 0, duration: 0.12 }, t(103) - 0.1);
+      tl.fromTo("#s-tt2", { opacity: 0, scale: 1.3, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, t(103) - 0.05);
+      tl.set("#s-hl", { y: 120, backgroundColor: "#2e2a58", boxShadow: "inset 6px 0 0 #7cf0b5" }, t(103));
+      show("#s-hl", t(104) - 0.15, 0.15);
+      serve("#s-g1", t(104));
+      tl.to("#s-hl", { y: 240, duration: 0.3, ease: "power2.inOut" }, t(108) - 0.3);
+      serve("#s-g2", t(108));
+      tl.to("#s-hl", { y: 360, duration: 0.3, ease: "power2.inOut" }, t(110) - 0.3);
+      serve("#s-g3", t(110));
+      out("#s-hl", t(111) + 0.4, 0.3);
+      tick("#s-g1", t(111)); tick("#s-g2", t(111) + 0.15); tick("#s-g3", t(111) + 0.3);
+
+      /* ---- 7. One letter goes missing; Python stops ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 620 }, { opacity: 1, x: 330, y: 480, duration: 0.7, ease: "power3.out", immediateRender: false }, t(112));
+      tl.to("#s-i", { y: 70, rotation: 40, opacity: 0, duration: 0.4, ease: "power2.in" }, t(120) - 0.15);
+      tl.to("#s-lineA", { opacity: 0, duration: 0.05 }, t(120) + 0.25);
+      tl.to("#s-lineB", { opacity: 1, duration: 0.05 }, t(120) + 0.25);
+      tl.to("#s-cursor", { opacity: 0, x: 420, y: 560, duration: 0.4, ease: "power2.in" }, t(120) + 0.3);
+      dashIn("s-rPrnt", t(120) + 0.35);
+      pop("#s-missing", t(120) + 0.5, { from: 0.4 });
+      unserve("#s-g1", t(122)); unserve("#s-g2", t(122) + 0.08); unserve("#s-g3", t(122) + 0.16);
+      tl.fromTo("#s-err", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, t(122) - 0.05);
+      tl.to("#s-frost", { opacity: 1, duration: 0.3 }, t(122));
+      tl.to("#s-eyes", { opacity: 0, duration: 0.1 }, t(122));
+      tl.to("#s-xeyes", { opacity: 1, duration: 0.1 }, t(122));
+      tl.to("#s-smile", { opacity: 0, duration: 0.1 }, t(122));
+      tl.to("#s-flat", { opacity: 1, duration: 0.1 }, t(122));
+      draw("s-rLine", t(127) - 0.05, 0.4);
+      draw("s-rProb", t(129) - 0.05, 0.55);
+      draw("s-rFix", t(133) - 0.05, 0.5);
+
+      /* ---- 8. Fix the letter: dinner is served ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 620, y: 620 }, { opacity: 1, x: 330, y: 480, duration: 0.6, ease: "power3.out", immediateRender: false }, t(137) - 0.2);
+      out(["#s-rPrnt", "#s-missing"], t(139) - 0.1, 0.2);
+      tl.to("#s-lineB", { opacity: 0, duration: 0.05 }, t(139));
+      tl.to("#s-lineA", { opacity: 1, duration: 0.05 }, t(139));
+      tl.fromTo("#s-i", { y: -60, rotation: 0, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, t(139));
+      tl.to("#s-cursor", { opacity: 0, x: 420, y: 560, duration: 0.4, ease: "power2.in" }, t(140));
+      out(["#s-err", "#s-rLine", "#s-rProb", "#s-rFix"], t(140), 0.3);
+      tl.to("#s-frost", { opacity: 0, duration: 0.3 }, t(140));
+      tl.to("#s-eyes", { opacity: 1, duration: 0.1 }, t(140));
+      tl.to("#s-xeyes", { opacity: 0, duration: 0.1 }, t(140));
+      tl.to("#s-smile", { opacity: 1, duration: 0.1 }, t(140));
+      tl.to("#s-flat", { opacity: 0, duration: 0.1 }, t(140));
+      serve("#s-g1", t(141)); serve("#s-g2", t(141) + 0.3); serve("#s-g3", t(141) + 0.6);
+      tick("#s-g1", t(143)); tick("#s-g2", t(143) + 0.15); tick("#s-g3", t(143) + 0.3);
+      tl.fromTo("#s-robot", { y: 0 }, { y: -18, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, t(143));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 58.75);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ELI5 Computer Lessons</title>
-<meta name="description" content="Free beginner courses with big pictures, few words, and interactive quizzes: software engineering principles told through Maya's cookie shop, and Git + GitHub from the terminal.">
+<meta name="description" content="Free beginner courses with big pictures, few words, and interactive quizzes: Python from zero, told in your own kitchen, software engineering principles told through Maya's cookie shop, and Git + GitHub from the terminal.">
 <meta name="theme-color" content="#F6F1EB">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -80,6 +80,19 @@ h1 em{font-style:normal;color:var(--accent)}
 .course h2{font-size:clamp(30px,4vw,40px);line-height:1.05}
 .course h2 .ic{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:2px solid var(--ink);font:800 16px "Manrope",sans-serif;vertical-align:6px;margin-right:10px;background:var(--accent);color:#fff}
 .course.gh h2 .ic{background:var(--ok)}
+.course.py h2 .ic{background:var(--warn);font-size:15px}
+.course.py .prog .bar i{background:var(--warn)}
+.btn.amber{background:var(--warn);color:#fff}
+html[data-theme="dark"] .course .btnrow .btn.amber{background-color:#B9741A;color:#fff}
+html[data-theme="dark"] .mods li i{color:var(--paper)}
+.course .newbadge{position:absolute;top:-14px;right:22px;z-index:2;border:2px solid var(--ink);border-radius:999px;padding:3px 12px;font-weight:800;font-size:12.5px;background:var(--warn);color:#fff;transform:rotate(2deg);box-shadow:0 3px 0 var(--ink)}
+.course.py{position:relative;overflow:visible}.course.py .grid{border-radius:var(--r);overflow:hidden}
+.runmini{background:var(--night);border:2px solid var(--ink);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.runmini .tbody{white-space:pre-wrap;font-size:13px}
+.runmini .rb{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--night2);border-top:2px solid var(--ink)}
+.runmini .rb b{background:#7CF0B5;color:#0E0C1D;border:2px solid #0E0C1D;border-radius:999px;padding:2px 12px;font-size:12px}
+.runmini .rb span{font:700 11px var(--mono);color:#A9A5D6}
+.runmini .o{display:block;border-top:2px dashed #3A3666;margin-top:6px;padding-top:6px;color:#7CF0B5}
 .course p{margin:0;font-size:16px;line-height:1.6;color:var(--ink2)}
 .course p b{color:var(--ink)}
 .vidframe{position:relative;border:2px solid var(--ink);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);background:var(--night)}
@@ -126,22 +139,23 @@ footer a{color:var(--accent);font-weight:700}
 
 <div class="top"><div class="wrap">
   <a class="brand" href="#"><i>ELI5</i><span>Computer Lessons</span></a>
-  <nav class="pills"><a class="pill" href="#principles">Principles</a><a class="pill" href="#github">GitHub</a><a class="pill" href="#how">How it works</a></nav>
+  <nav class="pills"><a class="pill" href="#python">Python</a><a class="pill" href="#principles">Principles</a><a class="pill" href="#github">GitHub</a><a class="pill" href="#how">How it works</a></nav>
 </div></div>
 
 <main class="wrap">
   <section class="hero">
     <div class="rv">
-      <div class="kicker"><span class="tag accent">Free</span><span class="tag">Beginner to expert</span><span class="tag ok">Works on your phone</span></div>
+      <div class="kicker"><span class="tag accent">Free</span><span class="tag">Beginner to expert</span><span class="tag ok">Works on your phone</span><span class="tag warn">New: Learn Python</span></div>
       <h1>Computers, explained like you're <em>five.</em></h1>
-      <p class="lede">Two courses with big pictures, few words, and quizzes you tap, drag or type. No sign-up, and your progress stays saved on this device.</p>
+      <p class="lede">Three courses with big pictures, few words, and quizzes you tap, drag or type. No sign-up, and your progress stays saved on this device.</p>
       <div class="btnrow">
-        <a class="btn primary" href="learn-principles/">Start Principles</a>
+        <a class="btn primary" href="learn-python/">Start Python</a>
+        <a class="btn" href="learn-principles/">Start Principles</a>
         <a class="btn" href="learn-github/">Start GitHub</a>
       </div>
     </div>
     <div class="collage rv d2" aria-hidden="true">
-      <div class="c poster"><img src="learn-principles/videos/l01-easy-to-change.jpg" alt=""><div class="cap"><span class="play"></span>Meet Maya</div></div>
+      <div class="c poster"><img src="learn-python/videos/l01-what-a-program-is.jpg" alt=""><div class="cap"><span class="play"></span>New: Learn Python</div></div>
       <div class="c term"><div class="tb"><i></i><i></i><i></i><span>terminal</span></div><div class="tbody"><span class="c1">git switch -c new-menu</span>
 <span class="m">Switched to a new branch</span>
 <span class="c1">git commit -m "Add cookies"</span>
@@ -150,8 +164,52 @@ footer a{color:var(--accent);font-weight:700}
     </div>
   </section>
 
-  <div class="sec" id="principles"><h3>Course 1 · Software engineering principles</h3><span class="tag ink">With videos</span></div>
-  <article class="course rv d1">
+  <div class="sec" id="python"><h3>Course 1 · Python from zero</h3><span class="tag ink">Newest</span></div>
+  <article class="course py rv d1">
+    <span class="newbadge">New course</span>
+    <div class="grid">
+      <div class="media">
+        <a class="vidframe" href="learn-python/#l01" aria-label="Open lesson 1, What a program is">
+          <img src="learn-python/videos/l01-what-a-program-is.jpg" alt="Lesson 1 video: a recipe turns into Python code that serves dinner to three friends" loading="lazy">
+          <span class="badge"><span class="play"></span>Lesson 1 video</span>
+        </a>
+        <div class="story" style="background:var(--warn-tint)"><b>Your own kitchen.</b> You cook for three friends: Ana is training for a half-marathon, Ben is vegetarian and lifts, Chloe is gluten-free and loves dessert. A program is a recipe, and over the course you build Kitchen Coach, an app that plans their meals.</div>
+        <div class="runmini"><div class="tb"><i></i><i></i><i></i><span>menu.py · you can edit this</span></div><div class="tbody">print("Ana: pasta")
+print("Ben: bean chili")<span class="o">Ana: pasta
+Ben: bean chili</span></div><div class="rb"><b>▶ Run</b><span>real Python, right in the page</span></div></div>
+      </div>
+      <div class="body">
+        <div class="kicker" style="margin:0"><span class="tag warn">Zero to master</span><span class="tag">Python 3.15</span><span class="tag ok">Run code in the page</span></div>
+        <h2><span class="ic">Py</span>Learn Python</h2>
+        <p>You have never written a line of code. That's the starting line. Learn <b>values, decisions, loops, lists and functions</b>, then files, classes and the tools pros use every day: <b>debugging, pytest, type hints and virtual environments</b>.</p>
+        <p>Every lesson has a <b>one-minute video</b>, code you can <b>change and run right in the page</b>, a quiz, and an exercise you <b>open in VS Code</b> that checks your work.</p>
+        <div class="stats">
+          <div><b>108</b><span>lessons planned</span></div>
+          <div><b>80</b><span>core lessons</span></div>
+          <div><b>1</b><span>lesson ready so far</span></div>
+          <div><b>11</b><span>modules</span></div>
+        </div>
+        <ul class="mods">
+          <li><i>0</i>Start here <span>· what a program is, setup</span></li>
+          <li><i>1</i>Values and variables <span>· labelled jars</span></li>
+          <li><i>2</i>Decisions and loops <span>· taste it and decide</span></li>
+          <li><i>3</i>Collections <span>· the shopping list, the pantry</span></li>
+          <li><i>4</i>Functions <span>· recipe cards you reuse</span></li>
+          <li><i>5</i>Errors, files, modules <span>· the recipe notebook</span></li>
+          <li><i>6</i>Classes and objects <span>· templates for dishes</span></li>
+          <li><i>7</i>Pythonic Python <span>· the short, clear way</span></li>
+          <li><i>8</i>Tools of a pro <span>· debugging, tests, type hints</span></li>
+          <li><i>9</i>Advanced <span>· how Python really works</span></li>
+          <li><i>10</i>Projects <span>· finish Kitchen Coach</span></li>
+        </ul>
+        <div class="prog" data-key="learn-python-v1" data-total="108"><span class="lbl">0 of 108 done</span><div class="bar"><i></i></div></div>
+        <div class="btnrow" style="margin-top:4px"><a class="btn amber" href="learn-python/">Open course</a><a class="btn" href="learn-python/#l01">Lesson 1</a></div>
+      </div>
+    </div>
+  </article>
+
+  <div class="sec" id="principles"><h3>Course 2 · Software engineering principles</h3><span class="tag ink">With videos</span></div>
+  <article class="course rv d2">
     <div class="grid">
       <div class="media">
         <a class="vidframe" href="learn-principles/#l01" aria-label="Open lesson 1, Easy to change">
@@ -186,7 +244,7 @@ footer a{color:var(--accent);font-weight:700}
     </div>
   </article>
 
-  <div class="sec" id="github"><h3>Course 2 · Git and GitHub</h3><span class="tag ink">Hands-on</span></div>
+  <div class="sec" id="github"><h3>Course 3 · Git and GitHub</h3><span class="tag ink">Hands-on</span></div>
   <article class="course gh rv d2">
     <div class="grid">
       <div class="media">

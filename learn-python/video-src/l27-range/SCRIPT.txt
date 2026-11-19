@@ -1,0 +1,13 @@
+The risotto recipe says, stir twenty times. You could count in your head. Or let Python count for you.
+
+For stir in range twenty. Range hands the loop one number at a time.
+
+But Python starts counting at zero. Zero, one, two, all the way up to nineteen. That is twenty stirs. Twenty itself never shows up. The stop number is not included.
+
+Ana wants a plan for days one to seven. Give range a start and a stop. Start at one, stop at eight. The week fills up, Monday to Sunday.
+
+Write stop at seven, and Sunday goes missing. One day short. It is the most common loop mistake there is.
+
+Chloe is waiting for dessert. A third number is the step. Range from ten, stop at zero, step minus one, counts down. Ten, nine, eight, all the way to one. Never zero. The oven opens.
+
+Know how many times? Use for and range. And remember, the stop is never included.

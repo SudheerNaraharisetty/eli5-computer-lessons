@@ -1,0 +1,15 @@
+Tickets slide through the kitchen pass. Each has a code. P for pasta, C for chili, R for rice pudding. The cook reads it and picks the station.
+
+In Python, that is match and case. Match the order, then one case per code. Python checks from the top, and the first case that fits wins.
+
+Ben's ticket says C. The chili station lights up.
+
+Two codes can share one door. R or F, joined by a bar, both go to dessert.
+
+A guard adds a condition. Case P, if guests is more than six. It sits above the plain P. Ana's running club is eight, so they get the big pot.
+
+Case underscore means anything else. Unknown codes go to the waiter. Leave it out, and the ticket just vanishes, silently.
+
+One trap. A plain name, like case pasta, without quotes, is not a comparison. It catches every ticket, so Python stops you.
+
+One value, many fixed choices. Match picks the first case that fits.

@@ -1,0 +1,15 @@
+Before you serve the soup, you taste it. Too salty? Then add water. Not salty? You skip that step.
+
+Until now, Python ran every line, top to bottom. The word if lets your program taste and decide.
+
+Write if, then a question, then a colon. The line under it is pushed in by four spaces. That block runs only when the answer is True.
+
+Ben's meal has twenty two grams of protein. Is twenty two under thirty? True. The block lights up. Add a protein shake.
+
+Now make it thirty five. Is thirty five under thirty? False. The block stays dark, and Python jumps past it.
+
+The last line is not pushed in, so it always runs.
+
+Two mistakes stop everything. Forget the colon, and Python says, expected colon. Forget the spaces, and it says, expected an indented block.
+
+If asks its question once, at that moment. When the answer is True, it runs the block.

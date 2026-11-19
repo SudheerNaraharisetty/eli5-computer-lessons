@@ -1,0 +1,396 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the kitchen: a cook tasting soup, then a fork in the recipe */
+    #k { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #k svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .k-card { height: 120px; line-height: 120px; text-align: center; border-radius: 24px; font-size: 48px; white-space: nowrap; }
+    #k-water { left: 1300px; top: 190px; width: 340px; background: #ddefe6; color: #1f7a5c; }
+    #k-serve { left: 1560px; top: 480px; width: 280px; background: #fff; }
+    #k-q { left: 900px; top: 500px; width: 360px; height: 80px; text-align: center; font-size: 44px; line-height: 80px; white-space: nowrap; }
+    .k-lbl { font-size: 38px; white-space: nowrap; }
+    #k-yes { left: 1104px; top: 300px; color: #1f7a5c; }
+    #k-skip { left: 1316px; top: 470px; color: #3e3b52; }
+    #k-taste { left: 196px; top: 820px; font-size: 40px; color: #3e3b52; white-space: nowrap; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 500px; background: #15132b; border-radius: 24px; }
+    .bar { position: absolute; left: 0; top: 0; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    .bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-code .bar { width: 1054px; }
+    .num { position: absolute; left: 46px; width: 24px; font: 500 40px/64px "JetBrains Mono", monospace; color: #8a86b0; }
+    .ln { position: absolute; left: 110px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .ln .k { color: #c9c6ff; }
+    .ln .n { color: #ffc24b; }
+    .ln .s { color: #7cf0b5; }
+    .v22 { display: inline-block; position: relative; width: 48px; height: 64px; vertical-align: top; }
+    .v22 > span { position: absolute; left: 0; top: 0; color: #ffc24b; }
+    .dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #ffc24b; }
+
+    /* the block box */
+    .blk { left: 194px; top: 304px; width: 940px; height: 72px; border-radius: 14px; }
+    #blk-off { border: 4px dashed #8a86b0; }
+    #blk-on { background: rgba(124, 240, 181, 0.22); border: 4px solid #7cf0b5; }
+    #tag { left: 870px; top: 270px; width: 250px; height: 48px; line-height: 48px; border-radius: 999px; background: #7cf0b5; color: #0e0c1d; text-align: center; font-size: 28px; white-space: nowrap; }
+    #always { left: 830px; top: 378px; width: 230px; height: 52px; line-height: 52px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; text-align: center; font-size: 30px; white-space: nowrap; }
+    .missed { height: 52px; line-height: 52px; border-radius: 999px; background: #fbe0ea; color: #b8235a; text-align: center; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #b8235a; }
+    #miss1 { left: 714px; top: 222px; width: 150px; }
+    #miss2 { left: 920px; top: 314px; width: 190px; }
+
+    /* output panel */
+    #s-out { left: 96px; top: 640px; width: 1728px; height: 344px; background: #15132b; border-radius: 24px; }
+    #s-out .bar { width: 1728px; }
+    .o { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .o.g { color: #7cf0b5; }
+    .e { position: absolute; left: 40px; font: 500 34px/64px "JetBrains Mono", monospace; color: #c9c6ff; white-space: pre; }
+    .e.r { color: #ff6b8b; }
+
+    /* Ben, the question, the answer */
+    #ben { left: 1210px; top: 96px; width: 614px; height: 150px; background: #fff; border-radius: 22px; }
+    #ben-av { position: absolute; left: 30px; top: 31px; width: 88px; height: 88px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 700 48px/88px "Fraunces", serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #ben-n { position: absolute; left: 146px; top: 22px; font: 700 48px/60px "Fraunces", serif; }
+    #ben-s { position: absolute; left: 146px; top: 84px; font: 600 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .chip { position: absolute; left: 444px; top: 40px; width: 140px; height: 70px; border-radius: 16px; background: #fbebd2; text-align: center; font: 700 40px/70px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    #dia { left: 1297px; top: 275px; width: 440px; height: 250px; }
+    #dia svg { position: absolute; inset: 0; width: 440px; height: 250px; overflow: visible; }
+    .dq { position: absolute; left: 0; top: 95px; width: 440px; text-align: center; font: 700 32px/60px "JetBrains Mono", monospace; white-space: nowrap; }
+    .dq.big { font-size: 44px; }
+    .ans { left: 1417px; top: 548px; width: 200px; height: 64px; line-height: 64px; border-radius: 16px; text-align: center; font: 700 40px/64px "JetBrains Mono", monospace; }
+    #ansT { background: #ddefe6; color: #1f7a5c; }
+    #ansF { background: #fbe0ea; color: #b8235a; }
+    #shake { left: 1752px; top: 268px; width: 66px; height: 104px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.71" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the kitchen -->
+        <div id="k" class="s-abs">
+          <svg viewBox="0 0 1920 1080">
+            <!-- steam -->
+            <g id="k-steam" fill="none" stroke="#6f6b80" stroke-width="7" stroke-linecap="round">
+              <path d="M560 560 q-16 -26 0 -52 q16 -26 0 -52" />
+              <path d="M630 560 q-16 -26 0 -52 q16 -26 0 -52" />
+              <path d="M700 560 q-16 -26 0 -52 q16 -26 0 -52" />
+            </g>
+            <!-- the cook -->
+            <g id="k-cook">
+              <rect x="290" y="490" width="180" height="290" rx="40" fill="#fff" stroke="#0e0c1d" stroke-width="7" />
+              <rect x="330" y="560" width="100" height="160" rx="16" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+              <circle cx="380" cy="410" r="66" fill="#fbebd2" stroke="#0e0c1d" stroke-width="7" />
+              <circle cx="358" cy="402" r="7" fill="#0e0c1d" />
+              <circle cx="404" cy="402" r="7" fill="#0e0c1d" />
+              <path d="M362 440 q18 12 36 0" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+              <rect x="326" y="318" width="108" height="34" rx="8" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+              <path d="M330 322 q-40 -10 -26 -52 q14 -36 52 -22 q20 -40 56 -10 q40 -16 46 26 q6 34 -26 58 z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            </g>
+            <!-- the pot -->
+            <rect x="452" y="640" width="30" height="24" rx="6" fill="#0e0c1d" />
+            <rect x="778" y="640" width="30" height="24" rx="6" fill="#0e0c1d" />
+            <rect x="478" y="610" width="304" height="186" rx="34" fill="#fbebd2" stroke="#0e0c1d" stroke-width="7" />
+            <rect x="462" y="592" width="336" height="30" rx="15" fill="#0e0c1d" />
+            <!-- paths of the fork -->
+            <path id="k-p0" d="M804 700 C 846 700 846 540 878 540" fill="none" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+            <path id="k-p1" d="M1080 410 V250 H1288" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+            <path id="k-p2" d="M1640 250 H1700 V468" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+            <path id="k-p3" d="M1280 540 H1548" fill="none" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+            <path id="k-h1" opacity="0" d="M1296 250 l-20 -14 v28 z" fill="#1f7a5c" />
+            <path id="k-h2" opacity="0" d="M1700 476 l-14 -20 h28 z" fill="#1f7a5c" />
+            <path id="k-h3" opacity="0" d="M1556 540 l-20 -14 v28 z" fill="#0e0c1d" />
+            <!-- the question -->
+            <g id="k-dia" class="s-hide" style="transform-origin:1080px 540px">
+              <path d="M884 548 L1084 418 L1284 548 L1084 678 Z" fill="#0e0c1d" />
+              <path d="M880 540 L1080 410 L1280 540 L1080 670 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="7" stroke-linejoin="round" />
+            </g>
+          </svg>
+          <!-- the spoon, which travels from the pot to the cook's mouth -->
+          <svg id="k-spoon" class="s-abs" style="left:540px;top:520px;width:180px;height:80px" viewBox="0 0 180 80">
+            <ellipse cx="34" cy="40" rx="30" ry="20" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="60" y="34" width="112" height="12" rx="6" fill="#b9741a" stroke="#0e0c1d" stroke-width="4" />
+          </svg>
+          <div id="k-q" class="s-abs s-hide">Too salty?</div>
+          <div id="k-water" class="s-abs k-card s-ol s-hide">Add water</div>
+          <div id="k-serve" class="s-abs k-card s-ol s-hide">Serve</div>
+          <div id="k-yes" class="s-abs k-lbl s-hide">yes</div>
+          <div id="k-skip" class="s-abs k-lbl s-hide">no: skip it</div>
+          <div id="k-taste" class="s-abs">taste, then decide</div>
+        </div>
+
+        <!-- Ben, the question, the answer -->
+        <div id="ben" class="s-abs s-ol s-hide">
+          <div id="ben-av">B</div>
+          <div id="ben-n">Ben</div>
+          <div id="ben-s">protein in his meal</div>
+          <div class="chip s-hide" id="c22">22 g</div>
+          <div class="chip s-hide" id="c35">35 g</div>
+        </div>
+        <div id="dia" class="s-abs s-hide">
+          <svg viewBox="0 0 440 250">
+            <path d="M8 133 L224 13 L440 133 L224 253 Z" fill="#0e0c1d" />
+            <path id="dia-f" d="M0 125 L220 5 L440 125 L220 245 Z" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+            <path id="dia-t" d="M0 125 L220 5 L440 125 L220 245 Z" fill="#ddefe6" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" opacity="0" />
+            <path id="dia-x" d="M0 125 L220 5 L440 125 L220 245 Z" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" opacity="0" />
+          </svg>
+          <div class="dq" id="dq0">ben_protein &lt; 30 ?</div>
+          <div class="dq big s-hide" id="dq1">22 &lt; 30 ?</div>
+          <div class="dq big s-hide" id="dq2">35 &lt; 30 ?</div>
+        </div>
+        <div id="ansT" class="s-abs ans s-ol s-hide">True</div>
+        <div id="ansF" class="s-abs ans s-ol s-hide">False</div>
+        <svg id="shake" class="s-abs s-hide" viewBox="0 0 66 104">
+          <rect x="30" y="0" width="8" height="34" rx="3" fill="#b8235a" stroke="#0e0c1d" stroke-width="3" />
+          <path d="M6 22 H60 L52 100 H14 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          <path d="M10 46 H56 L51 96 H15 Z" fill="#e6c9a8" />
+        </svg>
+
+        <!-- code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div class="bar"><i></i><i></i><i></i><span>meal.py</span></div>
+          <div class="num" style="top:84px">1</div>
+          <div class="num" style="top:148px">2</div>
+          <div class="num" style="top:212px">3</div>
+          <div class="num s-hide" id="n4" style="top:276px">4</div>
+          <div class="ln" id="L1" style="top:84px">ben_protein = <span class="v22"><span id="v22">22</span><span id="v35" class="s-hide">35</span></span></div>
+          <div class="ln s-hide" id="Lif" style="top:148px"><span class="k">if</span> ben_protein &lt; <span class="n">30</span><span id="colon">:</span></div>
+          <div class="ln" id="L2" style="top:148px"><span class="k">print</span>(<span class="s">"Add a protein shake"</span>)</div>
+          <div class="ln" id="L3" style="top:212px"><span class="k">print</span>(<span class="s">"Meal check done"</span>)</div>
+        </div>
+        <div id="dots" class="s-abs s-hide" style="left:0;top:0">
+          <div class="dot" style="left:212px;top:334px"></div>
+          <div class="dot" style="left:236px;top:334px"></div>
+          <div class="dot" style="left:260px;top:334px"></div>
+          <div class="dot" style="left:284px;top:334px"></div>
+        </div>
+        <div id="blk-off" class="s-abs blk s-hide"></div>
+        <div id="blk-on" class="s-abs blk s-hide"></div>
+        <div id="tag" class="s-abs s-hide">only when True</div>
+        <div id="always" class="s-abs s-hide">always runs</div>
+        <div id="miss1" class="s-abs missed s-hide">missed</div>
+        <div id="miss2" class="s-abs missed s-hide">no spaces</div>
+
+        <!-- output -->
+        <div id="s-out" class="s-abs s-ol s-hide">
+          <div class="bar"><i></i><i></i><i></i><span>output</span></div>
+          <div class="o s-hide" id="oA" style="top:84px">Add a protein shake</div>
+          <div class="o s-hide" id="oB" style="top:148px">Meal check done</div>
+          <div class="o g s-hide" id="oA2" style="top:84px">Add a protein shake</div>
+          <div class="o s-hide" id="oB2" style="top:148px">Meal check done</div>
+          <div class="o s-hide" id="oB3" style="top:84px">Meal check done</div>
+          <div class="e s-hide" id="E1a" style="top:84px">  File "meal.py", line 2</div>
+          <div class="e r s-hide" id="E1b" style="top:148px">SyntaxError: expected ':'</div>
+          <div class="e s-hide" id="E2a" style="top:84px">  File "meal.py", line 3</div>
+          <div class="e r s-hide" id="E2b" style="top:148px">IndentationError: expected an indented block after 'if' statement on line 2</div>
+        </div>
+
+        <!-- rings, rail and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="rail" style="stroke:#7cf0b5" />
+          <path id="r-if" style="stroke:#ffc24b" />
+          <path id="r-q" style="stroke:#ffc24b" />
+          <path id="r-colon" style="stroke:#ffc24b" />
+          <path id="r-22" style="stroke:#ffc24b" />
+          <path id="jump" style="stroke:#ff6b8b" />
+          <path id="r-last" style="stroke:#c9c6ff" />
+          <path id="r-miss1" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+          <path id="r-miss2" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+        </svg>
+        <svg id="heads" class="s-abs" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080">
+          <path id="rail-h" d="M118 372 l-12 -20 h24 z" fill="#7cf0b5" opacity="0" />
+          <path id="jump-h" d="M986 404 l22 -12 v24 z" fill="#ff6b8b" opacity="0" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.383, 0.534, 0.813, 0.929, 1.254, 1.451, 1.869, 2.345, 2.635, 3.413, 3.727, 3.971, 4.656, 4.957, 5.782, 6.026, 6.374, 6.606, 7.767, 8.173, 8.545, 9.044, 9.369, 9.81, 10.333, 10.67, 10.797, 11.668, 11.819, 12.109, 12.388, 12.643, 12.817, 13.317, 13.711, 13.92, 14.861, 15.256, 15.894, 16.103, 16.196, 16.823, 17.043, 17.136, 18.1, 18.274, 18.541, 18.773, 18.913, 19.064, 19.412, 19.563, 19.807, 20.12, 21.2, 21.444, 21.745, 22.071, 22.349, 22.523, 22.674, 23.174, 23.487, 24.648, 25.066, 25.356, 25.681, 26.122, 26.366, 26.819, 27.028, 28.317, 28.642, 29.06, 29.385, 29.652, 30.488, 31.393, 31.533, 31.893, 32.311, 32.949, 33.274, 33.39, 33.878, 34.702, 34.934, 35.155, 35.294, 35.701, 36.664, 37.106, 37.582, 38.104, 38.429, 39.311, 40.333, 40.461, 40.751, 41.088, 41.541, 41.784, 42.307, 42.678, 43.061, 43.7, 43.863, 44.13, 44.385, 44.536, 44.722, 45.082, 45.465, 45.674, 45.79, 46.289, 47.346, 47.613, 48.216, 48.599, 49.679, 50.062, 50.19, 50.77, 51.038, 51.49, 52.129, 52.942, 54.056, 54.381, 54.486, 55.438, 55.658, 55.774, 56.169, 56.877, 57.005, 57.586, 58.41, 58.688, 59.153, 59.339, 59.873, 60.476, 60.732, 60.976, 61.939, 62.137, 62.241, 62.566, 62.706, 63.274, 63.495, 63.878, 64.006];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Code panel at (96, 96). 40px mono = 24px per character, code text starts at x=206.
+      // Line centres (page y): line 1 = 212, line 2 = 276, line 3 = 340, line 4 = 404.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        setPath(id, d);
+      };
+      const setPath = (id, d) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.style.strokeDasharray) p.style.strokeDasharray = L;
+        p.style.strokeDashoffset = L;
+      };
+      const prep = (id) => { const p = document.getElementById(id); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      ["k-p0", "k-p1", "k-p2", "k-p3"].forEach(prep);
+      setPath("rail", "M118 184 V366");
+      ring("r-if", 230, 276, 42, 38);         // if, cols 0-1
+      ring("r-q", 464, 276, 196, 40);         // ben_protein < 30, cols 3-18
+      ring("r-colon", 677, 276, 17, 36);      // colon, col 19
+      ring("r-22", 566, 212, 42, 38);         // 22 on line 1, cols 14-15
+      setPath("jump", "M700 276 C 1180 250, 1180 430, 998 404");
+      ring("r-last", 494, 404, 306, 42);      // line 4, cols 0-23
+      ring("r-miss1", 676, 276, 26, 40);      // where the colon was
+      ring("r-miss2", 266, 340, 74, 40);      // print at the left edge, cols 0-4
+      // dashed rings draw with a dash pattern, so reveal them by opacity and a small scale instead
+      ["r-miss1", "r-miss2"].forEach(id => { const p = document.getElementById(id); p.style.strokeDasharray = "14 12"; p.style.strokeDashoffset = 0; });
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.05, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, from) => {
+        if (from) tl.fromTo("#s-cursor", { opacity: 0, x: from[0], y: from[1] }, { opacity: 1, x: x - 4, y: y + 2, duration: 0.5, ease: "power3.out", immediateRender: false }, at);
+        else tl.to("#s-cursor", { x: x - 4, y: y + 2, duration: 0.5, ease: "power2.inOut" }, at);
+      };
+
+      /* ---- 1. Before you serve the soup, you taste it. Too salty? Add water. Not salty? Skip ---- */
+      tl.fromTo("#k-steam", { y: 0 }, { y: -14, duration: 0.9, ease: "sine.inOut", yoyo: true, repeat: 7, immediateRender: false }, 0);
+      bump("#k-cook", t(0));
+      tl.to("#k-spoon", { x: -160, y: -100, rotation: -18, duration: 0.6, ease: "power2.inOut" }, t(6) - 0.2);
+      bump("#k-cook", t(6) + 0.5);
+      tl.to("#k-spoon", { x: 0, y: 0, rotation: 0, duration: 0.5, ease: "power2.inOut" }, t(7) + 0.3);
+      draw("k-p0", t(8) - 0.3, 0.35);
+      pop("#k-dia", t(8), { from: 0.4, ease: "back.out(2)" });
+      pop("#k-q", t(8) + 0.1, { from: 0.5 });
+      draw("k-p1", t(10), 0.45);
+      pop("#k-yes", t(10), { from: 0.5 });
+      show("#k-h1", t(10) + 0.4, 0.15);
+      pop("#k-water", t(11), { from: 0.5, ease: "back.out(2.2)" });
+      draw("k-p2", t(12), 0.4);
+      show("#k-h2", t(12) + 0.35, 0.15);
+      pop("#k-serve", t(12) + 0.4, { from: 0.5, ease: "back.out(2.2)" });
+      dim(["#k-p1", "#k-p2", "#k-h1", "#k-h2", "#k-water", "#k-yes"], t(13), 0.25);
+      bump("#k-dia", t(14));
+      draw("k-p3", t(15), 0.45);
+      show("#k-h3", t(15) + 0.4, 0.15);
+      pop("#k-skip", t(16), { from: 0.5, ease: "back.out(2.2)" });
+      bump("#k-serve", t(18));
+
+      /* ---- 2. Until now, Python ran every line, top to bottom. if lets it decide ---- */
+      out("#k", t(19) - 0.1, 0.35);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(19) + 0.2);
+      tl.fromTo("#s-out", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(20));
+      draw("rail", t(23), 1.2);
+      show("#rail-h", t(23) + 1.1, 0.15);
+      bump("#L1", t(23));
+      bump("#L2", t(24));
+      pop("#oA", t(24) + 0.1, { from: 0.8, d: 0.3 });
+      bump("#L3", t(26));
+      pop("#oB", t(26) + 0.1, { from: 0.8, d: 0.3 });
+      out(["#rail", "#rail-h", "#oA", "#oB"], t(28), 0.3);
+      tl.to("#L2", { x: 96, y: 64, duration: 0.5, ease: "power2.inOut" }, t(29));
+      tl.to("#L3", { y: 64, duration: 0.5, ease: "power2.inOut" }, t(29));
+      type("#Lif", t(30), 20, 0.6);
+      pop("#n4", t(30), { from: 0.6, d: 0.3 });
+      pop("#ben", t(34), { from: 0.7 });
+      pop("#dia", t(36), { from: 0.5, ease: "back.out(2)" });
+
+      /* ---- 3. Write if, then a question, then a colon. Pushed in by four spaces. Runs only when True ---- */
+      draw("r-if", t(38), 0.4);
+      draw("r-q", t(41), 0.5);
+      draw("r-colon", t(44), 0.4);
+      out(["#r-if", "#r-q", "#r-colon"], t(46) - 0.1, 0.25);
+      bump("#L2", t(46));
+      pop("#dots", t(53), { from: 0.4, ease: "back.out(2.2)" });
+      show("#blk-off", t(56), 0.3);
+      pop("#tag", t(58), { from: 0.5, ease: "back.out(2.2)" });
+      bump("#tag", t(63));
+
+      /* ---- 4. Ben's meal has 22 g. Is 22 under 30? True. The block lights up. Add a shake ---- */
+      out("#dots", t(64), 0.25);
+      bump("#ben", t(64));
+      pop("#c22", t(67), { from: 0.5, ease: "back.out(2.2)" });
+      draw("r-22", t(67) + 0.1, 0.4);
+      out("#r-22", t(72) - 0.15, 0.2);
+      swap("#dq0", "#dq1", t(72));
+      show("#dia-t", t(77), 0.25);
+      pop("#ansT", t(77), { from: 0.5, ease: "back.out(2.2)" });
+      show("#blk-on", t(80), 0.3);
+      bump("#blk-on", t(80) + 0.3);
+      pop("#oA2", t(82), { from: 0.8, d: 0.3 });
+      pop("#shake", t(84), { from: 0.4, ease: "back.out(2.2)" });
+      pop("#oB2", t(85) + 0.2, { from: 0.8, d: 0.3 });
+
+      /* ---- 5. Make it 35. Is 35 under 30? False. The block stays dark. Python jumps past it ---- */
+      cursorTo(566, 212, t(86), [700, 600]);
+      out(["#oA2", "#oB2"], t(89) - 0.2, 0.2);
+      swap("#v22", "#v35", t(89));
+      swap("#c22", "#c35", t(89) + 0.1);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(90));
+      out(["#dia-t", "#ansT"], t(91) - 0.1, 0.2);
+      swap("#dq1", "#dq2", t(91));
+      show("#dia-x", t(96), 0.25);
+      pop("#ansF", t(96), { from: 0.5, ease: "back.out(2.2)" });
+      shake("#ansF", t(96) + 0.4);
+      out(["#blk-on", "#shake"], t(97) + 0.2, 0.4);
+      out("#tag", t(100), 0.25);
+      dim("#L2", t(100), 0.45);
+      draw("jump", t(103), 0.55);
+      show("#jump-h", t(103) + 0.5, 0.15);
+      pop("#oB3", t(104) + 0.2, { from: 0.8, d: 0.3 });
+
+      /* ---- 6. The last line is not pushed in, so it always runs ---- */
+      out(["#jump", "#jump-h"], t(107) - 0.15, 0.2);
+      draw("r-last", t(107), 0.5);
+      pop("#always", t(115), { from: 0.5, ease: "back.out(2.2)" });
+      bump("#oB3", t(115) + 0.2);
+
+      /* ---- 7. Two mistakes stop everything. No colon: expected ':'. No spaces: expected an indented block ---- */
+      out(["#r-last", "#always", "#oB3", "#blk-off"], t(117) - 0.1, 0.3);
+      dim(["#ben", "#dia", "#ansF"], t(117), 0.3);
+      dim("#L2", t(117), 1);
+      shake("#s-code", t(119));
+      cursorTo(676, 276, t(121) - 0.3, [800, 600]);
+      out("#colon", t(123), 0.2);
+      tl.set("#r-miss1", { opacity: 0 }, 0);
+      tl.fromTo("#r-miss1", { opacity: 0, scale: 0.7, transformOrigin: "676px 276px" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, t(123) + 0.1);
+      pop("#miss1", t(123) + 0.2, { from: 0.5, ease: "back.out(2.2)" });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(124));
+      type("#E1a", t(127) - 0.3, 25, 0.4);
+      type("#E1b", t(127), 25, 0.5);
+      // spaces gone, colon back
+      out(["#r-miss1", "#miss1", "#E1a", "#E1b"], t(129) - 0.2, 0.2);
+      show("#colon", t(129) - 0.1, 0.2);
+      tl.to("#L2", { x: 0, duration: 0.5, ease: "power2.inOut" }, t(131) - 0.2);
+      tl.fromTo("#r-miss2", { opacity: 0, scale: 0.7, transformOrigin: "266px 340px" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, t(131) + 0.4);
+      pop("#miss2", t(131) + 0.5, { from: 0.5, ease: "back.out(2.2)" });
+      type("#E2a", t(135) - 0.3, 25, 0.4);
+      type("#E2b", t(135), 74, 1.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 58.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

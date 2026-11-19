@@ -250,10 +250,24 @@ svg text,.term,.term *,code,.ed textarea,.ed pre,.out,.out *,.fillcode,.fillcode
 .runbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:var(--night2);border-top:2px solid var(--ink)}
 .runbar .btn.small{box-shadow:0 3px 0 #000}
 .runbar .btn.go{background:#7CF0B5;color:#0E0C1D}
-.runbar .btn:not(.go){background:#2E2A58;color:#ECEAFF;border-color:#0E0C1D}
+.runbar .btn:not(.go):not(.stop){background:#2E2A58;color:#ECEAFF;border-color:#0E0C1D}
 .runbar .ver{margin-left:auto;min-width:0;overflow-wrap:anywhere;font:700 11.5px var(--mono);color:#A9A5D6}
 .out{border-top:2px solid var(--ink);background:#0B0A1A;color:#ECEAFF;font:14px/1.7 var(--mono);padding:10px 16px;white-space:pre-wrap;word-break:break-word}
 .out:empty{display:none}
+.out{max-height:min(70vh,560px);overflow-y:auto;overscroll-behavior:contain}
+.out .ans{color:#7CF0B5;font-weight:700}
+.out .ans-in{display:inline-block;vertical-align:baseline;width:14em;max-width:100%;margin:0 0 0 2px;padding:0 6px;border:0;border-bottom:2px solid #7CF0B5;border-radius:4px 4px 0 0;background:#211E40;color:#fff;font:700 14px/1.7 var(--mono);caret-color:#7CF0B5;outline:0}
+.out .ans-in:focus{background:#2E2A58}
+.out .ans-in:disabled{opacity:.6}
+.out .wait.live{display:block;margin-top:4px}
+.out .askhint{display:block;margin-top:8px;font:700 13px/1.5 "Manrope",sans-serif;color:#C9C6FF;white-space:normal}
+.out.stop{background:var(--warn-tint);color:var(--ink)}
+.out.stop .lbl{color:var(--warn)}
+.out.stop .say{font:700 14.5px/1.5 "Manrope",sans-serif;margin:0}
+.out.stop .say.sub{font-weight:600;margin-top:6px;color:var(--ink2)}
+.out.stop code{background:var(--card,#fff);padding:1px 6px;border-radius:6px;font-size:.9em}
+.out.err .ans,.out.stop .ans,.out.pass .ans{color:var(--ok)}
+.runbar .btn.stop{background:#FF6B8B;color:#0E0C1D;border-color:#0E0C1D}
 .out .lbl{display:block;font:800 11px "Manrope",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#7CF0B5;margin-bottom:4px}
 .out .wait{color:#C9C6FF;font-family:"Manrope",sans-serif;font-weight:700}
 .out .none{color:#8E8AC0;font-family:"Manrope",sans-serif;font-weight:600}
@@ -274,7 +288,8 @@ html[data-theme="dark"] .runbar .btn.small{box-shadow:0 3px 0 #000}
 html[data-theme="dark"] .out.err pre b{color:var(--danger)}
 html[data-theme="dark"] .ex .btnrow .btn.vs{background-color:#1F6FEB;color:#fff}
 html[data-theme="dark"] .run .runbar .btn.go{background-color:#7CF0B5;color:#0E0C1D}
-html[data-theme="dark"] .run .runbar .btn:not(.go){background-color:#2E2A58;color:#ECEAFF}
+html[data-theme="dark"] .run .runbar .btn:not(.go):not(.stop){background-color:#2E2A58;color:#ECEAFF}
+html[data-theme="dark"] .run .runbar .btn.stop{background-color:#FF6B8B;color:#0E0C1D}
 @media(max-width:600px){.runbar .ver{margin-left:0;flex-basis:100%}.pathrow{padding:8px}.pathrow code{flex-basis:100%}}
 /* exercises */
 .ex{display:grid;gap:14px}
@@ -307,4 +322,5 @@ html[data-theme="dark"] .run .runbar .btn:not(.go){background-color:#2E2A58;colo
 <script src="js/engine.js"></script>
 <script src="lessons/syllabus.js"></script>
 <script src="lessons/l01.js"></script>
+<script src="lessons/l06.js"></script>
 <script>PR.start();</script>

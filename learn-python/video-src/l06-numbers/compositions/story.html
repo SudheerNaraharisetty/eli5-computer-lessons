@@ -1,0 +1,291 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the two kitchen tools */
+    .s-tool { position: absolute; top: 96px; width: 840px; height: 520px; background: #fbf8f4; border-radius: 28px; }
+    #s-cnt { left: 96px; }
+    #s-scl { left: 984px; }
+    .s-name { position: absolute; left: 40px; top: 26px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-sub { position: absolute; left: 42px; top: 112px; font-size: 32px; line-height: 40px; color: #3e3b52; white-space: nowrap; }
+    .s-kind { position: absolute; right: 40px; top: 38px; padding: 0 26px; height: 68px; line-height: 68px; border-radius: 999px; background: #3b37e6; color: #fff; font: 700 44px/68px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-dev { position: absolute; left: 20px; top: 170px; width: 800px; height: 210px; overflow: visible; }
+    .s-lcd { position: absolute; left: 60px; top: 210px; width: 720px; height: 130px; border-radius: 16px; box-shadow: 0 0 0 5px #0e0c1d; overflow: hidden; }
+    #s-cnt .s-lcd { background: #e6e3ff; }
+    #s-scl .s-lcd { background: #ddefe6; }
+    .s-v { position: absolute; left: 0; top: 0; width: 720px; height: 130px; font: 700 60px/130px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    #s-cnt .s-v { text-align: center; }
+    #s-scl .s-v { padding-left: 30px; }
+    .s-v.on { opacity: 1; }
+    .s-unit { color: #3e3b52; }
+    #c4 { color: #b8235a; }
+    #s-four { display: inline-block; color: #0e0c1d; }
+    #s-tail { display: inline-block; clip-path: inset(0% 100% 0% 0%); }
+    .s-chips { position: absolute; left: 40px; top: 400px; display: flex; gap: 16px; }
+    .s-chip { opacity: 0; padding: 0 20px; height: 60px; line-height: 60px; border-radius: 999px; background: #fff; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    .s-chip b { font: 700 30px/60px "JetBrains Mono", monospace; color: #3b37e6; }
+    #s-bad { position: absolute; left: 40px; top: 400px; opacity: 0; }
+    #s-bad b { color: #b8235a; }
+    #s-nosense { left: 520px; top: 400px; padding: 0 24px; height: 60px; line-height: 60px; border-radius: 999px; background: #b8235a; color: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+
+    /* the ruler: Python's unit */
+    #s-ruler { left: 40px; top: 382px; width: 760px; height: 140px; overflow: visible; }
+    #s-unitp { left: 40px; top: 374px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; background: #fbebd2; color: #0e0c1d; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-close { left: 520px; top: 374px; padding: 0 22px; height: 56px; line-height: 56px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-ok { left: 700px; top: 186px; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-ok > svg { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 676px; width: 1728px; height: 308px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 1004px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; }
+    #s-div { position: absolute; left: 960px; top: 64px; width: 3px; height: 244px; background: #2e2a58; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out { position: absolute; left: 1004px; font: 500 40px/64px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-out.bad { color: #ff6b8b; }
+    #o5 { display: inline-block; clip-path: inset(0% 100% 0% 0%); }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the counter: things you count -->
+        <div id="s-cnt" class="s-tool s-ol">
+          <div class="s-name">Counter</div>
+          <div class="s-sub s-hide" id="s-sub1">for things you count</div>
+          <div class="s-kind s-hide" id="s-kint">int</div>
+          <svg class="s-dev" viewBox="0 0 800 210">
+            <rect x="10" y="20" width="780" height="180" rx="40" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <rect id="s-btn" x="660" y="0" width="80" height="26" rx="10" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" />
+          </svg>
+          <div class="s-lcd">
+            <div class="s-v on" id="c0">0</div>
+            <div class="s-v" id="c1">3</div>
+            <div class="s-v" id="c2">12</div>
+            <div class="s-v" id="c3">3</div>
+            <div class="s-v" id="c4">2.0</div>
+          </div>
+          <div class="s-chips" id="s-cchips">
+            <div class="s-chip" id="k1"><b>3</b> guests</div>
+            <div class="s-chip" id="k2"><b>12</b> cookies</div>
+            <div class="s-chip" id="k3">Chloe: <b>3</b> desserts</div>
+          </div>
+          <div class="s-chip" id="s-bad"><b>2.0</b> guests</div>
+          <div id="s-nosense" class="s-abs s-hide">makes no sense</div>
+        </div>
+
+        <!-- the scale: things you measure -->
+        <div id="s-scl" class="s-tool s-ol">
+          <div class="s-name">Scale</div>
+          <div class="s-sub s-hide" id="s-sub2">for things you measure</div>
+          <div class="s-kind s-hide" id="s-kfloat">float</div>
+          <svg class="s-dev" viewBox="0 0 800 210">
+            <rect x="380" y="16" width="40" height="16" fill="#3e3b52" />
+            <rect id="s-plate" x="150" y="0" width="500" height="20" rx="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+            <rect x="10" y="28" width="780" height="172" rx="40" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+          </svg>
+          <div class="s-lcd">
+            <div class="s-v on" id="v0">0.0</div>
+            <div class="s-v" id="v1">2.5 <span class="s-unit">kg</span></div>
+            <div class="s-v" id="v2">0.75 <span class="s-unit">l</span></div>
+            <div class="s-v" id="v3">0.1</div>
+            <div class="s-v" id="v4">0.1 + 0.2</div>
+            <div class="s-v" id="v5"><span>0.3</span><span id="s-tail">000000000000000<span id="s-four">4</span></span></div>
+          </div>
+          <div id="s-ok" class="s-abs s-hide"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L47 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="s-chips" id="s-schips">
+            <div class="s-chip" id="m1">Ana: <b>2.5</b> kg pasta</div>
+            <div class="s-chip" id="m2"><b>0.75</b> l milk</div>
+          </div>
+          <svg id="s-ruler" class="s-abs s-hide" viewBox="0 0 760 140">
+            <line x1="20" y1="100" x2="740" y2="100" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" />
+            <g id="s-ticks" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round">
+              <line x1="30" y1="80" x2="30" y2="120" /><line x1="100" y1="80" x2="100" y2="120" /><line x1="170" y1="80" x2="170" y2="120" />
+              <line x1="240" y1="80" x2="240" y2="120" /><line x1="310" y1="80" x2="310" y2="120" /><line id="s-near" x1="380" y1="80" x2="380" y2="120" />
+              <line x1="450" y1="80" x2="450" y2="120" /><line x1="520" y1="80" x2="520" y2="120" /><line x1="590" y1="80" x2="590" y2="120" />
+              <line x1="660" y1="80" x2="660" y2="120" /><line x1="730" y1="80" x2="730" y2="120" />
+            </g>
+            <g id="s-target" opacity="0">
+              <line x1="398" y1="56" x2="398" y2="132" stroke="#3b37e6" stroke-width="5" stroke-dasharray="10 8" />
+              <text x="398" y="44" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="32" fill="#3b37e6">0.3</text>
+            </g>
+          </svg>
+          <div id="s-unitp" class="s-abs s-hide">a different unit</div>
+          <div id="s-close" class="s-abs s-hide">very, very close</div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <div class="s-ln" id="L1" style="top:84px"><span class="k">print</span>(<span class="k">type</span>(<span class="n">3</span>))</div>
+          <div class="s-out" id="o1" style="top:84px">&lt;class 'int'&gt;</div>
+          <div class="s-ln" id="L2" style="top:148px"><span class="k">print</span>(<span class="k">type</span>(<span class="n">2.5</span>))</div>
+          <div class="s-out" id="o2" style="top:148px">&lt;class 'float'&gt;</div>
+          <div class="s-ln" id="L3" style="top:212px"><span class="k">print</span>(<span class="k">type</span>(<span class="n">2.0</span>))</div>
+          <div class="s-out bad" id="o3" style="top:212px">&lt;class 'float'&gt;</div>
+          <div class="s-ln" id="M1" style="top:84px"><span class="k">print</span>(<span class="n">0.1</span> + <span class="n">0.2</span>)</div>
+          <div class="s-out" id="p1" style="top:84px"><span>0.3</span><span id="o5">0000000000000004</span></div>
+          <div class="s-ln" id="M2" style="top:148px"><span class="k">print</span>(<span class="k">round</span>(<span class="n">0.1</span> + <span class="n">0.2</span>, <span class="n">2</span>))</div>
+          <div class="s-out" id="p2" style="top:148px">0.3</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-int" style="stroke:#ffc24b" />
+          <path id="r-float" style="stroke:#ffc24b" />
+          <path id="r-two" style="stroke:#b8235a;stroke-dasharray:16 12" />
+          <path id="r-tail" style="stroke:#b8235a" />
+          <path id="r-four" style="stroke:#b8235a" />
+          <path id="r-round" style="stroke:#7cf0b5" />
+          <path id="r-places" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.244, 0.499, 1.045, 1.3, 1.66, 1.846, 2.357, 2.601, 2.833, 2.995, 3.727, 3.936, 4.214, 4.319, 4.423, 5.155, 5.515, 6.188, 6.594, 7.256, 7.558, 7.988, 8.139, 8.986, 9.195, 9.532, 9.694, 9.799, 10.739, 11.029, 11.32, 11.691, 12.144, 12.307, 12.806, 13.026, 14.025, 14.454, 14.768, 15.163, 15.522, 15.952, 16.114, 16.718, 17.287, 17.658, 17.798, 18.1, 19.133, 19.272, 19.539, 19.876, 20.015, 20.201, 21.014, 21.165, 21.42, 21.571, 21.675, 22.07, 22.279, 22.418, 23.208, 23.626, 24.311, 24.543, 25.089, 25.6, 25.785, 26.668, 26.958, 27.202, 27.411, 28.27, 28.572, 28.885, 29.35, 29.768, 30.162, 30.464, 31.323, 31.66, 31.776, 32.275, 32.415, 32.531, 33.448, 33.878, 34.156, 34.621, 35.097, 35.538, 35.817, 36.629, 37.094, 37.407, 37.837, 38.139, 38.847, 39.056, 39.16, 39.462, 39.729, 39.834, 40.461, 40.716, 40.832, 41.262, 41.482, 41.703, 42.794, 43.317, 43.769, 44.106, 44.257, 44.362, 44.826, 45.209, 45.871, 46.08, 46.277, 46.66, 46.869, 47.148, 47.299, 47.554, 48.646, 48.82, 49.098, 49.481, 49.876, 50.933, 51.095, 51.293, 51.42, 52.071, 52.407, 52.523, 52.663, 52.93, 53.777, 54.172, 54.439, 55.124, 55.449, 55.681, 56.413, 56.773, 56.982];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel: 40px mono = 24px per char, code starts at x=136, output at x=1100; line tops 760, 824, 888.
+      // Scale display: 60px mono = 36px per char, text starts at x=1074, centre y=371.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        if (!p.style.strokeDasharray) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; }
+      };
+      ring("r-int", 1254, 792, 170, 40);      // <class 'int'> output, line 1 (cols 0-13)
+      ring("r-float", 1290, 856, 206, 40);    // <class 'float'> output, line 2 (cols 0-15)
+      ring("r-two", 516, 371, 96, 58);        // 2.0 on the counter display
+      ring("r-tail", 1470, 371, 304, 60);     // the long tail of zeros, cols 3-18
+      ring("r-four", 1740, 371, 34, 50);      // the 4 at the very end, col 18
+      ring("r-round", 352, 856, 92, 38);      // round( on line 2, cols 6-11
+      ring("r-places", 676, 856, 50, 36);     // , 2 on line 2, cols 21-23
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.03, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      // Swap a display value: the old one fades, the new one pops.
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      // A value chip drops into its tool from above.
+      const drop = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -260 }, { opacity: 1, y: 0, duration: 0.6, ease: "bounce.out", immediateRender: false }, at);
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const click = (at) => tl.fromTo("#s-btn", { y: 0 }, { y: 10, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, at);
+      const weigh = (at) => tl.fromTo("#s-plate", { y: 0 }, { y: 8, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, at);
+
+      /* ---- 1. Count and measure ---- */
+      bump("#s-cnt", t(6)); pop("#s-sub1", t(6), { from: 0.7 });
+      bump("#s-scl", t(10)); pop("#s-sub2", t(10), { from: 0.7 });
+
+      /* ---- 2. The counter: 3 guests, 12 cookies, 3 desserts for Chloe ---- */
+      bump("#s-cnt", t(15));
+      drop("#k1", t(16) - 0.2); click(t(16) + 0.1); swap("#c0", "#c1", t(16) + 0.15);
+      drop("#k2", t(18) - 0.2); click(t(18) + 0.1); swap("#c1", "#c2", t(18) + 0.15);
+      drop("#k3", t(20) - 0.2); click(t(20) + 0.1); swap("#c2", "#c3", t(20) + 0.15);
+
+      /* ---- 3. The scale: 2.5 kg of pasta for Ana, 0.75 litres of milk ---- */
+      bump("#s-scl", t(28));
+      drop("#m1", t(29) - 0.2); weigh(t(29) + 0.1); swap("#v0", "#v1", t(29) + 0.15);
+      drop("#m2", t(37) - 0.2); weigh(t(37) + 0.1); swap("#v1", "#v2", t(37) + 0.15);
+
+      /* ---- 4. Python keeps them apart: int and float; ask type ---- */
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t(44));
+      pop("#s-kint", t(54) - 0.05, { from: 0.3, ease: "back.out(2.2)" });
+      pop("#s-kfloat", t(62) - 0.05, { from: 0.3, ease: "back.out(2.2)" });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 760, y: 1000 }, { opacity: 1, x: 300, y: 800, duration: 0.5, ease: "power3.out" }, t(63) - 0.3);
+      type("#L1", t(63), 14);
+      type("#L2", t(64) + 0.2, 16);
+      tl.to("#s-cursor", { opacity: 0, x: 380, y: 980, duration: 0.4, ease: "power2.in" }, t(65));
+      pop("#o1", t(67), { from: 0.7, d: 0.3 }); draw("r-int", t(67) + 0.15, 0.45);
+      pop("#o2", t(69) - 0.1, { from: 0.7, d: 0.3 }); draw("r-float", t(69) + 0.1, 0.45);
+
+      /* ---- 5. Count with int: 2.0 guests makes no sense ---- */
+      out(["#r-int", "#r-float"], t(74) - 0.3, 0.25);
+      bump("#s-cnt", t(71));
+      tl.fromTo("#s-kint", { scale: 1 }, { scale: 1.2, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(73));
+      out("#s-cchips", t(74) - 0.3, 0.2);
+      drop("#s-bad", t(74) - 0.2); swap("#c3", "#c4", t(74) + 0.15);
+      type("#L3", t(74), 16);
+      (function () { const p = document.getElementById("r-two"); p.style.strokeDashoffset = 0; tl.fromTo(p, { opacity: 0, scale: 1.4, svgOrigin: "516 371" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, t(77)); })();
+      pop("#o3", t(77) + 0.1, { from: 0.7, d: 0.3 });
+      pop("#s-nosense", t(79) - 0.05, { from: 0.3, ease: "back.out(2.4)" });
+      tl.fromTo("#s-bad", { x: 0 }, { x: 10, duration: 0.06, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, t(79));
+
+      /* ---- 6. A surprise on the scale: 0.1 + 0.2 ---- */
+      out(["#s-bad", "#s-nosense", "#r-two", "#L1", "#L2", "#L3", "#o1", "#o2", "#o3", "#s-schips"], t(81) - 0.1, 0.3);
+      swap("#c4", "#c3", t(81) + 0.1);
+      tl.to("#s-cnt", { opacity: 0.35, duration: 0.4, ease: "power2.inOut" }, t(81));
+      bump("#s-scl", t(83));
+      weigh(t(87)); swap("#v2", "#v3", t(87) + 0.05);
+      type("#M1", t(87), 16);
+      weigh(t(90) + 0.2); swap("#v3", "#v4", t(91));
+      swap("#v4", "#v5", t(96) + 0.1);
+      pop("#p1", t(97), { from: 0.8, d: 0.3 });
+      tl.to("#s-tail", { clipPath: "inset(0% 0% 0% 0%)", duration: 1.6, ease: "steps(16)" }, t(99));
+      tl.to("#o5", { clipPath: "inset(0% 0% 0% 0%)", duration: 1.6, ease: "steps(16)" }, t(99));
+      draw("r-tail", t(102), 0.6);
+      tl.to("#s-four", { color: "#b8235a", duration: 0.1 }, t(107));
+      tl.fromTo("#s-four", { y: 0 }, { y: -14, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(107));
+      draw("r-four", t(107) + 0.1, 0.4);
+
+      /* ---- 7. Python's scale weighs in a different unit ---- */
+      out(["#r-tail", "#r-four"], t(111), 0.3);
+      tl.fromTo("#s-ruler", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(112));
+      tl.fromTo("#s-ticks line", { scaleY: 0, transformOrigin: "50% 50%" }, { scaleY: 1, duration: 0.25, ease: "back.out(2)", stagger: 0.05, immediateRender: false }, t(112) + 0.1);
+      pop("#s-unitp", t(117) - 0.05, { from: 0.4 });
+      tl.fromTo("#s-target", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(121));
+      tl.to("#s-near", { stroke: "#b8235a", duration: 0.15 }, t(123));
+      tl.fromTo("#s-near", { x: 0 }, { x: 6, duration: 0.07, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(123));
+      pop("#s-close", t(129) - 0.05, { from: 0.4 });
+
+      /* ---- 8. round it to two places: 0.3 ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 760, y: 1000 }, { opacity: 1, x: 260, y: 860, duration: 0.6, ease: "power3.out", immediateRender: false }, t(132));
+      type("#M2", t(136) - 0.1, 26);
+      draw("r-round", t(136) + 0.2, 0.4);
+      draw("r-places", t(139), 0.4);
+      tl.to("#s-cursor", { opacity: 0, x: 380, y: 1000, duration: 0.4, ease: "power2.in" }, t(139) + 0.4);
+      tl.to("#s-tail", { opacity: 0, x: 60, duration: 0.4, ease: "power2.in" }, t(141) - 0.2);
+      pop("#p2", t(141), { from: 0.6 });
+      pop("#s-ok", t(142), { from: 0.3, ease: "back.out(2.4)" });
+      out(["#r-round", "#r-places"], t(143) + 0.3, 0.3);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 55.05);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

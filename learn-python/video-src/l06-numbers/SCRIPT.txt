@@ -1,0 +1,17 @@
+In your kitchen, some numbers you count, and some you measure.
+
+You count on a counter. Three guests. Twelve cookies. Three desserts for Chloe.
+
+You measure on a scale. Two point five kilos of pasta for Ana. Zero point seven five litres of milk.
+
+Python keeps the two apart. A whole number is an int. A number with a point is a float. Ask type, and Python names the kind.
+
+So count with int. Two point zero guests makes no sense.
+
+Now a surprise on the scale. Zero point one, plus zero point two. Python shows zero point three, then a long tail of zeros, and a four at the end.
+
+Python's scale weighs in a slightly different unit, so some amounts can never be hit exactly. It gets very, very close.
+
+To show it nicely, round it to two places. Zero point three.
+
+Count with int. Measure with float.

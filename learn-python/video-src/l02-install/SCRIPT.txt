@@ -1,0 +1,17 @@
+Before you can cook, you need a kitchen.
+
+First, the stove. That is Python, the part that cooks your recipes. Download version three point one five from python dot org.
+
+Next, the counter, where you write. That is VS Code.
+
+Then snap on a recipe holder. That is the Python extension, made by Microsoft. It colours your code and catches typos.
+
+Now, check the stove. In VS Code, open the terminal. That is a window where you type commands to the computer. Type python3, dash dash version. On Windows, type p y instead.
+
+Python answers with its version. Three point one five. Your stove works.
+
+Does the bottom bar of VS Code say three point nine? That is an old stove that came with your Mac. Click it, and pick three point one five.
+
+Online tutorials often use older versions. This course always tells you which one it uses.
+
+Python cooks. VS Code is where you write. The terminal tells you which stove you have.

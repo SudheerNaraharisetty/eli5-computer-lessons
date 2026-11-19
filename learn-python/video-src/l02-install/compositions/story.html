@@ -1,0 +1,392 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+
+    /* left card */
+    #s-card { left: 96px; top: 96px; width: 1054px; height: 888px; border-radius: 24px; }
+    #s-paper, #s-dark { position: absolute; inset: 0; border-radius: 24px; }
+    #s-paper { background: #fbebd2; }
+    #s-dark { background: #15132b; opacity: 0; }
+    .s-grp { position: absolute; inset: 0; }
+
+    /* A: setup checklist */
+    #s-atitle { left: 60px; top: 40px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-row { position: absolute; left: 0; width: 1054px; height: 120px; }
+    .s-badge { position: absolute; left: 50px; top: 22px; width: 68px; height: 68px; border-radius: 50%; background: #0e0c1d; color: #fff; font-size: 36px; line-height: 68px; text-align: center; }
+    .s-lab { position: absolute; left: 150px; top: 4px; font-size: 46px; line-height: 64px; white-space: nowrap; opacity: 0; }
+    .s-sub { position: absolute; left: 150px; top: 66px; font-size: 32px; line-height: 44px; white-space: nowrap; color: #3e3b52; font-weight: 600; }
+    .s-sub > span { opacity: 0; }
+    .s-sub .s-v { color: #3b37e6; font-weight: 800; }
+    .s-tick { position: absolute; left: 930px; top: 24px; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .s-tick > svg { position: absolute; left: 0; top: 0; width: 64px; height: 64px; }
+
+    #s-mini { left: 60px; top: 590px; width: 934px; height: 230px; border-radius: 18px; background: #15132b; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-mtab { left: 0; top: 0; width: 934px; height: 58px; border-radius: 18px 18px 0 0; background: #211e40; color: #c9c6ff; font: 500 30px/58px "JetBrains Mono", monospace; padding-left: 30px; }
+    .s-ml { position: absolute; left: 40px; font: 500 36px/64px "JetBrains Mono", monospace; white-space: pre; color: #eceaff; }
+    .s-ml .k { color: #c9c6ff; }
+    .s-ml .st { color: #a8e6c4; }
+    .s-ml .bad { color: #ff6b8b; }
+    .s-col { opacity: 0; }
+    #s-squig { left: 34px; top: 194px; width: 100px; height: 20px; overflow: visible; }
+    #s-typo { left: 560px; top: 146px; padding: 0 20px; height: 56px; line-height: 56px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-colp { left: 560px; top: 76px; padding: 0 20px; height: 56px; line-height: 56px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* B: terminal */
+    .s-bar { left: 0; top: 0; width: 1054px; height: 76px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    .s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .s-bar > i:nth-child(2) { background: #ffc24b; }
+    .s-bar > i:nth-child(3) { background: #4bd69b; }
+    .s-bar > span { margin-left: 14px; font: 700 32px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-tl { position: absolute; left: 60px; font: 500 44px/80px "JetBrains Mono", monospace; white-space: pre; color: #eceaff; }
+    .s-tl .p { color: #8480b8; }
+    #s-typed > span { opacity: 0; }
+    #s-caret { left: 112.8px; top: 164px; width: 24px; height: 52px; background: #7cf0b5; }
+    #s-ans .v { color: #7cf0b5; }
+    #s-win { left: 60px; top: 380px; padding: 0 26px; height: 72px; line-height: 72px; border-radius: 999px; background: #e6e3ff; color: #0e0c1d; font-size: 34px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-win b { font: 500 34px "JetBrains Mono", monospace; color: #3b37e6; }
+    #s-def { left: 60px; top: 640px; width: 934px; padding: 22px 30px; border-radius: 18px; background: #fbf8f4; color: #0e0c1d; font-size: 36px; line-height: 1.35; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-def b { color: #3b37e6; }
+
+    /* C: VS Code with the bottom bar */
+    #s-status { left: 0; top: 800px; width: 1054px; height: 88px; border-radius: 0 0 24px 24px; background: #3b37e6; box-shadow: 0 -5px 0 0 #0e0c1d; }
+    #s-stl { left: 30px; top: 0; font-size: 30px; line-height: 88px; color: #e6e3ff; white-space: nowrap; }
+    #s-ver { left: 690px; top: 12px; width: 330px; height: 64px; }
+    #s-ver > div { position: absolute; inset: 0; text-align: right; font-size: 36px; line-height: 64px; color: #fff; white-space: nowrap; }
+    #s-qp { left: 110px; top: 110px; width: 834px; height: 330px; border-radius: 18px; background: #fbf8f4; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #s-qpt { left: 30px; top: 18px; font-size: 32px; line-height: 50px; color: #3e3b52; white-space: nowrap; }
+    .s-qr { position: absolute; left: 16px; width: 802px; height: 116px; border-radius: 14px; }
+    .s-qr .n { position: absolute; left: 24px; top: 10px; font-size: 40px; line-height: 56px; white-space: nowrap; }
+    .s-qr .pth { position: absolute; left: 24px; top: 64px; font: 500 30px/40px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; }
+    #s-qr1hl { position: absolute; inset: 0; border-radius: 14px; background: #e6e3ff; box-shadow: inset 6px 0 0 #3b37e6; opacity: 0; }
+    #s-old { left: 420px; top: 700px; padding: 0 22px; height: 64px; line-height: 64px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font-size: 34px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+
+    /* D: tutorials */
+    .s-tut { position: absolute; top: 170px; width: 440px; height: 400px; border-radius: 22px; }
+    .s-tut .h { position: absolute; left: 34px; top: 30px; font-size: 32px; line-height: 44px; color: #3e3b52; white-space: nowrap; }
+    .s-tut .big { position: absolute; left: 34px; top: 120px; font: 700 60px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-tut .sm { position: absolute; left: 34px; top: 250px; font-size: 32px; line-height: 44px; color: #3e3b52; white-space: nowrap; }
+    #s-t1 { left: 60px; background: #fff; }
+    #s-t2 { left: 554px; background: #e6e3ff; }
+    #s-t2 .big { color: #3b37e6; }
+    #s-stamp { left: 180px; top: 470px; padding: 0 24px; height: 66px; line-height: 66px; border-radius: 12px; background: #b9741a; color: #fff; font-size: 36px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-says { left: 60px; top: 660px; width: 934px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    #s-says b { color: #3b37e6; }
+
+    /* the kitchen */
+    #s-kit { left: 1210px; top: 96px; width: 614px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    #s-kt { left: 36px; top: 28px; font: 700 58px/76px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-ks { left: 38px; top: 108px; font-size: 30px; line-height: 42px; color: #3e3b52; white-space: nowrap; font-weight: 600; }
+    #s-floor { left: 20px; top: 858px; width: 574px; height: 6px; border-radius: 3px; background: #0e0c1d; }
+    .s-ph { position: absolute; border: 5px dashed #c8c1b5; border-radius: 18px; }
+    #s-stove { left: 30px; top: 520px; width: 260px; height: 340px; }
+    #s-cab { left: 312px; top: 720px; width: 272px; height: 140px; border-radius: 10px 10px 0 0; background: #ece7df; }
+    #s-lap { left: 318px; top: 556px; width: 220px; height: 166px; }
+    #s-hold { left: 520px; top: 476px; width: 80px; height: 130px; }
+    .s-tag { position: absolute; height: 58px; }
+    .s-tag > div { position: absolute; inset: 0; border-radius: 999px; text-align: center; font-size: 30px; line-height: 58px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; background: #e6e3ff; color: #0e0c1d; opacity: 0; }
+    #s-tagS { left: 30px; top: 440px; width: 260px; }
+    #s-tagS .bad { background: #fbe0ea; color: #b8235a; }
+    #s-tagS .good { background: #ddefe6; color: #1f7a5c; }
+    #s-tagV { left: 318px; top: 470px; width: 180px; }
+    #s-tagE { left: 270px; top: 380px; width: 330px; }
+    #s-works { left: 236px; top: 760px; width: 72px; height: 72px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-works > svg { position: absolute; left: 0; top: 0; width: 72px; height: 72px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.5" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- left card -->
+        <div id="s-card" class="s-abs s-ol">
+          <div id="s-paper"></div>
+          <div id="s-dark"></div>
+
+          <!-- A: the setup checklist -->
+          <div id="s-A" class="s-grp">
+            <div id="s-atitle" class="s-abs">Set up your kitchen</div>
+            <div class="s-row" id="s-r1" style="top:160px"><div class="s-badge">1</div><div class="s-lab">The stove</div>
+              <div class="s-sub"><span>Python</span> <span class="s-v">3.15</span> <span>· from python.org</span></div>
+              <div class="s-tick"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L47 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+            <div class="s-row" id="s-r2" style="top:300px"><div class="s-badge">2</div><div class="s-lab">The counter</div>
+              <div class="s-sub"><span class="s-v">VS Code</span> <span>· where you write</span></div>
+              <div class="s-tick"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L47 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+            <div class="s-row" id="s-r3" style="top:440px"><div class="s-badge">3</div><div class="s-lab">The recipe holder</div>
+              <div class="s-sub"><span class="s-v">Python extension</span> <span>· by Microsoft</span></div>
+              <div class="s-tick"><svg viewBox="0 0 64 64"><path d="M18 33 L28 43 L47 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+
+            <div id="s-mini" class="s-abs s-hide" data-layout-allow-overlap>
+              <div id="s-mtab" class="s-abs">menu.py</div>
+              <div class="s-ml" style="top:76px">print("Pasta for Ana")</div>
+              <div class="s-ml s-col" style="top:76px"><span class="k">print</span>(<span class="st">"Pasta for Ana"</span>)</div>
+              <div class="s-ml" style="top:140px">prnt("Chili for Ben")</div>
+              <div class="s-ml s-col" style="top:140px"><span class="bad">prnt</span>(<span class="st">"Chili for Ben"</span>)</div>
+              <svg id="s-squig" class="s-abs" viewBox="0 0 100 20"><path id="s-sq" d="M2 10 Q8 2 14 10 T26 10 T38 10 T50 10 T62 10 T74 10 T86 10 T98 10" fill="none" stroke="#ff6b8b" stroke-width="5" stroke-linecap="round" /></svg>
+              <div id="s-colp" class="s-abs s-hide">colours</div>
+              <div id="s-typo" class="s-abs s-hide">typo?</div>
+            </div>
+          </div>
+
+          <!-- B: the terminal -->
+          <div id="s-B" class="s-grp s-hide">
+            <div class="s-bar s-abs"><i></i><i></i><i></i><span>VS Code · TERMINAL</span></div>
+            <div class="s-tl" style="top:150px"><span class="p">$ </span><span id="s-typed">python3 --version</span></div>
+            <div id="s-caret" class="s-abs"></div>
+            <div class="s-tl s-hide" id="s-ans" style="top:250px">Python <span class="v">3.15.2</span></div>
+            <div id="s-win" class="s-abs s-hide">On Windows: <b>py --version</b></div>
+            <div id="s-def" class="s-abs s-hide"><b>Terminal:</b> a window where you type commands to the computer.</div>
+          </div>
+
+          <!-- C: VS Code, the bottom bar and Select Interpreter -->
+          <div id="s-C" class="s-grp s-hide" data-layout-allow-overlap>
+            <div class="s-bar s-abs"><i></i><i></i><i></i><span>l02_check_setup.py</span></div>
+            <div class="s-tl" style="top:130px"><span style="color:#a8a4d8"># Which stove am I using?</span></div>
+            <div class="s-tl" style="top:210px"><span style="color:#c9c6ff">print</span>(<span style="color:#a8e6c4">"Kitchen ready"</span>)</div>
+            <div id="s-status" class="s-abs">
+              <div id="s-stl" class="s-abs">Ln 2, Col 1</div>
+              <div id="s-ver" class="s-abs"><div id="s-ver1">Python 3.9.6</div><div id="s-ver2" style="opacity:0">Python 3.15.2</div></div>
+            </div>
+            <div id="s-old" class="s-abs s-hide">old stove, came with your Mac</div>
+            <div id="s-qp" class="s-abs s-hide">
+              <div id="s-qpt" class="s-abs">Select Interpreter</div>
+              <div class="s-qr" style="top:84px"><div id="s-qr1hl"></div><div class="n">Python 3.15.2</div><div class="pth">/usr/local/bin/python3</div></div>
+              <div class="s-qr" style="top:204px"><div class="n" style="color:#3e3b52">Python 3.9.6</div><div class="pth">/usr/bin/python3</div></div>
+            </div>
+          </div>
+
+          <!-- D: tutorials and versions -->
+          <div id="s-D" class="s-grp s-hide">
+            <div id="s-t1" class="s-tut s-ol"><div class="h">An online tutorial</div><div class="big">Python 3.7</div><div class="sm">written in 2019</div></div>
+            <div id="s-stamp" class="s-abs s-hide">older</div>
+            <div id="s-t2" class="s-tut s-ol s-hide"><div class="h">This course</div><div class="big">Python 3.15</div><div class="sm">always says which</div></div>
+            <div id="s-says" class="s-abs s-hide">Check the <b>version</b> before you copy a recipe.</div>
+          </div>
+        </div>
+
+        <!-- the kitchen -->
+        <div id="s-kit" class="s-abs s-ol">
+          <div id="s-kt" class="s-abs">Your kitchen</div>
+          <div id="s-ks" class="s-abs">for Ana, Ben and Chloe</div>
+          <div class="s-ph" id="s-phS" style="left:30px;top:520px;width:260px;height:340px"></div>
+          <div class="s-ph" id="s-phV" style="left:312px;top:556px;width:272px;height:304px"></div>
+          <div class="s-ph" id="s-phE" style="left:520px;top:440px;width:80px;height:110px"></div>
+          <svg id="s-window" class="s-abs" viewBox="0 0 300 200" style="left:157px;top:164px;width:300px;height:200px">
+            <rect x="3" y="3" width="294" height="194" rx="12" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="6" />
+            <path d="M150 3 V197 M3 100 H297" stroke="#0e0c1d" stroke-width="6" />
+            <circle cx="232" cy="52" r="22" fill="#ffc24b" stroke="#0e0c1d" stroke-width="4" />
+          </svg>
+          <div id="s-floor" class="s-abs"></div>
+
+          <svg id="s-stove" class="s-abs s-hide" viewBox="0 0 260 340">
+            <rect x="3" y="44" width="254" height="293" rx="12" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="3" y="3" width="254" height="52" rx="10" fill="#3e3b52" stroke="#0e0c1d" stroke-width="6" />
+            <ellipse cx="70" cy="29" rx="40" ry="12" fill="#15132b" />
+            <ellipse cx="190" cy="29" rx="40" ry="12" fill="#15132b" />
+            <g id="s-flame" opacity="0">
+              <path d="M44 28 Q50 6 58 26 Q64 0 72 26 Q80 4 86 28 Z" fill="#ffc24b" stroke="#b9741a" stroke-width="3" />
+              <path d="M164 28 Q170 6 178 26 Q184 0 192 26 Q200 4 206 28 Z" fill="#ffc24b" stroke="#b9741a" stroke-width="3" />
+            </g>
+            <circle cx="50" cy="84" r="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <circle cx="96" cy="84" r="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <rect x="140" y="72" width="90" height="26" rx="6" fill="#15132b" />
+            <rect x="152" y="80" width="66" height="10" rx="5" fill="#7cf0b5" />
+            <rect x="30" y="122" width="200" height="180" rx="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <rect x="60" y="108" width="140" height="12" rx="6" fill="#0e0c1d" />
+            <path d="M70 230 Q130 190 190 230" fill="none" stroke="#c8c1b5" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="s-cab" class="s-abs s-ol s-hide"></div>
+          <svg id="s-lap" class="s-abs s-hide" viewBox="0 0 220 166">
+            <rect x="12" y="3" width="196" height="140" rx="10" fill="#15132b" stroke="#0e0c1d" stroke-width="6" />
+            <rect x="12" y="3" width="196" height="24" rx="8" fill="#211e40" />
+            <g id="s-lapGrey" fill="#6f6b80"><rect x="30" y="44" width="70" height="12" rx="6" /><rect x="106" y="44" width="80" height="12" rx="6" /><rect x="30" y="72" width="50" height="12" rx="6" /><rect x="86" y="72" width="96" height="12" rx="6" /><rect x="30" y="100" width="120" height="12" rx="6" /></g>
+            <g id="s-lapCol" opacity="0"><rect x="30" y="44" width="70" height="12" rx="6" fill="#c9c6ff" /><rect x="106" y="44" width="80" height="12" rx="6" fill="#a8e6c4" /><rect x="30" y="72" width="50" height="12" rx="6" fill="#ff6b8b" /><rect x="86" y="72" width="96" height="12" rx="6" fill="#a8e6c4" /><rect x="30" y="100" width="120" height="12" rx="6" fill="#c9c6ff" /></g>
+            <path d="M2 146 H218 L208 163 H12 Z" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" />
+          </svg>
+          <svg id="s-hold" class="s-abs s-hide" viewBox="0 0 80 130">
+            <path d="M14 126 L40 84 L66 126" fill="none" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="6" y="6" width="68" height="84" rx="6" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" />
+            <rect x="16" y="24" width="48" height="8" rx="4" fill="#3b37e6" />
+            <rect x="16" y="42" width="36" height="8" rx="4" fill="#1f7a5c" />
+            <rect x="16" y="60" width="44" height="8" rx="4" fill="#b8235a" />
+            <rect x="30" y="0" width="20" height="14" rx="3" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" />
+          </svg>
+          <div id="s-tagS" class="s-tag"><div id="s-tS1">Python</div><div id="s-tS2">Python 3.15</div><div id="s-tS3" class="bad">Python 3.9.6</div><div id="s-tS4" class="good">Python 3.15.2</div></div>
+          <div id="s-tagV" class="s-tag"><div id="s-tV1">VS Code</div></div>
+          <div id="s-tagE" class="s-tag"><div id="s-tE1">Python extension</div></div>
+          <div id="s-works" class="s-abs s-hide"><svg viewBox="0 0 72 72"><path d="M20 37 L31 48 L53 24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rVer" style="stroke:#7cf0b5" />
+          <path id="s-rOld" style="stroke:#ff6b8b;stroke-dasharray:16 12" />
+          <path id="s-rNew" style="stroke:#7cf0b5" />
+          <path id="s-rWhich" style="stroke:#3b37e6" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.395, 0.522, 0.743, 1.265, 1.416, 1.625, 1.741, 2.786, 3.32, 3.495, 4.412, 4.679, 4.899, 5.573, 5.724, 5.979, 6.188, 6.513, 6.687, 7.837, 8.406, 8.847, 9.195, 9.509, 9.764, 10.333, 10.623, 11.146, 11.494, 12.481, 13.061, 13.247, 13.827, 14.071, 14.222, 15.07, 15.43, 15.697, 16.196, 17.113, 17.415, 17.821, 18.123, 18.297, 18.761, 19.563, 19.899, 20.108, 20.259, 20.758, 21.513, 21.803, 22.07, 23.324, 23.533, 23.928, 24.148, 24.543, 24.775, 25.275, 26.424, 26.807, 27.121, 27.237, 28.154, 28.398, 28.827, 29.292, 29.675, 29.803, 30.72, 30.987, 31.138, 31.242, 31.66, 31.916, 32.101, 32.438, 33.007, 33.158, 33.262, 34.435, 34.865, 36.038, 36.409, 36.711, 37.547, 37.791, 38.302, 38.627, 38.87, 39.172, 39.904, 40.391, 40.763, 40.937, 41.123, 41.831, 42.202, 42.528, 42.783, 43.422, 43.7, 44.13, 45.082, 45.337, 45.465, 45.813, 46.15, 46.324, 46.719, 47.044, 47.404, 47.74, 48.089, 49.041, 49.296, 49.424, 49.575, 49.923, 50.364, 50.55, 50.852, 51.049, 51.246, 52.082, 52.454, 52.767, 53.0, 53.301, 53.65, 53.986, 54.311, 55.31, 55.739, 56.459, 56.831, 57.144, 57.551, 58.514, 58.77, 59.106, 59.536, 59.861, 60.047, 60.36, 60.674, 60.859, 62.067, 62.671, 63.588, 64.087, 64.412, 64.551, 64.76, 64.923, 65.77, 65.933, 66.397, 66.699, 66.873, 67.175, 67.663, 67.837];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        if (!p.style.strokeDasharray) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; }
+      };
+      // Terminal answer: 44px mono = 26.4px per char, text at card x 60. "3.15.2" is cols 7-12.
+      ring("s-rVer", 96 + 60 + 10 * 26.4 + 4, 96 + 250 + 40, 96, 48);
+      // Bottom bar version: #s-ver spans card x 690-1020, y 812-876.
+      ring("s-rOld", 96 + 870, 96 + 844, 175, 48);
+      ring("s-rNew", 96 + 870, 96 + 844, 175, 48);
+      // "Python 3.15" on the course card (card x 554 + 34, y 120, 84px Fraunces).
+      ring("s-rWhich", 96 + 554 + 34 + 186, 96 + 170 + 153, 232, 60);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const dashIn = (id, at, ox, oy) => { const p = document.getElementById(id); p.style.strokeDashoffset = 0; tl.fromTo(p, { opacity: 0, scale: 1.3, svgOrigin: ox + " " + oy }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, at); };
+      const swapTag = (from, to, at) => { out(from, at, 0.2); pop(to, at + 0.1, { from: 0.5 }); };
+      const lab = (row, at) => tl.fromTo(row + " .s-lab", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, at);
+      const sub = (row, n, at) => tl.fromTo(row + " .s-sub > span:nth-child(" + n + ")", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, at);
+      const tick = (row, at) => tl.fromTo(row + " .s-tick", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)", immediateRender: false }, at);
+
+      /* ---- 1. You need a kitchen ---- */
+      tl.fromTo(".s-ph", { opacity: 0.4 }, { opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.15 }, t(7) - 0.1);
+      tl.fromTo("#s-kt", { scale: 1 }, { scale: 1.06, duration: 0.25, ease: "power2.out", yoyo: true, repeat: 1, transformOrigin: "0% 50%" }, t(7));
+
+      /* ---- 2. The stove: Python 3.15 from python.org ---- */
+      lab("#s-r1", t(10) - 0.05);
+      tl.fromTo("#s-stove", { opacity: 0, y: -260 }, { opacity: 1, y: 0, duration: 0.7, ease: "bounce.out", immediateRender: false }, t(10) - 0.1);
+      out("#s-phS", t(10) + 0.3, 0.2);
+      sub("#s-r1", 1, t(13) - 0.05);
+      pop("#s-tS1", t(13), { from: 0.5 });
+      // "the part that cooks": the burners light for a moment
+      tl.fromTo("#s-flame", { opacity: 0, scale: 0.3, svgOrigin: "130 28" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, t(17));
+      out("#s-flame", t(20) + 0.3, 0.3);
+      sub("#s-r1", 2, t(22) - 0.05);
+      swapTag("#s-tS1", "#s-tS2", t(22));
+      sub("#s-r1", 3, t(26));
+      tick("#s-r1", t(29));
+
+      /* ---- 3. The counter: VS Code ---- */
+      lab("#s-r2", t(32) - 0.05);
+      tl.fromTo("#s-cab", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(32) - 0.1);
+      out("#s-phV", t(32) + 0.2, 0.2);
+      sub("#s-r2", 2, t(33));
+      sub("#s-r2", 1, t(38) - 0.05);
+      tl.fromTo("#s-lap", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)", immediateRender: false }, t(38) - 0.1);
+      pop("#s-tV1", t(38) + 0.1, { from: 0.5 });
+      tick("#s-r2", t(39) + 0.4);
+
+      /* ---- 4. Snap on the recipe holder: the Python extension ---- */
+      lab("#s-r3", t(44) - 0.05);
+      tl.fromTo("#s-hold", { opacity: 0, y: -120, rotation: -14 }, { opacity: 1, y: 36, rotation: 0, duration: 0.45, ease: "power3.in", immediateRender: false }, t(41) - 0.15);
+      tl.to("#s-hold", { y: 0, duration: 0.3, ease: "back.out(3)" }, t(41) + 0.3);
+      out("#s-phE", t(41) + 0.2, 0.2);
+      sub("#s-r3", 1, t(49) - 0.05);
+      pop("#s-tE1", t(49) + 0.05, { from: 0.5 });
+      tl.fromTo("#s-mini", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(50));
+      sub("#s-r3", 2, t(53) - 0.05);
+      // colours: the plain code takes on colour, in the editor and on the laptop
+      tl.to(".s-col", { opacity: 1, duration: 0.5, ease: "power2.out" }, t(55));
+      tl.to("#s-lapCol", { opacity: 1, duration: 0.5, ease: "power2.out" }, t(55));
+      pop("#s-colp", t(55) + 0.1, { from: 0.5 });
+      // catches typos: a squiggle under prnt
+      const sq = document.getElementById("s-sq"), SL = sq.getTotalLength();
+      sq.style.strokeDasharray = SL;
+      tl.fromTo(sq, { strokeDashoffset: SL }, { strokeDashoffset: 0, duration: 0.45, ease: "power2.out" }, t(59));
+      pop("#s-typo", t(60) - 0.1, { from: 0.5 });
+      tick("#s-r3", t(60) + 0.4);
+
+      /* ---- 5. Check the stove: the terminal ---- */
+      out("#s-A", t(61), 0.35);
+      tl.to("#s-dark", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, t(61));
+      tl.fromTo("#s-B", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, t(68) - 0.1);
+      tl.fromTo("#s-caret", { opacity: 1 }, { opacity: 0.15, duration: 0.4, ease: "steps(1)", yoyo: true, repeat: 9 }, t(68));
+      pop("#s-def", t(74) - 0.1, { from: 0.85, ease: "expo.out" });
+      // type the command, letter by letter: "python3" on its word, " --version" across "dash dash version"
+      const chars = document.getElementById("s-typed");
+      const txt = chars.textContent; chars.textContent = "";
+      const spans = [...txt].map(c => { const s = document.createElement("span"); s.textContent = c; chars.appendChild(s); return s; });
+      spans.slice(0, 7).forEach((s, i) => tl.set(s, { opacity: 1 }, t(83) + i * 0.07));
+      spans.slice(7, 10).forEach((s, i) => tl.set(s, { opacity: 1 }, t(84) + i * 0.12));
+      spans.slice(10).forEach((s, i) => tl.set(s, { opacity: 1 }, t(86) + i * 0.06));
+      tl.set("#s-caret", { opacity: 1 }, t(83));
+      spans.forEach((sp, i) => { const at = i < 7 ? t(83) + i * 0.07 : i < 10 ? t(84) + (i - 7) * 0.12 : t(86) + (i - 10) * 0.06; tl.set("#s-caret", { x: (i + 1) * 26.4 }, at); });
+      pop("#s-win", t(88) - 0.05, { from: 0.5 });
+      out("#s-def", t(88), 0.3);
+      tl.set("#s-caret", { opacity: 0 }, t(93) + 0.4);
+      tl.fromTo("#s-ans", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, t(93) + 0.4);
+      draw("s-rVer", t(98) - 0.05, 0.6);
+      // the stove lights and gets its tick
+      tl.fromTo("#s-flame", { opacity: 0, scale: 0.3, svgOrigin: "130 28" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(98));
+      tl.fromTo("#s-works", { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)", immediateRender: false }, t(103));
+
+      /* ---- 6. The bottom bar says 3.9: pick 3.15 ---- */
+      out(["#s-B", "#s-rVer"], t(105) - 0.2, 0.3);
+      tl.fromTo("#s-C", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, t(105));
+      tl.fromTo("#s-status", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(107) - 0.05);
+      dashIn("s-rOld", t(113), 966, 940);
+      swapTag("#s-tS2", "#s-tS3", t(113) + 0.1);
+      out("#s-flame", t(113) + 0.1, 0.3);
+      out("#s-works", t(113) + 0.1, 0.3);
+      pop("#s-old", t(119) - 0.05, { from: 0.5 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1000, y: 470 }, { opacity: 1, x: 958, y: 932, duration: 0.8, ease: "power3.inOut", immediateRender: false }, t(125) - 0.9);
+      tl.to("#s-cursor", { scale: 0.8, duration: 0.1, yoyo: true, repeat: 1, transformOrigin: "10% 10%" }, t(126));
+      out(["#s-old", "#s-rOld"], t(126) + 0.1, 0.25);
+      pop("#s-qp", t(126) + 0.1, { from: 0.85, ease: "expo.out" });
+      tl.to("#s-cursor", { x: 640, y: 330, duration: 0.5, ease: "power3.inOut" }, t(128) - 0.3);
+      show("#s-qr1hl", t(129) - 0.05, 0.2);
+      tl.to("#s-cursor", { scale: 0.8, duration: 0.1, yoyo: true, repeat: 1, transformOrigin: "10% 10%" }, t(129) + 0.15);
+      out("#s-qp", t(131) - 0.1, 0.25);
+      out("#s-ver1", t(130), 0.2);
+      tl.fromTo("#s-ver2", { opacity: 0, scale: 0.6, transformOrigin: "100% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(130) + 0.1);
+      draw("s-rNew", t(131), 0.5);
+      swapTag("#s-tS3", "#s-tS4", t(130) + 0.2);
+      tl.to("#s-flame", { opacity: 1, duration: 0.3 }, t(131));
+      tl.to("#s-works", { opacity: 1, duration: 0.3 }, t(131));
+      out("#s-cursor", t(132), 0.3);
+
+      /* ---- 7. Tutorials use older versions; this course says which ---- */
+      out(["#s-C", "#s-rNew"], t(134) - 0.15, 0.3);
+      tl.to("#s-dark", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, t(134) - 0.1);
+      tl.fromTo("#s-D", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, t(135) - 0.1);
+      tl.fromTo("#s-t1", { x: -40 }, { x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(135) - 0.1);
+      tl.fromTo("#s-stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(138) - 0.1);
+      tl.to("#s-t1", { opacity: 0.55, duration: 0.4 }, t(139));
+      tl.fromTo("#s-t2", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(141) - 0.1);
+      draw("s-rWhich", t(145) - 0.05, 0.55);
+      tl.fromTo("#s-says", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(142));
+      tl.to(["#s-stove", "#s-cab", "#s-lap", "#s-hold", ".s-tag", "#s-works"], { opacity: 0.35, duration: 0.4 }, t(134));
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

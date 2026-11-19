@@ -1,0 +1,64 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 150px; font: 700 140px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-under { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 110px; top: 420px; width: 1220px; display: flex; flex-direction: column; align-items: flex-start; gap: 30px; }
+    #t-sub span { opacity: 0; padding: 8px 28px; background: #fff; border-radius: 999px; font-size: 44px; line-height: 1.35; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-sub span.ok { background: #ddefe6; color: #1f7a5c; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-stove { left: 1420px; top: 400px; width: 340px; height: 445px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.1" data-track-index="1">
+      <div id="t-head" class="t-abs"><span>Python</span> <span class="ac">cooks.</span></div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M640 340 Q820 362 1010 330" /></svg>
+      <div id="t-sub" class="t-abs"><span>VS Code is where you write</span><span class="ok">The terminal tells you which stove you have</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 3: Run your first file</div>
+      <svg id="t-stove" class="t-abs" viewBox="0 0 260 340" data-layout-allow-overflow>
+        <rect x="3" y="44" width="254" height="293" rx="12" fill="#fff" stroke="#0e0c1d" stroke-width="6" />
+        <rect x="3" y="3" width="254" height="52" rx="10" fill="#3e3b52" stroke="#0e0c1d" stroke-width="6" />
+        <ellipse cx="70" cy="29" rx="40" ry="12" fill="#15132b" />
+        <ellipse cx="190" cy="29" rx="40" ry="12" fill="#15132b" />
+        <path d="M44 28 Q50 6 58 26 Q64 0 72 26 Q80 4 86 28 Z" fill="#ffc24b" stroke="#b9741a" stroke-width="3" />
+        <path d="M164 28 Q170 6 178 26 Q184 0 192 26 Q200 4 206 28 Z" fill="#ffc24b" stroke="#b9741a" stroke-width="3" />
+        <circle cx="50" cy="84" r="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+        <circle cx="96" cy="84" r="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+        <rect x="140" y="72" width="90" height="26" rx="6" fill="#15132b" />
+        <rect x="152" y="80" width="66" height="10" rx="5" fill="#7cf0b5" />
+        <rect x="30" y="122" width="200" height="180" rx="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+        <rect x="60" y="108" width="140" height="12" rx="6" fill="#0e0c1d" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 62.5;
+      const g = { python: 62.667, cooks: 63.271, vs: 64.188, term: 66.37, end: 68.7 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-stove", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.05);
+      tl.fromTo(words[0], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, g.python - S - 0.05);
+      tl.fromTo(words[1], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, g.cooks - S - 0.05);
+      const u = document.getElementById("t-under"), L = u.getTotalLength();
+      u.style.strokeDasharray = L;
+      tl.fromTo(u, { strokeDashoffset: L, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.6, ease: "power2.out", immediateRender: false }, g.cooks - S + 0.35);
+      const chips = gsap.utils.toArray("#t-sub span");
+      [g.vs, g.term].forEach((at, i) => tl.fromTo(chips[i], { opacity: 0, scale: 0.5, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at - S - 0.05));
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

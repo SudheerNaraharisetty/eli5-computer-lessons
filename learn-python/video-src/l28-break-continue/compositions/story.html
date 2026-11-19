@@ -1,0 +1,373 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* header cards */
+    .hdr { left: 1124px; top: 96px; width: 710px; height: 120px; background: #fff; border-radius: 22px; }
+    .hdr .av { position: absolute; left: 26px; top: 26px; width: 68px; height: 68px; border-radius: 50%; color: #fff; font-size: 38px; line-height: 68px; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    .hdr .tx { position: absolute; left: 116px; top: 0; font: 700 46px/120px "Fraunces", serif; white-space: nowrap; letter-spacing: -0.01em; }
+    #h-tray { background: #fbebd2; }
+    #h-tray .av { background: #b9741a; }
+    #h-ben .av { background: #1f7a5c; }
+    #alarm { left: 1724px; top: 116px; width: 80px; height: 80px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #alarm i { position: absolute; left: 28px; top: 28px; width: 24px; height: 24px; border-radius: 50%; background: #b8235a; }
+    #alarm b { position: absolute; left: 14px; top: 14px; width: 52px; height: 52px; border-radius: 50%; border: 4px solid #ece7df; }
+
+    /* the belt with the check light */
+    #belt { left: 1124px; top: 262px; width: 710px; height: 250px; background: #fff; border-radius: 22px; }
+    #rail { left: 1144px; top: 440px; width: 670px; height: 22px; border-radius: 11px; background: #3e3b52; }
+    #shade { left: 1654px; top: 266px; width: 92px; height: 30px; border-radius: 46px 46px 8px 8px; background: #0e0c1d; }
+    #cone { left: 1630px; top: 294px; width: 140px; height: 150px; overflow: visible; }
+    #cone polygon { fill: #ffc24b; }
+    .ck { width: 84px; height: 84px; border-radius: 50%; background: #e3a548; box-shadow: 0 0 0 5px #b9741a; }
+    .ck.burnt { background: #5a3a22; box-shadow: 0 0 0 5px #0e0c1d; }
+    .ck.smoke { background: #3e2a1c; box-shadow: 0 0 0 5px #0e0c1d; }
+    .ch { position: absolute; width: 13px; height: 13px; border-radius: 50%; background: #3e3b52; }
+    .c1 { left: 20px; top: 24px; } .c2 { left: 48px; top: 32px; } .c3 { left: 30px; top: 54px; }
+    .puff { position: absolute; border-radius: 50%; background: #ece7df; box-shadow: 0 0 0 4px #6f6b80; opacity: 0; }
+    .p0 { left: 6px; top: -40px; width: 34px; height: 34px; }
+    .p1 { left: 34px; top: -70px; width: 42px; height: 42px; }
+    .p2 { left: 10px; top: -104px; width: 30px; height: 30px; }
+    .okt { position: absolute; left: 56px; top: -14px; width: 40px; height: 40px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #fff; opacity: 0; }
+    .okt svg { width: 40px; height: 40px; }
+    #stopst { left: 1170px; top: 300px; height: 96px; line-height: 96px; padding: 0 34px; border-radius: 16px; background: #b8235a; color: #fff; font-size: 56px; letter-spacing: 0.04em; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #never { left: 1476px; top: 462px; width: 240px; text-align: center; font-size: 28px; line-height: 40px; color: #6f6b80; }
+    #bell { left: 1210px; top: 288px; width: 150px; height: 150px; }
+    #pbell { left: 1380px; top: 330px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* plate and skip bin */
+    .tray2 { top: 556px; width: 340px; height: 200px; background: #fff; border-radius: 22px; }
+    .tray2 .lb { position: absolute; left: 26px; top: 18px; font-size: 30px; color: #3e3b52; }
+    #plate { left: 1124px; }
+    #bin { left: 1494px; background: #fbebd2; }
+    .pcnt { position: absolute; left: 230px; top: 60px; width: 90px; text-align: center; font: 700 110px/130px "JetBrains Mono", monospace; color: #1f7a5c; opacity: 0; }
+
+    .pill { height: 64px; line-height: 64px; padding: 0 28px; border-radius: 999px; font-size: 32px; white-space: nowrap; }
+    .pill b { font: 700 32px/64px "JetBrains Mono", monospace; }
+    #pcont { left: 1124px; top: 800px; background: #fbebd2; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pcont b { color: #b9741a; }
+    #pbrk { left: 1124px; top: 892px; background: #fbe0ea; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pbrk b { color: #b8235a; }
+    #pelse { left: 1124px; top: 800px; background: #ddefe6; color: #0e0c1d; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pelse b { color: #1f7a5c; }
+
+    /* Ben's week: the day counter */
+    #dc { left: 1124px; top: 262px; width: 710px; height: 250px; background: #fff; border-radius: 22px; }
+    #dc .lb { position: absolute; left: 40px; top: 90px; font: 700 64px/80px "JetBrains Mono", monospace; color: #3e3b52; }
+    .dnum { position: absolute; left: 250px; top: 40px; width: 180px; text-align: center; font: 700 140px/170px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+    #spin { left: 1620px; top: 307px; width: 160px; height: 160px; }
+    #pnever { left: 1124px; top: 572px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pfix { left: 1124px; top: 664px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pfix b { color: #1f7a5c; }
+    #pend { left: 1124px; top: 756px; background: #1f7a5c; color: #fff; }
+
+    /* code panel: 38px mono = 22.8px per char, text at page x 136, rows 60px from panel y 88 */
+    #s-code { left: 96px; top: 96px; width: 1000px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1000px; height: 64px; background: #211e40; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: relative; margin-left: 14px; width: 400px; height: 40px; }
+    #s-bar > span > b { position: absolute; left: 0; top: 0; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; white-space: nowrap; }
+    .s-ln { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .w { color: #ffc24b; }
+    .s-ln .x { color: #ff6b8b; }
+    #s-div { position: absolute; left: 40px; top: 700px; width: 920px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 708px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 34px/48px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    #newln { position: absolute; left: 24px; top: 268px; width: 380px; height: 56px; border-radius: 12px; background: #1f4a3c; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-marks path.hd { stroke: none; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- stage 1 to 3: the tray -->
+        <div id="h-tray" class="s-abs hdr s-ol"><div class="av">Y</div><div class="tx">Check the tray</div></div>
+        <div id="alarm" class="s-abs"><b></b><i></i></div>
+        <div id="belt" class="s-abs s-ol"></div>
+        <div id="rail" class="s-abs"></div>
+        <svg id="cone" class="s-abs" viewBox="0 0 140 150"><polygon id="conep" points="46,0 94,0 140,150 0,150" opacity="0.3" /></svg>
+        <div id="shade" class="s-abs"></div>
+        <div id="plate" class="s-abs tray2 s-ol"><div class="lb">on the plate</div><div id="pc0" class="pcnt">0</div><div id="pc1" class="pcnt">1</div><div id="pc2" class="pcnt">2</div><div id="pc3" class="pcnt">3</div></div>
+        <div id="bin" class="s-abs tray2 s-ol"><div class="lb">skipped</div></div>
+        <div id="k0" class="s-abs ck ok" style="left:1658px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="k0t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div id="k1" class="s-abs ck ok" style="left:1554px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="k1t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div id="k2" class="s-abs ck burnt" style="left:1450px; top:348px"></div><div id="k3" class="s-abs ck ok" style="left:1346px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="k3t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div id="k4" class="s-abs ck smoke" style="left:1242px; top:348px"><i id="k4p0" class="puff p0"></i><i id="k4p1" class="puff p1"></i><i id="k4p2" class="puff p2"></i></div><div id="k5" class="s-abs ck ok" style="left:1138px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="k5t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+        <div id="n0" class="s-abs ck ok" style="left:1658px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="n0t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div id="n1" class="s-abs ck burnt" style="left:1554px; top:348px"></div><div id="n2" class="s-abs ck ok" style="left:1450px; top:348px"><i class="ch c1"></i><i class="ch c2"></i><i class="ch c3"></i><span id="n2t" class="okt"><svg viewBox="0 0 40 40"><path d="M11 21 l6 6 l12 -14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+        <div id="stopst" class="s-abs s-hide">STOP</div>
+        <div id="never" class="s-abs s-hide">never checked</div>
+        <svg id="bell" class="s-abs s-hide" viewBox="0 0 150 150"><path d="M75 14 C 40 14 34 50 34 78 L 22 108 L 128 108 L 116 78 C 116 50 110 14 75 14 Z" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round"/><circle cx="75" cy="122" r="13" fill="#0e0c1d"/><circle cx="75" cy="12" r="8" fill="#0e0c1d"/></svg>
+        <div id="pbell" class="s-abs pill s-hide">No smoke</div>
+        <div id="pcont" class="s-abs pill s-hide"><b>continue</b>: skip this round</div>
+        <div id="pbrk" class="s-abs pill s-hide"><b>break</b>: leave the loop now</div>
+        <div id="pelse" class="s-abs pill s-hide"><b>else</b>: only if there was no break</div>
+
+        <!-- stage 4: Ben's week -->
+        <div id="h-ben" class="s-abs hdr s-ol s-hide"><div class="av">B</div><div class="tx">Ben: day 3 is rest</div></div>
+        <div id="dc" class="s-abs s-ol s-hide"><div class="lb">day =</div><div id="dd1" class="dnum">1</div><div id="dd2" class="dnum">2</div><div id="dd3" class="dnum">3</div><div id="dd4" class="dnum">4</div><div id="dd5" class="dnum">5</div><div id="dd6" class="dnum">6</div><div id="dd7" class="dnum">7</div><div id="dd8" class="dnum">8</div></div>
+        <svg id="spin" class="s-abs s-hide" viewBox="0 0 160 160"><path d="M80 20 A 60 60 0 1 1 22 66" fill="none" stroke="#b8235a" stroke-width="12" stroke-linecap="round"/><path d="M6 52 L 40 50 L 20 84 Z" fill="#b8235a"/></svg>
+        <div id="pnever" class="s-abs pill s-hide">day stays 3: it never ends</div>
+        <div id="pfix" class="s-abs pill s-hide">change <b>day</b> before <b>continue</b></div>
+        <div id="pend" class="s-abs pill s-hide">the loop ends</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span><b id="ttray">tray.py</b><b id="tben" style="opacity:0">ben_week.py</b></span></div>
+          <div id="newln"></div>
+          <div class="s-ln" id="L0" style="top:88px">good = <span class="n">0</span></div>
+          <div class="s-ln" id="L1" style="top:148px"><span class="k">for</span> cookie <span class="k">in</span> tray:</div>
+          <div class="s-ln" id="L2" style="top:208px">    <span class="k">if</span> cookie == <span class="s">"burnt"</span>:</div>
+          <div class="s-ln" id="L3" style="top:268px">        <span class="w">continue</span></div>
+          <div class="s-ln" id="L4" style="top:328px">    <span class="k">if</span> cookie == <span class="s">"SMOKE"</span>:</div>
+          <div class="s-ln" id="L5" style="top:388px">        <span class="x">break</span></div>
+          <div class="s-ln" id="L6" style="top:448px">    good += <span class="n">1</span></div>
+          <div class="s-ln" id="L7" style="top:508px"><span class="k">else</span>:</div>
+          <div class="s-ln" id="L8" style="top:568px">    <span class="k">print</span>(<span class="s">"No smoke"</span>)</div>
+          <div class="s-ln" id="L9" style="top:508px"><span class="k">print</span>(good)</div>
+          <div class="s-ln" id="B0" style="top:88px">day = <span class="n">1</span></div>
+          <div class="s-ln" id="B1" style="top:148px"><span class="k">while</span> day &lt;= <span class="n">7</span>:</div>
+          <div class="s-ln" id="B2" style="top:208px">    <span class="k">if</span> day == <span class="n">3</span>:</div>
+          <div class="s-ln" id="B3" style="top:268px">        <span class="w">continue</span></div>
+          <div class="s-ln" id="B4" style="top:328px">    day += <span class="n">1</span></div>
+          <div class="s-ln" id="Bn" style="top:268px">        day += <span class="n">1</span></div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="O1" style="top:752px">3</div>
+          <div class="s-out" id="O2" style="top:752px">No smoke</div>
+          <div class="s-out" id="O3" style="top:800px">2</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-burnt" style="stroke:#ffc24b" />
+          <path id="r-cont" style="stroke:#ffc24b" />
+          <path id="r-smoke" style="stroke:#ff6b8b" />
+          <path id="r-brk" style="stroke:#ff6b8b" />
+          <path id="r-plate" style="stroke:#1f7a5c" />
+          <path id="r-else" style="stroke:#7cf0b5" />
+          <path id="r-day" style="stroke:#ffc24b" />
+          <path id="r-d3" style="stroke:#b8235a" />
+          <path id="a-skip" style="stroke:#b9741a" d="M1752 430 C 1806 470, 1792 548, 1686 606" />
+          <path id="a-cont" style="stroke:#ffc24b" d="M520 394 C 800 394, 800 274, 600 274" />
+          <path id="a-brk" style="stroke:#ff6b8b" d="M450 514 C 660 514, 660 634, 412 634" />
+          <path id="a-back" style="stroke:#ff6b8b" d="M520 394 C 660 394, 660 274, 498 274" />
+          <path id="h-skip" class="hd" d="M1686 606 L1715.4 603.0 L1699.6 579.8 Z" style="fill:#b9741a" /><path id="h-cont" class="hd" d="M600 274 L624.8 290.0 L627.0 262.1 Z" style="fill:#ffc24b" /><path id="h-brk" class="hd" d="M412 634 L438.0 648.0 L438.0 620.0 Z" style="fill:#ff6b8b" /><path id="h-back" class="hd" d="M498 274 L522.1 291.0 L525.5 263.2 Z" style="fill:#ff6b8b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.267, 0.685, 0.894, 1.138, 1.231, 1.358, 1.95, 2.136, 2.415, 2.531, 3.1, 3.355, 3.669, 3.785, 3.878, 4.586, 5.062, 5.596, 6.385, 6.769, 7.082, 7.326, 7.628, 7.767, 8.092, 8.766, 8.986, 9.567, 9.845, 10.112, 11.285, 11.505, 11.877, 12.051, 12.341, 12.434, 12.655, 13.142, 13.363, 13.514, 13.99, 14.408, 15.128, 15.453, 15.604, 15.952, 16.288, 16.579, 17.217, 17.705, 18.622, 18.97, 19.586, 19.841, 20.004, 20.816, 21.002, 21.269, 21.385, 21.606, 21.745, 22.558, 22.72, 23.115, 23.452, 23.591, 23.881, 24.206, 25.228, 25.53, 25.681, 25.82, 26.691, 26.865, 26.97, 27.306, 27.457, 27.852, 29.129, 29.326, 29.466, 29.617, 30.348, 31.381, 32.206, 32.647, 33.378, 33.796, 34.075, 34.551, 35.038, 35.178, 36.025, 36.176, 36.455, 36.617, 36.838, 37.0, 37.151, 37.999, 38.185, 38.486, 38.719, 38.893, 39.032, 39.345, 39.624, 40.019, 40.1, 41.087, 41.261, 41.54, 41.772, 42.016, 42.48, 42.817, 42.945, 43.653, 43.966, 45.0, 45.185, 45.267, 45.626, 46.242, 46.787, 47.124, 47.531, 47.786, 47.925, 48.053, 48.993, 49.202, 49.33, 49.574, 49.736, 50.259, 50.549, 50.874, 51.245, 51.652, 51.954, 52.325, 52.499, 53.242, 53.463, 53.591, 53.974, 54.345, 55.263, 55.692, 55.82, 56.238, 56.377, 57.445, 58.061, 58.513, 58.769, 59.465, 59.918, 60.336, 60.475];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 22.8 px per char. Row r centre y = 214 + 60 r.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        document.getElementById(id).setAttribute("d", d);
+      };
+      const col = (c) => 136 + c * 22.8;
+      const row = (r) => 214 + 60 * r;
+      ring("r-burnt", (col(17) + col(24)) / 2, row(2), 100, 38);
+      ring("r-cont", (col(8) + col(16)) / 2, row(3), 112, 38);
+      ring("r-smoke", (col(17) + col(24)) / 2, row(4), 100, 38);
+      ring("r-brk", (col(8) + col(13)) / 2, row(5), 80, 38);
+      ring("r-plate", 1418, 681, 66, 72);
+      ring("r-else", (col(0) + col(5)) / 2, row(7), 80, 38);
+      ring("r-day", (col(4) + col(12)) / 2, row(4), 118, 38);
+      ring("r-d3", 1464, 387, 92, 100);
+      ["r-burnt", "r-cont", "r-smoke", "r-brk", "r-plate", "r-else", "r-day", "r-d3", "a-skip", "a-cont", "a-brk", "a-back"].forEach((id) => {
+        const p = document.getElementById(id);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      });
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.1, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const tick = (prev, next, at) => {
+        if (prev) tl.set(prev, { opacity: 0 }, at);
+        tl.set(next, { opacity: 1 }, at);
+        tl.fromTo(next, { scale: 1.25 }, { scale: 1, duration: 0.12, ease: "power2.out", immediateRender: false }, at);
+      };
+      const flash = (at, color) => {
+        tl.fromTo("#conep", { opacity: 0.3 }, { opacity: 0.85, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      };
+
+      // Cookie moves: x is the GSAP offset from each cookie's start, kept here in step with the timeline.
+      const SLOT = [1176, 1232, 1288];   // page x of the mini cookies on the plate
+      const pos = {};
+      const xAt = (id) => pos[id] || 0;
+      const slide = (ids, at, d) => ids.forEach((id) => {
+        const from = xAt(id), to = from + 104; pos[id] = to;
+        tl.fromTo(`#${id}`, { x: from }, { x: to, duration: d || 0.3, ease: "power2.inOut", immediateRender: false }, at);
+      });
+      const toPlate = (id, i, slot, at) => {
+        const dx = SLOT[slot] - (LAMP - 104 * i);
+        tl.fromTo(`#${id}`, { x: xAt(id), y: 0, scale: 1 }, { x: dx, y: 300, scale: 0.55, duration: 0.35, ease: "power2.in", immediateRender: false }, at);
+        tl.to(`#${id}t`, { opacity: 0, duration: 0.1 }, at + 0.05);
+      };
+      const toBin = (id, i, at) => {
+        const dx = 1600 - (LAMP - 104 * i);
+        tl.fromTo(`#${id}`, { x: xAt(id), y: 0, rotation: 0, scale: 1 }, { x: dx, y: 300, rotation: 200, scale: 0.7, duration: 0.5, ease: "power2.inOut", immediateRender: false }, at);
+      };
+      const LAMP = 1700;
+      const judgeOk = (id, i, slot, at, prev, next, rest) => {
+        flash(at);
+        pop(`#${id}t`, at, { from: 0.3, d: 0.2 });
+        toPlate(id, i, slot, at + 0.15);
+        tick(prev, next, at + 0.45);
+        if (rest.length) slide(rest, at + 0.15);
+      };
+
+      /* ---- 1. Your cookies are out of the oven. Check the tray one at a time ---- */
+      tl.set("#pc0", { opacity: 1 }, 0);
+      for (let i = 0; i < 6; i++) tl.fromTo(`#k${i}`, { opacity: 0, x: -360 }, { opacity: 1, x: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, t(3) + (5 - i) * 0.06);
+      bump("#h-tray", t(10));
+      flash(t(11));
+
+      /* ---- 2. Good. Good. Burnt? Skip it. In Python, that is continue ---- */
+      judgeOk("k0", 0, 0, t(16), "#pc0", "#pc1", ["k1", "k2", "k3", "k4", "k5"]);
+      judgeOk("k1", 1, 1, t(17), "#pc1", "#pc2", ["k2", "k3", "k4", "k5"]);
+      flash(t(18));
+      bump("#k2", t(18));
+      draw("a-skip", t(19), 0.4);
+      tl.set("#h-skip", { opacity: 1 }, t(19) + 0.35);
+      toBin("k2", 2, t(19));
+      slide(["k3", "k4", "k5"], t(19) + 0.5);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(26) - 0.2);
+      type("#L0", t(26) + 0.2, 8, 0.25);
+      type("#L1", t(27), 19, 0.4);
+      type("#L2", t(28), 25, 0.45);
+      type("#L3", t(30), 16, 0.3);
+      pop("#pcont", t(30), { from: 0.6 });
+      out(["#a-skip", "#h-skip"], t(31), 0.2);
+      draw("a-cont", t(32), 0.5);
+      tl.set("#h-cont", { opacity: 1 }, t(32) + 0.45);
+      judgeOk("k3", 3, 2, t(41), "#pc2", "#pc3", ["k4", "k5"]);
+
+      /* ---- 3. Smoke alarm. Stop everything. That is break ---- */
+      out(["#a-cont", "#h-cont"], t(43), 0.2);
+      for (let k = 0; k < 3; k++) pop(`#k4p${k}`, t(45) + k * 0.12, { from: 0.3, d: 0.35 });
+      tl.to("#alarm", { backgroundColor: "#b8235a", duration: 0.1 }, t(46));
+      tl.fromTo("#alarm", { rotation: -12 }, { rotation: 12, duration: 0.09, ease: "none", yoyo: true, repeat: 9, immediateRender: false }, t(46));
+      tl.set("#alarm", { rotation: 0 }, t(46) + 0.95);
+      tl.to("#conep", { fill: "#b8235a", duration: 0.2 }, t(46));
+      tl.fromTo("#stopst", { opacity: 0, scale: 1.6, rotation: -8 }, { opacity: 1, scale: 1, rotation: -4, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(49));
+      type("#L4", t(53), 25, 0.4);
+      type("#L5", t(55), 13, 0.25);
+      pop("#pbrk", t(55), { from: 0.6 });
+      type("#L9", t(57), 11, 0.25);
+      draw("a-brk", t(57), 0.5);
+      tl.set("#h-brk", { opacity: 1 }, t(57) + 0.45);
+      tl.to("#k5", { opacity: 0.35, duration: 0.3 }, t(63));
+      show("#never", t(67), 0.3);
+
+      /* ---- 4. Here is the code: burnt continue, smoke break, count it. 3 ---- */
+      out(["#a-brk", "#h-brk"], t(69), 0.2);
+      draw("r-burnt", t(77), 0.35);
+      draw("r-cont", t(78), 0.35);
+      out(["#r-burnt", "#r-cont"], t(79) - 0.1, 0.2);
+      draw("r-smoke", t(82), 0.35);
+      draw("r-brk", t(83), 0.35);
+      out(["#r-smoke", "#r-brk"], t(84) - 0.1, 0.2);
+      type("#L6", t(85), 13, 0.3);
+      draw("r-plate", t(86), 0.4);
+      show("#O1", t(87), 0.2);
+      bump("#pc3", t(87));
+      out("#r-plate", t(92), 0.2);
+
+      /* ---- 5. A loop can have an else. It runs only without a break. A clean tray rings the bell ---- */
+      const B5 = t(99);
+      out(["#O1", "#k4", "#k5", "#never", "#stopst", "#k0", "#k1", "#k2", "#k3", "#pcont", "#pbrk"], t(93), 0.3);
+      tl.to("#alarm", { backgroundColor: "#ffffff", duration: 0.3 }, t(93));
+      tl.to("#conep", { fill: "#ffc24b", duration: 0.3 }, t(93));
+      tl.set("#pc3", { opacity: 0 }, t(93) + 0.3);
+      tl.set("#pc0", { opacity: 1 }, t(93) + 0.3);
+      tl.fromTo("#L9", { y: 0 }, { y: 120, duration: 0.35, ease: "power2.inOut", immediateRender: false }, B5 - 0.2);
+      type("#L7", B5 + 0.15, 5, 0.15);
+      type("#L8", B5 + 0.35, 21, 0.35);
+      ["n0", "n1", "n2"].forEach((id, i) => tl.fromTo(`#${id}`, { opacity: 0, x: -420 }, { opacity: 1, x: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, t(100) - 0.1 + i * 0.05));
+      const c0 = t(101) + 0.3;
+      judgeOk("n0", 0, 0, c0, "#pc0", "#pc1", ["n1", "n2"]);
+      flash(c0 + 0.75);
+      toBin("n1", 1, c0 + 0.8);
+      slide(["n2"], c0 + 1.2);
+      judgeOk("n2", 2, 1, c0 + 1.6, "#pc1", "#pc2", []);
+      draw("r-else", t(107), 0.35);
+      pop("#pelse", t(107), { from: 0.6 });
+      pop("#bell", t(110), { from: 0.4 });
+      tl.fromTo("#bell", { rotation: -16 }, { rotation: 16, duration: 0.12, ease: "sine.inOut", yoyo: true, repeat: 7, immediateRender: false }, t(115));
+      tl.set("#bell", { rotation: 0 }, t(115) + 0.97);
+      pop("#pbell", t(115), { from: 0.6 });
+      show("#O2", t(115), 0.15);
+      show("#O3", t(115) + 0.2, 0.15);
+
+      /* ---- 6. One trap: continue in a while loop. day stays 3, the loop never ends ---- */
+      const B6 = t(118) - 0.4;
+      out(["#h-tray", "#alarm", "#belt", "#rail", "#cone", "#shade", "#plate", "#bin", "#n0", "#n1", "#n2", "#bell", "#pbell", "#pelse", "#r-else",
+           "#L0", "#L1", "#L2", "#L3", "#L4", "#L5", "#L6", "#L7", "#L8", "#L9", "#O2", "#O3", "#ttray"], B6, 0.3);
+      show("#tben", B6 + 0.3, 0.2);
+      pop("#h-ben", t(118), { from: 0.8 });
+      pop("#dc", t(119), { from: 0.7 });
+      type("#B0", t(118), 7, 0.2);
+      tick(null, "#dd1", t(118) + 0.3);
+      type("#B1", t(122), 15, 0.3);
+      type("#B2", t(123), 16, 0.3);
+      type("#B3", t(124), 16, 0.3);
+      type("#B4", t(124) + 0.35, 12, 0.25);
+      tick("#dd1", "#dd2", t(125));
+      tick("#dd2", "#dd3", t(127));
+      draw("a-back", t(129), 0.45);
+      tl.set("#h-back", { opacity: 1 }, t(129) + 0.4);
+      pop("#spin", t(130), { from: 0.5 });
+      tl.fromTo("#spin", { rotation: 0 }, { rotation: 360 * 9, duration: t(149) - t(130), ease: "none", immediateRender: false }, t(130));
+      draw("r-day", t(135), 0.4);
+      draw("r-d3", t(143), 0.4);
+      pop("#pnever", t(147), { from: 0.6 });
+      out(["#r-day"], t(146), 0.2);
+
+      /* ---- 7. Change it before you continue ---- */
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 700 }, { opacity: 1, x: 310, y: 380, duration: 0.45, ease: "power3.out", immediateRender: false }, t(148));
+      tl.fromTo(["#B3", "#B4"], { y: 0 }, { y: 60, duration: 0.3, ease: "power2.inOut", immediateRender: false }, t(149));
+      out(["#a-back", "#h-back", "#r-d3"], t(149), 0.2);
+      show("#newln", t(149) + 0.25, 0.2);
+      type("#Bn", t(149) + 0.3, 16, 0.3);
+      pop("#pfix", t(150), { from: 0.6 });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(151));
+      out(["#spin", "#pnever"], t(149) + 0.5, 0.25);
+      [4, 5, 6, 7, 8].forEach((d, k) => tick(`#dd${d - 1}`, `#dd${d}`, t(149) + 0.6 + k * 0.22));
+      pop("#pend", t(151) + 0.1, { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 57.9 - 0.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Your cookies are out of the oven. You check the tray, one cookie at a time.
+
+Good. Good. Burnt? Skip it, and check the next one. In Python, that is continue. It skips the rest of this round, and the loop moves on.
+
+Then the smoke alarm goes off. Stop everything, right now. That is break. It leaves the loop at once. The cookies after it are never checked.
+
+Here is the code. If the cookie is burnt, continue. If it is smoke, break. Otherwise, count it. Three good cookies before the smoke.
+
+A loop can even have an else. It runs only when the loop ends without a break. A tray with no smoke rings the bell.
+
+One trap. In a while loop, continue jumps straight back to the top. If the line that changes day comes after it, day stays at three, and the loop never ends. Change it before you continue.
+
+Continue skips one round. Break leaves the loop.

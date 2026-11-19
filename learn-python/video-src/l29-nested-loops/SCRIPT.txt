@@ -1,0 +1,15 @@
+Tonight is a 3 course dinner. Ana, Chloe and Ben each get a starter, a main and a dessert.
+
+In Python, that is a loop inside a loop. For each guest. Then, pushed in, for each course. Serve it.
+
+The waiter walks to Ana's seat. Now the inner loop runs all the way through. Starter. Main. Dessert.
+
+Only then does the outer loop move on, to Chloe. 3 more plates. Then Ben.
+
+3 guests, times 3 courses. 9 servings. The inner loop runs completely, for every round of the outer one.
+
+Now a rule. Chloe's main has wheat in it. Gluten warning. Break.
+
+Her card flips to no more. But break only leaves the inner loop. The waiter moves on, and Ben still gets served.
+
+For each guest, every course. The inner loop finishes, before the outer loop moves on.

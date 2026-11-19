@@ -1,0 +1,377 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the dinner table, seen from above */
+    #tbl { left: 1360px; top: 130px; width: 300px; height: 300px; border-radius: 50%; background: #ece7df; }
+    #vase { left: 1490px; top: 260px; width: 40px; height: 40px; border-radius: 50%; background: #ddefe6; box-shadow: 0 0 0 4px #0e0c1d; }
+    .plate { width: 52px; height: 52px; border-radius: 50%; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .ps { background: #ddefe6; } .pm { background: #fbebd2; } .pd { background: #fbe0ea; }
+    .name { width: 150px; height: 60px; border-radius: 999px; background: #fff; text-align: center; font-size: 32px; line-height: 60px; white-space: nowrap; }
+    .name > span { position: absolute; left: 0; top: 0; width: 150px; height: 60px; }
+    #nmA { left: 1196px; top: 250px; color: #3b37e6; }
+    #nmC { left: 1674px; top: 250px; color: #b8235a; }
+    #nmB { left: 1435px; top: 452px; color: #1f7a5c; }
+    #nmC .f2 { font-size: 30px; opacity: 0; }
+    #waiter { left: 0; top: 0; width: 80px; height: 80px; }
+    #xP { left: 1594px; top: 254px; width: 52px; height: 52px; }
+    #warn { left: 1390px; top: 132px; width: 260px; height: 60px; border-radius: 999px; background: #b8235a; color: #fff; text-align: center; font-size: 30px; line-height: 60px; white-space: nowrap; }
+
+    /* the servings counter */
+    #cnt { left: 1630px; top: 30px; width: 194px; height: 80px; border-radius: 18px; background: #fff; }
+    #cnt > span { position: absolute; left: 14px; top: 0; font: 600 28px/80px "Manrope", sans-serif; color: #3e3b52; }
+    #cnt > b { position: absolute; left: 140px; top: 0; width: 44px; text-align: center; font: 700 50px/80px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+
+    /* the trace grid: one row per guest, one column per course */
+    .gh { top: 560px; width: 150px; height: 48px; text-align: center; font-size: 30px; line-height: 48px; color: #3e3b52; opacity: 0; }
+    .gn { left: 1196px; width: 150px; height: 64px; border-radius: 999px; background: #fff; text-align: center; font-size: 30px; line-height: 64px; opacity: 0; }
+    .cell { width: 140px; height: 74px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .bd { width: 56px; height: 56px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 700 32px/56px "JetBrains Mono", monospace; opacity: 0; }
+    .bk { width: 128px; height: 56px; border-radius: 12px; background: #b8235a; color: #fff; text-align: center; font: 700 30px/56px "JetBrains Mono", monospace; opacity: 0; }
+    .sk { width: 132px; height: 66px; border-radius: 12px; background: #fbf8f4; border: 4px dashed #b8235a; color: #b8235a; text-align: center; font-size: 28px; line-height: 58px; opacity: 0; }
+    #rowhl { left: 1186px; width: 646px; height: 86px; border-radius: 18px; background: #e6e3ff; opacity: 0; }
+    #mult { left: 1360px; top: 912px; width: 464px; height: 70px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; text-align: center; font-size: 36px; line-height: 70px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* code panel on the left: 34px mono = 20.4 px per char, text at page x 136, rows 56px from panel y 88 */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-hl { position: absolute; left: 16px; top: 88px; width: 1022px; height: 56px; background: #2e2a58; border-radius: 10px; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 34px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .bar { position: absolute; width: 8px; border-radius: 4px; opacity: 0; transform-origin: 50% 0; }
+    #barO { left: 18px; top: 260px; height: 216px; background: #4bd69b; }
+    #barI { left: 100px; top: 316px; height: 160px; background: #ffc24b; }
+    .s-note { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #n-inner { left: 40px; top: 800px; background: #fbebd2; color: #b9741a; }
+    #n-outer { left: 40px; top: 800px; background: #ddefe6; color: #1f7a5c; }
+    #n-break { left: 40px; top: 800px; background: #fbe0ea; color: #b8235a; }
+    #s-indent { position: absolute; left: 36px; top: 312px; width: 90px; height: 50px; border-radius: 8px; border: 4px dashed #ffc24b; opacity: 0; }
+    .wlbl { position: absolute; left: 40px; top: 610px; font: 800 28px/36px "Manrope", sans-serif; color: #c9c6ff; opacity: 0; }
+    .watch { position: absolute; top: 656px; height: 76px; border-radius: 14px; background: #2e2a58; box-shadow: 0 0 0 3px #6c68ff; opacity: 0; }
+    #wG { left: 40px; width: 400px; } #wK { left: 470px; width: 540px; }
+    .watch > span { position: absolute; left: 24px; top: 0; font: 500 34px/76px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .watch > b { position: absolute; top: 0; font: 500 34px/76px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    #wG > b { left: 187px; color: #7cf0b5; }
+    #wK > b { left: 208px; color: #ffc24b; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="50.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the table -->
+        <div id="tbl" class="s-abs s-ol"></div>
+        <div id="vase" class="s-abs"></div>
+        <div id="pA1" class="s-abs plate ps" style="left:1374px;top:199px"></div>
+        <div id="pA2" class="s-abs plate pm" style="left:1374px;top:254px"></div>
+        <div id="pA3" class="s-abs plate pd" style="left:1374px;top:309px"></div>
+        <div id="pC1" class="s-abs plate ps" style="left:1594px;top:199px"></div>
+        <div id="pC2" class="s-abs plate pm" style="left:1594px;top:254px"></div>
+        <div id="pC3" class="s-abs plate pd" style="left:1594px;top:309px"></div>
+        <div id="pB1" class="s-abs plate ps" style="left:1429px;top:354px"></div>
+        <div id="pB2" class="s-abs plate pm" style="left:1484px;top:354px"></div>
+        <div id="pB3" class="s-abs plate pd" style="left:1539px;top:354px"></div>
+        <svg id="xP" class="s-abs s-hide" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#fbe0ea" stroke="#b8235a" stroke-width="4" /><path d="M15 15 L37 37 M37 15 L15 37" stroke="#b8235a" stroke-width="6" stroke-linecap="round" /></svg>
+        <div id="nmA" class="s-abs name s-ol">Ana</div>
+        <div id="nmB" class="s-abs name s-ol">Ben</div>
+        <div id="nmC" class="s-abs name s-ol"><span class="f1">Chloe</span><span class="f2">no more</span></div>
+        <div id="warn" class="s-abs s-ol s-hide">gluten warning!</div>
+        <svg id="waiter" class="s-abs" viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" /><circle cx="40" cy="40" r="14" fill="#0e0c1d" /><circle cx="64" cy="20" r="14" fill="#fff" stroke="#0e0c1d" stroke-width="4" /></svg>
+
+        <!-- the counter -->
+        <div id="cnt" class="s-abs s-ol s-hide"><span>servings</span><b id="c0">0</b><b id="c1">1</b><b id="c2">2</b><b id="c3">3</b><b id="c4">4</b><b id="c5">5</b><b id="c6">6</b><b id="c7">7</b><b id="c8">8</b><b id="c9">9</b></div>
+
+        <!-- the trace grid -->
+        <div id="rowhl" class="s-abs"></div>
+        <div id="hS" class="s-abs gh" style="left:1360px">starter</div>
+        <div id="hM" class="s-abs gh" style="left:1515px">main</div>
+        <div id="hD" class="s-abs gh" style="left:1670px">dessert</div>
+        <div id="gA" class="s-abs gn s-ol" style="top:625px; color:#3b37e6">Ana</div>
+        <div id="gC" class="s-abs gn s-ol" style="top:713px; color:#b8235a">Chloe</div>
+        <div id="gB" class="s-abs gn s-ol" style="top:801px; color:#1f7a5c">Ben</div>
+        <div class="s-abs cell" id="k1" style="left:1365px;top:620px"></div>
+        <div class="s-abs cell" id="k2" style="left:1520px;top:620px"></div>
+        <div class="s-abs cell" id="k3" style="left:1675px;top:620px"></div>
+        <div class="s-abs cell" id="k4" style="left:1365px;top:708px"></div>
+        <div class="s-abs cell" id="k5" style="left:1520px;top:708px"></div>
+        <div class="s-abs cell" id="k6" style="left:1675px;top:708px"></div>
+        <div class="s-abs cell" id="k7" style="left:1365px;top:796px"></div>
+        <div class="s-abs cell" id="k8" style="left:1520px;top:796px"></div>
+        <div class="s-abs cell" id="k9" style="left:1675px;top:796px"></div>
+        <div class="s-abs bd" id="b1" style="left:1407px;top:629px">1</div>
+        <div class="s-abs bd" id="b2" style="left:1562px;top:629px">2</div>
+        <div class="s-abs bd" id="b3" style="left:1717px;top:629px">3</div>
+        <div class="s-abs bd" id="b4" style="left:1407px;top:717px">4</div>
+        <div class="s-abs bd" id="b5" style="left:1562px;top:717px">5</div>
+        <div class="s-abs bd" id="b6" style="left:1717px;top:717px">6</div>
+        <div class="s-abs bd" id="b7" style="left:1407px;top:805px">7</div>
+        <div class="s-abs bd" id="b8" style="left:1562px;top:805px">8</div>
+        <div class="s-abs bd" id="b9" style="left:1717px;top:805px">9</div>
+        <div class="s-abs bd" id="r4" style="left:1407px;top:717px">4</div>
+        <div class="s-abs bk" id="xM" style="left:1526px;top:717px">break</div>
+        <div class="s-abs sk" id="xD" style="left:1679px;top:712px">skipped</div>
+        <div class="s-abs bd" id="r5" style="left:1407px;top:805px">5</div>
+        <div class="s-abs bd" id="r6" style="left:1562px;top:805px">6</div>
+        <div class="s-abs bd" id="r7" style="left:1717px;top:805px">7</div>
+        <div id="mult" class="s-abs s-hide">3 × 3 = 9 servings</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>service.py</span></div>
+          <div id="s-hl"></div>
+          <div class="s-ln" id="L1" style="top:88px">guests = [<span class="s">"Ana"</span>, <span class="s">"Chloe"</span>, <span class="s">"Ben"</span>]</div>
+          <div class="s-ln" id="L2" style="top:144px">courses = [<span class="s">"starter"</span>, <span class="s">"main"</span>, <span class="s">"dessert"</span>]</div>
+          <div class="s-ln" id="L3" style="top:200px">servings = <span class="n">0</span></div>
+          <div class="s-ln" id="L4" style="top:256px"><span class="k">for</span> guest <span class="k">in</span> guests:</div>
+          <div class="s-ln" id="L5" style="top:312px">    <span class="k">for</span> course <span class="k">in</span> courses:</div>
+          <div class="s-ln" id="R1" style="top:368px">        <span class="k">if</span> guest == <span class="s">"Chloe"</span> <span class="k">and</span> course == <span class="s">"main"</span>:</div>
+          <div class="s-ln" id="R2" style="top:424px">            <span class="k">break</span></div>
+          <div class="s-ln" id="L6" style="top:368px">        <span class="k">print</span>(<span class="s">f"{guest}: {course}"</span>)</div>
+          <div class="s-ln" id="L7" style="top:424px">        servings += <span class="n">1</span></div>
+          <div class="bar" id="barO"></div>
+          <div class="bar" id="barI"></div>
+          <div id="s-indent"></div>
+          <div class="wlbl" id="wl">the loop variables, right now</div>
+          <div class="watch" id="wG"><span>guest = </span><b id="vA">"Ana"</b><b id="vC">"Chloe"</b><b id="vB">"Ben"</b></div>
+          <div class="watch" id="wK"><span>course = </span><b id="vS">"starter"</b><b id="vM">"main"</b><b id="vD">"dessert"</b></div>
+          <div class="s-note" id="n-inner">inner loop: all the way through</div>
+          <div class="s-note" id="n-outer">for every round of the outer loop</div>
+          <div class="s-note" id="n-break">break leaves only the inner loop</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-guest" style="stroke:#ffc24b" />
+          <path id="r-course" style="stroke:#ffc24b" />
+          <path id="r-ana" style="stroke:#3b37e6" />
+          <path id="r-rows" style="stroke:#1f7a5c" />
+          <path id="r-cols" style="stroke:#b9741a" />
+          <path id="r-chloe" style="stroke:#ff6b8b" />
+          <path id="r-main" style="stroke:#ff6b8b" />
+          <path id="r-break" style="stroke:#ff6b8b" />
+          <path id="r-ben" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.604, 0.755, 1.068, 1.393, 2.136, 2.519, 2.926, 3.135, 3.506, 3.82, 4.04, 4.122, 4.783, 4.992, 5.399, 5.666, 5.747, 6.769, 7.012, 7.605, 7.872, 8.022, 8.185, 8.591, 9.242, 9.346, 9.996, 10.24, 10.565, 11.169, 11.622, 11.993, 12.214, 12.446, 12.759, 13.456, 13.851, 14.64, 14.791, 15.163, 15.499, 15.65, 15.952, 16.742, 17.09, 17.345, 17.647, 17.961, 18.309, 18.599, 18.727, 18.959, 19.807, 20.515, 21.061, 22.349, 22.686, 22.976, 23.174, 23.324, 23.638, 23.893, 24.172, 24.532, 24.729, 25.844, 26.088, 26.297, 26.924, 27.237, 28.177, 28.468, 28.955, 29.513, 29.814, 30.627, 30.964, 32.044, 32.276, 32.531, 32.798, 33.112, 34.18, 34.389, 34.737, 35.155, 35.259, 35.433, 35.793, 36.246, 36.641, 36.827, 37.628, 38.162, 38.591, 38.893, 39.23, 39.369, 39.834, 40.31, 40.855, 41.831, 42.063, 42.434, 42.829, 43.05, 43.317, 44.06, 44.315, 44.733, 45.046, 45.464, 45.697, 46.022, 46.916, 47.067, 47.427, 47.728, 48.042, 48.274, 48.599, 48.901, 49.168, 49.981, 50.19, 50.515, 51.2, 51.618, 52.628, 52.837, 53.069, 53.348, 54.091, 54.462, 54.636, 55.043, 55.414, 55.867];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text at x 136, 20.4 px per char. Row r centre y = 212 + (r - 1) * 56.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-guest", 269, 380, 62, 32);      // guest, row 4, cols 4-8
+      ring("r-course", 361, 436, 72, 32);     // course, row 5, cols 8-13
+      ring("r-ana", 1271, 280, 96, 50);       // Ana's place card
+      ring("r-rows", 1271, 744, 96, 150);     // the three guest rows
+      ring("r-cols", 1592, 584, 250, 36);     // the three course headers
+      ring("r-chloe", 613, 492, 80, 32);      // "Chloe", row 6, cols 20-26
+      ring("r-main", 1053, 492, 70, 32);      // "main", row 6, cols 42-47
+      ring("r-break", 432, 548, 64, 32);      // break, row 7, cols 12-16
+      ring("r-ben", 1510, 482, 96, 50);       // Ben's place card
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.1, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at) => tl.to("#s-hl", { y: (row - 1) * 56, duration: 0.2, ease: "power2.inOut" }, at);
+      // One visible value out of a stacked group (counter digits, loop variables).
+      const pick = (group, key, at) => {
+        group.forEach(k => tl.set(`#${k}`, { opacity: k === key ? 1 : 0 }, at));
+        tl.fromTo(`#${key}`, { scale: 0.6 }, { scale: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, at);
+      };
+      const CNT = ["c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9"];
+      const GV = ["vA", "vC", "vB"], KV = ["vS", "vM", "vD"];
+      // The waiter, by its centre point.
+      const SPOT = { start: [1440, 70], A: [1281, 196], C: [1749, 196], B: [1650, 482], top: [1510, 76], right: [1790, 400] };
+      const walk = (path, at, d) => {
+        const step = d / path.length;
+        path.forEach((k, i) => tl.to("#waiter", { x: SPOT[k][0] - 40, y: SPOT[k][1] - 40, duration: step, ease: i === path.length - 1 ? "power2.out" : "none" }, at + i * step));
+      };
+      // One serving: course variable, plate on the table, numbered badge in the grid, the counter.
+      const serve = (seat, k, badge, n, at) => {
+        pick(KV, KV[k - 1], at);
+        hlTo(6, at);
+        pop(`#p${seat}${k}`, at + 0.05, { from: 0.2, d: 0.3 });
+        pop(`#${badge}`, at + 0.05, { from: 0.3, d: 0.3 });
+        hlTo(5, at + 0.28);
+        pick(CNT, CNT[n], at + 0.1);
+      };
+
+      tl.set("#waiter", { x: SPOT.start[0] - 40, y: SPOT.start[1] - 40 }, 0);
+      tl.set("#s-hl", { y: 168 }, 0);
+      tl.set("#c0", { opacity: 1 }, 0);
+
+      /* ---- 1. A 3 course dinner. Ana, Chloe and Ben. A starter, a main and a dessert ---- */
+      pop("#cnt", t(3), { from: 0.7 });
+      bump("#nmA", t(6)); pop("#gA", t(6), { from: 0.6 });
+      bump("#nmC", t(7)); pop("#gC", t(7), { from: 0.6 });
+      bump("#nmB", t(9)); pop("#gB", t(9), { from: 0.6 });
+      pop("#hS", t(13), { from: 0.6 }); show(["#k1", "#k4", "#k7"], t(13), 0.3);
+      pop("#hM", t(15), { from: 0.6 }); show(["#k2", "#k5", "#k8"], t(15), 0.3);
+      pop("#hD", t(18), { from: 0.6 }); show(["#k3", "#k6", "#k9"], t(18), 0.3);
+
+      /* ---- 2. A loop inside a loop. For each guest. Then, pushed in, for each course. Serve it ---- */
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(19));
+      type("#L1", t(20), 30, 0.45);
+      type("#L2", t(21) + 0.1, 40, 0.5);
+      type("#L3", t(24), 12, 0.3);
+      type("#L4", t(28), 20, 0.4);
+      draw("r-guest", t(29), 0.35);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 700 }, { opacity: 1, x: 130, y: 336, duration: 0.45, ease: "power3.out", immediateRender: false }, t(31));
+      show("#s-indent", t(32), 0.2);
+      type("#L5", t(34), 26, 0.4);
+      out(["#s-cursor", "#s-indent"], t(35), 0.2);
+      draw("r-course", t(36), 0.35);
+      type("#L6", t(37), 35, 0.45);
+      type("#L7", t(38), 21, 0.3);
+      out(["#r-guest", "#r-course"], t(38) + 0.4, 0.2);
+
+      /* ---- 3. The waiter walks to Ana's seat. The inner loop runs all the way through ---- */
+      show("#s-hl", t(39), 0.2);
+      walk(["A"], t(40), 0.9);
+      draw("r-ana", t(43), 0.4);
+      show(["#wl", "#wG", "#wK"], t(43), 0.3);
+      pick(GV, "vA", t(43) + 0.1);
+      hlTo(5, t(45));
+      show("#barI", t(47), 0.3);
+      pop("#n-inner", t(50), { from: 0.6 });
+      out("#r-ana", t(51), 0.2);
+      tl.to("#rowhl", { y: 625 - 5, duration: 0 }, 0);
+      show("#rowhl", t(53), 0.25);
+      serve("A", 1, "b1", 1, t(54));
+      serve("A", 2, "b2", 2, t(55));
+      serve("A", 3, "b3", 3, t(56));
+
+      /* ---- 4. Only then does the outer loop move on, to Chloe. 3 more plates. Then Ben ---- */
+      out("#n-inner", t(57), 0.2);
+      hlTo(4, t(61));
+      show("#barO", t(61), 0.3);
+      walk(["top", "C"], t(62), 1.2);
+      tl.to("#rowhl", { y: 713 - 5, duration: 0.3, ease: "power2.inOut" }, t(65));
+      pick(GV, "vC", t(66));
+      hlTo(5, t(66) + 0.3);
+      serve("C", 1, "b4", 4, t(67));
+      serve("C", 2, "b5", 5, t(67) + 0.35);
+      serve("C", 3, "b6", 6, t(67) + 0.7);
+      hlTo(4, t(70));
+      walk(["right", "B"], t(70) - 0.2, 0.7);
+      tl.to("#rowhl", { y: 801 - 5, duration: 0.3, ease: "power2.inOut" }, t(71));
+      pick(GV, "vB", t(71));
+      hlTo(5, t(71) + 0.15);
+      serve("B", 1, "b7", 7, t(71) + 0.2);
+      serve("B", 2, "b8", 8, t(71) + 0.45);
+      serve("B", 3, "b9", 9, t(71) + 0.7);
+
+      /* ---- 5. 3 guests times 3 courses. 9 servings. The inner loop runs completely for every outer round ---- */
+      out(["#rowhl", "#s-hl"], t(72) - 0.1, 0.2);
+      draw("r-rows", t(72), 0.45);
+      draw("r-cols", t(75), 0.45);
+      pop("#mult", t(77), { from: 0.6 });
+      bump("#cnt", t(77));
+      out(["#r-rows", "#r-cols"], t(79), 0.2);
+      pop("#n-inner", t(80), { from: 0.6 });
+      bump("#barI", t(82));
+      out("#n-inner", t(84) - 0.1, 0.15);
+      pop("#n-outer", t(84), { from: 0.6 });
+      tl.set("#rowhl", { y: 625 - 5 }, t(85));
+      show("#rowhl", t(85), 0.15);
+      tl.to("#rowhl", { y: 713 - 5, duration: 0.25, ease: "power2.inOut" }, t(86));
+      tl.to("#rowhl", { y: 801 - 5, duration: 0.25, ease: "power2.inOut" }, t(89));
+
+      /* ---- 6. Now a rule. Chloe's main has wheat. Gluten warning. Break ---- */
+      out(["#rowhl", "#n-outer", "#mult", "#b4", "#b5", "#b6", "#b7", "#b8", "#b9", "#pC1", "#pC2", "#pC3", "#pB1", "#pB2", "#pB3"], t(91), 0.3);
+      pick(CNT, "c3", t(91) + 0.2);
+      tl.to(["#L6", "#L7"], { y: 112, duration: 0.45, ease: "power2.inOut" }, t(92));
+      tl.to("#barI", { scaleY: 272 / 160, duration: 0.45, ease: "power2.inOut" }, t(92));
+      tl.to("#barO", { scaleY: 328 / 216, duration: 0.45, ease: "power2.inOut" }, t(92));
+      type("#R1", t(93), 49, 0.55);
+      type("#R2", t(93) + 0.6, 17, 0.25);
+      walk(["top", "C"], t(92), 1.1);
+      pick(GV, "vC", t(94));
+      draw("r-chloe", t(94), 0.35);
+      tl.set("#s-hl", { y: 4 * 56 }, t(94) + 0.3);
+      show("#s-hl", t(94) + 0.3, 0.15);
+      // Chloe's starter is still served.
+      tl.set("#s-hl", { y: 7 * 56 }, t(94) + 0.5);
+      pick(KV, "vS", t(94) + 0.5);
+      pop("#pC1", t(94) + 0.55, { from: 0.2, d: 0.3 });
+      pop("#r4", t(94) + 0.55, { from: 0.3, d: 0.3 });
+      pick(CNT, "c4", t(94) + 0.6);
+      // Then the main.
+      pick(KV, "vM", t(95));
+      draw("r-main", t(95), 0.35);
+      tl.set("#s-hl", { y: 5 * 56 }, t(95) - 0.1);
+      pop("#xP", t(97), { from: 0.3 });
+      out(["#r-chloe", "#r-main"], t(99), 0.2);
+      pop("#warn", t(100), { from: 0.5, ease: "back.out(2.2)" });
+      tl.set("#s-hl", { y: 6 * 56 }, t(102));
+      draw("r-break", t(102), 0.35);
+      pop("#xM", t(102) + 0.1, { from: 0.4 });
+      pop("#xD", t(102) + 0.5, { from: 0.6 });
+
+      /* ---- 7. Her card flips to no more. break leaves only the inner loop. Ben still gets served ---- */
+      out(["#warn", "#r-break"], t(103), 0.2);
+      tl.to("#nmC .f1", { scaleY: 0, duration: 0.2, ease: "power2.in" }, t(104));
+      tl.to("#nmC", { backgroundColor: "#fbe0ea", duration: 0.01 }, t(104) + 0.2);
+      tl.fromTo("#nmC .f2", { opacity: 1, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, t(104) + 0.2);
+      out("#s-hl", t(108), 0.2);
+      pop("#n-break", t(110), { from: 0.6 });
+      bump("#barI", t(114));
+      hlTo(4, t(116));
+      show("#s-hl", t(116), 0.15);
+      walk(["right", "B"], t(117), 0.9);
+      draw("r-ben", t(121), 0.4);
+      pick(GV, "vB", t(121));
+      tl.set("#s-hl", { y: 7 * 56 }, t(121) + 0.2);
+      const serve2 = (k, badge, n, at) => {
+        pick(KV, KV[k - 1], at);
+        pop(`#pB${k}`, at + 0.05, { from: 0.2, d: 0.3 });
+        pop(`#${badge}`, at + 0.05, { from: 0.3, d: 0.3 });
+        pick(CNT, CNT[n], at + 0.1);
+      };
+      serve2(1, "r5", 5, t(122));
+      serve2(2, "r6", 6, t(123));
+      serve2(3, "r7", 7, t(124));
+      out("#r-ben", t(124) + 0.3, 0.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 50.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

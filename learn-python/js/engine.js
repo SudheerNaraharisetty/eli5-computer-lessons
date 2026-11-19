@@ -1,5 +1,6 @@
 /* Learn Python course engine: syllabus registry, picture helpers, quiz types, routing, progress,
-   plus runnable Python (Pyodide, loaded on the first Run click) and "Open in VS Code" exercises.
+   plus runnable Python (Pyodide in a Web Worker, loaded on the first Run click; Stop, a 10 second
+   limit and inline input()) and "Open in VS Code" exercises.
    Copied from learn-principles/js/engine.js and extended; quiz types are shared with it. */
 (function () {
   const COURSE = window.COURSE = {
@@ -78,35 +79,111 @@
     return `<div class="term code"><div class="tb"><i></i><i></i><i></i><span>${esc(o.title || 'code')}</span></div><div class="tbody">${body}</div></div>`;
   }
 
-  /* ---------- runnable Python (Pyodide) ---------- */
+  /* ---------- runnable Python (Pyodide in a Web Worker) ---------- */
   // Newest stable Pyodide verified on the CDN (2026-11-19). It runs CPython 3.14 compiled to WebAssembly.
   const PYODIDE = 'https://cdn.jsdelivr.net/pyodide/v314.0.8/full/';
   const PY_NOTE = 'runs Python 3.14 in your browser';
-  let pyReady = null;
-  function loadPy() {
-    if (pyReady) return pyReady;
-    pyReady = new Promise((ok, fail) => {
-      const sc = document.createElement('script');
-      sc.src = PYODIDE + 'pyodide.js';
-      sc.onload = () => window.loadPyodide({ indexURL: PYODIDE }).then(ok, fail);
-      sc.onerror = () => fail(new Error('Could not download Python. Check your internet connection and try again.'));
-      document.head.appendChild(sc);
-    }).catch(e => { pyReady = null; throw e; });
-    return pyReady;
+  const LIMIT = 10;          // seconds a program may run before the page stops it
+  const OUT_CAP = 200000;    // characters of output kept; the rest is counted but not shown
+
+  // Python runs in a Web Worker, so an endless loop never freezes the page: Stop (or the 10 second
+  // limit) simply throws the worker away, and the next Run starts a fresh one.
+  // This function never runs on the page. Its source text becomes the worker (see newWorker), built
+  // from a Blob URL because Chrome refuses `new Worker('js/file.js')` on a page opened from file://.
+  // Do not use names from outside this function inside it, except OUT_CAP (newWorker passes it in).
+  //
+  // input(): a worker cannot wait for the page without SharedArrayBuffer, which needs cross-origin
+  // isolation (file:// and GitHub Pages do not give it). So input() is "replayed": when Python asks
+  // and no answer is known yet, the run stops and the page shows an input field. The learner's
+  // answer is added to the list and the whole program runs again from the top, with the same random
+  // seed, and this time input() returns the known answers in order.
+  function workerMain() {
+    const SETUP = [
+      'import builtins, sys, _course',
+      'class _NeedInput(BaseException):',
+      '    pass',
+      'def input(prompt=""):',
+      '    prompt = str(prompt)',
+      '    sys.stdout.write(prompt)',
+      '    sys.stdout.flush()',
+      '    answer = _course.ask(prompt)',
+      '    if answer is None:',
+      '        raise _NeedInput()',
+      '    _course.echo(answer + "\\n")',
+      '    return answer',
+      'builtins.input = input'
+    ].join('\n');
+    let py = null, job = 0, chunks = [], pend = [], size = 0, cut = false, last = 0, need = null, answers = [], ai = 0;
+    const flush = () => { if (pend.length) { postMessage({ id: job, t: 'out', add: pend, cut }); pend = []; } last = Date.now(); };
+    const push = (k, s) => {
+      if (s && size >= OUT_CAP) cut = true;
+      else if (s) {
+        if (size + s.length > OUT_CAP) { s = s.slice(0, OUT_CAP - size); cut = true; }
+        size += s.length; chunks.push(s); pend.push([k, s]);
+      }
+      if (pend.length && Date.now() - last > 120) flush();
+    };
+    const stream = () => { const dec = new TextDecoder(); return { write: buf => { push('o', dec.decode(buf, { stream: true })); return buf.length; } }; };
+    async function boot(url) {
+      // This Pyodide refuses to run in a classic worker, and Chrome will not start a module worker from
+      // a Blob URL on a file:// page. So: a classic worker that loads Pyodide with import(), with
+      // importScripts switched off so Pyodide takes its module-worker path (verified on file:// and http://).
+      self.importScripts = () => { throw new Error('modules only'); };
+      const { loadPyodide } = await import(url + 'pyodide.mjs');
+      py = await loadPyodide({ indexURL: url });
+      py.setStdout(stream());
+      py.setStderr(stream());
+      py.registerJsModule('_course', {
+        ask: p => { if (ai < answers.length) return String(answers[ai++]); need = p; return undefined; },
+        echo: s => push('a', s)
+      });
+      py.runPython(SETUP);
+    }
+    async function handle(m) {
+      job = m.id;
+      if (!py) {
+        try { await boot(m.url); }
+        catch (e) { py = null; postMessage({ id: job, t: 'fatal', msg: String(e && e.message || e) }); return; }
+      }
+      try { await py.loadPackagesFromImports(m.src); } catch (e) { /* a bad import shows up as a normal error below */ }
+      chunks = []; pend = []; size = 0; cut = false; need = null; answers = m.answers || []; ai = 0; last = Date.now();
+      postMessage({ id: job, t: 'start' });
+      const ns = py.globals.get('dict')();
+      ns.set('__name__', '__main__');
+      let err = null, check = null;
+      try {
+        py.runPython('import random\nrandom.seed(' + (m.seed | 0) + ')');
+        await py.runPythonAsync(m.src, { globals: ns, filename: m.file });
+      } catch (e) { err = String(e && e.message || e); }
+      try { py.runPython('import sys\nsys.stdout.flush()\nsys.stderr.flush()'); } catch (e) { }
+      if (need === null && err === null && m.check) {
+        try {
+          ns.set('out', chunks.join('').replace(/\n$/, ''));
+          py.runPython('ok = False\nmsg = ""\n' + m.check, { globals: ns });
+          check = { ok: !!ns.get('ok'), msg: String(ns.get('msg') || '') };
+        } catch (e) { check = { ok: false, msg: '', bad: true }; }
+      }
+      flush();
+      try { ns.destroy(); } catch (e) { }
+      postMessage({ id: job, t: 'done', err: need === null ? err : null, need, cut, check, dead: !!(err && /fatal error/i.test(err)) });
+    }
+    let chain = Promise.resolve();
+    self.onmessage = e => {
+      chain = chain.then(() => handle(e.data)).catch(x => postMessage({ id: e.data.id, t: 'done', err: String(x && x.message || x), need: null, cut: false, check: null, dead: true }));
+    };
   }
-  // Run code in a fresh namespace. Returns {out, err, ns}. err is the real Python error text, trimmed.
-  async function runPy(src, file) {
-    const py = await loadPy();
-    const out = [];
-    py.setStdout({ batched: t => out.push(t) });
-    py.setStderr({ batched: t => out.push(t) });
-    py.setStdin({ stdin: () => { const a = window.prompt(out.length ? out[out.length - 1] : 'Python is asking for input'); return a === null ? '' : a; } });
-    const ns = py.globals.get('dict')();
-    let err = null;
-    try { await py.runPythonAsync(src, { globals: ns, filename: file }); }
-    catch (e) { err = cleanErr(String(e.message || e), src, file); }
-    return { out: out.join('\n'), err, ns, py };
+
+  let worker = null, workerUsed = false, workerReady = false, cur = null, seq = 0;
+  function newWorker() {
+    const src = `const OUT_CAP = ${OUT_CAP};\n(${workerMain.toString()})();`;
+    const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+    w.onmessage = e => onWorker(e.data);
+    w.onerror = e => { e.preventDefault(); if (window.console) console.warn('Python worker error:', e.message); if (w !== worker) return; if (cur) giveUp(cur.box, 'Python stopped working unexpectedly. Press Run to start it again.'); killWorker(); };
+    workerUsed = true;
+    return w;
   }
+  function killWorker() { if (worker) worker.terminate(); worker = null; workerReady = false; }
+
   // Keep the part of the traceback that is about the learner's code (Pyodide adds its own frames above it).
   // Running with filename=file makes Python print the source line and ^^^ markers, as it does for a real file.
   function cleanErr(msg, src, file) {
@@ -129,14 +206,20 @@
     const ln = (err.match(/line (\d+)/g) || []).slice(-1)[0];
     return `<span class="lbl">Python stopped</span><p class="say">${ln ? `The problem is on <b>${esc(ln)}</b>. ` : ''}Read the last line first: it names the problem.</p><pre>${esc(err).replace(esc(last), `<b>${esc(last)}</b>`)}</pre>`;
   }
+  // Printed text, with the learner's input() answers marked so they look typed.
+  const outText = chunks => chunks.map(([k, s]) => k === 'a' ? `<span class="ans">${esc(s)}</span>` : esc(s)).join('');
+  const cutNote = st => st.cut ? `\n<span class="none">(More output was hidden: only the first ${OUT_CAP.toLocaleString('en')} characters are shown.)</span>` : '';
+
   const lineNos = n => Array.from({ length: n }, (_, i) => `<div>${i + 1}</div>`).join('');
-  // Editable, runnable code block. lines: array of strings. o: {title}
+  // Editable, runnable code block. lines: array of strings.
+  // o: {title, inputs: ['Ana', '3']}. inputs are ready-made answers that input() uses first, in order;
+  // when they run out, the output panel asks the learner.
   function run(lines, o) {
     o = o || {};
     const src = lines.join('\n');
-    return `<div class="run" data-src="${esc(src)}" data-file="${esc(o.title || 'main.py')}"><div class="term code"><div class="tb"><i></i><i></i><i></i><span>${esc(o.title || 'main.py')} · you can edit this</span></div>` +
+    return `<div class="run" data-src="${esc(src)}" data-file="${esc(o.title || 'main.py')}"${o.inputs ? ` data-inputs="${esc(JSON.stringify(o.inputs.map(String)))}"` : ''}><div class="term code"><div class="tb"><i></i><i></i><i></i><span>${esc(o.title || 'main.py')} · you can edit this</span></div>` +
       `<div class="ed"><div class="gut">${lineNos(lines.length)}</div><div class="scr"><div><pre aria-hidden="true">${lines.map(paint).join('\n')}\n</pre><textarea wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Python code you can edit">${esc(src)}</textarea></div></div></div>` +
-      `<div class="runbar"><button type="button" class="btn small go" data-run>▶ Run</button><button type="button" class="btn small" data-reset>Reset</button><span class="ver">${PY_NOTE}</span></div>` +
+      `<div class="runbar"><button type="button" class="btn small go" data-run>▶ Run</button><button type="button" class="btn small stop" data-stop hidden>■ Stop</button><button type="button" class="btn small" data-reset>Reset</button><span class="ver">${PY_NOTE}</span></div>` +
       `<div class="out" aria-live="polite"></div></div></div>`;
   }
   function syncEd(ta) {
@@ -144,28 +227,133 @@
     ed.querySelector('pre').innerHTML = v.split('\n').map(paint).join('\n') + '\n';
     ed.querySelector('.gut').innerHTML = lineNos(v.split('\n').length);
   }
+
+  function setBusy(box, on) {
+    const go = box.querySelector('[data-run],[data-fixrun]'), stop = box.querySelector('[data-stop]');
+    if (go) go.hidden = on;
+    if (stop) stop.hidden = !on;
+    box.classList.toggle('busy', on);
+  }
+  // Start a fresh run of this box. opts: {check, after} (used by the fix quiz).
+  function startRun(box, opts) {
+    if (cur && cur.box === box) return;
+    let answers = [];
+    try { answers = JSON.parse(box.dataset.inputs || '[]'); } catch (e) { }
+    box._st = Object.assign({ src: box.querySelector('textarea').value, file: box.dataset.file, answers, seed: Math.floor(Math.random() * 2147483647), chunks: [] }, opts || {});
+    exec(box, false);
+  }
+  function exec(box, replay) {
+    if (cur && cur.box !== box) stopRun('other');
+    const st = box._st, outEl = box.querySelector('.out');
+    st.cut = false;
+    const id = ++seq;
+    cur = { id, box, timer: null };
+    setBusy(box, true);
+    if (!replay) {
+      outEl.className = 'out';
+      outEl.innerHTML = `<span class="wait">${workerReady ? 'Running…' : workerUsed ? 'Restarting Python…' : 'Starting Python (first time takes a few seconds)…'}</span>`;
+    }
+    if (!worker) {
+      try { worker = newWorker(); }
+      catch (e) { giveUp(box, 'This browser could not start Python in the background. Try a recent Chrome, Edge, Firefox or Safari.'); return; }
+    }
+    worker.postMessage({ id, url: PYODIDE, src: st.src, file: st.file, answers: st.answers, seed: st.seed, check: st.check || '' });
+  }
+  function giveUp(box, msg) {
+    if (cur && cur.box === box) { clearTimeout(cur.timer); cur = null; }
+    setBusy(box, false);
+    const outEl = box.querySelector('.out');
+    outEl.className = 'out err';
+    outEl.innerHTML = `<span class="lbl">Could not start Python</span><p class="say">${esc(msg)}</p>`;
+  }
+  const STOPPED = {
+    time: `Stopped after ${LIMIT} seconds. Is there a loop that never ends?`,
+    user: 'Stopped. You pressed Stop.',
+    other: 'Stopped, because you ran another code box.'
+  };
+  function stopRun(why) {
+    if (!cur) return;
+    const box = cur.box, st = box._st;
+    clearTimeout(cur.timer); cur = null;
+    killWorker();
+    setBusy(box, false);
+    if (why === 'quiet') return;
+    const outEl = box.querySelector('.out');
+    outEl.className = 'out stop';
+    outEl.innerHTML = (st.chunks.length ? `<span class="lbl">Printed before it stopped</span>${outText(st.chunks).replace(/\n$/, '')}${cutNote(st)}\n` : '') +
+      `<span class="lbl">Python was stopped</span><p class="say">${STOPPED[why] || STOPPED.user}</p>` +
+      (why === 'time' ? `<p class="say sub">A program that runs this long in a lesson is almost always stuck. Look for a <code>while</code> loop whose condition never becomes False.</p>` : '');
+    outEl.scrollTop = outEl.scrollHeight;
+    if (st.after) st.after({ stopped: why });
+  }
+  function onWorker(m) {
+    if (!cur || m.id !== cur.id) return; // a message from a run that was already stopped
+    const box = cur.box, st = box._st, outEl = box.querySelector('.out');
+    if (m.t === 'start') {
+      workerReady = true;
+      cur.timer = setTimeout(() => stopRun('time'), LIMIT * 1000);
+    } else if (m.t === 'out') {
+      st.chunks.push(...m.add); st.cut = m.cut;
+      outEl.className = 'out';
+      outEl.innerHTML = `<span class="lbl">Output</span>${outText(st.chunks)}${cutNote(st)}<span class="wait live">Running…</span>`;
+      outEl.scrollTop = outEl.scrollHeight;
+    } else if (m.t === 'fatal') {
+      if (window.console) console.warn('Python (Pyodide) did not load:', m.msg);
+      giveUp(box, 'Could not download Python. Check your internet connection and try again.');
+      killWorker();
+    } else if (m.t === 'done') {
+      clearTimeout(cur.timer); cur = null;
+      setBusy(box, false);
+      if (m.dead) killWorker();
+      st.cut = m.cut;
+      const text = outText(st.chunks);
+      if (m.need !== null) {
+        // input() is waiting: show the field right after the prompt, like a terminal.
+        outEl.className = 'out ask';
+        outEl.innerHTML = `<span class="lbl">Output</span>${text}<input class="ans-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Your answer to: ${esc(m.need || 'input()')}">` +
+          `<span class="askhint">Python is waiting for your answer. Type it and press Enter.</span>`;
+        outEl.scrollTop = outEl.scrollHeight;
+        outEl.querySelector('.ans-in').focus({ preventScroll: true });
+        return;
+      }
+      if (m.err) {
+        outEl.className = 'out err';
+        outEl.innerHTML = (st.chunks.length ? `<span class="lbl">Printed before it stopped</span>${text.replace(/\n$/, '')}${cutNote(st)}\n` : '') + errHtml(cleanErr(m.err, st.src, st.file));
+        outEl.scrollTop = outEl.scrollHeight;
+      } else {
+        outEl.className = 'out' + (m.check && m.check.ok ? ' pass' : '');
+        outEl.innerHTML = `<span class="lbl">Output</span>${st.chunks.length ? text.replace(/\n$/, '') + cutNote(st) : '<span class="none">(nothing was printed)</span>'}`;
+      }
+      if (st.after) st.after({ err: m.err, check: m.check });
+    }
+  }
   function wireRunners(root) {
     root.addEventListener('input', e => { if (e.target.matches('.ed textarea')) syncEd(e.target); });
     root.addEventListener('keydown', e => {
-      const ta = e.target;
-      if (!ta.matches || !ta.matches('.ed textarea')) return;
-      if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('    ', ta.selectionStart, ta.selectionEnd, 'end'); syncEd(ta); }
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const b = ta.closest('.run').querySelector('[data-run],[data-fixrun]'); if (b) b.click(); }
+      const t = e.target;
+      if (!t.matches) return;
+      if (t.matches('.out .ans-in') && e.key === 'Enter') {
+        e.preventDefault();
+        const box = t.closest('.run'); if (!box || !box._st || t.disabled) return;
+        t.disabled = true;
+        box._st.answers = box._st.answers.concat(t.value);
+        box._st.chunks = [];
+        exec(box, true);
+        return;
+      }
+      if (!t.matches('.ed textarea')) return;
+      if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); t.setRangeText('    ', t.selectionStart, t.selectionEnd, 'end'); syncEd(t); }
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const b = t.closest('.run').querySelector('[data-run],[data-fixrun]'); if (b && !b.hidden) b.click(); }
     });
-    root.addEventListener('click', async e => {
+    root.addEventListener('click', e => {
       const box = e.target.closest('.run'); if (!box) return;
       const ta = box.querySelector('textarea'), outEl = box.querySelector('.out');
-      if (e.target.closest('[data-reset]')) { ta.value = box.dataset.src; syncEd(ta); outEl.className = 'out'; outEl.innerHTML = ''; return; }
-      const btn = e.target.closest('[data-run]'); if (!btn) return;
-      btn.disabled = true;
-      outEl.className = 'out';
-      outEl.innerHTML = `<span class="wait">${pyReady ? 'Running…' : 'Starting Python (first time takes a few seconds)…'}</span>`;
-      try {
-        const r = await runPy(ta.value, box.dataset.file);
-        if (r.err) { outEl.className = 'out err'; outEl.innerHTML = (r.out ? `<span class="lbl">Printed before it stopped</span>${esc(r.out)}\n` : '') + errHtml(r.err); }
-        else outEl.innerHTML = `<span class="lbl">Output</span>${r.out ? esc(r.out) : '<span class="none">(nothing was printed)</span>'}`;
-      } catch (err) { outEl.className = 'out err'; outEl.innerHTML = `<span class="lbl">Could not start Python</span><p class="say">${esc(err.message || err)}</p>`; }
-      btn.disabled = false;
+      if (e.target.closest('[data-stop]')) { if (cur && cur.box === box) stopRun('user'); return; }
+      if (e.target.closest('[data-reset]')) {
+        if (cur && cur.box === box) stopRun('quiet');
+        box._st = null; ta.value = box.dataset.src; syncEd(ta); outEl.className = 'out'; outEl.innerHTML = ''; return;
+      }
+      if (e.target.closest('[data-run],[data-fixrun]')) startRun(box, box._opts);
     });
   }
 
@@ -253,36 +441,25 @@
 
   const QUIZ = {
     // Fix this code: the learner edits a runnable box until a hidden check passes.
-    // q.code: starting lines. q.check: Python that can read `out` (everything printed) and the
-    // learner's names, and sets ok = True/False and, optionally, msg = "a specific hint".
+    // q.code: starting lines. q.check: Python that can read `out` (everything printed, with input()
+    // prompts and answers as they appear in the output panel) and the learner's names, and sets
+    // ok = True/False and, optionally, msg = "a specific hint". q.inputs: optional answers for input().
     fix(el, q, done) {
       const body = el.querySelector('.qbody');
-      body.innerHTML = run(q.code, { title: q.title || 'fix_me.py' });
+      body.innerHTML = run(q.code, { title: q.title || 'fix_me.py', inputs: q.inputs });
       const box = body.querySelector('.run');
       const go = box.querySelector('[data-run]');
       go.removeAttribute('data-run'); go.setAttribute('data-fixrun', ''); go.textContent = '▶ Run and check';
-      const outEl = box.querySelector('.out');
-      go.addEventListener('click', async () => {
-        go.disabled = true; outEl.className = 'out';
-        outEl.innerHTML = `<span class="wait">${pyReady ? 'Running…' : 'Starting Python (first time takes a few seconds)…'}</span>`;
-        try {
-          const r = await runPy(box.querySelector('textarea').value, box.dataset.file);
-          if (r.err) {
-            outEl.className = 'out err'; outEl.innerHTML = (r.out ? `<span class="lbl">Printed before it stopped</span>${esc(r.out)}\n` : '') + errHtml(r.err);
-            feedback(el, false, q, 'Python stopped with an error. Read the red box, fix that line, and run again.');
-          } else {
-            outEl.innerHTML = `<span class="lbl">Output</span>${r.out ? esc(r.out) : '<span class="none">(nothing was printed)</span>'}`;
-            r.ns.set('out', r.out);
-            let ok = false, msg = '';
-            try { r.py.runPython('ok = False\nmsg = ""\n' + q.check, { globals: r.ns }); ok = !!r.ns.get('ok'); msg = String(r.ns.get('msg') || ''); }
-            catch (e) { msg = 'The check could not read your result. ' + (q.hint || ''); }
-            if (ok) outEl.classList.add('pass');
-            feedback(el, ok, q, msg || q.hint);
-            if (ok) done();
-          }
-        } catch (err) { outEl.className = 'out err'; outEl.innerHTML = `<span class="lbl">Could not start Python</span><p class="say">${esc(err.message || err)}</p>`; }
-        go.disabled = false;
-      });
+      box._opts = {
+        check: q.check,
+        after(r) {
+          if (r.stopped) { if (r.stopped !== 'other') feedback(el, false, q, 'Python was stopped before it finished, so nothing could be checked. Make sure every loop can end, then run again.'); return; }
+          if (r.err) { feedback(el, false, q, 'Python stopped with an error. Read the red box, fix that line, and run again.'); return; }
+          const c = r.check || { ok: false, msg: '' };
+          feedback(el, c.ok, q, c.bad ? 'The check could not read your result. ' + (q.hint || '') : c.msg || q.hint);
+          if (c.ok) done();
+        }
+      };
     },
     pick(el, q, done) {
       const multi = Array.isArray(q.answer);
@@ -491,6 +668,7 @@
   }
 
   function route() {
+    if (cur) stopRun('quiet');
     const t = (location.hash || '#home').slice(1);
     if (byId[t]) renderLesson(byId[t]); else renderHome();
     renderPills(byId[t] ? t : 'home');

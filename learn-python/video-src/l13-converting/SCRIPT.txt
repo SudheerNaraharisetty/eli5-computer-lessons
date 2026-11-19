@@ -1,0 +1,13 @@
+A delivery arrives. The note says two hundred grams of rice. But a note is only writing. You cannot weigh it.
+
+Python sees the same difference. Two hundred in quote marks is text, a string. Two hundred without quotes is a number, an int.
+
+To turn the label into a weight, call int. It reads the text and gives back the real number. Now it goes on the scale.
+
+This matters, because what comes from a form, a file or a question is always text. Add the label two hundred to the label fifty, and they stick together. Twenty thousand and fifty grams. Convert them first, and you get two hundred and fifty.
+
+Ben's protein label says thirty eight point five. Int only reads whole numbers, so Python stops with a value error. Float reads the point, and it goes through.
+
+One catch. Int of two point nine is two. It chops, it does not round.
+
+Text is a label. Convert it before you weigh it.

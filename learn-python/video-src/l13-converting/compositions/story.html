@@ -1,0 +1,387 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+
+    /* the delivery note (later Ben's nutrition label) */
+    #s-note { left: 96px; top: 96px; width: 560px; height: 430px; background: #fbf8f4; border-radius: 18px; }
+    .s-ng { position: absolute; inset: 0; }
+    .s-nh { position: absolute; left: 40px; top: 30px; font-size: 30px; letter-spacing: 0.08em; color: #3e3b52; white-space: nowrap; }
+    .s-rule { position: absolute; left: 40px; top: 88px; width: 480px; height: 4px; background: #ece7df; }
+    .s-ni { position: absolute; left: 40px; top: 112px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-na { position: absolute; left: 40px; top: 210px; height: 140px; font: 700 120px/140px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; }
+    .s-nu { position: absolute; left: 40px; top: 360px; font-size: 32px; color: #3e3b52; white-space: nowrap; }
+
+    #s-note2 { left: 560px; top: 270px; width: 250px; height: 210px; background: #fbf8f4; border-radius: 16px; }
+    #s-note2 .s-nh { left: 28px; top: 22px; font-size: 28px; }
+    #s-note2 .s-na { left: 28px; top: 74px; height: 110px; font-size: 96px; line-height: 110px; }
+
+    /* the converter tool on the arrow */
+    #s-arrow { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-tool { left: 798px; top: 280px; width: 340px; height: 100px; background: #15132b; border-radius: 22px; }
+    .s-tt { position: absolute; left: 0; top: 0; width: 340px; height: 100px; text-align: center; font: 700 64px/100px "JetBrains Mono", monospace; color: #ffc24b; white-space: pre; }
+    #s-stamp { left: 748px; top: 404px; width: 440px; height: 96px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 52px/96px "JetBrains Mono", monospace; box-shadow: 0 0 0 6px #b8235a; }
+    .s-wt { left: 858px; top: 400px; width: 220px; height: 110px; background: #fff; border-radius: 20px; text-align: center; font: 700 64px/110px "JetBrains Mono", monospace; color: #3b37e6; }
+
+    /* the kitchen scale */
+    #s-plat { left: 1352px; top: 236px; width: 420px; height: 30px; background: #ece7df; border-radius: 10px; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-stem { left: 1547px; top: 266px; width: 30px; height: 42px; background: #0e0c1d; }
+    #s-body { left: 1316px; top: 306px; width: 492px; height: 220px; background: #fff; border-radius: 28px; }
+    #s-lcd { position: absolute; left: 40px; top: 30px; width: 412px; height: 110px; background: #15132b; border-radius: 16px; overflow: hidden; }
+    .s-d { position: absolute; left: 0; top: 0; width: 412px; height: 110px; text-align: center; font: 700 72px/110px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-d.on { opacity: 1; }
+    .s-d.r { color: #ff6b8b; }
+    #s-dial { position: absolute; left: 230px; top: 162px; width: 32px; height: 32px; border-radius: 50%; background: #0e0c1d; }
+    .s-pill { padding: 0 26px; height: 60px; line-height: 60px; border-radius: 999px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.r { background: #fbe0ea; color: #b8235a; }
+    .s-pill.g { background: #ddefe6; color: #1f7a5c; }
+    .s-pill.a { background: #e6e3ff; color: #3b37e6; }
+    .s-pill code { font: 700 32px/60px "JetBrains Mono", monospace; }
+    #s-writing { left: 400px; top: 64px; }
+    #s-noweigh { left: 1352px; top: 452px; }
+    #s-big { left: 1380px; top: 452px; }
+    #s-tstr { left: 470px; top: 64px; }
+    #s-tint { left: 1640px; top: 140px; }
+
+    /* where text comes from */
+    .s-src { top: 130px; width: 500px; height: 300px; background: #fbf8f4; border-radius: 26px; }
+    #s-src1 { left: 140px; }
+    #s-src2 { left: 710px; }
+    #s-src3 { left: 1280px; }
+    .s-sh { position: absolute; left: 36px; top: 28px; font: 700 56px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-sf { position: absolute; left: 36px; top: 140px; width: 428px; height: 110px; background: #fff; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d; padding-left: 28px; font: 700 64px/110px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; }
+    #s-always { left: 610px; top: 460px; width: 700px; height: 96px; border-radius: 999px; background: #3b37e6; color: #fff; text-align: center; font-size: 48px; line-height: 96px; }
+    #s-always code { font: 700 48px/96px "JetBrains Mono", monospace; color: #ffc24b; }
+
+    /* the catch: 2.9 gets chopped */
+    #s-chop { left: 300px; top: 110px; width: 1320px; height: 400px; background: #fbf8f4; border-radius: 28px; }
+    .s-num { top: 150px; height: 220px; font: 700 180px/220px "JetBrains Mono", monospace; white-space: pre; }
+    #s-n2 { left: 798px; color: #0e0c1d; }
+    #s-n9 { left: 906px; color: #b8235a; }
+    #s-knife { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-chops { left: 380px; top: 410px; }
+    #s-rounds { left: 1060px; top: 410px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 600px; width: 1728px; height: 384px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 1004px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; }
+    #s-div { position: absolute; left: 960px; top: 64px; width: 3px; height: 320px; background: #2e2a58; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out { position: absolute; left: 1004px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-out.g { color: #7cf0b5; }
+    .s-out.r { color: #ff6b8b; }
+    .s-err { position: absolute; left: 40px; font: 500 30px/64px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the note: a delivery note, later Ben's nutrition label -->
+        <div id="s-note" class="s-abs s-ol">
+          <div class="s-ng" id="nA">
+            <div class="s-nh">DELIVERY NOTE</div>
+            <div class="s-rule"></div>
+            <div class="s-ni">Rice</div>
+            <div class="s-na" id="amtA">"200"</div>
+            <div class="s-nu">grams</div>
+          </div>
+          <div class="s-ng s-hide" id="nB">
+            <div class="s-nh">NUTRITION LABEL</div>
+            <div class="s-rule"></div>
+            <div class="s-ni">Protein</div>
+            <div class="s-na" id="amtB">"38.5"</div>
+            <div class="s-nu">grams, for Ben</div>
+          </div>
+        </div>
+        <div id="s-note2" class="s-abs s-ol s-hide">
+          <div class="s-nh">NOTE</div>
+          <div class="s-na">"50"</div>
+        </div>
+        <div id="s-writing" class="s-abs s-pill r s-hide">only writing</div>
+        <div id="s-tstr" class="s-abs s-pill r s-hide"><code>str</code>: text</div>
+
+        <!-- the scale -->
+        <div id="s-plat" class="s-abs"></div>
+        <div id="s-stem" class="s-abs"></div>
+        <div id="s-body" class="s-abs s-ol">
+          <div id="s-lcd">
+            <div class="s-d on" id="d0">0 g</div>
+            <div class="s-d" id="d200">200 g</div>
+            <div class="s-d r" id="dglue">20050 g</div>
+            <div class="s-d" id="d250">250 g</div>
+            <div class="s-d" id="d0b">0 g</div>
+            <div class="s-d" id="d385">38.5 g</div>
+          </div>
+          <div id="s-dial"></div>
+        </div>
+        <div id="s-noweigh" class="s-abs s-pill r s-hide">can't weigh writing</div>
+        <div id="s-big" class="s-abs s-pill r s-hide">20 kg of rice?</div>
+        <div id="s-tint" class="s-abs s-pill a s-hide"><code>int</code></div>
+
+        <!-- the converter: an arrow with a tool on it -->
+        <svg id="s-arrow" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="arrow-line" d="M690 330 H1270" stroke="#3b37e6" stroke-width="8" stroke-linecap="round" fill="none" opacity="0" />
+          <path id="arrow-head" d="M1290 330 L1258 312 L1258 348 Z" fill="#3b37e6" opacity="0" />
+        </svg>
+        <div id="s-tool" class="s-abs s-ol s-hide">
+          <div class="s-tt" id="tInt">int()</div>
+          <div class="s-tt s-hide" id="tFloat">float()</div>
+        </div>
+        <div id="s-w1" class="s-abs s-wt s-ol s-hide">200</div>
+        <div id="s-w2" class="s-abs s-wt s-ol s-hide">38.5</div>
+        <div id="s-stamp" class="s-abs s-hide">ValueError</div>
+
+        <!-- where text comes from -->
+        <div id="s-src1" class="s-abs s-src s-ol s-hide"><div class="s-sh">A form</div><div class="s-sf">"42"</div></div>
+        <div id="s-src2" class="s-abs s-src s-ol s-hide"><div class="s-sh">A file</div><div class="s-sf">"38.5"</div></div>
+        <div id="s-src3" class="s-abs s-src s-ol s-hide"><div class="s-sh">A question</div><div class="s-sf">"2"</div></div>
+        <div id="s-always" class="s-abs s-ol s-hide">always text: <code>str</code></div>
+
+        <!-- the catch -->
+        <div id="s-chop" class="s-abs s-ol s-hide"></div>
+        <div id="s-n2" class="s-abs s-num s-hide">2</div>
+        <div id="s-n9" class="s-abs s-num s-hide">.9</div>
+        <svg id="s-knife" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="knife" d="M906 140 V390" stroke="#b8235a" stroke-width="8" stroke-dasharray="18 14" fill="none" opacity="0" />
+        </svg>
+        <div id="s-chops" class="s-abs s-pill r s-hide"><code>int(2.9)</code> chops: 2</div>
+        <div id="s-rounds" class="s-abs s-pill g s-hide"><code>round(2.9)</code> rounds: 3</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <!-- 2: types -->
+          <div class="s-ln" id="A1" style="top:84px"><span class="k">print</span>(<span class="k">type</span>(<span class="s">"200"</span>))</div>
+          <div class="s-out" id="A1o" style="top:84px">&lt;class 'str'&gt;</div>
+          <div class="s-ln" id="A2" style="top:148px"><span class="k">print</span>(<span class="k">type</span>(<span class="n">200</span>))</div>
+          <div class="s-out" id="A2o" style="top:148px">&lt;class 'int'&gt;</div>
+          <!-- 3: int() -->
+          <div class="s-ln" id="B1" style="top:84px">grams = <span class="k">int</span>(<span class="s">"200"</span>)</div>
+          <div class="s-ln" id="B2" style="top:148px"><span class="k">print</span>(grams)</div>
+          <div class="s-out g" id="B2o" style="top:148px">200</div>
+          <!-- 4: glue, then convert -->
+          <div class="s-ln" id="C1" style="top:84px"><span class="k">print</span>(<span class="s">"200"</span> + <span class="s">"50"</span>)</div>
+          <div class="s-out r" id="C1o" style="top:84px">20050</div>
+          <div class="s-ln" id="C2" style="top:148px"><span class="k">print</span>(<span class="k">int</span>(<span class="s">"200"</span>) + <span class="k">int</span>(<span class="s">"50"</span>))</div>
+          <div class="s-out g" id="C2o" style="top:148px">250</div>
+          <!-- 5: ValueError, then float -->
+          <div class="s-ln" id="D1" style="top:84px">grams = <span class="k">int</span>(<span class="s">"38.5"</span>)</div>
+          <div class="s-err" id="D1e" style="top:212px">ValueError: invalid literal for int() with base 10: '38.5'</div>
+          <div class="s-ln" id="D1b" style="top:84px">grams = <span class="k">float</span>(<span class="s">"38.5"</span>)</div>
+          <div class="s-ln" id="D2" style="top:148px"><span class="k">print</span>(grams)</div>
+          <div class="s-out g" id="D2o" style="top:148px">38.5</div>
+          <!-- 6: the catch -->
+          <div class="s-ln" id="E1" style="top:84px"><span class="k">print</span>(<span class="k">int</span>(<span class="n">2.9</span>))</div>
+          <div class="s-out r" id="E1o" style="top:84px">2</div>
+          <div class="s-ln" id="E2" style="top:148px"><span class="k">print</span>(<span class="k">round</span>(<span class="n">2.9</span>))</div>
+          <div class="s-out g" id="E2o" style="top:148px">3</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-amt" style="stroke:#b9741a" />
+          <path id="r-amtB" style="stroke:#b9741a" />
+          <path id="r-q" style="stroke:#ffc24b" />
+          <path id="r-int" style="stroke:#ffc24b" />
+          <path id="r-glue" style="stroke:#ffc24b" />
+          <path id="r-conv" style="stroke:#ffc24b" />
+          <path id="r-err" style="stroke:#ffc24b" />
+          <path id="r-float" style="stroke:#ffc24b" />
+          <path id="r-round" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.163, 0.592, 1.312, 1.486, 1.73, 2.067, 2.392, 2.786, 3.286, 3.518, 4.122, 4.319, 4.412, 4.679, 4.83, 5.097, 6.107, 6.339, 6.745, 7.047, 7.79, 8.313, 8.661, 8.835, 9.195, 10.217, 10.495, 10.855, 11.041, 11.401, 11.935, 12.341, 13.061, 13.235, 14.385, 14.663, 15.023, 15.406, 16.01, 16.242, 16.393, 16.915, 17.241, 18.216, 18.39, 18.645, 18.773, 19.272, 19.597, 19.725, 20.457, 20.909, 21.467, 21.745, 22.105, 22.233, 22.732, 22.906, 23.22, 23.51, 23.731, 24.09, 25.135, 25.484, 25.623, 25.925, 26.041, 26.18, 27.225, 27.515, 27.98, 28.386, 28.607, 28.943, 29.152, 29.268, 29.826, 30.035, 30.464, 30.638, 30.743, 31.44, 31.718, 32.229, 33.378, 33.669, 33.796, 34.18, 34.446, 34.957, 35.12, 35.247, 35.654, 36.49, 36.722, 36.966, 37.279, 38.15, 38.556, 39.044, 39.311, 39.729, 40.495, 40.913, 41.11, 41.552, 41.737, 41.877, 42.074, 42.364, 42.701, 42.852, 43.897, 44.303, 44.721, 45.104, 45.592, 46.091, 46.381, 46.718, 47.716, 48.042, 48.285, 48.645, 48.982, 49.667, 49.899, 50.375, 50.746, 50.909, 51.013, 51.443, 52.395, 52.755, 53.057, 53.184, 53.649, 53.881, 54.009, 54.299, 55.355, 55.622, 56.563, 56.83, 56.946, 57.201, 57.526, 58.002, 58.316, 59.256, 59.477, 60.127, 60.301, 60.499, 60.708, 61.729, 62.217, 62.391, 62.507, 63.285, 63.831, 63.947, 64.458, 64.632, 64.922];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel at (96, 600): 40px mono = 24px per char, code text starts at x=136; line centres y=716, 780, 844.
+      // Error line is 30px mono = 18px per char, from x=136, on the third line (centre y=844). Output column starts at x=1100.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-amt", 316, 376, 210, 84);      // "200" on the note: x 136..496, y 306..446
+      ring("r-amtB", 352, 376, 246, 84);    // "38.5" on the label: x 136..568
+      ring("r-q", 460, 716, 76, 38);         // "200" in print(type("200")), cols 11-15
+      ring("r-int", 364, 716, 52, 38);       // int in grams = int("200"), cols 8-10
+      ring("r-glue", 1160, 716, 84, 38);     // the output 20050
+      ring("r-conv", 1130, 780, 56, 38);     // the output 250
+      ring("r-err", 1126, 844, 74, 34);      // '38.5' at the end of the ValueError, cols 52-57
+      ring("r-float", 388, 716, 72, 38);     // float in grams = float("38.5"), cols 8-12
+      ring("r-round", 340, 780, 72, 38);     // round in print(round(2.9)), cols 6-10
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.04, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const drop = (sel, at) => tl.to(sel, { x: 594, y: -274, duration: 0.7, ease: "bounce.out" }, at);
+      const scene = ["#s-note", "#s-plat", "#s-stem", "#s-body"];
+
+      /* ---- 1. A delivery note: 200 grams of rice. Only writing; you cannot weigh it ---- */
+      bump("#s-note", t(3));
+      draw("r-amt", t(6), 0.5);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 560 }, { opacity: 1, x: 470, y: 400, duration: 0.5, ease: "power3.out", immediateRender: false }, t(11));
+      pop("#s-writing", t(16), { from: 0.5, ease: "back.out(2.2)" });
+      tl.to("#s-cursor", { x: 1500, y: 400, duration: 0.7, ease: "power2.inOut" }, t(17));
+      shake("#s-body", t(19));
+      pop("#s-noweigh", t(19), { from: 0.5, ease: "back.out(2.2)" });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(20));
+
+      /* ---- 2. "200" in quotes is a str; 200 without quotes is an int ---- */
+      out(["#s-writing", "#s-noweigh", "#r-amt"], t(21) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(21));
+      type("#A1", t(26), 18);
+      draw("r-q", t(29), 0.45);
+      pop("#A1o", t(32), { from: 0.7, d: 0.3 });
+      pop("#s-tstr", t(34), { from: 0.5, ease: "back.out(2.2)" });
+      out("#r-q", t(35), 0.2);
+      type("#A2", t(35), 16);
+      pop("#A2o", t(41), { from: 0.7, d: 0.3 });
+      pop("#s-tint", t(43), { from: 0.5, ease: "back.out(2.2)" });
+
+      /* ---- 3. call int: it reads the text and gives back the number; it goes on the scale ---- */
+      out(["#A1", "#A2", "#A1o", "#A2o", "#s-tstr", "#s-tint"], t(44) - 0.1, 0.3);
+      type("#B1", t(46), 18);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 900 }, { opacity: 1, x: 360, y: 728, duration: 0.5, ease: "power3.out", immediateRender: false }, t(50));
+      draw("r-int", t(51), 0.4);
+      tl.to("#arrow-line", { opacity: 1, duration: 0.3 }, t(51));
+      tl.to("#arrow-head", { opacity: 1, duration: 0.3 }, t(51));
+      pop("#s-tool", t(52) - 0.1, { from: 0.4, ease: "back.out(2.2)" });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(53));
+      // reads the text: the amount on the note pulses, then the number pops out of the tool
+      tl.fromTo("#amtA", { color: "#b8235a" }, { color: "#3b37e6", duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, t(54));
+      bump("#s-tool", t(56));
+      type("#B2", t(58), 12);
+      pop("#s-w1", t(61), { from: 0.4, ease: "back.out(2.2)" });
+      pop("#B2o", t(62), { from: 0.7, d: 0.3 });
+      out("#r-int", t(62), 0.2);
+      drop("#s-w1", t(64));
+      swap("#d0", "#d200", t(68));
+
+      /* ---- 4. A form, a file, a question: always text. "200" + "50" sticks; convert first ---- */
+      dim(scene, t(69), 0);
+      out(["#s-tool", "#arrow-line", "#arrow-head", "#s-w1", "#B1", "#B2", "#B2o"], t(69), 0.3);
+      pop("#s-src1", t(76), { from: 0.6 });
+      pop("#s-src2", t(78), { from: 0.6 });
+      pop("#s-src3", t(81), { from: 0.6 });
+      pop("#s-always", t(83), { from: 0.4, ease: "back.out(2.2)" });
+      out(["#s-src1", "#s-src2", "#s-src3", "#s-always"], t(85) - 0.15, 0.3);
+      dim(scene, t(85), 1);
+      out("#d200", t(85), 0.2);
+      show("#d0b", t(85), 0.2);
+      type("#C1", t(85), 19);
+      draw("r-amt", t(88), 0.4);
+      tl.set("#s-note2", { rotation: 6 }, 0);
+      pop("#s-note2", t(93) - 0.1, { from: 0.5, ease: "back.out(2.2)" });
+      out("#r-amt", t(94), 0.2);
+      pop("#C1o", t(96), { from: 0.7, d: 0.3 });
+      draw("r-glue", t(96) + 0.2, 0.4);
+      swap("#d0b", "#dglue", t(98));
+      shake("#s-body", t(98));
+      pop("#s-big", t(101), { from: 0.5, ease: "back.out(2.2)" });
+      out("#r-glue", t(103), 0.2);
+      type("#C2", t(103), 29);
+      pop("#C2o", t(109), { from: 0.7, d: 0.3 });
+      draw("r-conv", t(110), 0.4);
+      out("#s-big", t(109), 0.2);
+      swap("#dglue", "#d250", t(110));
+
+      /* ---- 5. Ben's label says "38.5": int stops with a ValueError, float goes through ---- */
+      out(["#s-note2", "#C1", "#C1o", "#C2", "#C2o", "#r-conv"], t(113) - 0.1, 0.3);
+      out("#nA", t(113), 0.2);
+      show("#nB", t(113) + 0.1, 0.3);
+      bump("#s-note", t(113));
+      swap("#d250", "#d0", t(114));
+      draw("r-amtB", t(117), 0.45);
+      out("#r-amtB", t(120), 0.2);
+      type("#D1", t(121) - 0.1, 19);
+      tl.to(["#arrow-line", "#arrow-head"], { opacity: 1, duration: 0.3 }, t(121));
+      pop("#s-tool", t(121), { from: 0.4, ease: "back.out(2.2)" });
+      // the label tries to get through the int() tool and bounces back
+      tl.to("#amtB", { x: 90, duration: 0.25, ease: "power2.in" }, t(127));
+      tl.to("#amtB", { x: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" }, t(127) + 0.25);
+      shake("#s-tool", t(128));
+      show("#D1e", t(128), 0.2);
+      tl.set("#s-stamp", { rotation: -6 }, 0);
+      pop("#s-stamp", t(131) - 0.1, { from: 1.8, ease: "power4.out", d: 0.3 });
+      draw("r-err", t(131) + 0.3, 0.45);
+      // float
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 900 }, { opacity: 1, x: 370, y: 728, duration: 0.5, ease: "power3.out", immediateRender: false }, t(132) - 0.3);
+      out(["#s-stamp", "#r-err"], t(133) - 0.1, 0.2);
+      out("#D1e", t(136) - 0.1, 0.2);
+      swap("#D1", "#D1b", t(133));
+      swap("#tInt", "#tFloat", t(133) + 0.05);
+      draw("r-float", t(134), 0.4);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(135));
+      type("#D2", t(136), 12);
+      pop("#s-w2", t(137), { from: 0.4, ease: "back.out(2.2)" });
+      pop("#D2o", t(138), { from: 0.7, d: 0.3 });
+      out("#r-float", t(138), 0.2);
+      drop("#s-w2", t(139));
+      swap("#d0", "#d385", t(140) + 0.4);
+
+      /* ---- 6. The catch: int(2.9) is 2. It chops, it does not round ---- */
+      out(scene.concat(["#s-tool", "#arrow-line", "#arrow-head", "#s-w2", "#D1b", "#D2", "#D2o"]), t(142) - 0.2, 0.3);
+      pop("#s-chop", t(143) - 0.1, { from: 0.9 });
+      type("#E1", t(143), 15);
+      show(["#s-n2", "#s-n9"], t(145), 0.3);
+      pop("#E1o", t(149), { from: 0.7, d: 0.3 });
+      tl.set("#knife", { opacity: 1 }, t(151) - 0.1);
+      tl.fromTo("#knife", { strokeDashoffset: 250 }, { strokeDashoffset: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, t(151) - 0.1);
+      tl.to("#s-n9", { y: 160, rotation: 18, opacity: 0, duration: 0.6, ease: "power2.in" }, t(151) + 0.2);
+      pop("#s-chops", t(151) + 0.3, { from: 0.5, ease: "back.out(2.2)" });
+      out("#knife", t(153), 0.2);
+      type("#E2", t(153), 17);
+      draw("r-round", t(155), 0.4);
+      pop("#E2o", t(155) - 0.1, { from: 0.7, d: 0.3 });
+      pop("#s-rounds", t(155) - 0.2, { from: 0.5, ease: "back.out(2.2)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 61.85);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

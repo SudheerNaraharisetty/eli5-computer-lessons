@@ -1,0 +1,15 @@
+Plates on your kitchen counter. An if in Python does not need True or False. It looks at any value and asks, does this count as something?
+
+An empty plate counts as no. Zero, empty text, and None are all empty plates. Python calls them falsy.
+
+Anything on the plate counts as yes. Minus one. A single space. Even a crumb. That is truthy.
+
+Now a surprise. A note that says False, in quotes. It is text with letters, so it counts as yes.
+
+Chloe skipped the note field. If note? The plate is empty, so the cook gets, no note.
+
+Ben drank zero shakes. His glass is empty on purpose. That is a real answer. Ask, if not shakes, and Python says he never filled it in. Wrong. Ask, is shakes None.
+
+Ana leaves her nickname blank. Typed, or Guest. The first plate is empty, so the backup plate slides in.
+
+Empty counts as no. When zero is a real answer, ask is None.

@@ -1,0 +1,405 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panel, left */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(1) { left: 26px; }
+    #s-bar > i:nth-child(2) { left: 56px; background: #ffc24b; }
+    #s-bar > i:nth-child(3) { left: 86px; background: #4bd69b; }
+    .s-file { position: absolute; left: 130px; top: 0; font: 700 30px/64px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    #s-outarea { position: absolute; left: 0; top: 0; width: 1054px; height: 888px; opacity: 0; }
+    #s-div { position: absolute; left: 0; top: 600px; width: 1054px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 612px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-grp { position: absolute; left: 0; top: 0; width: 1054px; height: 888px; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-ln .sp { background: #7a2e4c; }
+    .s-out { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-out.t { color: #7cf0b5; }
+    .s-out.f { color: #ff6b8b; }
+    .s-chip { position: absolute; height: 52px; padding: 0 18px; border-radius: 999px; font: 700 32px/52px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-chip.f { background: #ff6b8b; color: #15132b; }
+    .s-chip.t { background: #7cf0b5; color: #15132b; }
+    .s-chip.q { background: #ffc24b; color: #15132b; font-family: "Manrope", sans-serif; font-weight: 800; }
+    .s-chip.x { background: transparent; color: #c9c6ff; border: 3px solid #6f6b9a; line-height: 46px; }
+    #s-strike { position: absolute; left: 310px; top: 114px; width: 290px; height: 6px; border-radius: 3px; background: #ff6b8b; transform-origin: 0 50%; opacity: 0; }
+    #s-wrong { position: absolute; left: 560px; top: 658px; height: 76px; padding: 0 26px; border-radius: 16px; background: #f7d5e1; color: #b8235a; font: 800 44px/76px "Manrope", sans-serif; opacity: 0; box-shadow: 0 0 0 4px #b8235a; }
+
+    /* right panel */
+    #s-right { left: 1214px; top: 96px; width: 610px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    .s-scene { position: absolute; left: 0; top: 0; width: 610px; height: 888px; }
+    .s-title { position: absolute; left: 36px; top: 26px; font: 700 50px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-slots { position: absolute; left: 0; top: 0; width: 610px; height: 888px; }
+    .s-plate { position: absolute; width: 150px; height: 150px; opacity: 0; overflow: visible; }
+    .s-plab { position: absolute; width: 190px; text-align: center; font: 700 32px/44px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-plab .sp { background: #f7d5e1; }
+    .s-row { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; height: 60px; padding: 0 28px; border-radius: 999px; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-row.f { background: #f7d5e1; color: #b8235a; }
+    .s-row.t { background: #ddefe6; color: #1f7a5c; }
+    .s-pill { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; top: 770px; height: 84px; padding: 0 36px; border-radius: 999px; font: 800 40px/84px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.f { background: #f7d5e1; color: #b8235a; }
+    .s-pill.t { background: #ddefe6; color: #1f7a5c; }
+    .s-pill.q { background: #ece7df; color: #3e3b52; }
+
+    /* Chloe's order card */
+    #s-order { position: absolute; left: 36px; top: 120px; width: 538px; height: 170px; background: #fff; border-radius: 22px; }
+    #s-order .lbl { position: absolute; left: 28px; top: 16px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #s-field { position: absolute; left: 28px; top: 70px; width: 482px; height: 72px; border-radius: 12px; border: 4px dashed #6f6b80; }
+    #s-bigplate { position: absolute; left: 185px; top: 350px; width: 240px; height: 240px; overflow: visible; }
+
+    /* Ben's glass */
+    #s-glass { position: absolute; left: 205px; top: 130px; width: 200px; height: 300px; overflow: visible; }
+    #s-glab { position: absolute; left: 0; width: 610px; top: 446px; text-align: center; font: 700 44px/56px "JetBrains Mono", monospace; opacity: 0; }
+    .s-tag { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; height: 60px; padding: 0 26px; border-radius: 14px; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-tag1 { top: 530px; background: #fbebd2; color: #8a560f; }
+    #s-tag2 { top: 620px; background: #ddefe6; color: #1f7a5c; }
+
+    /* Ana's nickname */
+    .s-nplate { position: absolute; width: 180px; height: 180px; overflow: visible; }
+    #s-np1 { left: 70px; top: 160px; }
+    #s-np2 { left: 360px; top: 160px; }
+    .s-nlab { position: absolute; width: 240px; text-align: center; top: 356px; font: 700 32px/44px "JetBrains Mono", monospace; white-space: pre; }
+    #s-nl1 { left: 40px; }
+    #s-nl2 { left: 330px; }
+    #s-tray { position: absolute; left: 155px; top: 520px; width: 300px; height: 220px; border-radius: 30px; border: 5px dashed #3b37e6; background: #e6e3ff; }
+    #s-traylbl { position: absolute; left: 0; width: 610px; top: 466px; text-align: center; font: 700 32px/44px "JetBrains Mono", monospace; color: #3b37e6; }
+    #s-nono { position: absolute; left: 92px; top: 224px; height: 52px; padding: 0 18px; border-radius: 999px; background: #f7d5e1; color: #b8235a; font: 800 30px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 3px #b8235a; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right panel -->
+        <div id="s-right" class="s-abs s-ol">
+          <!-- beats 1 to 4: the counter of plates -->
+          <div id="b1" class="s-scene">
+            <div class="s-title" id="ti1">The counter</div>
+            <svg id="s-slots" viewBox="0 0 610 888">
+              <g fill="none" stroke="#b9b3c6" stroke-width="4" stroke-dasharray="10 10">
+                <circle cx="110" cy="250" r="70" /><circle cx="305" cy="250" r="70" /><circle cx="500" cy="250" r="70" />
+                <circle cx="110" cy="570" r="70" /><circle cx="305" cy="570" r="70" /><circle cx="500" cy="570" r="70" />
+              </g>
+            </svg>
+            <!-- row A: empty plates -->
+            <svg class="s-plate" id="pl0" style="left:35px;top:175px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /></svg>
+            <svg class="s-plate" id="pl1" style="left:230px;top:175px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /></svg>
+            <svg class="s-plate" id="pl2" style="left:425px;top:175px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /></svg>
+            <div class="s-plab" id="lb0" style="left:15px;top:335px">0</div>
+            <div class="s-plab" id="lb1" style="left:210px;top:335px">""</div>
+            <div class="s-plab" id="lb2" style="left:405px;top:335px">None</div>
+            <div class="s-row f" id="rowA" style="top:400px">falsy: counts as no</div>
+            <!-- row B: something on the plate -->
+            <svg class="s-plate" id="pl3" style="left:35px;top:495px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /><circle cx="80" cy="80" r="17" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="3" /><circle cx="74" cy="74" r="5" fill="#ddefe6" /></svg>
+            <svg class="s-plate" id="pl4" style="left:230px;top:495px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /><circle cx="88" cy="86" r="6" fill="#b9741a" /><circle cx="75" cy="77" r="4" fill="#b9741a" /></svg>
+            <svg class="s-plate" id="pl5" style="left:425px;top:495px" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /><g transform="rotate(-8 80 80)"><rect x="16" y="50" width="128" height="60" rx="6" fill="#fbebd2" stroke="#0e0c1d" stroke-width="3" /><text x="80" y="91" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="32" fill="#0e0c1d">False</text></g></svg>
+            <div class="s-plab" id="lb3" style="left:15px;top:655px">-1</div>
+            <div class="s-plab" id="lb4" style="left:210px;top:655px">"<span class="sp"> </span>"</div>
+            <div class="s-plab" id="lb5" style="left:405px;top:655px">"False"</div>
+            <div class="s-row t" id="rowB" style="top:730px">truthy: counts as yes</div>
+          </div>
+
+          <!-- beat 5: Chloe's order -->
+          <div id="b2" class="s-scene" style="opacity:0">
+            <div class="s-title">Chloe's order</div>
+            <div id="s-order" class="s-ol"><div class="lbl">note for the cook</div><div id="s-field"></div></div>
+            <svg id="s-bigplate" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="4" /></svg>
+            <div class="s-pill q" id="p2">No note</div>
+          </div>
+
+          <!-- beat 6: Ben's shakes -->
+          <div id="b3" class="s-scene" style="opacity:0">
+            <div class="s-title">Ben's shakes</div>
+            <svg id="s-glass" viewBox="0 0 200 300">
+              <path d="M24 16 L176 16 L154 284 L46 284 Z" fill="#fff" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+              <path d="M52 92 h22 M48 152 h22 M44 212 h22" stroke="#b9b3c6" stroke-width="5" stroke-linecap="round" />
+              <path d="M130 40 L118 260" stroke="#ece7df" stroke-width="10" stroke-linecap="round" />
+            </svg>
+            <div id="s-glab">0 shakes</div>
+            <div class="s-tag" id="s-tag1">empty on purpose</div>
+            <div class="s-tag" id="s-tag2">a real answer</div>
+            <div class="s-pill f" id="p3f">never filled in?</div>
+            <div class="s-pill t" id="p3t">Shakes: 0</div>
+          </div>
+
+          <!-- beat 7: Ana's nickname -->
+          <div id="b4" class="s-scene" style="opacity:0">
+            <div class="s-title">Ana's nickname</div>
+            <div id="s-traylbl">nickname</div>
+            <div id="s-tray"></div>
+            <svg class="s-nplate" id="s-np1" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /></svg>
+            <svg class="s-nplate" id="s-np2" viewBox="0 0 160 160"><circle cx="80" cy="80" r="74" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><circle cx="80" cy="80" r="50" fill="none" stroke="#ece7df" stroke-width="5" /><g transform="rotate(-6 80 80)"><rect x="18" y="54" width="124" height="52" rx="6" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="3" /><text x="80" y="89" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="800" font-size="30" fill="#3b37e6">Guest</text></g></svg>
+            <div class="s-nlab" id="s-nl1">typed ""</div>
+            <div class="s-nlab" id="s-nl2">backup</div>
+            <div id="s-nono">empty: no</div>
+            <div class="s-pill t" id="p4">Hi, Guest!</div>
+          </div>
+        </div>
+
+        <!-- code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i>
+            <span class="s-file" id="f1" style="opacity:1">plates.py</span>
+            <span class="s-file" id="f2">order.py</span>
+            <span class="s-file" id="f3">shakes.py</span>
+            <span class="s-file" id="f4">nickname.py</span>
+          </div>
+          <div id="s-outarea"><div id="s-div"></div><div id="s-outlbl">output</div></div>
+
+          <!-- beat 1: an if with any value -->
+          <div class="s-grp" id="c1a">
+            <div class="s-ln" style="top:84px;opacity:1"><span class="k">if</span> plate:</div>
+            <div class="s-ln" style="top:148px;opacity:1">    <span class="k">print</span>(<span class="s">"yes"</span>)</div>
+            <div class="s-ln" style="top:212px;opacity:1"><span class="k">else</span>:</div>
+            <div class="s-ln" style="top:276px;opacity:1">    <span class="k">print</span>(<span class="s">"no"</span>)</div>
+            <div class="s-chip x" id="k-tf" style="left:300px;top:90px">True or False?</div>
+            <div id="s-strike"></div>
+            <div class="s-chip q" id="k-q" style="left:300px;top:90px">counts as something?</div>
+          </div>
+
+          <!-- beats 2 to 4: bool() shows how Python sees each plate -->
+          <div class="s-grp" id="c1b" style="opacity:0">
+            <div class="s-ln" id="B0" style="top:84px"><span class="k">bool</span>(<span class="n">0</span>)</div>
+            <div class="s-ln" id="B1" style="top:148px"><span class="k">bool</span>(<span class="s">""</span>)</div>
+            <div class="s-ln" id="B2" style="top:212px"><span class="k">bool</span>(<span class="k">None</span>)</div>
+            <div class="s-ln" id="B3" style="top:276px"><span class="k">bool</span>(<span class="n">-1</span>)</div>
+            <div class="s-ln" id="B4" style="top:340px"><span class="k">bool</span>(<span class="s">"<span class="sp"> </span>"</span>)</div>
+            <div class="s-ln" id="B5" style="top:404px"><span class="k">bool</span>(<span class="s">"False"</span>)</div>
+            <div class="s-chip f" id="k0" style="left:420px;top:90px">False</div>
+            <div class="s-chip f" id="k1" style="left:420px;top:154px">False</div>
+            <div class="s-chip f" id="k2" style="left:420px;top:218px">False</div>
+            <div class="s-chip t" id="k3" style="left:420px;top:282px">True</div>
+            <div class="s-chip t" id="k4" style="left:420px;top:346px">True</div>
+            <div class="s-chip t" id="k5" style="left:420px;top:410px">True</div>
+          </div>
+
+          <!-- beat 5: Chloe skipped the note -->
+          <div class="s-grp" id="c2" style="opacity:0">
+            <div class="s-ln" style="top:84px;opacity:1">note <span class="o">=</span> <span class="s">""</span></div>
+            <div class="s-ln" style="top:148px;opacity:1"><span class="k">if</span> note:</div>
+            <div class="s-ln" style="top:212px;opacity:1">    <span class="k">print</span>(<span class="s">"Note:"</span>, note)</div>
+            <div class="s-ln" style="top:276px;opacity:1"><span class="k">else</span>:</div>
+            <div class="s-ln" style="top:340px;opacity:1">    <span class="k">print</span>(<span class="s">"No note"</span>)</div>
+            <div class="s-chip f" id="k-c2" style="left:300px;top:154px">empty: no</div>
+            <div class="s-out t" id="O2" style="top:664px">No note</div>
+          </div>
+
+          <!-- beat 6: Ben's 0 shakes -->
+          <div class="s-grp" id="c3" style="opacity:0">
+            <div class="s-ln" style="top:84px;opacity:1">shakes <span class="o">=</span> <span class="n">0</span></div>
+            <div class="s-ln" id="L3a" style="top:148px;opacity:1"><span class="k">if</span> <span class="k">not</span> shakes:</div>
+            <div class="s-ln" id="L3b" style="top:148px"><span class="k">if</span> shakes <span class="k">is</span> <span class="k">None</span>:</div>
+            <div class="s-ln" style="top:212px;opacity:1">    <span class="k">print</span>(<span class="s">"Not filled in"</span>)</div>
+            <div class="s-ln" style="top:276px;opacity:1"><span class="k">else</span>:</div>
+            <div class="s-ln" style="top:340px;opacity:1">    <span class="k">print</span>(<span class="s">"Shakes:"</span>, shakes)</div>
+            <div class="s-out f" id="O3a" style="top:664px">Not filled in</div>
+            <div class="s-out t" id="O3b" style="top:664px">Shakes: 0</div>
+            <div id="s-wrong">WRONG</div>
+          </div>
+
+          <!-- beat 7: Ana's nickname with or -->
+          <div class="s-grp" id="c4" style="opacity:0">
+            <div class="s-ln" style="top:84px;opacity:1">typed <span class="o">=</span> <span class="s">""</span></div>
+            <div class="s-ln" id="L41" style="top:148px">nickname <span class="o">=</span> typed <span class="k">or</span> <span class="s">"Guest"</span></div>
+            <div class="s-ln" style="top:212px;opacity:1"><span class="k">print</span>(<span class="s">f"Hi, </span>{nickname}<span class="s">!"</span>)</div>
+            <div class="s-out t" id="O4" style="top:664px">Hi, Guest!</div>
+          </div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-plate" style="stroke:#ffc24b" />
+          <path id="r-crumb" style="stroke:#b9741a" />
+          <path id="r-surp" style="stroke:#b9741a" />
+          <path id="r-empty" style="stroke:#ffc24b" />
+          <path id="r-note" style="stroke:#ffc24b" />
+          <path id="r-zero" style="stroke:#7cf0b5" />
+          <path id="r-not" style="stroke:#ff9fb6" />
+          <path id="r-isnone" style="stroke:#7cf0b5" />
+          <path id="r-blank" style="stroke:#ffc24b" />
+          <path id="r-typed" style="stroke:#ffc24b" />
+          <path id="r-or" style="stroke:#ff9fb6" />
+          <path id="r-guest" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.592, 0.789, 1.242, 2.078, 2.276, 2.461, 2.601, 3.088, 3.309, 3.483, 3.75, 4.133, 4.412, 5.317, 5.492, 5.759, 5.898, 6.165, 6.525, 6.711, 7.361, 7.605, 7.86, 8.173, 8.301, 9.16, 9.358, 9.706, 10.054, 10.495, 10.855, 11.738, 12.516, 12.922, 13.769, 14.025, 14.408, 14.675, 14.954, 15.337, 16.254, 16.765, 17.09, 17.38, 18.483, 18.959, 19.063, 19.18, 19.528, 19.969, 20.317, 21.037, 21.49, 21.954, 22.117, 22.488, 23.278, 23.58, 23.684, 24.799, 25.066, 25.24, 26.018, 26.413, 26.54, 27.666, 27.817, 28.015, 28.189, 28.688, 29.257, 29.501, 30.662, 30.859, 31.033, 31.475, 31.695, 32.334, 32.531, 32.659, 33.088, 33.39, 34.354, 34.714, 35.108, 35.224, 35.468, 36.35, 36.652, 37.221, 37.372, 37.651, 37.79, 38.289, 38.475, 38.591, 38.858, 39.532, 39.764, 40.704, 41.018, 41.366, 41.796, 42.388, 42.62, 43.049, 43.2, 43.514, 43.688, 44.466, 44.721, 44.861, 45.011, 45.337, 46.207, 46.788, 47.055, 47.299, 48.158, 48.367, 48.808, 49.11, 49.33, 49.679, 49.992, 50.155, 50.921, 51.594, 52.163, 52.407, 52.907, 53.951, 54.323, 54.625, 54.776, 55.484, 56.366, 57.028, 57.307, 58.259, 58.421, 58.712, 59.002, 59.129, 59.501, 59.664, 59.78, 60.186, 60.511, 61.045, 61.73, 62.253, 62.821, 63.205, 64.099, 64.354, 64.923, 65.097, 65.248, 65.631, 66.235, 66.734, 67.071];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- rings (page pixels) ---- */
+      // Code: 40px mono, 24px per char, text from x=136; line i centre y = 212 + 64*i.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      ring("r-plate", 268, 212, 72, 36);    // plate on line 1, cols 3-7
+      ring("r-crumb", 1526, 672, 36, 34);   // the crumb on the " " plate
+      ring("r-surp", 1714, 666, 98, 98);    // the "False" note plate
+      ring("r-empty", 328, 212, 42, 36);    // "" on line 1 of order.py, cols 7-8
+      ring("r-note", 256, 276, 66, 36);     // note on line 2, cols 3-6
+      ring("r-zero", 364, 212, 30, 34);     // 0 on line 1 of shakes.py, col 9
+      ring("r-not", 328, 276, 134, 38);     // not shakes, cols 3-12
+      ring("r-isnone", 376, 276, 184, 38);  // shakes is None, cols 3-16
+      ring("r-blank", 352, 212, 42, 36);    // "" on line 1 of nickname.py, cols 8-9
+      ring("r-typed", 460, 276, 72, 36);    // typed, cols 11-15
+      ring("r-or", 568, 276, 40, 36);       // or, cols 17-18
+      ring("r-guest", 700, 276, 100, 38);   // "Guest", cols 20-26
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+
+      /* ---- 1. An if can look at any value: does this count as something? ---- */
+      bump("#ti1", t(3));
+      bump("#s-slots", t(4));
+      tl.fromTo("#s-code", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(5) - 0.1);
+      pop("#k-tf", t(12) - 0.05, { from: 0.6 });
+      tl.fromTo("#s-strike", { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, t(14) + 0.2);
+      draw("r-plate", t(19) - 0.1, 0.45);
+      out(["#k-tf", "#s-strike"], t(22) - 0.2, 0.2);
+      pop("#k-q", t(22), { from: 0.5, ease: "back.out(2)" });
+      bump("#k-q", t(26));
+
+      /* ---- 2. An empty plate counts as no: 0, "", None ---- */
+      out(["#c1a", "#r-plate"], t(27) - 0.3, 0.25);
+      show("#c1b", t(27));
+      pop("#pl0", t(28), { from: 0.5 });
+      pop("#lb0", t(33), { from: 0.6 });
+      type("#B0", t(33), 7);
+      pop("#k0", t(33) + 0.35, { from: 0.6 });
+      pop("#pl1", t(34), { from: 0.5 });
+      pop("#lb1", t(34) + 0.1, { from: 0.6 });
+      type("#B1", t(34), 8);
+      pop("#k1", t(35), { from: 0.6 });
+      pop("#pl2", t(37), { from: 0.5 });
+      pop("#lb2", t(37) + 0.1, { from: 0.6 });
+      type("#B2", t(37), 10);
+      pop("#k2", t(37) + 0.45, { from: 0.6 });
+      bump(["#pl0", "#pl1", "#pl2"], t(40));
+      pop("#rowA", t(45) - 0.1, { from: 0.6 });
+
+      /* ---- 3. Anything on the plate counts as yes: -1, " ", a crumb ---- */
+      bump("#s-slots", t(49) - 0.1);
+      pop("#pl3", t(53), { from: 0.5 });
+      pop("#lb3", t(53) + 0.1, { from: 0.6 });
+      type("#B3", t(53), 8);
+      pop("#k3", t(54), { from: 0.6 });
+      pop("#pl4", t(56), { from: 0.5 });
+      pop("#lb4", t(56) + 0.1, { from: 0.6 });
+      type("#B4", t(56), 9);
+      pop("#k4", t(57), { from: 0.6 });
+      draw("r-crumb", t(60) - 0.1, 0.4);
+      pop("#rowB", t(63) - 0.1, { from: 0.6 });
+      out("#r-crumb", t(64), 0.2);
+
+      /* ---- 4. Surprise: a note that says False counts as yes ---- */
+      pop("#pl5", t(68) - 0.05, { from: 0.4, ease: "back.out(2)" });
+      pop("#lb5", t(71), { from: 0.6 });
+      type("#B5", t(71), 13);
+      bump("#pl5", t(76));
+      pop("#k5", t(83) - 0.1, { from: 0.4, ease: "back.out(2.4)" });
+      draw("r-surp", t(83) - 0.1, 0.5);
+      bump("#k5", t(83) + 0.5);
+
+      /* ---- 5. Chloe skipped the note: if note? empty, so No note ---- */
+      out(["#b1", "#c1b", "#f1", "#r-surp"], t(84) - 0.35, 0.3);
+      show(["#b2", "#c2", "#f2", "#s-outarea"], t(84) - 0.05);
+      draw("r-empty", t(87), 0.4);
+      bump("#s-field", t(88));
+      out("#r-empty", t(89) - 0.15, 0.15);
+      draw("r-note", t(89), 0.4);
+      bump("#s-bigplate", t(92));
+      pop("#k-c2", t(94), { from: 0.6 });
+      out("#r-note", t(98), 0.2);
+      pop("#O2", t(99), { from: 0.7, d: 0.3 });
+      pop("#p2", t(99) + 0.1, { from: 0.6 });
+
+      /* ---- 6. Ben drank 0 shakes: a real answer. not shakes is wrong, is None is right ---- */
+      out(["#b2", "#c2", "#f2"], t(101) - 0.35, 0.3);
+      show(["#b3", "#c3", "#f3"], t(101) - 0.05);
+      draw("r-zero", t(103), 0.4);
+      pop("#s-glab", t(103), { from: 0.6 });
+      bump("#s-glass", t(106));
+      pop("#s-tag1", t(108), { from: 0.6 });
+      out("#r-zero", t(110), 0.2);
+      pop("#s-tag2", t(114), { from: 0.5, ease: "back.out(2)" });
+      draw("r-not", t(117) - 0.1, 0.45);
+      pop("#O3a", t(124) - 0.2, { from: 0.7, d: 0.3 });
+      pop("#p3f", t(124), { from: 0.6 });
+      pop("#s-wrong", t(128) - 0.05, { from: 0.4, ease: "back.out(2.4)" });
+      shake("#O3a", t(128));
+      out("#r-not", t(129) - 0.2, 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 600, y: 600 }, { opacity: 1, x: 214, y: 268, duration: 0.5, ease: "power3.out", immediateRender: false }, t(129) - 0.1);
+      swap("#L3a", "#L3b", t(130));
+      draw("r-isnone", t(130) + 0.2, 0.45);
+      tl.to("#s-cursor", { opacity: 0, x: 600, y: 600, duration: 0.4, ease: "power2.in" }, t(131) + 0.2);
+      out("#s-wrong", t(132) - 0.1, 0.15);
+      swap("#O3a", "#O3b", t(132));
+      swap("#p3f", "#p3t", t(132) + 0.1);
+      bump("#s-tag2", t(132) + 0.4);
+
+      /* ---- 7. Ana's nickname: typed or "Guest", the backup plate slides in ---- */
+      out(["#b3", "#c3", "#f3", "#r-isnone"], t(133) - 0.35, 0.3);
+      show(["#b4", "#c4", "#f4"], t(133) - 0.05);
+      draw("r-blank", t(137), 0.4);
+      bump("#s-np1", t(137));
+      out("#r-blank", t(138) - 0.2, 0.15);
+      type("#L41", t(138) - 0.3, 26);
+      draw("r-typed", t(138) + 0.3, 0.35);
+      draw("r-or", t(139), 0.35);
+      draw("r-guest", t(140), 0.4);
+      bump("#s-np2", t(140));
+      out(["#r-typed", "#r-or", "#r-guest"], t(141), 0.2);
+      bump("#s-np1", t(143));
+      pop("#s-nono", t(145), { from: 0.6 });
+      tl.to("#s-np2", { x: -145, y: 380, duration: 1.0, ease: "power2.inOut" }, t(148) - 0.1);
+      out("#s-nl2", t(148), 0.2);
+      bump("#s-tray", t(148) + 0.85);
+      pop("#O4", t(148) + 0.6, { from: 0.7, d: 0.3 });
+      pop("#p4", t(148) + 0.7, { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 61.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

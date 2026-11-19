@@ -1,0 +1,9 @@
+Every recipe card has blanks. Serves blank. Takes blank minutes. Tonight you fill them in. Serves four. Takes thirty-five minutes.
+
+Python has the same card. It is called an f-string. Write an f before the quote marks, and put a name in curly braces. Python opens that jar, and drops its value into the blank. No plus signs, and no lost spaces.
+
+Now print the dinner bill. Ana's pasta costs fourteen point five. But a price needs two decimals. After the name, add a colon, then point two f. Now it says fourteen fifty. Add a width too, and every price snaps into one neat column, right down to the total.
+
+One classic slip. Forget the f, and Python prints the curly braces, exactly as you typed them. No error at all. Put the f back, and the blanks fill in.
+
+An f, and curly braces. Python fills in the blanks.

@@ -1,0 +1,376 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the recipe card */
+    #s-card { left: 1210px; top: 96px; width: 614px; height: 420px; background: #fbf8f4; border-radius: 22px; }
+    .c-h { position: absolute; left: 40px; top: 26px; font-size: 28px; letter-spacing: 0.08em; color: #3e3b52; white-space: nowrap; }
+    .c-t { position: absolute; left: 40px; top: 68px; font: 700 64px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .c-rule { position: absolute; left: 40px; top: 164px; width: 534px; height: 4px; background: #ece7df; }
+    .c-l { position: absolute; left: 40px; height: 76px; font-size: 44px; line-height: 76px; white-space: nowrap; }
+    .c-blank { position: absolute; left: 236px; width: 130px; height: 76px; border-radius: 14px; background: #fff; outline: 4px dashed #3b37e6; outline-offset: -4px; }
+    .c-v { position: absolute; left: 236px; width: 130px; height: 76px; text-align: center; font: 700 52px/76px "JetBrains Mono", monospace; color: #3b37e6; white-space: pre; }
+    #c-bad { left: 236px; width: auto; text-align: left; font-size: 40px; color: #b8235a; }
+
+    /* the jars */
+    .j { top: 600px; width: 280px; height: 330px; }
+    #s-j1 { left: 1230px; }
+    #s-j2 { left: 1540px; }
+    .j-lid { position: absolute; left: 30px; top: 0; width: 220px; height: 40px; background: #0e0c1d; border-radius: 12px; }
+    .j-body { position: absolute; left: 0; top: 30px; width: 280px; height: 300px; background: #fff; border-radius: 40px; }
+    .j-lab { position: absolute; left: 30px; top: 40px; width: 220px; height: 60px; background: #ece7df; border-radius: 10px; text-align: center; font: 700 34px/60px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .j-v { position: absolute; left: 0; top: 120px; width: 280px; height: 140px; text-align: center; font: 700 110px/140px "JetBrains Mono", monospace; color: #3b37e6; }
+    .chip { left: 0; top: 0; width: 120px; height: 76px; border-radius: 16px; background: #fff; text-align: center; font: 700 52px/76px "JetBrains Mono", monospace; color: #3b37e6; }
+
+    /* the receipt printer */
+    #s-printer { left: 1220px; top: 96px; width: 594px; height: 90px; background: #0e0c1d; border-radius: 20px; }
+    #s-slot { position: absolute; left: 30px; top: 58px; width: 534px; height: 12px; background: #3e3b52; border-radius: 6px; }
+    #s-led { position: absolute; left: 30px; top: 20px; width: 20px; height: 20px; border-radius: 50%; background: #4bd69b; }
+    #s-plab { position: absolute; left: 66px; top: 8px; font-size: 30px; line-height: 44px; color: #fff; }
+    #s-paper { left: 1260px; top: 170px; width: 514px; height: 420px; background: #fff; border-radius: 0 0 16px 16px; }
+    .p-h { position: absolute; left: 0; top: 34px; width: 514px; text-align: center; font-size: 30px; letter-spacing: 0.1em; color: #3e3b52; }
+    .p-c { position: absolute; height: 64px; font: 600 40px/64px "JetBrains Mono", monospace; color: #0e0c1d; white-space: pre; }
+    .p-c.pr { color: #3b37e6; font-weight: 700; }
+    #p-rule { left: 1300px; top: 464px; width: 360px; height: 0; border-top: 4px dashed #0e0c1d; }
+
+    /* pills */
+    .s-pill { padding: 0 26px; height: 60px; line-height: 60px; border-radius: 999px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.r { background: #fbe0ea; color: #b8235a; }
+    .s-pill.g { background: #ddefe6; color: #1f7a5c; }
+    .s-pill.a { background: #e6e3ff; color: #3b37e6; }
+    .s-pill.w { background: #fbebd2; color: #b9741a; }
+    .s-pill code { font: 700 32px/60px "JetBrains Mono", monospace; }
+    #pl-fs { left: 812px; top: 326px; }
+    #pl-glued { left: 760px; top: 518px; }
+    #pl-dec { left: 1300px; top: 620px; }
+    #pl-noerr { left: 1250px; top: 580px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-hr { position: absolute; left: 0; top: 520px; width: 1054px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 536px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #ffc24b; }
+    .s-ln .b { color: #ffffff; }
+    .s-ln.old { color: #ff6b8b; }
+    .s-out.g { color: #7cf0b5; }
+    .s-out.r { color: #ff6b8b; }
+    #s-strike { position: absolute; left: 34px; top: 450px; width: 590px; height: 5px; background: #ff6b8b; border-radius: 3px; opacity: 0; transform-origin: 0 50%; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the jars -->
+        <div id="s-j1" class="s-abs j">
+          <div class="j-body s-ol"></div>
+          <div class="j-lid" id="j1-lid"></div>
+          <div class="j-lab">servings</div>
+          <div class="j-v">4</div>
+        </div>
+        <div id="s-j2" class="s-abs j">
+          <div class="j-body s-ol"></div>
+          <div class="j-lid" id="j2-lid"></div>
+          <div class="j-lab">minutes</div>
+          <div class="j-v">35</div>
+        </div>
+
+        <!-- the recipe card -->
+        <div id="s-card" class="s-abs s-ol">
+          <div class="c-h">RECIPE CARD</div>
+          <div class="c-t">Bean chili</div>
+          <div class="c-rule"></div>
+          <div class="c-l" style="top:196px">Serves</div>
+          <div class="c-blank" id="b1" style="top:196px"></div>
+          <div class="c-v s-hide" id="v1" style="top:196px">4</div>
+          <div class="c-v s-hide" id="c-bad" style="top:196px">{servings}</div>
+          <div class="c-l" style="top:300px">Takes</div>
+          <div class="c-blank" id="b2" style="top:300px"></div>
+          <div class="c-v s-hide" id="v2" style="top:300px">35</div>
+          <div class="c-l" style="top:300px; left:390px">minutes</div>
+        </div>
+
+        <!-- the receipt printer -->
+        <div id="s-paper" class="s-abs s-ol s-hide"><div class="p-h">DINNER BILL</div></div>
+        <div id="s-printer" class="s-abs s-hide"><div id="s-led"></div><div id="s-plab">printing…</div><div id="s-slot"></div></div>
+        <div id="p0d" class="s-abs p-c s-hide" style="left:1300px; top:268px">Pasta</div>
+        <div id="p0s" class="s-abs p-c s-hide" style="left:1444px; top:268px">$</div>
+        <div id="p0a" class="s-abs p-c pr s-hide" style="left:1468px; top:268px">14.5</div>
+        <div id="p0b" class="s-abs p-c pr s-hide" style="left:1468px; top:268px">14.50</div>
+        <div id="p1d" class="s-abs p-c s-hide" style="left:1300px; top:332px">Chili</div>
+        <div id="p1s" class="s-abs p-c s-hide" style="left:1444px; top:332px">$</div>
+        <div id="p1p" class="s-abs p-c pr s-hide" style="left:1468px; top:332px">12.00</div>
+        <div id="p2d" class="s-abs p-c s-hide" style="left:1300px; top:396px">Pudding</div>
+        <div id="p2s" class="s-abs p-c s-hide" style="left:1492px; top:396px">$</div>
+        <div id="p2p" class="s-abs p-c pr s-hide" style="left:1516px; top:396px">6.75</div>
+        <div id="p-rule" class="s-abs s-hide"></div>
+        <div id="p3" class="s-abs p-c s-hide" style="left:1300px; top:478px">Total   $ <span style="color:#1f7a5c; font-weight:700">33.25</span></div>
+
+        <div id="pl-dec" class="s-abs s-pill w s-hide">needs 2 decimals</div>
+        <div id="pl-noerr" class="s-abs s-pill w s-hide">No error at all</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span id="s-file" style="position:relative; width:260px; height:40px; display:inline-block"><b id="f-card" style="position:absolute; left:0; top:0; font-weight:700">card.py</b><b id="f-bill" style="position:absolute; left:0; top:0; font-weight:700; opacity:0">bill.py</b></span></div>
+          <div id="s-hr"></div>
+          <div id="s-outlbl">output</div>
+
+          <!-- 2: the card in code -->
+          <div class="s-ln" id="A1" style="top:100px">servings = <span class="n">4</span></div>
+          <div class="s-ln" id="A2" style="top:164px">minutes = <span class="n">35</span></div>
+          <div class="s-ln" id="A3" style="top:228px"><span class="k">print</span>(<span class="f">f</span><span class="s">"Serves </span><span class="b">{servings}</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="A4" style="top:292px"><span class="k">print</span>(<span class="f">f</span><span class="s">"Takes </span><span class="b">{minutes}</span><span class="s"> minutes"</span>)</div>
+          <div class="s-ln old" id="A6" style="top:420px">"Serves" + str(servings)</div>
+          <div id="s-strike"></div>
+          <div class="s-out g" id="A3o" style="top:600px">Serves 4</div>
+          <div class="s-out g" id="A4o" style="top:664px">Takes 35 minutes</div>
+
+          <!-- 3: the dinner bill -->
+          <div class="s-ln" id="R1" style="top:100px">dish = <span class="s">"Pasta"</span></div>
+          <div class="s-ln" id="R2" style="top:164px">price = <span class="n">14.5</span></div>
+          <div class="s-ln" id="R3a" style="top:228px"><span class="k">print</span>(<span class="f">f</span><span class="s">"</span><span class="b">{dish}</span><span class="s"> $</span><span class="b">{price}</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="R3b" style="top:228px"><span class="k">print</span>(<span class="f">f</span><span class="s">"</span><span class="b">{dish}</span><span class="s"> $</span><span class="b">{price<span class="n">:</span>}</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="R3c" style="top:228px"><span class="k">print</span>(<span class="f">f</span><span class="s">"</span><span class="b">{dish}</span><span class="s"> $</span><span class="b">{price<span class="n">:.2f</span>}</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="R3d" style="top:228px"><span class="k">print</span>(<span class="f">f</span><span class="s">"</span><span class="b">{dish<span class="n">:&lt;8</span>}</span><span class="s">$</span><span class="b">{price<span class="n">:&gt;6.2f</span>}</span><span class="s">"</span>)</div>
+          <div class="s-out" id="Ra" style="top:600px">Pasta $14.5</div>
+          <div class="s-out g" id="Rb" style="top:600px">Pasta $14.50</div>
+          <div class="s-out g" id="Rc" style="top:600px">Pasta   $ 14.50</div>
+
+          <!-- 4: the missing f -->
+          <div class="s-ln" id="M1" style="top:100px">servings = <span class="n">4</span></div>
+          <div class="s-ln" id="M2" style="top:164px"><span class="k">print</span>(<span class="f">f</span><span class="s">"Serves </span><span class="b">{servings}</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="M2n" style="top:164px"><span class="k">print</span>(<span class="s">"Serves {servings}"</span>)</div>
+          <div class="s-out g" id="Mo" style="top:600px">Serves 4</div>
+          <div class="s-out r" id="Mob" style="top:600px">Serves {servings}</div>
+        </div>
+
+        <!-- flying values -->
+        <div id="s-c1" class="s-abs chip s-ol s-hide">4</div>
+        <div id="s-c2" class="s-abs chip s-ol s-hide">35</div>
+        <div id="pl-fs" class="s-abs s-pill a s-hide">an f-string</div>
+        <div id="pl-glued" class="s-abs s-pill r s-hide"><code>Serves4</code></div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-b1" style="stroke:#3b37e6" />
+          <path id="r-b2" style="stroke:#3b37e6" />
+          <path id="r-f" style="stroke:#ffc24b" />
+          <path id="r-br" style="stroke:#ffc24b" />
+          <path id="r-plus" style="stroke:#ff6b8b" />
+          <path id="r-145" style="stroke:#ffc24b" />
+          <path id="r-rc" style="stroke:#b9741a" />
+          <path id="r-2f" style="stroke:#ffc24b" />
+          <path id="r-w1" style="stroke:#ffc24b" />
+          <path id="r-w2" style="stroke:#ffc24b" />
+          <path id="r-mf" style="stroke:#ffc24b" />
+          <path id="r-bad" style="stroke:#ff6b8b" />
+          <path id="r-badc" style="stroke:#b8235a" />
+          <path id="r-ok" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.894, 1.254, 1.544, 2.299, 2.752, 3.367, 3.727, 4.087, 4.795, 5.224, 5.375, 5.584, 5.77, 6.118, 6.583, 7.094, 7.454, 8.197, 8.893, 9.392, 9.636, 9.822, 10.217, 10.96, 11.134, 11.273, 11.61, 11.97, 12.98, 13.305, 13.502, 13.7, 14.199, 14.315, 14.617, 15.128, 15.325, 15.511, 15.604, 15.917, 16.173, 16.637, 17.682, 18.239, 18.727, 18.959, 19.319, 19.54, 19.911, 20.132, 20.55, 20.759, 20.875, 21.827, 22.094, 22.372, 22.849, 23.081, 23.29, 23.533, 24.648, 24.985, 25.263, 25.391, 25.658, 26.378, 26.808, 27.249, 27.632, 28.143, 28.468, 29.292, 29.478, 29.547, 29.907, 30.209, 30.511, 31.649, 32.02, 32.16, 32.624, 32.903, 33.019, 33.89, 34.168, 34.493, 34.865, 35.736, 35.968, 36.095, 36.386, 36.931, 37.872, 38.15, 38.301, 38.696, 39.439, 39.66, 39.927, 40.229, 40.635, 40.96, 41.285, 41.622, 42.376, 42.69, 42.992, 43.166, 43.317, 44.501, 44.826, 45.395, 46.475, 46.811, 46.974, 47.253, 47.462, 47.984, 48.356, 48.495, 48.878, 49.807, 50.41, 50.526, 50.689, 51.06, 51.722, 52.059, 52.465, 52.732, 53.382, 53.615, 53.8, 54.033, 54.346, 54.497, 54.601, 54.973, 55.24, 55.704, 55.995, 56.343, 56.656, 57.098, 57.91, 58.421, 58.746, 58.874, 58.99];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Code panel at (96, 96). 40px mono = 24px per char, code text starts at x=136.
+      // Code line i (0-based) has its centre at y = 228 + 64 i. Output line 0 has its centre at y = 728.
+      const cx = (c0, c1) => 136 + ((c0 + c1) / 2) * 24 + 12;
+      const ring = (id, x, y, rx, ry) => {
+        const d = `M${x - rx + 6} ${y + 4} C${x - rx + 2} ${y - ry} ${x + rx} ${y - ry - 3} ${x + rx} ${y} C${x + rx} ${y + ry} ${x - rx - 3} ${y + ry + 3} ${x - rx} ${y - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-b1", 1511, 330, 92, 56);            // blank 1 on the card (final place)
+      ring("r-b2", 1511, 434, 92, 56);            // blank 2
+      ring("r-f", cx(6, 6), 356, 26, 38);         // the f in print(f"Serves {servings}")
+      ring("r-br", cx(15, 24), 356, 136, 40);     // {servings}
+      ring("r-plus", cx(9, 9), 548, 30, 36);      // the + in the old line
+      ring("r-145", cx(8, 11), 292, 66, 38);      // 14.5 in price = 14.5
+      ring("r-rc", 1300 + 7 * 24 + 50, 300, 60, 38); // 14.5 on the receipt
+      ring("r-2f", cx(22, 25), 356, 60, 40);      // :.2f
+      ring("r-w1", cx(13, 15), 356, 46, 40);      // :<8
+      ring("r-w2", cx(24, 26), 356, 48, 40);      // :>6
+      ring("r-mf", cx(6, 6), 292, 26, 38);        // the f in the missing-f line
+      ring("r-bad", cx(7, 16), 728, 140, 38);     // {servings} in the output
+      ring("r-badc", 1210 + 236 + 120, 330, 150, 52); // {servings} on the card
+      ring("r-ok", cx(6, 6), 292, 26, 38);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, from) => {
+        if (from) tl.fromTo("#s-cursor", { opacity: 0, x: from[0], y: from[1] }, { opacity: 1, x, y, duration: 0.5, ease: "power3.out", immediateRender: false }, at);
+        else tl.to("#s-cursor", { opacity: 1, x, y, duration: 0.5, ease: "power2.inOut" }, at);
+      };
+      const cursorOff = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.25 }, at);
+
+      // The card starts big in the middle of the frame, then moves to its place on the right.
+      const C = [1517, 306], C1 = [700, 420], S1 = 1.35;
+      const big = (p) => [C1[0] + S1 * (p[0] - C[0]), C1[1] + S1 * (p[1] - C[1])];
+      tl.set("#s-card", { x: C1[0] - C[0], y: C1[1] - C[1], scale: S1 }, 0);
+      // Chips start centred on the jar values; jar 1 value centre (1370, 820), jar 2 (1680, 820).
+      const J1 = [1370, 820], J2 = [1680, 820], B1 = [1511, 330], B2 = [1511, 434];
+      tl.set("#s-c1", { x: J1[0] - 60, y: J1[1] - 38 }, 0);
+      tl.set("#s-c2", { x: J2[0] - 60, y: J2[1] - 38 }, 0);
+      const fly = (chip, from, to, sc, at) => {
+        tl.fromTo(chip, { opacity: 1, x: from[0] - 60, y: from[1] - 38, scale: 1 },
+          { x: to[0] - 60, y: to[1] - 38, scale: sc, duration: 0.6, ease: "power2.inOut", immediateRender: false }, at);
+        tl.to(chip, { opacity: 0, duration: 0.12 }, at + 0.6);
+      };
+      const lid = (sel, at) => tl.fromTo(sel, { y: 0, rotation: 0 }, { y: -34, rotation: -10, duration: 0.25, ease: "power2.out", yoyo: true, repeat: 1, repeatDelay: 0.5, immediateRender: false }, at);
+
+      /* ---- 1. A recipe card has blanks. Serves 4, takes 35 minutes ---- */
+      bump(["#b1", "#b2"], t(4));
+      tl.fromTo("#b1", { backgroundColor: "#ffffff" }, { backgroundColor: "#e6e3ff", duration: 0.25, yoyo: true, repeat: 1, immediateRender: false }, t(6));
+      tl.fromTo("#b2", { backgroundColor: "#ffffff" }, { backgroundColor: "#e6e3ff", duration: 0.25, yoyo: true, repeat: 1, immediateRender: false }, t(8));
+      lid("#j1-lid", t(12));
+      fly("#s-c1", J1, big(B1), S1, t(16) - 0.6);
+      pop("#v1", t(16), { from: 0.5, ease: "back.out(2.2)", d: 0.35 });
+      lid("#j2-lid", t(17) - 0.2);
+      fly("#s-c2", J2, big(B2), S1, t(18) - 0.6);
+      pop("#v2", t(18), { from: 0.5, ease: "back.out(2.2)", d: 0.35 });
+
+      /* ---- 2. The same card in Python: an f-string ---- */
+      tl.to("#s-card", { x: 0, y: 0, scale: 1, duration: 0.7, ease: "power3.inOut" }, t(20));
+      out(["#v1", "#v2"], t(20) + 0.3, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out", immediateRender: false }, t(20) + 0.2);
+      type("#A1", t(21), 12);
+      type("#A2", t(22), 12);
+      type("#A3", t(25), 27);
+      type("#A4", t(27), 33);
+      pop("#pl-fs", t(29) - 0.05, { from: 0.5, ease: "back.out(2.2)" });
+      cursorTo(cx(6, 6) - 6, 372, t(30), [700, 760]);
+      draw("r-f", t(32) - 0.05, 0.4);
+      out("#pl-fs", t(37), 0.2);
+      cursorTo(cx(15, 24) - 10, 376, t(40));
+      draw("r-br", t(42), 0.5);
+      cursorOff(t(44));
+      lid("#j1-lid", t(45));
+      lid("#j2-lid", t(46));
+      fly("#s-c1", J1, B1, 1, t(49));
+      fly("#s-c2", J2, B2, 1, t(50));
+      pop("#v1", t(49) + 0.6, { from: 0.5, ease: "back.out(2.2)", d: 0.35 });
+      pop("#v2", t(50) + 0.6, { from: 0.5, ease: "back.out(2.2)", d: 0.35 });
+      pop("#A3o", t(51), { from: 0.7, d: 0.3 });
+      pop("#A4o", t(53), { from: 0.7, d: 0.3 });
+      out(["#r-f", "#r-br"], t(54), 0.25);
+      // the old way: glue with + and str(), and the space goes missing
+      show("#A6", t(55) - 0.1, 0.25);
+      draw("r-plus", t(56), 0.4);
+      pop("#pl-glued", t(60), { from: 0.5, ease: "back.out(2.2)" });
+      tl.fromTo("#s-strike", { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, t(61));
+
+      /* ---- 3. The dinner bill: :.2f, then a width ---- */
+      const s2 = ["#A1", "#A2", "#A3", "#A4", "#A6", "#s-strike", "#A3o", "#A4o", "#r-plus", "#pl-glued", "#s-card", "#s-j1", "#s-j2", "#v1", "#v2"];
+      out(s2, t(62) - 0.25, 0.3);
+      swap("#f-card", "#f-bill", t(62));
+      pop("#s-printer", t(62) + 0.1, { from: 0.8 });
+      tl.fromTo("#s-paper", { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "power2.out", immediateRender: false }, t(64));
+      type("#R1", t(63), 14);
+      type("#R2", t(67), 12);
+      draw("r-145", t(70), 0.45);
+      out("#r-145", t(72) + 0.3, 0.2);
+      type("#R3a", t(72) - 0.1, 25);
+      pop("#Ra", t(73), { from: 0.7, d: 0.3 });
+      show(["#p0d", "#p0s", "#p0a"], t(73), 0.3);
+      draw("r-rc", t(77) - 0.1, 0.45);
+      pop("#pl-dec", t(78), { from: 0.5, ease: "back.out(2.2)" });
+      cursorTo(cx(22, 22) - 14, 372, t(79), [700, 760]);
+      swap("#R3a", "#R3b", t(84));
+      swap("#R3b", "#R3c", t(86));
+      draw("r-2f", t(88) - 0.1, 0.45);
+      cursorOff(t(89));
+      out(["#r-rc", "#pl-dec"], t(89), 0.2);
+      swap("#Ra", "#Rb", t(92));
+      swap("#p0a", "#p0b", t(92));
+      // more lines print, still ragged
+      show(["#p1d", "#p1s", "#p1p"], t(94), 0.25);
+      show(["#p2d", "#p2s", "#p2p"], t(94) + 0.35, 0.25);
+      out("#r-2f", t(95), 0.2);
+      swap("#R3c", "#R3d", t(96));
+      draw("r-w1", t(97), 0.4);
+      draw("r-w2", t(97) + 0.3, 0.4);
+      swap("#Rb", "#Rc", t(99));
+      // snap into one column: $ at col 8, prices right-aligned to col 15
+      tl.to(["#p0s", "#p1s"], { x: 48, duration: 0.45, ease: "back.out(2)" }, t(101));
+      tl.to(["#p0b", "#p1p"], { x: 72, duration: 0.45, ease: "back.out(2)" }, t(101));
+      tl.to("#p2p", { x: 48, duration: 0.45, ease: "back.out(2)" }, t(101));
+      out(["#r-w1", "#r-w2"], t(105), 0.2);
+      tl.fromTo("#p-rule", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, t(106));
+      pop("#p3", t(110) - 0.1, { from: 0.7, d: 0.35 });
+
+      /* ---- 4. Forget the f: the braces print as they are ---- */
+      const s3 = ["#R1", "#R2", "#R3d", "#Rc", "#s-printer", "#s-paper", "#p0d", "#p0s", "#p0b", "#p1d", "#p1s", "#p1p", "#p2d", "#p2s", "#p2p", "#p-rule", "#p3"];
+      out(s3, t(111) - 0.2, 0.3);
+      swap("#f-bill", "#f-card", t(111));
+      show(["#s-card", "#M1", "#M2", "#Mo", "#v1"], t(111) + 0.15, 0.35);
+      cursorTo(cx(6, 6) - 6, 308, t(114) - 0.2, [700, 760]);
+      draw("r-mf", t(114), 0.35);
+      out("#r-mf", t(116) - 0.05, 0.15);
+      swap("#M2", "#M2n", t(116));
+      cursorOff(t(117));
+      swap("#Mo", "#Mob", t(119));
+      out(["#v1", "#b1"], t(119) - 0.1, 0.15);
+      pop("#c-bad", t(119), { from: 0.7, d: 0.35 });
+      draw("r-bad", t(121), 0.45);
+      draw("r-badc", t(121) + 0.2, 0.45);
+      pop("#pl-noerr", t(128), { from: 0.5, ease: "back.out(2.2)" });
+      out(["#r-bad", "#r-badc"], t(132), 0.2);
+      cursorTo(cx(6, 6) - 6, 308, t(132) - 0.1, [700, 760]);
+      swap("#M2n", "#M2", t(134));
+      draw("r-ok", t(134) + 0.1, 0.35);
+      cursorOff(t(136));
+      out("#pl-noerr", t(136), 0.2);
+      swap("#Mob", "#Mo", t(138));
+      out("#c-bad", t(138) - 0.1, 0.12);
+      show("#b1", t(138), 0.2);
+      pop("#v1", t(138), { from: 0.5, ease: "back.out(2.2)", d: 0.35 });
+      draw("r-b1", t(139), 0.4);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 55.85);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,348 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the kitchen bench */
+    #s-bench { left: 96px; top: 96px; width: 1728px; height: 540px; background: #fbf8f4; border-radius: 28px; }
+    .s-who { position: absolute; left: 40px; top: 30px; width: 900px; height: 110px; }
+    .s-av { position: absolute; left: 0; top: 4px; width: 76px; height: 76px; border-radius: 50%; color: #fff; text-align: center; font: 800 40px/76px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-wn { position: absolute; left: 100px; top: -6px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-ws { position: absolute; left: 102px; top: 60px; font-size: 28px; line-height: 36px; color: #3e3b52; white-space: nowrap; }
+    #s-legend { left: 1380px; top: 40px; padding: 0 24px; height: 56px; line-height: 56px; border-radius: 999px; background: #fff; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-legend b { font: 700 34px/56px "JetBrains Mono", monospace; color: #6f6b80; }
+
+    /* name cards */
+    .s-card { position: absolute; top: 150px; width: 620px; height: 150px; background: #fff; border-radius: 22px; }
+    #s-ca { left: 60px; }
+    #s-cb { left: 1040px; }
+    .s-clbl { position: absolute; left: 24px; top: 10px; font-size: 28px; line-height: 36px; color: #3e3b52; white-space: nowrap; }
+    .s-ct { position: absolute; left: 0; top: 50px; width: 620px; height: 90px; text-align: center; font: 700 72px/90px "JetBrains Mono", monospace; white-space: pre; }
+    .s-ct i { font-style: normal; color: #6f6b80; }
+    #b1, #b2, #b3 { opacity: 0; }
+    #b3 { color: #b8235a; }
+    #s-ok { left: 1612px; top: 118px; width: 72px; height: 72px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-ok > svg { position: absolute; left: 0; top: 0; width: 72px; height: 72px; }
+    #s-arrow { left: 690px; top: 210px; width: 340px; height: 60px; overflow: visible; }
+    .s-alab { position: absolute; left: 690px; top: 152px; width: 340px; text-align: center; font: 700 30px/48px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    .s-pill { position: absolute; top: 314px; padding: 0 24px; height: 52px; line-height: 52px; border-radius: 999px; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-p-old { left: 250px; background: #fbe0ea; color: #b8235a; }
+    #s-p-same { left: 430px; background: #fff; }
+    #s-p-new { left: 1240px; background: #ddefe6; color: #1f7a5c; }
+
+    /* recipe line and pasta plan */
+    .s-wide { position: absolute; left: 60px; top: 150px; width: 1600px; height: 150px; background: #fff; border-radius: 22px; }
+    .s-wt { position: absolute; left: 0; top: 50px; width: 1600px; height: 90px; text-align: center; font: 700 60px/90px "JetBrains Mono", monospace; white-space: pre; }
+    .s-bad { color: #b8235a; }
+    .s-good { color: #1f7a5c; }
+    #r2 { opacity: 0; }
+    .s-badge { position: absolute; width: 56px; height: 56px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 800 32px/56px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* tools */
+    #s-tools { position: absolute; left: 0; top: 0; width: 1728px; height: 540px; }
+    .s-tile { position: absolute; top: 380px; width: 380px; height: 136px; background: #fff; border-radius: 22px; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    .s-tile > svg { position: absolute; left: 16px; top: 20px; width: 96px; height: 96px; }
+    .s-tn { position: absolute; left: 128px; top: 14px; font: 700 36px/1.2 "Fraunces", serif; letter-spacing: -0.01em; white-space: nowrap; }
+    .s-tm { position: absolute; left: 130px; top: 72px; font: 700 32px/44px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 676px; width: 1728px; height: 308px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 1004px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; }
+    #s-div { position: absolute; left: 960px; top: 64px; width: 3px; height: 244px; background: #2e2a58; }
+    .s-ln { position: absolute; left: 40px; top: 84px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln.sm { font-size: 36px; }
+    .s-ln.l2 { top: 148px; }
+    .s-out { position: absolute; left: 1004px; top: 84px; font: 500 40px/64px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .s { color: #ffc24b; }
+    .s-ln .m { color: #7cc4ff; }
+    .s-ln.err { color: #ff6b8b; }
+    .s-ln.ok { color: #7cf0b5; }
+    #s-miss { left: 680px; top: 92px; padding: 0 20px; height: 48px; line-height: 48px; border-radius: 999px; background: #b8235a; color: #fff; font-size: 28px; white-space: nowrap; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="54.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="s-bench" class="s-abs s-ol">
+          <!-- who is cooking -->
+          <div class="s-who" id="w-chloe"><div class="s-av" style="background:#b8235a">C</div><div class="s-wn">Chloe</div><div class="s-ws">gluten-free, loves dessert</div></div>
+          <div class="s-who s-hide" id="w-ben"><div class="s-av" style="background:#1f7a5c">B</div><div class="s-wn">Ben</div><div class="s-ws">vegetarian, lifts weights</div></div>
+          <div class="s-who s-hide" id="w-ana"><div class="s-av" style="background:#3b37e6">A</div><div class="s-wn">Ana</div><div class="s-ws">training for a half-marathon</div></div>
+          <div id="s-legend" class="s-abs s-hide"><b>·</b> = a space</div>
+
+          <!-- the original card and the new copy -->
+          <div id="s-ca" class="s-card s-ol">
+            <div class="s-clbl">Chloe typed</div>
+            <div class="s-ct">"<i>··</i>cHLOE<i>·</i>"</div>
+          </div>
+          <svg id="s-arrow" class="s-abs s-hide" viewBox="0 0 340 60"><path d="M14 30 H312 M290 12 L316 30 L290 48" fill="none" stroke="#3b37e6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div class="s-alab s-hide" id="a1">.strip()</div>
+          <div class="s-alab s-hide" id="a2">.strip().title()</div>
+          <div id="s-cb" class="s-card s-ol s-hide">
+            <div class="s-clbl">you get back</div>
+            <div class="s-ct" id="b1">"cHLOE"</div>
+            <div class="s-ct" id="b2">"Chloe"</div>
+            <div class="s-ct" id="b3">?</div>
+          </div>
+          <div id="s-ok" class="s-abs s-hide"><svg viewBox="0 0 72 72"><path d="M20 37 L31 48 L53 24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div id="s-p-old" class="s-pill s-hide">original</div>
+          <div id="s-p-same" class="s-pill s-hide">never changed</div>
+          <div id="s-p-new" class="s-pill s-hide">new copy</div>
+
+          <!-- Ben's recipe line -->
+          <div id="s-rec" class="s-wide s-ol s-hide">
+            <div class="s-clbl">Ben's recipe</div>
+            <div class="s-wt" id="r1">Fry in <span class="s-bad">butter</span>, serve with <span class="s-bad">butter</span></div>
+            <div class="s-wt" id="r2">Fry in <span class="s-good">olive oil</span>, serve with <span class="s-good">olive oil</span></div>
+          </div>
+          <div class="s-badge s-hide" id="bb1" style="left:616px;top:286px">1</div>
+          <div class="s-badge s-hide" id="bb2" style="left:1300px;top:286px">2</div>
+
+          <!-- Ana's plan -->
+          <div id="s-plan" class="s-wide s-ol s-hide">
+            <div class="s-clbl">Ana's training week</div>
+            <div class="s-wt">pasta, pasta salad, pasta bake</div>
+          </div>
+          <div class="s-badge s-hide" id="pb1" style="left:382px;top:286px">1</div>
+          <div class="s-badge s-hide" id="pb2" style="left:634px;top:286px">2</div>
+          <div class="s-badge s-hide" id="pb3" style="left:1066px;top:286px">3</div>
+
+          <!-- the tool drawer -->
+          <div id="s-tools">
+            <div class="s-tile" id="t-peel" style="left:40px">
+              <svg viewBox="0 0 96 96"><path d="M48 50 C18 44 18 6 48 6 C78 6 78 44 48 50 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><path d="M36 26 H60" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" /><rect x="39" y="48" width="18" height="44" rx="7" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" /></svg>
+              <div class="s-tn">Peeler</div><div class="s-tm">.strip()</div>
+            </div>
+            <div class="s-tile" id="t-label" style="left:444px">
+              <svg viewBox="0 0 96 96"><rect x="6" y="20" width="66" height="54" rx="12" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" /><rect x="16" y="30" width="46" height="18" rx="4" fill="#fff" stroke="#0e0c1d" stroke-width="3" /><rect x="68" y="56" width="24" height="16" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="26" cy="61" r="5" fill="#0e0c1d" /><circle cx="42" cy="61" r="5" fill="#0e0c1d" /></svg>
+              <div class="s-tn">Label maker</div><div class="s-tm">.title()</div>
+            </div>
+            <div class="s-tile" id="t-swap" style="left:848px">
+              <svg viewBox="0 0 96 96"><path d="M14 34 H76 M62 20 L78 34 L62 48 M82 64 H20 M34 50 L18 64 L34 78" fill="none" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <div class="s-tn">Swap</div><div class="s-tm">.replace()</div>
+            </div>
+            <div class="s-tile" id="t-count" style="left:1252px">
+              <svg viewBox="0 0 96 96"><ellipse cx="22" cy="58" rx="14" ry="19" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><ellipse cx="48" cy="52" rx="14" ry="19" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><ellipse cx="74" cy="58" rx="14" ry="19" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><path d="M6 80 H90" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" /></svg>
+              <div class="s-tn">Counter</div><div class="s-tm">.count()</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <div class="s-ln" id="L1a"><span class="k">print</span>(<span class="s">"  cHLOE "</span>.<span class="m">strip</span>())</div>
+          <div class="s-ln" id="L1b"><span class="k">print</span>(<span class="s">"  cHLOE "</span>.<span class="m">strip</span>().<span class="m">title</span>())</div>
+          <div class="s-out" id="o1">cHLOE</div>
+          <div class="s-out" id="o2">Chloe</div>
+          <div class="s-ln" id="F1"><span class="k">print</span>(<span class="s">"cHLOE"</span>.<span class="m">title</span>)</div>
+          <div class="s-ln l2 err" id="F2">&lt;built-in method title of str object at 0x104f2a3c0&gt;</div>
+          <div id="s-miss" class="s-abs s-hide">() missing</div>
+          <div class="s-ln sm" id="G1"><span class="k">print</span>(<span class="s">"Fry in butter, serve with butter"</span>.<span class="m">replace</span>(<span class="s">"butter"</span>, <span class="s">"olive oil"</span>))</div>
+          <div class="s-ln l2 ok" id="G2">Fry in olive oil, serve with olive oil</div>
+          <div class="s-ln" id="H1"><span class="k">print</span>(<span class="s">"pasta, pasta salad, pasta bake"</span>.<span class="m">count</span>(<span class="s">"pasta"</span>))</div>
+          <div class="s-ln l2 ok" id="H2">3</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-sp1" style="stroke:#b8235a" />
+          <path id="r-caps" style="stroke:#b8235a" />
+          <path id="r-sp2" style="stroke:#b8235a" />
+          <path id="r-dot" style="stroke:#ffc24b" />
+          <path id="r-name" style="stroke:#ffc24b" />
+          <path id="r-brk" style="stroke:#ffc24b" />
+          <path id="r-peel" style="stroke:#3b37e6" />
+          <path id="r-label" style="stroke:#3b37e6" />
+          <path id="r-swap" style="stroke:#3b37e6" />
+          <path id="r-count" style="stroke:#3b37e6" />
+          <path id="r-C" style="stroke:#1f7a5c" />
+          <path id="r-hloe" style="stroke:#1f7a5c" />
+          <path id="r-chain" style="stroke:#7cf0b5" />
+          <path id="r-old" style="stroke:#b8235a;stroke-dasharray:16 12" />
+          <path id="r-new" style="stroke:#1f7a5c" />
+          <path id="r-miss" style="stroke:#ff6b8b;stroke-dasharray:14 10" />
+          <path id="r-tool" style="stroke:#ff6b8b" />
+          <path id="r-three" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.801, 0.952, 1.115, 1.753, 1.95, 2.113, 2.485, 2.635, 2.891, 3.111, 3.889, 4.203, 5.074, 5.375, 6.142, 6.444, 6.745, 7.024, 8.231, 8.487, 9.091, 9.555, 9.868, 10.043, 10.24, 10.553, 10.995, 11.947, 12.156, 12.388, 12.55, 12.713, 12.817, 13.386, 13.56, 13.99, 14.512, 14.872, 16.208, 16.73, 16.974, 17.113, 18.134, 18.32, 18.599, 18.715, 19.226, 19.504, 19.864, 20.607, 21.118, 21.292, 21.466, 21.861, 22.662, 22.825, 23.301, 23.394, 23.51, 23.858, 24.009, 24.334, 24.926, 25.274, 25.716, 26.726, 26.958, 27.074, 27.306, 27.411, 27.504, 28.107, 28.363, 28.781, 29.013, 29.326, 29.547, 30.534, 30.731, 31.509, 31.683, 31.869, 32.194, 32.299, 32.542, 32.624, 32.74, 33.297, 33.645, 34.586, 34.771, 35.189, 35.468, 35.979, 36.118, 36.896, 37.082, 37.314, 37.442, 37.511, 37.709, 38.649, 39.009, 39.114, 40.031, 40.228, 40.658, 40.936, 41.064, 41.192, 41.494, 42.353, 42.55, 42.678, 43.862, 44.176, 44.593, 45.011, 45.615, 45.882, 46.823, 47.229, 47.612, 48.007, 48.355, 48.518, 48.831, 49.505, 49.76, 50.016, 50.376, 50.503, 50.968, 51.142, 51.293, 52.187, 52.582, 52.895, 53.615, 53.998, 54.335, 54.59, 54.776, 54.95, 55.229, 55.809, 56.599, 56.773, 57.307, 57.643];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Name cards: 72px mono = 43.2px per char, centre line y=341. Card A text starts at x=250, card B ("Chloe") at x=1295.
+      // Code panel: 40px mono = 24px per char, code starts at x=136; line centres y=792 and 856.
+      // Recipe and plan cards: 60px mono = 36px per char; recipe starts at x=380, plan at x=416.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        if (!p.style.strokeDasharray) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; }
+      };
+      ring("r-sp1", 338, 341, 64, 54);       // the two leading spaces, cols 1-2
+      ring("r-caps", 488, 341, 128, 56);     // cHLOE, cols 3-7
+      ring("r-sp2", 617, 341, 34, 52);       // the trailing space, col 8
+      ring("r-dot", 532, 792, 16, 32);       // the dot, col 16
+      ring("r-name", 604, 792, 66, 38);      // strip, cols 17-21
+      ring("r-brk", 690, 792, 30, 38);       // (), cols 22-23
+      ring("r-peel", 326, 544, 214, 90);     // tool tiles (bench x 40/444/848/1252, y 380)
+      ring("r-label", 730, 544, 214, 90);
+      ring("r-swap", 1134, 544, 214, 90);
+      ring("r-count", 1538, 544, 214, 90);
+      ring("r-C", 1360, 341, 32, 52);        // the C in "Chloe", col 1
+      ring("r-hloe", 1468, 341, 98, 52);     // hloe, cols 2-5
+      ring("r-chain", 712, 792, 208, 40);    // .strip().title(), cols 16-31
+      ring("r-old", 466, 341, 252, 64);      // the whole original text
+      ring("r-new", 1446, 341, 184, 64);     // the whole new copy
+      ring("r-miss", 594, 792, 14, 36);      // where () should be, after col 18
+      ring("r-tool", 412, 856, 272, 40);     // built-in method title, cols 1-21
+      ring("r-three", 148, 856, 34, 40);     // the output 3
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.04, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: Math.min(0.035 * n, 1.0), ease: `steps(${n})`, immediateRender: false }, at);
+      const lift = (tile, at) => tl.fromTo(tile, { backgroundColor: "#ffffff" }, { backgroundColor: "#e6e3ff", duration: 0.2, immediateRender: false }, at);
+      const drop = (tile, at) => tl.to(tile, { backgroundColor: "#ffffff", duration: 0.25 }, at);
+      const cursorTo = (at, x, y) => tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 1040 }, { opacity: 1, x, y, duration: 0.5, ease: "power3.out", immediateRender: false }, at);
+      const cursorAway = (at) => tl.to("#s-cursor", { opacity: 0, y: "+=160", duration: 0.35, ease: "power2.in" }, at);
+
+      /* ---- 1. Chloe types her name like this ---- */
+      bump("#w-chloe", t(1));
+      bump("#s-ca", t(7));
+      pop("#s-legend", t(12), { from: 0.5 });
+      draw("r-sp1", t(13) - 0.1, 0.45);
+      draw("r-caps", t(15) - 0.1, 0.5);
+      draw("r-sp2", t(18), 0.4);
+      out(["#r-sp1", "#r-caps", "#r-sp2"], t(20) - 0.4, 0.3);
+
+      /* ---- 2. Text comes with its own kitchen tools: a dot, the name, brackets ---- */
+      ["#t-peel", "#t-label", "#t-swap", "#t-count"].forEach((s, i) => tl.fromTo(s, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(27) + i * 0.14));
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t(29) - 0.3);
+      type("#L1a", t(29) + 0.1, 25);
+      cursorTo(t(33) - 0.3, 528, 812);
+      draw("r-dot", t(34), 0.4);
+      tl.to("#s-cursor", { x: 600, y: 816, duration: 0.3, ease: "power2.inOut" }, t(36) - 0.1);
+      draw("r-name", t(37) - 0.05, 0.45);
+      tl.to("#s-cursor", { x: 686, y: 816, duration: 0.3, ease: "power2.inOut" }, t(39) - 0.3);
+      draw("r-brk", t(39), 0.4);
+      cursorAway(t(39) + 0.6);
+
+      /* ---- 3. Strip is the peeler ---- */
+      out(["#r-dot", "#r-name", "#r-brk"], t(40) - 0.3, 0.25);
+      lift("#t-peel", t(40)); draw("r-peel", t(40), 0.5);
+      pop("#s-arrow", t(45) - 0.2, { from: 0.8, d: 0.3 }); pop("#a1", t(45) - 0.1, { from: 0.7, d: 0.3 });
+      tl.fromTo("#s-cb", { opacity: 0, x: -980 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out", immediateRender: false }, t(45));
+      tl.set("#b1", { opacity: 1 }, t(45));
+      pop("#o1", t(48), { from: 0.7, d: 0.3 });
+
+      /* ---- 4. Title is the label maker ---- */
+      out("#r-peel", t(51) - 0.3, 0.25); drop("#t-peel", t(51) - 0.3);
+      lift("#t-label", t(51)); draw("r-label", t(51), 0.5);
+      swap("#L1a", "#L1b", t(53));
+      swap("#a1", "#a2", t(53));
+      swap("#b1", "#b2", t(57));
+      swap("#o1", "#o2", t(57) + 0.1);
+      draw("r-C", t(57) + 0.15, 0.4);
+      draw("r-hloe", t(64), 0.45);
+
+      /* ---- 5. Put the two in a row: tidy ---- */
+      out(["#r-label", "#r-C", "#r-hloe"], t(67) - 0.3, 0.25); drop("#t-label", t(67) - 0.3);
+      draw("r-chain", t(69), 0.55);
+      tl.to("#s-cb", { backgroundColor: "#ddefe6", duration: 0.3 }, t(78) - 0.1);
+      pop("#s-ok", t(78), { from: 0.3, ease: "back.out(2.4)" });
+
+      /* ---- 6. The old card is still there; a tool hands you a new copy ---- */
+      out("#r-chain", t(79), 0.25);
+      tl.to(["#s-tools", "#s-code"], { opacity: 0.35, duration: 0.4, ease: "power2.inOut" }, t(79));
+      bump("#s-ca", t(81));
+      pop("#s-p-old", t(82), { from: 0.5 });
+      draw("r-old", t(89), 0.55);
+      swap("#s-p-old", "#s-p-same", t(93));
+      pop("#s-p-new", t(101) - 0.05, { from: 0.5 });
+      draw("r-new", t(101), 0.5);
+
+      /* ---- 7. Forget the brackets: Python shows the tool itself ---- */
+      out(["#r-old", "#r-new", "#s-p-same", "#s-p-new", "#s-ok", "#s-arrow", "#a2", "#s-legend"], t(103) - 0.2, 0.3);
+      tl.to("#s-ca", { opacity: 0.25, duration: 0.3 }, t(103) - 0.2);
+      tl.to("#s-cb", { backgroundColor: "#ffffff", duration: 0.3 }, t(103) - 0.2);
+      tl.to(["#s-tools", "#s-code"], { opacity: 1, duration: 0.35 }, t(103) - 0.2);
+      out(["#L1b", "#o2", "#s-outlbl", "#s-div"], t(103) - 0.2, 0.25);
+      type("#F1", t(103) + 0.1, 20);
+      cursorTo(t(104), 590, 812);
+      draw("r-miss", t(105) - 0.05, 0.4);
+      pop("#s-miss", t(105) + 0.2, { from: 0.5 });
+      cursorAway(t(106));
+      pop("#F2", t(108), { from: 0.9, d: 0.3 });
+      draw("r-tool", t(111), 0.5);
+      lift("#t-label", t(111)); draw("r-label", t(111), 0.5);
+      swap("#b2", "#b3", t(115));
+
+      /* ---- 8. Ben: replace swaps every butter for olive oil ---- */
+      out(["#r-miss", "#r-tool", "#r-label", "#s-miss", "#F1", "#F2", "#s-ca", "#s-cb"], t(116) - 0.3, 0.3);
+      drop("#t-label", t(116) - 0.3);
+      out("#w-chloe", t(116) - 0.2, 0.2); pop("#w-ben", t(116), { from: 0.8 });
+      pop("#s-rec", t(118), { from: 0.85 });
+      bump("#s-rec", t(121));
+      lift("#t-swap", t(122)); draw("r-swap", t(122), 0.5);
+      type("#G1", t(122) + 0.1, 72);
+      pop("#G2", t(124), { from: 0.9, d: 0.3 });
+      pop("#bb1", t(124), { from: 0.3, ease: "back.out(2.4)" });
+      pop("#bb2", t(125), { from: 0.3, ease: "back.out(2.4)" });
+      swap("#r1", "#r2", t(127));
+
+      /* ---- 9. Ana counts the pasta: 3 ---- */
+      out(["#r-swap", "#bb1", "#bb2", "#s-rec", "#G1", "#G2"], t(130) - 0.2, 0.3);
+      drop("#t-swap", t(130) - 0.2);
+      out("#w-ben", t(130) - 0.1, 0.2); pop("#w-ana", t(130) + 0.1, { from: 0.8 });
+      pop("#s-plan", t(131), { from: 0.85 });
+      lift("#t-count", t(131)); draw("r-count", t(131), 0.5);
+      type("#H1", t(131) + 0.2, 54);
+      pop("#pb1", t(133), { from: 0.3, ease: "back.out(2.4)" });
+      pop("#pb2", t(133) + 0.4, { from: 0.3, ease: "back.out(2.4)" });
+      pop("#pb3", t(133) + 0.8, { from: 0.3, ease: "back.out(2.4)" });
+      bump("#t-count", t(137));
+      pop("#H2", t(138), { from: 0.4, ease: "back.out(2.4)" });
+      draw("r-three", t(139) - 0.1, 0.35);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 53.8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

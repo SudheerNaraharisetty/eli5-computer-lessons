@@ -1,0 +1,53 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 112px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h1 { top: 110px; }
+    #t-h2 { top: 250px; color: #1f7a5c; }
+    .t-card { top: 470px; width: 560px; height: 170px; background: #fff; border-radius: 26px; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card .t-v { position: absolute; left: 0; top: 18px; width: 560px; text-align: center; font: 700 64px/84px "JetBrains Mono", monospace; white-space: pre; }
+    .t-card .t-v i { font-style: normal; color: #6f6b80; }
+    .t-card .t-l { position: absolute; left: 0; top: 104px; width: 560px; text-align: center; font-size: 32px; line-height: 44px; color: #3e3b52; }
+    #t-c1 { left: 110px; }
+    #t-c2 { left: 1010px; background: #ddefe6; }
+    #t-c2 .t-l { color: #1f7a5c; }
+    #t-arr { left: 690px; top: 500px; width: 300px; height: 110px; opacity: 0; }
+    #t-arr > svg { position: absolute; left: 0; top: 52px; width: 300px; height: 50px; }
+    #t-arr > div { position: absolute; left: 0; top: 0; width: 300px; text-align: center; font: 700 30px/44px "JetBrains Mono", monospace; color: #3b37e6; }
+    #t-next { left: 110px; top: 800px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.5" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">Text tools hand you</div>
+      <div id="t-h2" class="t-abs t-head">a new, tidy copy.</div>
+      <div id="t-c1" class="t-abs t-card"><div class="t-v">"<i>··</i>cHLOE<i>·</i>"</div><div class="t-l">the original never changes</div></div>
+      <div id="t-arr" class="t-abs"><div>.strip().title()</div><svg viewBox="0 0 300 50"><path d="M10 25 H278 M258 9 L282 25 L258 41" fill="none" stroke="#3b37e6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+      <div id="t-c2" class="t-abs t-card"><div class="t-v">"Chloe"</div><div class="t-l">a new copy</div></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 10: True and False</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 54.1;
+      const g = { text: 54.215, newc: 55.55, original: 57.373 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.text - S - 0.1));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.newc - S - 0.1);
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.newc - S + 0.1);
+      tl.fromTo("#t-arr", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, g.newc - S + 0.35);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.newc - S + 0.6);
+      tl.fromTo("#t-c1", { scale: 1 }, { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, g.original - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 5.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

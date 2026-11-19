@@ -1,0 +1,19 @@
+Chloe signs up for dinner. But she types her name like this. Two spaces, odd capitals, and one more space.
+
+In Python, text comes with its own kitchen tools. You use one with a dot, the tool's name, and brackets.
+
+Strip is the peeler. It takes the spaces off both ends.
+
+Title is the label maker. A capital at the start of each word, small letters after.
+
+Put the two in a row, and Chloe's name comes out tidy.
+
+But look. The old card is still on the bench, still messy. A tool never changes the text. It hands you a new copy.
+
+Forget the brackets, and Python shows you the tool itself, not the result.
+
+Ben wants olive oil, not butter. Replace swaps every butter for olive oil.
+
+And Ana counts the pasta in her plan. Count says three.
+
+Text tools hand you a new, tidy copy. The original never changes.

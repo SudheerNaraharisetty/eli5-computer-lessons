@@ -1,0 +1,57 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 150px; font: 700 120px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-under { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 110px; top: 440px; width: 1150px; display: flex; flex-wrap: wrap; gap: 22px 18px; }
+    #t-sub span { opacity: 0; padding: 8px 28px; background: #fff; border-radius: 999px; font-size: 44px; line-height: 1.35; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-sub span.ok { background: #ddefe6; color: #1f7a5c; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-file { left: 1420px; top: 400px; width: 380px; height: 460px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="6.7" data-track-index="1">
+      <div id="t-head" class="t-abs"><span>A</span> <span>file</span> <span>is</span> <span>a</span> <span class="ac">recipe</span> <span class="ac">card.</span></div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M880 300 Q1150 324 1430 290" /></svg>
+      <div id="t-sub" class="t-abs"><span>Save it</span><span class="ok">then run it</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 4: Read an error</div>
+      <svg id="t-file" class="t-abs" viewBox="0 0 380 460" data-layout-allow-overflow>
+        <path d="M14 20 Q14 10 24 10 H290 L370 90 V440 Q370 450 360 450 H24 Q14 450 14 440 Z" fill="#0e0c1d" transform="translate(0 10)" />
+        <path d="M10 20 Q10 6 24 6 H290 L370 86 V436 Q370 446 360 446 H24 Q10 446 10 436 Z" fill="#fbebd2" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <path d="M290 6 V86 H370" fill="#ece7df" stroke="#0e0c1d" stroke-width="6" stroke-linejoin="round" />
+        <g stroke="#3e3b52" stroke-width="12" stroke-linecap="round"><path d="M60 170 H250" /><path d="M60 230 H300" /><path d="M60 290 H270" /><path d="M60 350 H310" /></g>
+        <text x="190" y="120" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="48" fill="#0e0c1d">dinner.py</text>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 53.3;
+      const g = { a: 53.484, recipe: 54.204, card: 54.61, save: 55.702, run: 56.781, end: 57.5 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-file", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.05);
+      tl.fromTo(words.slice(0, 4), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", stagger: 0.12 }, g.a - S);
+      tl.fromTo(words.slice(4), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", stagger: 0.3 }, g.recipe - S - 0.05);
+      const u = document.getElementById("t-under"), L = u.getTotalLength();
+      u.style.strokeDasharray = L;
+      tl.fromTo(u, { strokeDashoffset: L, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.6, ease: "power2.out", immediateRender: false }, g.card - S + 0.3);
+      const chips = gsap.utils.toArray("#t-sub span");
+      [g.save, g.run].forEach((at, i) => tl.fromTo(chips[i], { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at - S - 0.05));
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

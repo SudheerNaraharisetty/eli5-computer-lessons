@@ -1,0 +1,13 @@
+A recipe you only keep in your head is gone by tomorrow. So you write it on a card. In Python, that card is a file.
+
+In VS Code, make a new file and save it as dinner dot p y. The dot p y says: this is Python.
+
+Now write the steps. Print, dinner at seven. Then print the starter, the main and the dessert.
+
+Run it. Press the Run button, or type python three, dinner dot p y, in the terminal. Python reads the card from the top, one line at a time, and stops when it runs out of lines.
+
+Now change the starter to soup, and run it again from the terminal. Still the old starter? Look at the tab. A white dot means the file is not saved. Python runs the saved card, not your screen.
+
+Save, run again, and the soup is served.
+
+A file is a recipe card you keep. Save it, then run it.

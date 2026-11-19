@@ -1,0 +1,15 @@
+Your kitchen is full of yes or no questions. Is the oven on? Is the water boiling? Is there flour in Chloe's dessert?
+
+Python answers with two values. True, and False. Capital T, capital F. They are a new kind of value, called a bool.
+
+You get one by asking a question. The oven is at zero degrees. Is that more than zero? False. Turn it up to one hundred eighty. True.
+
+The water is at ninety six. Is it at least one hundred? False. Later, it hits one hundred. True.
+
+Text can answer too. Is flour in rice pudding? False. Safe for gluten free Chloe.
+
+Now the trap. One equals sign is a jar label. It puts a value in. Two equals signs are a balance. They ask, are these the same? Use one where you meant two, and Python stops, and suggests two.
+
+And true, with a small t? Python has never heard of it.
+
+Ask a question. Get True or False.

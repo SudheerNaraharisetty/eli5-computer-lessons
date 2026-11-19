@@ -1,0 +1,368 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    .mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+    /* the three indicator cards */
+    #s-row { position: absolute; inset: 0; }
+    .s-card { position: absolute; top: 96px; width: 560px; height: 440px; background: #fbf8f4; border-radius: 28px; }
+    #s-oven { left: 96px; }
+    #s-water { left: 680px; }
+    #s-flour { left: 1264px; }
+    .s-name { position: absolute; left: 36px; top: 28px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    .s-lamp { position: absolute; left: 36px; top: 132px; width: 150px; height: 150px; border-radius: 50%; background: #ece7df; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-lamp > i { position: absolute; left: 30px; top: 26px; width: 36px; height: 22px; border-radius: 50%; background: #fff; opacity: 0.55; }
+    .s-lcd { position: absolute; left: 220px; top: 146px; width: 304px; height: 120px; border-radius: 16px; background: #e6e3ff; box-shadow: 0 0 0 5px #0e0c1d; overflow: hidden; }
+    .s-v { position: absolute; left: 0; top: 0; width: 304px; height: 120px; text-align: center; font: 700 56px/120px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-v.txt { font: 800 30px/120px "Manrope", sans-serif; }
+    .s-v.on { opacity: 1; }
+    .s-v.dim { color: #6f6b80; }
+    .s-res { position: absolute; left: 36px; top: 316px; width: 260px; height: 90px; }
+    .s-r { position: absolute; left: 0; top: 0; font: 700 72px/90px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .s-r.on { opacity: 1; }
+    .s-r.q { color: #6f6b80; }
+    .s-r.t { color: #1f7a5c; }
+    .s-r.f { color: #b8235a; }
+    #s-safe { left: 260px; top: 330px; padding: 0 22px; height: 60px; line-height: 60px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* bottom: the big question, then the two values */
+    #s-yn { left: 0; top: 690px; width: 1920px; text-align: center; font: 700 120px/1.1 "Fraunces", serif; letter-spacing: -0.03em; }
+    .s-val { top: 640px; height: 180px; background: #fff; border-radius: 28px; text-align: center; font: 700 110px/180px "JetBrains Mono", monospace; }
+    #s-vt { left: 300px; width: 420px; color: #1f7a5c; }
+    #s-vf { left: 790px; width: 480px; color: #b8235a; }
+    #s-bool { left: 1360px; top: 656px; padding: 0 34px; height: 100px; line-height: 100px; border-radius: 999px; background: #3b37e6; color: #fff; font: 700 64px/100px "JetBrains Mono", monospace; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    #s-kind { left: 1340px; top: 790px; font-size: 32px; color: #3e3b52; white-space: nowrap; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 600px; width: 1728px; height: 384px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-outlbl { position: absolute; left: 1004px; top: 0; font: 800 30px/64px "Manrope", sans-serif; color: #c9c6ff; }
+    #s-div { position: absolute; left: 960px; top: 64px; width: 3px; height: 320px; background: #2e2a58; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out { position: absolute; left: 1004px; font: 500 40px/64px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-out.t { color: #7cf0b5; }
+    .s-out.f { color: #ff6b8b; }
+    .s-err { position: absolute; left: 40px; font: 500 30px/64px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+    .s-car { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #ff6b8b; white-space: pre; opacity: 0; }
+
+    /* the trap: jar and balance */
+    .s-big { position: absolute; top: 96px; width: 810px; height: 440px; background: #fbf8f4; border-radius: 28px; opacity: 0; }
+    #s-jarc { left: 96px; }
+    #s-balc { left: 1014px; }
+    .s-sign { position: absolute; left: 36px; top: 24px; padding: 0 28px; height: 104px; line-height: 104px; border-radius: 22px; background: #15132b; color: #ffc24b; font: 700 80px/104px "JetBrains Mono", monospace; opacity: 0; }
+    .s-cap { position: absolute; left: 36px; top: 364px; font-size: 36px; line-height: 48px; white-space: nowrap; opacity: 0; }
+    .s-cap b { color: #3b37e6; }
+    .s-pic { position: absolute; left: 330px; top: 30px; width: 450px; height: 320px; overflow: visible; }
+    #s-same { left: 120px; top: 170px; padding: 0 22px; height: 64px; line-height: 64px; border-radius: 999px; background: #1f7a5c; color: #fff; font: 700 40px/64px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.7" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- three kitchen indicator lights -->
+        <div id="s-row">
+          <div id="s-oven" class="s-card s-ol">
+            <div class="s-name" id="n1">Oven on?</div>
+            <div class="s-lamp" id="lamp1"><i></i></div>
+            <div class="s-lcd">
+              <div class="s-v on dim" id="d1a">--</div>
+              <div class="s-v" id="d1b">0°C</div>
+              <div class="s-v" id="d1c">180°C</div>
+            </div>
+            <div class="s-res">
+              <div class="s-r q on" id="r1q">?</div>
+              <div class="s-r f" id="r1f">False</div>
+              <div class="s-r t" id="r1t">True</div>
+            </div>
+          </div>
+          <div id="s-water" class="s-card s-ol">
+            <div class="s-name" id="n2">Water boiling?</div>
+            <div class="s-lamp" id="lamp2"><i></i></div>
+            <div class="s-lcd">
+              <div class="s-v on dim" id="d2a">--</div>
+              <div class="s-v" id="d2b">96°C</div>
+              <div class="s-v" id="d2c">100°C</div>
+            </div>
+            <div class="s-res">
+              <div class="s-r q on" id="r2q">?</div>
+              <div class="s-r f" id="r2f">False</div>
+              <div class="s-r t" id="r2t">True</div>
+            </div>
+          </div>
+          <div id="s-flour" class="s-card s-ol">
+            <div class="s-name" id="n3">Flour in it?</div>
+            <div class="s-lamp" id="lamp3"><i></i></div>
+            <div class="s-lcd">
+              <div class="s-v on dim" id="d3a">--</div>
+              <div class="s-v txt" id="d3b">rice, milk, sugar</div>
+            </div>
+            <div class="s-res">
+              <div class="s-r q on" id="r3q">?</div>
+              <div class="s-r f" id="r3f">False</div>
+            </div>
+            <div id="s-safe" class="s-abs s-hide">safe for Chloe</div>
+          </div>
+        </div>
+
+        <!-- bottom: yes or no, then the two values -->
+        <div id="s-yn" class="s-abs s-hide">Yes or no?</div>
+        <div id="s-vt" class="s-abs s-val s-ol s-hide">True</div>
+        <div id="s-vf" class="s-abs s-val s-ol s-hide">False</div>
+        <div id="s-bool" class="s-abs s-hide">bool</div>
+        <div id="s-kind" class="s-abs s-hide">a new kind of value</div>
+
+        <!-- the trap: one = and two == -->
+        <div id="s-jarc" class="s-big s-ol">
+          <div class="s-sign" id="g1">=</div>
+          <svg class="s-pic" id="s-jar" viewBox="0 0 450 320">
+            <g id="s-jarbody" opacity="0">
+              <rect x="125" y="20" width="200" height="40" rx="10" fill="#b9741a" stroke="#0e0c1d" stroke-width="5" />
+              <rect x="95" y="60" width="260" height="250" rx="40" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" />
+              <rect x="135" y="100" width="180" height="60" rx="10" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+              <text x="225" y="142" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="800" font-size="34" fill="#0e0c1d">guests</text>
+            </g>
+            <g id="s-three" opacity="0">
+              <rect x="180" y="190" width="90" height="90" rx="18" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+              <text x="225" y="254" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="60" fill="#3b37e6">3</text>
+            </g>
+          </svg>
+          <div class="s-cap" id="cap1">puts a value <b>in</b> (lesson 11)</div>
+        </div>
+        <div id="s-balc" class="s-big s-ol">
+          <div class="s-sign" id="g2">==</div>
+          <svg class="s-pic" id="s-bal" viewBox="0 0 450 320">
+            <g id="s-balbody" opacity="0">
+              <path d="M225 60 L225 290 M150 300 H300" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" fill="none" />
+              <g id="s-beam">
+                <line x1="45" y1="60" x2="405" y2="60" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" />
+                <path d="M65 60 L45 150 M65 60 L85 150 M385 60 L365 150 M385 60 L405 150" stroke="#0e0c1d" stroke-width="4" fill="none" />
+                <path d="M20 150 H110 Q65 190 20 150 Z M340 150 H430 Q385 190 340 150 Z" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" />
+                <g id="s-pans" opacity="0">
+                  <rect x="35" y="86" width="60" height="60" rx="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+                  <text x="65" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="40" fill="#3b37e6">3</text>
+                  <rect x="355" y="86" width="60" height="60" rx="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+                  <text x="385" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="40" fill="#3b37e6">3</text>
+                </g>
+              </g>
+              <circle cx="225" cy="60" r="12" fill="#0e0c1d" />
+            </g>
+          </svg>
+          <div id="s-same" class="s-abs s-hide">True</div>
+          <div class="s-cap" id="cap2">asks: are these <b>the same?</b></div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen.py</span></div>
+          <div id="s-outlbl">output</div>
+          <div id="s-div"></div>
+          <div class="s-ln" id="L1a" style="top:84px"><span class="k">print</span>(<span class="n">0</span> <span class="o">&gt;</span> <span class="n">0</span>)</div>
+          <div class="s-ln" id="L1b" style="top:84px"><span class="k">print</span>(<span class="n">180</span> <span class="o">&gt;</span> <span class="n">0</span>)</div>
+          <div class="s-out f" id="O1a" style="top:84px">False</div>
+          <div class="s-out t" id="O1b" style="top:84px">True</div>
+          <div class="s-ln" id="L2a" style="top:148px"><span class="k">print</span>(<span class="n">96</span> <span class="o">&gt;=</span> <span class="n">100</span>)</div>
+          <div class="s-ln" id="L2b" style="top:148px"><span class="k">print</span>(<span class="n">100</span> <span class="o">&gt;=</span> <span class="n">100</span>)</div>
+          <div class="s-out f" id="O2a" style="top:148px">False</div>
+          <div class="s-out t" id="O2b" style="top:148px">True</div>
+          <div class="s-ln" id="L3" style="top:212px"><span class="k">print</span>(<span class="s">"flour"</span> <span class="o">in</span> <span class="s">"rice, milk, sugar"</span>)</div>
+          <div class="s-out f" id="O3" style="top:212px">False</div>
+          <!-- the trap -->
+          <div class="s-ln" id="T1" style="top:84px"><span class="k">print</span>(<span class="n">100</span> <span class="o">=</span> <span class="n">100</span>)</div>
+          <div class="s-car" id="T1c" style="top:148px">      ^^^^^</div>
+          <div class="s-err" id="T1e" style="top:212px">SyntaxError: expression cannot contain assignment, perhaps you meant "=="?</div>
+          <div class="s-ln" id="T2" style="top:84px"><span class="k">print</span>(true)</div>
+          <div class="s-car" id="T2c" style="top:148px">      ^^^^</div>
+          <div class="s-err" id="T2e" style="top:212px">NameError: name 'true' is not defined. Did you mean: 'True'?</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-capT" style="stroke:#b9741a" />
+          <path id="r-capF" style="stroke:#b9741a" />
+          <path id="r-zero" style="stroke:#ffc24b" />
+          <path id="r-ge" style="stroke:#ffc24b" />
+          <path id="r-in" style="stroke:#ffc24b" />
+          <path id="r-eq" style="stroke:#ffc24b" />
+          <path id="r-hint" style="stroke:#ffc24b" />
+          <path id="r-t" style="stroke:#ffc24b" />
+          <path id="r-mean" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.302, 0.697, 0.859, 1.091, 1.277, 1.707, 1.985, 2.252, 3.402, 3.634, 3.796, 4.168, 4.586, 4.818, 4.946, 5.283, 6.06, 6.293, 6.536, 6.989, 7.129, 7.581, 8.893, 9.358, 9.718, 9.927, 10.286, 11.192, 11.703, 12.04, 12.922, 13.549, 14.106, 14.675, 15.476, 15.755, 15.929, 16.033, 16.266, 16.544, 16.695, 17.322, 17.717, 17.949, 19.006, 19.226, 19.447, 19.667, 19.876, 20.329, 20.422, 21.096, 21.281, 21.537, 21.676, 21.827, 22.257, 23.197, 23.417, 23.626, 23.859, 24.044, 25.171, 25.809, 26.099, 26.239, 26.39, 26.564, 26.773, 27.133, 27.969, 28.781, 28.932, 29.246, 29.362, 29.501, 29.907, 30.767, 30.999, 31.115, 31.254, 31.579, 31.777, 32.717, 33.657, 34.18, 34.389, 34.76, 35.039, 35.945, 36.781, 37.257, 37.442, 37.802, 38.65, 38.928, 39.3, 39.428, 39.73, 40.403, 41.332, 41.68, 41.843, 42.446, 42.783, 43.63, 43.909, 44.06, 45.093, 45.314, 45.709, 46.103, 46.266, 46.382, 46.696, 47.369, 47.543, 47.775, 47.868, 48.274, 48.739, 49.064, 49.482, 49.923, 50.12, 50.237, 51.258, 51.456, 51.897, 52.106, 52.35, 52.466, 53.406, 53.754, 53.952, 54.126, 54.254, 54.486, 55.101, 55.333, 55.798, 56.344, 56.541, 56.982, 57.83, 58.085, 58.41, 58.596, 58.677, 59.049, 59.687, 60.152, 60.314, 60.546, 60.767, 60.906, 61.394, 61.765, 61.858, 62.601, 62.892, 63.159, 63.333];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel at (96, 600): 40px mono = 24px per char, code text starts at x=136; line centres y=716, 780, 844.
+      // Error lines are 30px mono = 18px per char, also from x=136, on the third line (centre y=844).
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-capT", 411, 730, 46, 70);      // the T of True (card 300..720, text 4 chars centred: x 378..642)
+      ring("r-capF", 898, 730, 46, 70);      // the F of False (card 790..1270, text 5 chars: x 865..1195)
+      ring("r-zero", 292, 716, 30, 36);      // first 0 on line 1, col 6
+      ring("r-ge", 376, 780, 44, 36);        // >= on line 2, cols 9-10
+      ring("r-in", 496, 844, 42, 36);        // in on line 3, cols 14-15
+      ring("r-eq", 388, 716, 24, 36);        // the single = on the trap line, col 10
+      ring("r-hint", 1261, 844, 226, 34);    // perhaps you meant "=="?  (error cols 51-73)
+      ring("r-t", 292, 716, 26, 36);         // the small t of true, col 6
+      ring("r-mean", 1027, 844, 204, 34);    // Did you mean: 'True'?  (error cols 39-59)
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.03, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const lamp = (id, col, at) => {
+        tl.to(id, { backgroundColor: col, duration: 0.2, ease: "power2.out" }, at);
+        tl.fromTo(id, { scale: 1 }, { scale: 1.12, duration: 0.16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, at);
+      };
+      const GREEN = "#1f7a5c", RED = "#b8235a";
+      const cursorTo = (x, y, at) => tl.to("#s-cursor", { x, y, duration: 0.5, ease: "power3.out" }, at);
+
+      /* ---- 1. Yes or no questions: oven on, water boiling, flour in it ---- */
+      pop("#s-yn", t(5) - 0.05, { from: 0.8 });
+      bump("#s-oven", t(11)); pop("#n1", t(11), { from: 0.7 });
+      bump("#s-water", t(15)); pop("#n2", t(15), { from: 0.7 });
+      bump("#s-flour", t(19)); pop("#n3", t(19), { from: 0.7 });
+
+      /* ---- 2. Two values: True and False, capital letters, called a bool ---- */
+      out("#s-yn", t(23), 0.3);
+      pop("#s-vt", t(28) - 0.05, { from: 0.5 });
+      pop("#s-vf", t(30) - 0.05, { from: 0.5 });
+      draw("r-capT", t(31) + 0.2, 0.45);
+      draw("r-capF", t(33) + 0.2, 0.45);
+      pop("#s-kind", t(38), { from: 0.8 });
+      pop("#s-bool", t(44) - 0.05, { from: 0.3, ease: "back.out(2.2)" });
+
+      /* ---- 3. Ask a question: is the oven above zero? ---- */
+      out(["#s-vt", "#s-vf", "#s-bool", "#s-kind", "#r-capT", "#r-capF"], t(45) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(49));
+      tl.to(["#s-water", "#s-flour"], { opacity: 0.35, duration: 0.3 }, t(52));
+      bump("#s-oven", t(53));
+      swap("#d1a", "#d1b", t(56));
+      type("#L1a", t(58), 12);
+      draw("r-zero", t(62) - 0.1, 0.4);
+      pop("#O1a", t(63), { from: 0.7, d: 0.3 });
+      lamp("#lamp1", RED, t(63)); swap("#r1q", "#r1f", t(63) + 0.05);
+      out("#r-zero", t(64), 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 1000 }, { opacity: 1, x: 290, y: 730, duration: 0.5, ease: "power3.out", immediateRender: false }, t(64));
+      swap("#L1a", "#L1b", t(68));
+      swap("#d1b", "#d1c", t(68) + 0.15);
+      tl.to("#s-cursor", { opacity: 0, x: 420, y: 1000, duration: 0.4, ease: "power2.in" }, t(70));
+      swap("#O1a", "#O1b", t(71));
+      lamp("#lamp1", GREEN, t(71)); swap("#r1f", "#r1t", t(71) + 0.05);
+
+      /* ---- 4. Is the water at least 100? ---- */
+      tl.to("#s-oven", { opacity: 0.35, duration: 0.3 }, t(72));
+      tl.to("#s-water", { opacity: 1, duration: 0.3 }, t(72));
+      bump("#s-water", t(73));
+      swap("#d2a", "#d2b", t(76));
+      type("#L2a", t(78) - 0.2, 16);
+      draw("r-ge", t(81), 0.4);
+      pop("#O2a", t(84), { from: 0.7, d: 0.3 });
+      lamp("#lamp2", RED, t(84)); swap("#r2q", "#r2f", t(84) + 0.05);
+      out("#r-ge", t(85), 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 700, y: 1000 }, { opacity: 1, x: 290, y: 794, duration: 0.5, ease: "power3.out", immediateRender: false }, t(85));
+      swap("#L2a", "#L2b", t(88));
+      swap("#d2b", "#d2c", t(88) + 0.15);
+      tl.to("#s-cursor", { opacity: 0, x: 420, y: 1000, duration: 0.4, ease: "power2.in" }, t(89));
+      swap("#O2a", "#O2b", t(90));
+      lamp("#lamp2", GREEN, t(90)); swap("#r2f", "#r2t", t(90) + 0.05);
+
+      /* ---- 5. Text can answer too: is flour in rice pudding? ---- */
+      tl.to("#s-water", { opacity: 0.35, duration: 0.3 }, t(91));
+      tl.to("#s-flour", { opacity: 1, duration: 0.3 }, t(91));
+      bump("#s-flour", t(91) + 0.2);
+      type("#L3", t(95), 37);
+      swap("#d3a", "#d3b", t(98));
+      draw("r-in", t(97), 0.4);
+      pop("#O3", t(100), { from: 0.7, d: 0.3 });
+      lamp("#lamp3", RED, t(100)); swap("#r3q", "#r3f", t(100) + 0.05);
+      out("#r-in", t(101), 0.2);
+      pop("#s-safe", t(103), { from: 0.4, ease: "back.out(2.2)" });
+      tl.to(["#s-oven", "#s-water"], { opacity: 1, duration: 0.3 }, t(104));
+
+      /* ---- 6. The trap: one = is a jar label, two == is a balance ---- */
+      out("#s-row", t(106), 0.35);
+      out(["#L1b", "#L2b", "#L3", "#O1b", "#O2b", "#O3"], t(106), 0.3);
+      tl.to(["#s-outlbl", "#s-div"], { opacity: 0, duration: 0.3 }, t(106));
+      show(["#s-jarc", "#s-balc"], t(108) - 0.3, 0.3);
+      pop("#g1", t(109), { from: 0.4, ease: "back.out(2.2)" });
+      tl.fromTo("#s-jarbody", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(114));
+      tl.fromTo("#s-three", { opacity: 0, y: -220 }, { opacity: 1, y: 0, duration: 0.6, ease: "bounce.out", immediateRender: false }, t(117));
+      pop("#cap1", t(117) + 0.3, { from: 0.8 });
+      pop("#g2", t(121), { from: 0.4, ease: "back.out(2.2)" });
+      tl.fromTo("#s-balbody", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(126) - 0.1);
+      tl.set("#s-beam", { svgOrigin: "225 60", rotation: -9 }, 0);
+      tl.fromTo("#s-pans", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, t(129));
+      tl.to("#s-beam", { rotation: 0, duration: 0.8, ease: "elastic.out(1, 0.5)" }, t(129) + 0.1);
+      pop("#cap2", t(129), { from: 0.8 });
+      pop("#s-same", t(132) + 0.1, { from: 0.4, ease: "back.out(2.2)" });
+      // use one where you meant two
+      tl.to("#s-balc", { opacity: 0.35, duration: 0.3 }, t(133));
+      type("#T1", t(133), 16);
+      draw("r-eq", t(134) + 0.1, 0.35);
+      tl.fromTo("#s-code", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, t(141));
+      show("#T1c", t(141), 0.15);
+      show("#T1e", t(141) + 0.1, 0.2);
+      tl.to("#s-jarc", { opacity: 0.35, duration: 0.3 }, t(141));
+      draw("r-hint", t(143), 0.5);
+      tl.to("#s-balc", { opacity: 1, duration: 0.3 }, t(143));
+      bump("#g2", t(144));
+
+      /* ---- 7. true with a small t ---- */
+      out(["#T1", "#T1c", "#T1e", "#r-eq", "#r-hint"], t(145), 0.25);
+      out(["#s-jarc", "#s-balc"], t(145), 0.3);
+      type("#T2", t(146) - 0.1, 11);
+      draw("r-t", t(149) + 0.1, 0.4);
+      tl.fromTo("#s-code", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, t(151));
+      show("#T2c", t(151), 0.15);
+      show("#T2e", t(151) + 0.1, 0.2);
+      draw("r-mean", t(153), 0.5);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 61.42);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

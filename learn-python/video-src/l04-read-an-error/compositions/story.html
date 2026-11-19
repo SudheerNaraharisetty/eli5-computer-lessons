@@ -1,0 +1,337 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .s-mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; white-space: pre; }
+
+    /* phase A: the burnt pie and its note */
+    #s-pie { left: 190px; top: 330px; width: 620px; height: 400px; }
+    #s-note { left: 900px; top: 240px; width: 820px; height: 400px; background: #fbebd2; border-radius: 22px; }
+    #s-pin { left: 386px; top: -26px; width: 48px; height: 48px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-n1 { left: 56px; top: 62px; font: 700 68px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #s-n2 { left: 56px; top: 176px; font-size: 44px; line-height: 1.3; color: #3e3b52; white-space: nowrap; }
+    #s-n3 { left: 56px; top: 262px; font-size: 44px; line-height: 1.3; color: #b8235a; white-space: nowrap; }
+
+    /* code card */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 440px; background: #15132b; border-radius: 24px; }
+    #s-bar { left: 0; top: 0; width: 1054px; height: 76px; background: #211e40; border-radius: 24px 24px 0 0; box-shadow: 0 5px 0 0 #0e0c1d; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 32px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #s-run { left: 846px; top: 12px; width: 180px; height: 52px; line-height: 52px; text-align: center; border-radius: 999px; background: #7cf0b5; color: #0e0c1d; font-size: 30px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-hl { left: 24px; top: 290px; width: 1006px; height: 90px; border-radius: 16px; background: #2e2a58; box-shadow: inset 6px 0 0 #ffc24b; }
+    .s-cl { position: absolute; left: 0; width: 1054px; height: 90px; }
+    .s-num { position: absolute; left: 62px; top: 0; font: 500 40px/90px "JetBrains Mono", monospace; color: #8480b8; }
+    .s-cd { position: absolute; left: 150px; top: 0; font: 500 40px/90px "JetBrains Mono", monospace; white-space: pre; color: #eceaff; }
+    .s-cd .k { color: #c9c6ff; }
+    .s-cd .st { color: #a8e6c4; }
+    .s-cd .nm { color: #ffc24b; }
+    #s-plus { display: inline-block; }
+    #s-lineB { opacity: 0; }
+    .s-lab { position: absolute; top: 384px; height: 44px; line-height: 44px; padding: 0 18px; border-radius: 999px; font-size: 28px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-labT { left: 336px; background: #a8e6c4; color: #0e0c1d; }
+    #s-labN { left: 514px; background: #ffc24b; color: #0e0c1d; }
+    #s-one { left: 700px; top: 312px; height: 48px; line-height: 48px; padding: 0 20px; border-radius: 999px; background: #ffc24b; color: #0e0c1d; font-size: 30px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* output card */
+    #s-out { left: 1210px; top: 96px; width: 614px; height: 440px; background: #fbf8f4; border-radius: 24px; }
+    #s-oh { left: 40px; top: 24px; font: 700 52px/1.2 "Fraunces", serif; letter-spacing: -0.02em; }
+    .s-ol1 { position: absolute; left: 40px; font: 500 34px/58px "JetBrains Mono", monospace; white-space: pre; color: #0e0c1d; opacity: 0; }
+    #s-stop { left: 40px; top: 300px; height: 60px; line-height: 60px; padding: 0 24px; border-radius: 999px; background: #b8235a; color: #fff; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-served { left: 40px; top: 330px; height: 60px; line-height: 60px; padding: 0 24px; border-radius: 999px; background: #1f7a5c; color: #fff; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* traceback panel */
+    #s-tb { left: 96px; top: 566px; width: 1728px; height: 418px; background: #15132b; border-radius: 24px; }
+    #s-band { left: 20px; top: 36px; width: 1688px; height: 70px; border-radius: 14px; background: #2e2a58; }
+    .s-tl { position: absolute; left: 44px; height: 70px; font: 500 36px/70px "JetBrains Mono", monospace; white-space: pre; color: #cfcbf5; }
+    #s-t0 { color: #8e8ac0; }
+    #s-t2 { color: #eceaff; }
+    #s-t3 { color: #ff8fa8; font-weight: 700; }
+    #s-t4 { color: #eceaff; }
+    #s-t4 b { color: #ffc24b; font-weight: 700; }
+    .s-pill { position: absolute; left: 1040px; height: 60px; line-height: 60px; padding: 0 26px; border-radius: 999px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-side { top: 40px; background: #ddefe6; color: #1f7a5c; }
+    #s-panic { top: 40px; background: #fbebd2; color: #0e0c1d; }
+    #s-rand { top: 124px; background: #fbe0ea; color: #b8235a; }
+    #s-up { top: 40px; background: #e6e3ff; color: #3b37e6; }
+
+    /* the pie that gets served */
+    #s-good { left: 700px; top: 600px; width: 520px; height: 360px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-marks rect { fill: none; stroke: #ff6b8b; stroke-width: 5; stroke-dasharray: 10 8; opacity: 0; }
+    #s-mag { left: 1640px; top: 0; width: 200px; height: 200px; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="52.15" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- phase A: a burnt pie with a note pinned to it -->
+        <svg id="s-pie" class="s-abs" viewBox="0 0 620 400">
+          <g id="s-smoke" opacity="0" fill="none" stroke="#6f6b80" stroke-width="12" stroke-linecap="round">
+            <path d="M230 120 Q206 84 230 52 Q254 20 230 -10" />
+            <path d="M310 110 Q286 74 310 42 Q334 10 310 -20" />
+            <path d="M390 120 Q366 84 390 52 Q414 20 390 -10" />
+          </g>
+          <ellipse cx="310" cy="300" rx="280" ry="70" fill="#0e0c1d" />
+          <path d="M40 220 L80 320 Q310 380 540 320 L580 220 Z" fill="#ece7df" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+          <ellipse id="s-crust" cx="310" cy="220" rx="270" ry="76" fill="#e2a65a" stroke="#0e0c1d" stroke-width="8" />
+          <g id="s-cuts" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round"><path d="M220 210 L250 226 M300 196 L320 216 M380 212 L410 200" /></g>
+          <g id="s-char" opacity="0" fill="#0e0c1d"><ellipse cx="240" cy="236" rx="44" ry="16" /><ellipse cx="370" cy="214" rx="54" ry="18" /><ellipse cx="300" cy="256" rx="30" ry="10" /></g>
+        </svg>
+        <div id="s-note" class="s-abs s-ol s-hide">
+          <div id="s-pin" class="s-abs"></div>
+          <div id="s-n1" class="s-abs">Step 3 went wrong:</div>
+          <div id="s-n2" class="s-abs">the oven was 250, not 180.</div>
+          <div id="s-n3" class="s-abs">Look at step 3.</div>
+        </div>
+
+        <!-- code card -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar" class="s-abs"><i></i><i></i><i></i><span>menu.py</span></div>
+          <div id="s-run" class="s-abs">▶ Run</div>
+          <div id="s-hl" class="s-abs s-hide"></div>
+          <div class="s-cl" id="s-c1" style="top:110px"><div class="s-num">1</div><div class="s-cd"><span class="k">print</span>(<span class="st">"Tonight's menu"</span>)</div></div>
+          <div class="s-cl" id="s-c2" style="top:200px"><div class="s-num">2</div><div class="s-cd"><span class="k">print</span>(<span class="st">"Pasta for Ana"</span>)</div></div>
+          <div class="s-cl" id="s-c3" style="top:290px"><div class="s-num">3</div>
+            <div class="s-cd" id="s-lineA"><span class="k">print</span>(<span class="st">"Guests:"</span> <span id="s-plus">+</span> <span class="nm">3</span>)</div>
+            <div class="s-cd" id="s-lineB"><span class="k">print</span>(<span class="st">"Guests:"</span><span style="color:#7cf0b5">,</span> <span class="nm">3</span>)</div>
+          </div>
+          <div id="s-labT" class="s-lab s-hide">text</div>
+          <div id="s-labN" class="s-lab s-hide">a number</div>
+          <div id="s-one" class="s-abs s-hide">one change</div>
+        </div>
+
+        <!-- output card -->
+        <div id="s-out" class="s-abs s-ol s-hide">
+          <div id="s-oh" class="s-abs">Output</div>
+          <div class="s-ol1" id="s-o1" style="top:120px">Tonight's menu</div>
+          <div class="s-ol1" id="s-o2" style="top:178px">Pasta for Ana</div>
+          <div class="s-ol1" id="s-o3" style="top:236px">Guests: 3</div>
+          <div id="s-stop" class="s-abs s-hide">Python stopped</div>
+          <div id="s-served" class="s-abs s-hide">Dinner is served</div>
+        </div>
+
+        <!-- the traceback -->
+        <div id="s-tb" class="s-abs s-ol s-hide">
+          <div id="s-band" class="s-abs s-hide"></div>
+          <div class="s-tl" id="s-t0" style="top:36px">Traceback (most recent call last):</div>
+          <div class="s-tl" id="s-t1" style="top:106px">  File "menu.py", line 3, in &lt;module&gt;</div>
+          <div class="s-tl" id="s-t2" style="top:176px">    print("Guests:" + 3)</div>
+          <div class="s-tl" id="s-t3" style="top:246px">          ~~~~~~~~~~^~~</div>
+          <div class="s-tl" id="s-t4" style="top:316px"><b>TypeError</b>: can only concatenate str (not "int") to str</div>
+          <div id="s-side" class="s-pill s-hide">on your side</div>
+          <div id="s-panic" class="s-pill s-hide">Don't panic</div>
+          <div id="s-rand" class="s-pill s-hide">No random changes</div>
+          <div id="s-up" class="s-pill s-hide">Read bottom up ↑</div>
+        </div>
+
+        <!-- dinner is served -->
+        <svg id="s-good" class="s-abs s-hide" viewBox="0 0 620 400">
+          <g fill="none" stroke="#8e8ac0" stroke-width="12" stroke-linecap="round">
+            <path d="M250 120 Q226 84 250 52 Q274 20 250 -10" />
+            <path d="M370 120 Q346 84 370 52 Q394 20 370 -10" />
+          </g>
+          <ellipse cx="310" cy="300" rx="280" ry="70" fill="#0e0c1d" />
+          <path d="M40 220 L80 320 Q310 380 540 320 L580 220 Z" fill="#ece7df" stroke="#0e0c1d" stroke-width="8" stroke-linejoin="round" />
+          <ellipse cx="310" cy="220" rx="270" ry="76" fill="#e2a65a" stroke="#0e0c1d" stroke-width="8" />
+          <g fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round"><path d="M220 210 L250 226 M300 196 L320 216 M380 212 L410 200" /></g>
+          <circle cx="560" cy="120" r="50" fill="#1f7a5c" stroke="#0e0c1d" stroke-width="8" />
+          <path d="M536 122 L554 140 L586 104" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+        <!-- rings, magnifier and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="s-rStep" style="stroke:#3b37e6" />
+          <path id="s-rWhy" style="stroke:#b8235a" />
+          <rect id="s-x1" x="384" y="222" width="36" height="58" rx="8" />
+          <rect id="s-x2" x="240" y="312" width="36" height="58" rx="8" />
+          <rect id="s-x3" x="696" y="402" width="36" height="58" rx="8" />
+          <path id="s-rType" style="stroke:#ffc24b" />
+          <path id="s-rMarks" style="stroke:#ff6b8b" />
+          <path id="s-rCaret" style="stroke:#ff6b8b" />
+          <path id="s-rPlus" style="stroke:#ff6b8b" />
+          <path id="s-rLine" style="stroke:#7cf0b5" />
+          <path id="s-rComma" style="stroke:#7cf0b5" />
+          <path id="s-rP1" style="stroke:#7cf0b5;stroke-width:5" />
+          <path id="s-rP2" style="stroke:#7cf0b5;stroke-width:5" />
+        </svg>
+        <svg id="s-mag" class="s-abs s-hide" viewBox="0 0 200 200">
+          <path d="M122 122 L188 188" stroke="#0e0c1d" stroke-width="26" stroke-linecap="round" />
+          <path d="M122 122 L184 184" stroke="#ffc24b" stroke-width="14" stroke-linecap="round" />
+          <circle cx="80" cy="80" r="62" fill="none" stroke="#0e0c1d" stroke-width="16" />
+          <circle cx="80" cy="80" r="62" fill="none" stroke="#fbf8f4" stroke-width="7" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.255, 0.488, 0.58, 0.917, 1.103, 1.196, 1.324, 1.881, 2.194, 3.135, 3.32, 3.437, 3.715, 3.889, 4.191, 4.389, 4.853, 5.178, 5.422, 5.712, 5.933, 6.327, 6.571, 7.546, 7.755, 7.93, 8.452, 9.323, 9.799, 10.101, 10.205, 10.461, 10.6, 10.751, 11.633, 11.889, 12.167, 12.283, 13.63, 13.804, 14.048, 14.849, 15.035, 15.209, 15.348, 15.592, 16.394, 16.649, 16.939, 17.706, 17.903, 18.158, 18.541, 18.808, 18.983, 20.004, 20.26, 20.364, 20.538, 20.666, 21.072, 21.815, 22.001, 22.326, 22.663, 23.046, 23.174, 23.917, 24.37, 25.159, 25.658, 25.821, 26.065, 26.355, 26.785, 26.947, 27.609, 27.853, 28.282, 28.456, 28.619, 29.629, 29.908, 30.163, 30.674, 30.999, 31.347, 31.649, 31.754, 31.904, 32.497, 33.205, 33.367, 33.681, 34.528, 34.923, 35.306, 35.504, 35.817, 36.966, 37.361, 38.127, 38.371, 38.557, 38.685, 38.963, 39.312, 39.555, 40.136, 40.449, 41.436, 41.796, 41.912, 42.249, 42.423, 42.516, 43.282, 43.619, 44.025, 44.362, 44.768, 44.954, 45.059, 45.465, 46.347, 46.58, 46.707, 47.334, 47.578, 47.81, 48.042, 48.89, 49.064, 49.377, 49.83, 50.178, 50.538, 50.677, 51.699, 51.943, 52.303, 52.558, 52.79, 52.872, 53.789, 54.067, 54.195, 54.485, 54.683, 55.019, 55.182, 55.426, 55.588];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels. Traceback text is 36px mono (21.6px per
+      // character) starting at x=140; line i of the traceback is centred at y = 637 + 70 i.
+      // Code text is 40px mono (24px per character) starting at x=246; code line k is at y = 251 + 90 k.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const tx = (c) => 140 + 21.6 * c, ty = (i) => 637 + 70 * i;
+      const cx = (c) => 246 + 24 * c, cy = (k) => 251 + 90 * k;
+      ring("s-rStep", 1066, 342, 140, 54);                         // "Step 3" on the note
+      ring("s-rWhy", 1400, 444, 186, 46);                          // "250, not 180"
+      ring("s-rType", (tx(0) + tx(9)) / 2, ty(4), 122, 40);        // TypeError
+      ring("s-rMarks", (tx(10) + tx(23)) / 2, ty(3), 168, 36);     // ~~~~~~~~~~^~~
+      ring("s-rCaret", (tx(20) + tx(21)) / 2, ty(3) - 2, 28, 30);  // the ^
+      ring("s-rPlus", (cx(16) + cx(17)) / 2, cy(2), 30, 40);       // + in the code
+      ring("s-rLine", (tx(18) + tx(24)) / 2, ty(1), 88, 36);       // line 3
+      ring("s-rComma", (cx(15) + cx(16)) / 2, cy(2), 28, 40);      // the comma
+      ring("s-rP1", (cx(6) + cx(15)) / 2, cy(2), 118, 38);         // "Guests:"
+      ring("s-rP2", (cx(17) + cx(18)) / 2, cy(2), 30, 38);         // 3
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const cur = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.5, ease: "power3.inOut" }, at);
+      const magTo = (i, at, d) => {
+        tl.to("#s-mag", { y: ty(i) - 80, duration: d || 0.35, ease: "power2.inOut" }, at);
+        tl.to("#s-band", { y: 70 * i, duration: d || 0.35, ease: "power2.inOut" }, at);
+      };
+
+      /* ---- 1. A burnt pie, and a note pinned to it ---- */
+      tl.set("#s-note", { rotation: -3 }, 0);
+      tl.fromTo("#s-pie", { y: 30 }, { y: 0, duration: 0.6, ease: "expo.out" }, 0);
+      tl.to("#s-crust", { attr: { fill: "#3e2a22" }, duration: 0.5, ease: "power2.in" }, t(9) - 0.2);
+      tl.to("#s-char", { opacity: 1, duration: 0.4 }, t(9));
+      tl.fromTo("#s-smoke", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, t(9));
+      tl.fromTo("#s-smoke path", { y: 0 }, { y: -10, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 9, stagger: 0.15 }, t(9) + 0.3);
+      tl.fromTo("#s-note", { opacity: 0, y: -80 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, t(12) - 0.1);
+      tl.fromTo("#s-pin", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "power4.in" }, t(14));
+      tl.to("#s-note", { rotation: 1, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.inOut" }, t(14) + 0.3);
+      draw("s-rStep", t(19) - 0.1, 0.45);
+      draw("s-rWhy", t(23) - 0.1, 0.5);
+
+      /* ---- 2. A program fails: Python pins a note too ---- */
+      out(["#s-rStep", "#s-rWhy"], t(24) - 0.2, 0.2);
+      tl.to("#s-pie", { opacity: 0, x: -160, duration: 0.45, ease: "power3.in" }, t(24) - 0.1);
+      tl.to("#s-note", { x: -350, y: 337, scale: 0.72, rotation: -2, duration: 0.7, ease: "power3.inOut" }, t(24));
+      tl.fromTo("#s-code", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, t(25));
+      tl.fromTo(".s-cl", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: 0.1 }, t(26) - 0.1);
+      tl.fromTo("#s-out", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(26));
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1180, y: 420 }, { opacity: 1, x: 1040, y: 140, duration: 0.5, ease: "power3.out", immediateRender: false }, t(26));
+      tl.to("#s-run", { scale: 0.88, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, t(27));
+      tl.to("#s-run", { backgroundColor: "#ffc24b", duration: 0.15 }, t(27));
+      tl.to("#s-cursor", { opacity: 0, x: 1120, y: 60, duration: 0.4, ease: "power2.in" }, t(27) + 0.3);
+      pop("#s-o1", t(27) + 0.15, { from: 0.9, d: 0.25 });
+      pop("#s-o2", t(27) + 0.35, { from: 0.9, d: 0.25 });
+      pop("#s-stop", t(27) + 0.6, { from: 0.4 });
+      tl.to("#s-run", { backgroundColor: "#7cf0b5", duration: 0.2 }, t(28));
+      tl.to("#s-note", { rotation: 2, duration: 0.15, yoyo: true, repeat: 3, ease: "power2.inOut" }, t(29));
+      tl.to("#s-pin", { scale: 1.3, duration: 0.15, yoyo: true, repeat: 1 }, t(31));
+
+      // the note becomes the traceback
+      tl.to("#s-note", { opacity: 0, scale: 1.1, duration: 0.4, ease: "power2.in" }, t(38) - 0.15);
+      tl.fromTo("#s-tb", { opacity: 0, scale: 0.82 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, t(38) - 0.1);
+      tl.fromTo(".s-tl", { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.45, ease: "steps(14)", stagger: 0.14, immediateRender: false }, t(38) + 0.2);
+      tl.set(".s-tl", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.fromTo("#s-tb", { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, t(41));
+      pop("#s-side", t(44), { from: 0.4 });
+      out("#s-side", t(47), 0.2);
+
+      /* ---- 3. Don't panic, don't poke at random ---- */
+      pop("#s-panic", t(48), { from: 0.4 });
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 500 }, { opacity: 1, x: 402, y: 254, duration: 0.3, ease: "power3.out", immediateRender: false }, t(52) - 0.2);
+      tl.to("#s-x1", { opacity: 1, duration: 0.1 }, t(52) + 0.1);
+      cur(258, 344, t(53), 0.25); tl.to("#s-x2", { opacity: 1, duration: 0.1 }, t(53) + 0.25);
+      cur(714, 434, t(54) + 0.05, 0.25); tl.to("#s-x3", { opacity: 1, duration: 0.1 }, t(54) + 0.3);
+      pop("#s-rand", t(55), { from: 0.4 });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(55) + 0.3);
+      out(["#s-x1", "#s-x2", "#s-x3", "#s-panic"], t(56) - 0.2, 0.25);
+      out("#s-rand", t(57), 0.2);
+
+      /* ---- 4. Read it from the bottom up ---- */
+      pop("#s-up", t(56), { from: 0.4 });
+      tl.set("#s-mag", { y: ty(4) - 80 }, 0);
+      tl.set("#s-band", { y: 70 * 4 }, 0);
+      tl.fromTo("#s-mag", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", immediateRender: false }, t(56));
+      show("#s-band", t(56), 0.2);
+      magTo(3, t(60) - 0.1, 0.25); magTo(2, t(60) + 0.2, 0.25); magTo(1, t(61), 0.25); magTo(0, t(61) + 0.3, 0.25);
+      out("#s-up", t(62) + 0.3, 0.2);
+
+      /* ---- 5. The last line: what went wrong ---- */
+      magTo(4, t(62), 0.4);
+      draw("s-rType", t(68) - 0.1, 0.45);
+      pop("#s-labT", t(74) - 0.05, { from: 0.4 });
+      tl.to("#s-labT", { y: -6, duration: 0.15, yoyo: true, repeat: 1 }, t(76));
+      pop("#s-labN", t(80), { from: 0.4 });
+
+      /* ---- 6. One line up: the exact spot ---- */
+      magTo(3, t(82), 0.4);
+      draw("s-rMarks", t(86) - 0.1, 0.5);
+      out("#s-rMarks", t(92), 0.2);
+      draw("s-rCaret", t(93) - 0.05, 0.35);
+      draw("s-rPlus", t(93) + 0.1, 0.35);
+
+      /* ---- 7. Above that: where ---- */
+      magTo(1, t(95), 0.45);
+      draw("s-rLine", t(100) - 0.1, 0.45);
+
+      /* ---- 8. Go to line 3, change one thing ---- */
+      out(["#s-mag", "#s-band", "#s-rType", "#s-rCaret", "#s-rLine"], t(102), 0.3);
+      show("#s-hl", t(105) - 0.1, 0.25);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 520 }, { opacity: 1, x: 650, y: 446, duration: 0.6, ease: "power3.out", immediateRender: false }, t(102) + 0.2);
+      out(["#s-labT", "#s-labN"], t(108) - 0.2, 0.2);
+      pop("#s-one", t(108) + 0.1, { from: 0.4 });
+      out("#s-rPlus", t(111) - 0.1, 0.15);
+      tl.to("#s-plus", { y: 80, rotation: 50, opacity: 0, duration: 0.4, ease: "power2.in" }, t(111));
+      tl.to("#s-lineA", { opacity: 0, duration: 0.05 }, t(116) - 0.1);
+      tl.to("#s-lineB", { opacity: 1, duration: 0.05 }, t(116) - 0.1);
+      draw("s-rComma", t(116), 0.35);
+      tl.to("#s-cursor", { opacity: 0, x: 760, y: 560, duration: 0.4, ease: "power2.in" }, t(116) + 0.2);
+      out(["#s-rComma", "#s-one"], t(119) - 0.2, 0.2);
+      draw("s-rP1", t(119), 0.35);
+      draw("s-rP2", t(120), 0.3);
+
+      /* ---- 9. Run again: no note, dinner is served ---- */
+      out(["#s-rP1", "#s-rP2", "#s-hl"], t(125) - 0.3, 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 420 }, { opacity: 1, x: 1040, y: 140, duration: 0.45, ease: "power3.out", immediateRender: false }, t(125) - 0.4);
+      tl.to("#s-run", { scale: 0.88, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, t(126));
+      tl.to("#s-run", { backgroundColor: "#ffc24b", duration: 0.15 }, t(126));
+      tl.to("#s-cursor", { opacity: 0, x: 1120, y: 60, duration: 0.4, ease: "power2.in" }, t(126) + 0.3);
+      out("#s-stop", t(126) + 0.1, 0.2);
+      tl.to("#s-tb", { opacity: 0, y: 60, duration: 0.45, ease: "power2.in" }, t(128));
+      pop("#s-o3", t(133), { from: 0.8, d: 0.3 });
+      tl.to("#s-run", { backgroundColor: "#7cf0b5", duration: 0.2 }, t(133));
+      tl.fromTo("#s-good", { opacity: 0, y: 60, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.6)" }, t(136) - 0.1);
+      pop("#s-served", t(136) + 0.1, { from: 0.4 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.3, ease: "power2.in" }, 51.8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

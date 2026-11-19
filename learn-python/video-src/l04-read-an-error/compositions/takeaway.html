@@ -1,0 +1,57 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-head { left: 110px; top: 150px; font: 700 140px/1.08 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    #t-head span { display: inline-block; opacity: 0; }
+    #t-head .ac { color: #3b37e6; }
+    #t-line { left: 0; top: 0; width: 1920px; height: 1080px; }
+    #t-under { fill: none; stroke: #3b37e6; stroke-width: 12; stroke-linecap: round; opacity: 0; }
+    #t-sub { left: 110px; top: 420px; width: 1180px; display: flex; flex-direction: column; align-items: flex-start; gap: 26px; }
+    #t-sub span { opacity: 0; padding: 8px 28px; background: #fff; border-radius: 999px; font-size: 44px; line-height: 1.35; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; }
+    #t-sub span b { color: #3b37e6; }
+    #t-next { left: 110px; top: 900px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+    #t-note { left: 1330px; top: 430px; width: 480px; height: 300px; background: #fbebd2; border-radius: 22px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-pin { left: 216px; top: -24px; width: 48px; height: 48px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 5px #0e0c1d; }
+    #t-note div.l { position: absolute; left: 40px; font-size: 40px; line-height: 1.3; white-space: nowrap; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.25" data-track-index="1">
+      <div id="t-head" class="t-abs"><span>An</span> <span>error</span> <span>is</span> <span>a</span> <span class="ac">note.</span></div>
+      <svg id="t-line" class="t-abs" viewBox="0 0 1920 1080"><path id="t-under" d="M965 342 Q1110 366 1265 334" /></svg>
+      <div id="t-sub" class="t-abs"><span><b>1</b> the last line: what went wrong</span><span><b>2</b> the marks: the exact spot</span><span><b>3</b> the line number: where to look</span></div>
+      <div id="t-note" class="t-abs"><div id="t-pin" class="t-abs"></div>
+        <div class="l" style="top:56px">Read it</div>
+        <div class="l" style="top:116px;color:#3b37e6">bottom up.</div>
+        <div class="l" style="top:186px;color:#1f7a5c">Change 1 thing.</div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 5: How this course works</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 52.15;
+      const g = { an: 52.299, error: 52.543, note: 54.795, tells: 55.283, where: 55.782, look: 56.188, end: 57.0 };
+      const tl = gsap.timeline({ paused: true });
+      const words = gsap.utils.toArray("#t-head span");
+      tl.fromTo("#t-note", { opacity: 0, y: 80, rotation: 4 }, { opacity: 1, y: 0, rotation: -3, duration: 0.6, ease: "back.out(1.5)" }, 0.05);
+      tl.fromTo(words.slice(0, 4), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", stagger: 0.18 }, g.an - S);
+      tl.fromTo(words[4], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.note - S - 0.05);
+      const u = document.getElementById("t-under"), L = u.getTotalLength();
+      u.style.strokeDasharray = L;
+      tl.fromTo(u, { strokeDashoffset: L, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.out", immediateRender: false }, g.note - S + 0.3);
+      const chips = gsap.utils.toArray("#t-sub span");
+      [g.error, g.tells, g.where].forEach((at, i) => tl.fromTo(chips[i], { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "back.out(1.6)" }, (i === 0 ? 53.7 : at) - S));
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

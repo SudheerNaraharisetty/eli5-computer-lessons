@@ -1,0 +1,17 @@
+You take a pie out of the oven. It's burnt. But a note is pinned to it, saying which step went wrong, and why.
+
+When your program fails, Python pins a note on it too. It's called a traceback. It looks scary, but it's on your side.
+
+So don't panic, and don't change things at random. Read it from the bottom up.
+
+The last line names the problem. Type error. Python can only join text to text, and three is a number.
+
+One line up, little marks point at the exact spot. The plus sign.
+
+Above that, the line number. Line three.
+
+So go to line three, and change one thing. Swap the plus for a comma. Print shows each part, with a space between.
+
+Run it again. No note this time. The menu prints, and dinner is served.
+
+An error is not a disaster. It's a note that tells you where to look.

@@ -1,0 +1,15 @@
+Ana ran every day this week. Seven numbers on one list. Picture it as a loaf of bread, with seven slices, numbered zero to six.
+
+You want her first three days. Write the list name, then square brackets with zero, colon, three. That is a slice.
+
+Zero is where the knife starts. Three is where it stops. But slice three stays on the loaf. Just like range, the stop is not included.
+
+The knife lifts away a new list: slices zero, one and two. Five, eight and six kilometres. And the loaf is still whole. The original list does not change.
+
+Leave a number out, and the cut runs to the end. Minus three, colon, gives the last three days.
+
+A second colon adds a step. Step two takes every second slice. Zero, two, four and six.
+
+Step minus one flips the loaf on the board. Sunday comes first.
+
+Start, stop, step. The stop is never included, and the loaf stays whole.

@@ -1,0 +1,13 @@
+Here is your kitchen shelf. Six jars in a row. In Python, that is a list called shopping. Each jar gets a small number tag, its index. And the first tag says zero.
+
+Why zero? The index counts steps from the start. The first jar is right at the start. Zero steps away.
+
+The recipe says, grab the third jar. Your hand goes to jar two. Shopping, square bracket, two. Rice.
+
+Want the last jar? Count from the other end. Minus one is the last jar. Minus two is the one before it. Honey, then oats.
+
+Now the classic slip. Six jars, so you ask for jar six. But the tags stop at five. Your hand reaches past the shelf, into thin air. Index error. List index out of range.
+
+A list can change. Shopping, one, equals oat milk. The old label comes off, and the new one goes on. Same spot, new item.
+
+Count from zero, and the third jar is jar two.

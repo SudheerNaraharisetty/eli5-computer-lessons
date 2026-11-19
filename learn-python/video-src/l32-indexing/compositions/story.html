@@ -1,0 +1,297 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, before the code arrives */
+    #title { left: 96px; top: 150px; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #title span { color: #3b37e6; }
+
+    /* the shelf: jars 190 wide, 234 apart, bodies 620 to 790 */
+    .jar { top: 592px; width: 190px; height: 198px; }
+    .jar .lid { position: absolute; left: 24px; top: 0; width: 142px; height: 28px; border-radius: 8px; background: #3e3b52; box-shadow: 0 0 0 5px #0e0c1d; }
+    .jar .body { position: absolute; left: 0; top: 28px; width: 190px; height: 170px; border-radius: 26px; background: #fff; overflow: hidden; }
+    .jar .lab { position: absolute; left: 14px; top: 52px; width: 162px; height: 66px; border-radius: 12px; background: #fbebd2; text-align: center; font: 800 34px/66px "Manrope", sans-serif; white-space: nowrap; }
+    #l1b { position: absolute; left: 14px; top: 52px; width: 162px; height: 66px; border-radius: 12px; background: #ddefe6; color: #1f7a5c; text-align: center; font: 800 32px/66px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #plank { left: 76px; top: 800px; width: 1400px; height: 22px; border-radius: 6px; background: #b9741a; box-shadow: 0 0 0 5px #0e0c1d; }
+    .tagp, .tagn { width: 84px; height: 52px; border-radius: 14px; text-align: center; font: 700 34px/52px "JetBrains Mono", monospace; }
+    .tagp { top: 840px; background: #e6e3ff; color: #3b37e6; }
+    .tagn { top: 912px; background: #fbebd2; color: #7a4a0c; }
+    #start { left: 40px; top: 548px; width: 112px; text-align: center; font-size: 28px; color: #3e3b52; }
+    #startln { left: 70px; top: 590px; width: 0; height: 320px; border-left: 5px dashed #6f6b80; }
+    #p0 { left: 112px; top: 470px; }
+
+    /* reaching past the end */
+    #ghost { left: 1500px; top: 620px; width: 190px; height: 170px; border-radius: 26px; border: 5px dashed #b8235a; background: #fbe0ea; text-align: center; font: 700 72px/160px "JetBrains Mono", monospace; color: #b8235a; }
+    #ghostt { left: 1553px; top: 840px; width: 84px; height: 52px; border-radius: 14px; border: 4px dashed #b8235a; background: #fbe0ea; text-align: center; font: 700 34px/44px "JetBrains Mono", monospace; color: #b8235a; }
+    #stamp { left: 1330px; top: 486px; height: 92px; line-height: 92px; padding: 0 36px; border-radius: 18px; background: #b8235a; color: #fff; font: 700 52px/92px "JetBrains Mono", monospace; white-space: nowrap; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* right column: what the voice is saying */
+    .card { left: 1250px; top: 96px; width: 574px; padding: 26px 30px; background: #fff; border-radius: 22px; font: 700 44px/56px "Fraunces", serif; }
+    .card b { color: #3b37e6; }
+    .card code { font: 700 42px/56px "JetBrains Mono", monospace; color: #3b37e6; }
+    #k-rec { background: #fbebd2; }
+    #k-rec small { display: block; font: 800 28px/36px "Manrope", sans-serif; color: #7a4a0c; margin-bottom: 6px; }
+    #k-err code { color: #b8235a; }
+    .pill { height: 64px; line-height: 64px; padding: 0 28px; border-radius: 999px; font-size: 32px; white-space: nowrap; }
+    .pl { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #0e0c1d; }
+    .pg { background: #1f7a5c; color: #fff; }
+    .pr { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pa { left: 1250px; top: 300px; }
+    #pb { left: 1250px; top: 300px; }
+    #pc { left: 1250px; top: 300px; }
+
+    /* code panel: 38px mono = 22.8px per char, text at page x 136, rows 60px from panel y 88 */
+    #s-code { left: 96px; top: 96px; width: 1100px; height: 360px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1100px; height: 64px; background: #211e40; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    #s-div { position: absolute; left: 40px; top: 282px; width: 1020px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 290px; font: 800 28px/60px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 200px; top: 290px; font: 500 36px/60px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    #o-err { color: #ff8fab; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 64px; height: 64px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.6" data-track-index="1">
+      <div id="s-wrap">
+        <div id="title" class="s-abs">Your kitchen <span>shelf</span></div>
+
+        <!-- the shelf -->
+        <div id="startln" class="s-abs s-hide"></div>
+        <div id="start" class="s-abs s-hide">start</div>
+        <div id="j0" class="s-abs jar" style="left:96px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l0">pasta</div></div></div><div id="j1" class="s-abs jar" style="left:330px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l1">milk</div></div></div><div id="j2" class="s-abs jar" style="left:564px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l2">rice</div></div></div><div id="j3" class="s-abs jar" style="left:798px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l3">beans</div></div></div><div id="j4" class="s-abs jar" style="left:1032px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l4">oats</div></div></div><div id="j5" class="s-abs jar" style="left:1266px"><div class="lid"></div><div class="body s-ol"><div class="lab" id="l5">honey</div></div></div>
+        <div id="l1b" class="s-abs" style="left:344px; top:672px">oat milk</div>
+        <div id="plank" class="s-abs"></div>
+        <div id="tp0" class="s-abs tagp s-ol s-hide" style="left:149px">0</div><div id="tn0" class="s-abs tagn s-ol s-hide" style="left:149px">-6</div><div id="tp1" class="s-abs tagp s-ol s-hide" style="left:383px">1</div><div id="tn1" class="s-abs tagn s-ol s-hide" style="left:383px">-5</div><div id="tp2" class="s-abs tagp s-ol s-hide" style="left:617px">2</div><div id="tn2" class="s-abs tagn s-ol s-hide" style="left:617px">-4</div><div id="tp3" class="s-abs tagp s-ol s-hide" style="left:851px">3</div><div id="tn3" class="s-abs tagn s-ol s-hide" style="left:851px">-3</div><div id="tp4" class="s-abs tagp s-ol s-hide" style="left:1085px">4</div><div id="tn4" class="s-abs tagn s-ol s-hide" style="left:1085px">-2</div><div id="tp5" class="s-abs tagp s-ol s-hide" style="left:1319px">5</div><div id="tn5" class="s-abs tagn s-ol s-hide" style="left:1319px">-1</div>
+        <div id="ghost" class="s-abs s-hide">?</div>
+        <div id="ghostt" class="s-abs s-hide">6</div>
+        <div id="p0" class="s-abs pill pg s-hide">0 steps away</div>
+        <div id="stamp" class="s-abs s-hide">IndexError</div>
+
+        <!-- right column -->
+        <div id="k-idx" class="s-abs card s-ol s-hide">Each tag is the jar's <b>index</b>.</div>
+        <div id="k-step" class="s-abs card s-ol s-hide">index = <b>steps</b> from the start</div>
+        <div id="k-rec" class="s-abs card s-ol s-hide"><small>RECIPE</small>Grab the <b>third</b> jar.</div>
+        <div id="k-neg" class="s-abs card s-ol s-hide"><code>-1</code> is the last jar.</div>
+        <div id="k-err" class="s-abs card s-ol s-hide">6 jars: tags <b>0</b> to <b>5</b>. No <code>6</code>.</div>
+        <div id="k-chg" class="s-abs card s-ol s-hide">A list can <b>change</b>.</div>
+        <div id="pa" class="s-abs pill pl s-hide">third jar = jar 2</div>
+        <div id="pb" class="s-abs pill pr s-hide">past the end: thin air</div>
+        <div id="pc" class="s-abs pill pg s-hide">same spot, new item</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span>kitchen.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px">shopping = [<span class="s">"pasta"</span>, <span class="s">"milk"</span>, <span class="s">"rice"</span>,</div>
+          <div class="s-ln" id="L2" style="top:148px">            <span class="s">"beans"</span>, <span class="s">"oats"</span>, <span class="s">"honey"</span>]</div>
+          <div class="s-ln" id="R2" style="top:208px"><span class="k">print</span>(shopping[<span class="n">2</span>])</div>
+          <div class="s-ln" id="Rm1" style="top:208px"><span class="k">print</span>(shopping[<span class="n">-1</span>])</div>
+          <div class="s-ln" id="Rm2" style="top:208px"><span class="k">print</span>(shopping[<span class="n">-2</span>])</div>
+          <div class="s-ln" id="R6" style="top:208px"><span class="k">print</span>(shopping[<span class="n">6</span>])</div>
+          <div class="s-ln" id="RC" style="top:208px">shopping[<span class="n">1</span>] = <span class="s">"oat milk"</span></div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="o-rice">rice</div>
+          <div class="s-out" id="o-honey">honey</div>
+          <div class="s-out" id="o-oats">oats</div>
+          <div class="s-out" id="o-err">IndexError: list index out of range</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-shop" style="stroke:#ffc24b" />
+          <path id="r-t0" style="stroke:#3b37e6" />
+          <path id="h1" style="stroke:#3b37e6" />
+          <path id="h2" style="stroke:#3b37e6" />
+          <path id="r-third" style="stroke:#3b37e6" />
+          <path id="r-t2" style="stroke:#3b37e6" />
+          <path id="r-i2" style="stroke:#ffc24b" />
+          <path id="r-im1" style="stroke:#ffc24b" />
+          <path id="r-tn1" style="stroke:#b9741a" />
+          <path id="r-i6" style="stroke:#ff6b8b" />
+          <path id="r-t5" style="stroke:#b8235a" />
+          <path id="r-i1" style="stroke:#ffc24b" />
+          <path id="r-t1" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.372, 0.546, 0.731, 1.149, 1.8, 2.229, 2.624, 2.786, 2.902, 3.75, 3.982, 4.528, 4.76, 4.911, 4.992, 5.283, 5.642, 6.722, 7.059, 7.372, 7.639, 7.744, 8.139, 8.475, 8.963, 9.311, 10.333, 10.53, 10.658, 10.983, 11.32, 11.831, 13.096, 13.433, 14.431, 14.605, 15.047, 15.383, 15.79, 15.987, 16.115, 16.776, 16.951, 17.276, 17.624, 17.925, 18.274, 18.378, 18.506, 19.411, 19.911, 20.294, 20.99, 21.153, 21.559, 22.128, 22.488, 22.627, 22.964, 23.463, 23.696, 23.939, 24.218, 24.357, 24.648, 25.333, 25.994, 26.389, 27.086, 28.096, 28.769, 29.013, 29.141, 29.454, 30.174, 30.499, 30.662, 30.801, 31.103, 31.846, 32.403, 32.786, 33.018, 33.146, 33.483, 34.04, 34.493, 34.922, 35.131, 35.27, 35.456, 35.978, 36.478, 37.023, 37.476, 38.219, 38.475, 38.614, 39.113, 39.995, 40.402, 40.773, 40.947, 41.11, 41.377, 41.528, 41.865, 42.492, 42.666, 42.77, 43.13, 43.502, 43.815, 44.663, 44.883, 45.185, 45.615, 45.975, 46.091, 46.555, 46.95, 47.345, 48.169, 48.831, 49.539, 49.91, 50.502, 50.804, 51.002, 51.803, 51.954, 52.244, 52.453, 53.15, 53.707, 54.369, 55.042, 55.402, 56.075, 56.238, 56.447, 56.876, 57.19, 57.468, 57.643, 57.77, 57.979, 58.165, 58.467, 59.071, 59.442, 60.081, 60.371, 61.242, 61.567, 61.787, 62.414, 62.623, 62.763, 63.123, 63.552, 63.866, 64.26];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const hop = (id, x1, x2, y) => {
+        const p = document.getElementById(id);
+        p.setAttribute("d", `M${x1} ${y} Q${(x1 + x2) / 2} ${y - 70} ${x2 - 10} ${y - 4} M${x2 - 30} ${y - 22} L${x2 - 10} ${y - 4} L${x2 - 36} ${y + 2}`);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const col = (c) => 136 + c * 22.8;          // left edge of a code column
+      const JC = (i) => 191 + i * 234;            // centre of jar i
+      const ROW1 = 214, ROW3 = 334;               // code row centres
+      ring("r-shop", (col(0) + col(8)) / 2, ROW1, 112, 38);
+      ring("r-t0", JC(0), 866, 60, 40);
+      hop("h1", JC(0), JC(1), 584);
+      hop("h2", JC(1), JC(2), 584);
+      ring("r-third", 1534, 192, 72, 34);
+      ring("r-t2", JC(2), 866, 60, 40);
+      ring("r-i2", col(16.1), ROW3, 22, 34);
+      ring("r-im1", col(16.6), ROW3, 34, 34);
+      ring("r-tn1", JC(5), 938, 62, 40);
+      ring("r-i6", col(16.1), ROW3, 22, 34);
+      ring("r-t5", JC(5), 866, 60, 40);
+      ring("r-i1", col(10.1), ROW3, 22, 34);
+      ring("r-t1", JC(1), 866, 60, 40);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const lift = (sel, at) => tl.to(sel, { y: -26, duration: 0.3, ease: "back.out(2)" }, at);
+      const drop = (sel, at) => tl.to(sel, { y: 0, duration: 0.25, ease: "power2.out" }, at);
+      const tint = (i, at, c) => tl.to(`#j${i} .body`, { backgroundColor: c || "#e6e3ff", duration: 0.2 }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x, y, duration: d || 0.6, ease: "power3.inOut" }, at);
+
+      /* ---- 1. Your shelf. Six jars. A list called shopping. Tags, the index. First tag says 0 ---- */
+      for (let i = 0; i < 6; i++) bump(`#j${i}`, t(5) + i * 0.1);
+      out("#title", t(15) - 0.5, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(15) - 0.3);
+      type("#L1", t(15), 36, 0.5);
+      type("#L2", t(15) + 0.5, 37, 0.5);
+      draw("r-shop", t(17), 0.4);
+      out("#r-shop", t(21), 0.2);
+      for (let i = 0; i < 6; i++) pop(`#tp${i}`, t(23) + i * 0.08, { from: 0.4, d: 0.35 });
+      pop("#k-idx", t(26), { from: 0.8 });
+      draw("r-t0", t(32), 0.4);
+      bump("#tp0", t(32));
+
+      /* ---- 2. The index counts steps from the start. The first jar is 0 steps away ---- */
+      out("#k-idx", t(36) - 0.3, 0.2);
+      pop("#k-step", t(37), { from: 0.8 });
+      show("#startln", t(41), 0.3);
+      show("#start", t(41), 0.3);
+      tint(0, t(43));
+      lift("#j0", t(43));
+      pop("#p0", t(50), { from: 0.6 });
+
+      /* ---- 3. The recipe says the third jar. Your hand goes to jar 2. shopping[2]. Rice ---- */
+      out(["#k-step", "#p0", "#r-t0"], t(53) - 0.3, 0.2);
+      drop("#j0", t(53) - 0.3);
+      tint(0, t(53) - 0.3, "#ffffff");
+      pop("#k-rec", t(54), { from: 0.8 });
+      draw("r-third", t(58), 0.4);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1700, y: 520 }, { opacity: 1, x: 1700, y: 520, duration: 0.2, immediateRender: false }, t(61) - 0.2);
+      cursorTo(JC(2) + 10, 690, t(61), 0.9);
+      draw("h1", t(61) + 0.1, 0.35);
+      draw("h2", t(63), 0.35);
+      draw("r-t2", t(65), 0.4);
+      tint(2, t(65));
+      lift("#j2", t(65));
+      pop("#pa", t(65), { from: 0.6 });
+      type("#R2", t(66), 18, 0.9);
+      draw("r-i2", t(69), 0.35);
+      show("#o-rice", t(70), 0.2);
+
+      /* ---- 4. Count from the other end. -1 is the last, -2 the one before. Honey, then oats ---- */
+      out(["#k-rec", "#r-third", "#pa", "#h1", "#h2", "#r-t2", "#r-i2", "#start", "#startln"], t(71) - 0.1, 0.25);
+      drop("#j2", t(71) - 0.1);
+      tint(2, t(71) - 0.1, "#ffffff");
+      tl.to("#s-cursor", { opacity: 0, duration: 0.25 }, t(71) - 0.1);
+      bump("#j5", t(73));
+      pop("#tn5", t(81), { from: 0.4 });
+      pop("#k-neg", t(81), { from: 0.8 });
+      draw("r-tn1", t(82), 0.4);
+      out("#o-rice", t(81), 0.15);
+      tl.set("#R2", { opacity: 0 }, t(81));
+      tl.set("#Rm1", { opacity: 1 }, t(81));
+      bump("#Rm1", t(81));
+      draw("r-im1", t(81), 0.35);
+      pop("#tn4", t(87), { from: 0.4 });
+      for (let i = 3; i >= 0; i--) pop(`#tn${i}`, t(89) + (3 - i) * 0.1, { from: 0.4, d: 0.3 });
+      out("#r-im1", t(88), 0.2);
+      tint(5, t(93));
+      lift("#j5", t(93));
+      show("#o-honey", t(93), 0.2);
+      drop("#j5", t(95));
+      tint(5, t(95), "#ffffff");
+      tint(4, t(95));
+      lift("#j4", t(95));
+      tl.set("#Rm1", { opacity: 0 }, t(95));
+      tl.set("#Rm2", { opacity: 1 }, t(95));
+      bump("#Rm2", t(95));
+      out("#o-honey", t(95), 0.1);
+      show("#o-oats", t(95) + 0.1, 0.2);
+
+      /* ---- 5. Six jars, so jar six? Tags stop at 5. Thin air. IndexError ---- */
+      out(["#k-neg", "#r-tn1", "#o-oats"], t(98), 0.25);
+      drop("#j4", t(98));
+      tint(4, t(98), "#ffffff");
+      pop("#k-err", t(100), { from: 0.8 });
+      tl.set("#Rm2", { opacity: 0 }, t(107));
+      tl.set("#R6", { opacity: 1 }, t(107));
+      bump("#R6", t(107));
+      draw("r-i6", t(107), 0.35);
+      pop("#ghostt", t(107), { from: 0.5 });
+      draw("r-t5", t(113), 0.4);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 1250, y: 980 }, { opacity: 1, x: 1250, y: 980, duration: 0.2, immediateRender: false }, t(114) - 0.2);
+      cursorTo(1590, 690, t(115), 1.0);
+      show("#ghost", t(117), 0.3);
+      pop("#pb", t(121), { from: 0.6 });
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.6, rotation: -8 }, { opacity: 1, scale: 1, rotation: -5, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(123));
+      show("#o-err", t(125), 0.2);
+
+      /* ---- 6. A list can change. shopping[1] = "oat milk". Old label off, new one on ---- */
+      out(["#k-err", "#ghost", "#ghostt", "#stamp", "#pb", "#r-i6", "#r-t5", "#o-err", "#R6"], t(130) - 0.2, 0.25);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(130) - 0.2);
+      pop("#k-chg", t(133), { from: 0.8 });
+      type("#RC", t(134), 24, 1.6);
+      draw("r-i1", t(135), 0.35);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 460 }, { opacity: 1, x: 900, y: 460, duration: 0.2, immediateRender: false }, t(135) - 0.1);
+      cursorTo(JC(1) + 30, 700, t(135) + 0.1, 0.8);
+      tl.to("#l1", { y: -150, opacity: 0, rotation: -12, duration: 0.6, ease: "power2.in" }, t(142));
+      pop("#l1b", t(146), { from: 0.4 });
+      tint(1, t(146), "#f3faf6");
+      tl.to("#s-cursor", { opacity: 0, duration: 0.25 }, t(149));
+      draw("r-t1", t(150), 0.4);
+      pop("#pc", t(150), { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 61.6 - 0.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

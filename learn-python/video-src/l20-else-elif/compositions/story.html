@@ -1,0 +1,396 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* beat 1: the tasting card, in plain words */
+    #s-taste { left: 96px; top: 140px; width: 1000px; height: 560px; background: #fff; border-radius: 24px; }
+    #s-taste h2 { position: absolute; left: 56px; top: 40px; font: 700 64px/80px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .e-row { position: absolute; left: 56px; height: 100px; font-size: 52px; line-height: 100px; white-space: nowrap; opacity: 0; }
+    .e-row b { display: inline-block; width: 380px; }
+    .e-row span { color: #3e3b52; font-weight: 600; }
+    .e-row i { font-style: normal; color: #3b37e6; margin-right: 24px; }
+    #e1 { top: 170px; }
+    #e2 { top: 290px; }
+    #e3 { top: 410px; }
+
+    /* the salt card, the pot and the spoon */
+    #s-salt { left: 1160px; top: 110px; width: 664px; height: 104px; background: #fff; border-radius: 22px; font-size: 44px; line-height: 104px; white-space: nowrap; padding-left: 36px; }
+    #s-salt .v { position: relative; display: inline-block; vertical-align: top; width: 70px; height: 104px; margin: 0 6px; }
+    #s-salt .v b { position: absolute; left: 0; top: 0; width: 70px; text-align: center; font: 700 52px/104px "JetBrains Mono", monospace; color: #b8235a; }
+    #s-salt .u { color: #3e3b52; font-weight: 600; }
+    #s-pot { left: 1352px; top: 330px; width: 280px; height: 170px; background: #b9741a; border-radius: 14px 14px 70px 70px; }
+    #s-pot i { position: absolute; left: 20px; top: 16px; width: 240px; height: 36px; border-radius: 50%; background: #fbebd2; box-shadow: 0 0 0 4px #0e0c1d; }
+    #s-pot u { position: absolute; top: 40px; width: 44px; height: 22px; background: #b9741a; border-radius: 10px; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-spoon { left: 1500px; top: 226px; width: 120px; height: 200px; overflow: visible; }
+
+    /* the counter and the three bowls */
+    #s-counter { left: 1150px; top: 700px; width: 684px; height: 26px; background: #fbebd2; border-radius: 8px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .s-bowl { top: 560px; width: 190px; height: 136px; }
+    #bw0 { left: 1160px; }
+    #bw1 { left: 1397px; }
+    #bw2 { left: 1634px; }
+    .b-body { position: absolute; left: 0; top: 20px; width: 190px; height: 116px; background: #ece7df; border-radius: 10px 10px 95px 95px; box-shadow: 0 0 0 5px #0e0c1d; }
+    .b-lit { position: absolute; left: 0; top: 20px; width: 190px; height: 116px; border-radius: 10px 10px 95px 95px; opacity: 0; }
+    #bw0 .b-lit { background: #b8235a; }
+    #bw1 .b-lit { background: #3b37e6; }
+    #bw2 .b-lit { background: #1f7a5c; }
+    .b-rim { position: absolute; left: 6px; top: 6px; width: 178px; height: 34px; border-radius: 50%; background: #fbebd2; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-blbl { top: 748px; width: 220px; text-align: center; font-size: 32px; white-space: nowrap; }
+    #bl0 { left: 1145px; color: #b8235a; }
+    #bl1 { left: 1382px; color: #3b37e6; }
+    #bl2 { left: 1619px; color: #1f7a5c; }
+    .s-chk { width: 64px; height: 64px; border-radius: 50%; background: #0e0c1d; color: #fff; text-align: center; font-size: 38px; line-height: 64px; top: 480px; }
+    #ck0 { left: 1223px; }
+    #ck1 { left: 1460px; }
+    #ck2 { left: 1697px; }
+    #s-one { left: 1290px; top: 830px; width: 400px; height: 70px; line-height: 70px; border-radius: 999px; background: #0e0c1d; color: #fff; text-align: center; font-size: 34px; white-space: nowrap; }
+
+    /* Ben's protein: two nets over a gram scale (0 g at x 1200, 7.5 px per gram) */
+    #s-ben { left: 1160px; top: 110px; width: 664px; height: 104px; background: #fff; border-radius: 22px; font-size: 44px; line-height: 104px; white-space: nowrap; padding-left: 36px; }
+    #s-ben b { color: #1f7a5c; font: 700 52px/104px "JetBrains Mono", monospace; opacity: 0; }
+    .s-net { height: 100px; border-radius: 18px; font-size: 32px; line-height: 100px; padding-left: 22px; white-space: nowrap; }
+    .s-net code { font: 700 32px/100px "JetBrains Mono", monospace; }
+    #netA { left: 1350px; top: 380px; width: 450px; background: #fbebd2; }
+    #netB { left: 1500px; top: 560px; width: 300px; background: #ddefe6; }
+    #s-scale { left: 1200px; top: 732px; width: 600px; height: 6px; background: #0e0c1d; border-radius: 3px; }
+    .s-tick { top: 720px; width: 6px; height: 30px; background: #0e0c1d; border-radius: 3px; }
+    .s-tl { top: 760px; width: 80px; text-align: center; font-size: 30px; color: #3e3b52; }
+    #s-gram { left: 1580px; top: 810px; width: 240px; text-align: center; font-size: 30px; color: #3e3b52; white-space: nowrap; }
+    #s-dot { left: 1543px; top: 236px; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font-size: 34px; line-height: 64px; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-never { left: 1470px; top: 880px; width: 350px; height: 64px; line-height: 64px; border-radius: 999px; background: #fbe0ea; color: #b8235a; text-align: center; font-size: 32px; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #s-netmiss { left: 1486px; top: 546px; width: 328px; height: 128px; border-radius: 26px; border: 5px dashed #b8235a; }
+
+    /* code panel on the left */
+    #s-code { left: 96px; top: 96px; width: 1000px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1000px; height: 64px; background: #211e40; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 30px "JetBrains Mono", monospace; color: #c9c6ff; position: relative; display: inline-block; width: 300px; height: 40px; }
+    #s-bar > span b { position: absolute; left: 0; top: 0; font: 700 30px/40px "JetBrains Mono", monospace; }
+    #s-hl { position: absolute; left: 16px; top: 88px; width: 968px; height: 64px; background: #2e2a58; border-radius: 10px; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .v { position: relative; display: inline-block; vertical-align: top; width: 48px; height: 64px; }
+    .s-ln .v b { position: absolute; left: 0; top: 0; font-weight: 500; color: #ffc24b; }
+    #s-div { position: absolute; left: 40px; top: 640px; width: 920px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 656px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; top: 716px; font: 500 40px/64px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-tf { position: absolute; left: 700px; width: 170px; height: 52px; margin-top: 6px; border-radius: 999px; text-align: center; font: 700 32px/52px "JetBrains Mono", monospace; opacity: 0; }
+    .s-tf.t { background: #ddefe6; color: #1f7a5c; }
+    .s-tf.f { background: #fbe0ea; color: #b8235a; }
+    .s-note { position: absolute; height: 52px; margin-top: 6px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #s-miss { position: absolute; left: 20px; top: 334px; width: 640px; height: 140px; border-radius: 18px; border: 5px dashed #ff6b8b; opacity: 0; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- beat 1: taste and decide, in plain words -->
+        <div id="s-taste" class="s-abs s-ol">
+          <h2>Taste the soup.</h2>
+          <div class="e-row" id="e1"><i>1</i><b>Too salty?</b><span>add water</span></div>
+          <div class="e-row" id="e2"><i>2</i><b>Too bland?</b><span>add salt</span></div>
+          <div class="e-row" id="e3"><i>3</i><b>Neither?</b><span>serve it</span></div>
+        </div>
+
+        <!-- the salt card, pot and spoon -->
+        <div id="s-salt" class="s-abs s-ol s-hide">salt:<span class="v"><b id="sv14">14</b><b id="sv3" class="s-hide">3</b><b id="sv9" class="s-hide">9</b></span><span class="u">g per litre</span></div>
+        <div id="s-pot" class="s-abs s-ol"><i></i><u style="left:-40px"></u><u style="left:276px"></u></div>
+        <svg id="s-spoon" class="s-abs" viewBox="0 0 120 200"><path d="M92 6 L44 132" stroke="#0e0c1d" stroke-width="12" stroke-linecap="round" /><path d="M92 6 L44 132" stroke="#b9741a" stroke-width="5" stroke-linecap="round" /><ellipse cx="38" cy="158" rx="30" ry="22" transform="rotate(-20 38 158)" fill="#fff" stroke="#0e0c1d" stroke-width="5" /></svg>
+
+        <!-- counter and bowls -->
+        <div id="s-counter" class="s-abs"></div>
+        <div id="bw0" class="s-abs s-bowl"><div class="b-body"></div><div class="b-lit"></div><div class="b-rim"></div></div>
+        <div id="bw1" class="s-abs s-bowl"><div class="b-body"></div><div class="b-lit"></div><div class="b-rim"></div></div>
+        <div id="bw2" class="s-abs s-bowl"><div class="b-body"></div><div class="b-lit"></div><div class="b-rim"></div></div>
+        <div id="bl0" class="s-abs s-blbl">too salty</div>
+        <div id="bl1" class="s-abs s-blbl">too bland</div>
+        <div id="bl2" class="s-abs s-blbl">just right</div>
+        <div id="ck0" class="s-abs s-chk s-hide">✓</div>
+        <div id="ck1" class="s-abs s-chk s-hide">✓</div>
+        <div id="ck2" class="s-abs s-chk s-hide">✓</div>
+        <div id="s-one" class="s-abs s-hide">exactly one bowl</div>
+
+        <!-- Ben's protein -->
+        <div id="s-ben" class="s-abs s-ol s-hide">Ben's lunch: <b id="benv">50 g</b></div>
+        <div id="netA" class="s-abs s-net s-ol s-hide"><code>&gt;= 20</code> good</div>
+        <div id="netB" class="s-abs s-net s-ol s-hide"><code>&gt;= 40</code> great</div>
+        <div id="s-netmiss" class="s-abs s-hide"></div>
+        <div id="s-scale" class="s-abs s-hide"></div>
+        <div class="s-abs s-tick s-sc s-hide" style="left:1197px"></div>
+        <div class="s-abs s-tick s-sc s-hide" style="left:1347px"></div>
+        <div class="s-abs s-tick s-sc s-hide" style="left:1497px"></div>
+        <div class="s-abs s-tick s-sc s-hide" style="left:1647px"></div>
+        <div class="s-abs s-tick s-sc s-hide" style="left:1797px"></div>
+        <div class="s-abs s-tl s-sc s-hide" style="left:1160px">0</div>
+        <div class="s-abs s-tl s-sc s-hide" style="left:1310px">20</div>
+        <div class="s-abs s-tl s-sc s-hide" style="left:1460px">40</div>
+        <div class="s-abs s-tl s-sc s-hide" style="left:1610px">60</div>
+        <div class="s-abs s-tl s-sc s-hide" style="left:1760px">80</div>
+        <div id="s-gram" class="s-abs s-sc s-hide">grams of protein</div>
+        <div id="s-dot" class="s-abs s-hide">B</div>
+        <div id="s-never" class="s-abs s-hide">never gets a chance</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i><span><b id="fn1">soup.py</b><b id="fn2" class="s-hide">protein.py</b></span></div>
+          <div id="s-hl"></div>
+          <!-- soup -->
+          <div class="s-ln" id="A1" style="top:88px">salt_g = <span class="v"><b id="cv14">14</b><b id="cv3" class="s-hide">3</b><b id="cv9" class="s-hide">9</b></span></div>
+          <div class="s-ln" id="A3" style="top:216px"><span class="k">if</span> salt_g &gt; <span class="n">12</span>:</div>
+          <div class="s-ln" id="A4" style="top:280px">    <span class="k">print</span>(<span class="s">"Too salty: add water"</span>)</div>
+          <div class="s-ln" id="A5" style="top:344px"><span class="k">elif</span> salt_g &lt; <span class="n">6</span>:</div>
+          <div class="s-ln" id="A6" style="top:408px">    <span class="k">print</span>(<span class="s">"Too bland: add salt"</span>)</div>
+          <div class="s-ln" id="A7" style="top:472px"><span class="k">else</span>:</div>
+          <div class="s-ln" id="A8" style="top:536px">    <span class="k">print</span>(<span class="s">"Just right: serve it"</span>)</div>
+          <!-- protein, wrong order -->
+          <div class="s-ln" id="B1" style="top:88px">protein_g = <span class="n">50</span></div>
+          <div class="s-ln" id="B3" style="top:216px"><span class="k">if</span> protein_g &gt;= <span class="n">20</span>:</div>
+          <div class="s-ln" id="B4" style="top:280px">    <span class="k">print</span>(<span class="s">"Good"</span>)</div>
+          <div class="s-ln" id="B5" style="top:344px"><span class="k">elif</span> protein_g &gt;= <span class="n">40</span>:</div>
+          <div class="s-ln" id="B6" style="top:408px">    <span class="k">print</span>(<span class="s">"Great"</span>)</div>
+          <div class="s-ln" id="B7" style="top:472px"><span class="k">else</span>:</div>
+          <div class="s-ln" id="B8" style="top:536px">    <span class="k">print</span>(<span class="s">"Add beans"</span>)</div>
+          <!-- protein, fixed order -->
+          <div class="s-ln" id="F3" style="top:216px"><span class="k">if</span> protein_g &gt;= <span class="n">40</span>:</div>
+          <div class="s-ln" id="F4" style="top:280px">    <span class="k">print</span>(<span class="s">"Great"</span>)</div>
+          <div class="s-ln" id="F5" style="top:344px"><span class="k">elif</span> protein_g &gt;= <span class="n">20</span>:</div>
+          <div class="s-ln" id="F6" style="top:408px">    <span class="k">print</span>(<span class="s">"Good"</span>)</div>
+          <!-- notes and True/False pills -->
+          <div class="s-note" id="n-elif" style="left:520px; top:344px">elif = else if</div>
+          <div class="s-note" id="n-else" style="left:220px; top:472px">no question</div>
+          <div class="s-tf t" id="t3" style="top:216px">True</div>
+          <div class="s-tf f" id="f3" style="top:216px">False</div>
+          <div class="s-tf t" id="t5" style="top:344px">True</div>
+          <div class="s-tf f" id="f5" style="top:344px">False</div>
+          <div class="s-note" id="n-skip" style="left:830px; top:408px">skipped</div>
+          <div id="s-miss"></div>
+          <!-- output -->
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="o1">Too salty: add water</div>
+          <div class="s-out" id="o2">Too bland: add salt</div>
+          <div class="s-out" id="o3">Just right: serve it</div>
+          <div class="s-out" id="o4">Good</div>
+          <div class="s-out" id="o5">Great</div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-elif" style="stroke:#ffc24b" />
+          <path id="r-else" style="stroke:#ffc24b" />
+          <path id="r-14" style="stroke:#ffc24b" />
+          <path id="r-c20" style="stroke:#ffc24b" />
+          <path id="r-40" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.267, 0.65, 0.801, 1.498, 1.8, 2.531, 2.833, 3.437, 3.715, 4.284, 4.621, 5.259, 6.188, 6.56, 6.745, 6.943, 7.279, 7.802, 8.104, 8.51, 9.218, 9.474, 10.077, 10.414, 10.89, 11.029, 11.331, 12.016, 12.841, 13.235, 13.41, 13.723, 14.187, 14.687, 14.838, 15.197, 15.859, 16.126, 16.417, 16.881, 17.276, 17.531, 18.019, 18.425, 18.6, 18.994, 19.285, 20.527, 21.014, 21.363, 21.549, 21.665, 22.245, 22.419, 22.744, 23.046, 23.894, 24.138, 24.428, 24.846, 25.032, 25.159, 25.484, 25.717, 26.808, 27.272, 27.597, 27.725, 28.387, 28.677, 29.397, 29.977, 30.256, 30.929, 31.603, 32.172, 32.462, 32.717, 33.089, 33.646, 34.261, 34.552, 35.028, 35.446, 36.282, 36.677, 37.037, 37.954, 38.349, 38.697, 38.836, 39.115, 39.417, 40.032, 40.508, 40.67, 40.926, 41.181, 41.936, 42.249, 42.551, 43.457, 43.631, 43.747, 44.049, 44.455, 44.92, 45.047, 45.419, 45.651, 46.255, 47.346, 47.52, 47.799, 48.066, 48.484, 48.67, 49.146, 49.401, 49.958, 50.318, 50.667, 50.76, 51.723, 51.944, 52.455, 52.675, 52.849, 53.604, 53.836, 54.01, 54.393, 54.73, 55.38, 55.914, 56.181, 56.738, 57.052, 57.679, 58.015, 58.143, 58.793, 58.967, 59.281, 59.571, 60.036, 60.233, 60.964, 61.266, 61.626];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Hand-drawn ring around a point, in page pixels.
+      // Code panel at (96, 96): 40px mono = 24px per char, code text starts at x=136.
+      // Line centres (page y): line 1 = 216, line 3 = 344, line 4 = 408, line 5 = 472, line 6 = 536, line 7 = 600, line 8 = 664.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      ring("r-elif", 184, 472, 66, 38);      // elif, cols 0-3
+      ring("r-else", 184, 600, 66, 38);      // else, cols 0-3
+      ring("r-14", 376, 216, 44, 38);        // 14 in salt_g = 14, cols 9-10
+      ring("r-c20", 388, 344, 200, 40);      // protein_g >= 20, cols 3-17
+      ring("r-40", 544, 344, 42, 38);        // 40 in the fixed line 3, cols 16-17
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (line, at) => tl.to("#s-hl", { y: (line - 1) * 64, duration: 0.25, ease: "power2.inOut" }, at);
+      const dip = (at) => tl.fromTo("#s-spoon", { y: 0, rotation: 0 }, { y: 64, rotation: -8, duration: 0.3, ease: "power2.in", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const light = (i, at) => {
+        tl.to(`#bw${i} .b-lit`, { opacity: 1, duration: 0.3, ease: "power2.out" }, at);
+        pop(`#ck${i}`, at + 0.05, { from: 0.4, ease: "back.out(2.2)" });
+        bump(`#bw${i}`, at);
+        const others = [0, 1, 2].filter((k) => k !== i).flatMap((k) => [`#bw${k}`, `#bl${k}`]);
+        dim(others, at, 0.3);
+      };
+      const unlight = (i, at) => {
+        tl.to(`#bw${i} .b-lit`, { opacity: 0, duration: 0.2, ease: "power2.in" }, at);
+        out(`#ck${i}`, at, 0.2);
+        dim(["#bw0", "#bw1", "#bw2", "#bl0", "#bl1", "#bl2"], at, 1);
+      };
+      const soupLines = ["#A1", "#A3", "#A4", "#A5", "#A6", "#A7", "#A8"];
+
+      /* ---- 1. Taste the soup. Too salty: add water. Too bland: add salt. Neither: serve it ---- */
+      dip(t(1));
+      pop("#e1", t(4), { from: 0.8 }); bump("#bw0", t(5));
+      pop("#e2", t(8), { from: 0.8 }); bump("#bw1", t(9));
+      pop("#e3", t(12), { from: 0.8 }); bump("#bw2", t(16));
+
+      /* ---- 2. In Python: if asks the first question, elif the next, else catches the rest ---- */
+      out("#s-taste", t(21) - 0.2, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(21));
+      pop("#s-salt", t(21) + 0.2, { from: 0.8 });
+      type("#A1", t(21) + 0.3, 11, 0.4);
+      type("#A3", t(23), 15, 0.4);
+      type("#A4", t(24) + 0.1, 33, 0.6);
+      bump("#bw0", t(24) + 0.4);
+      type("#A5", t(28), 16, 0.4);
+      draw("r-elif", t(28) + 0.15, 0.4);
+      pop("#n-elif", t(31), { from: 0.6 });
+      type("#A6", t(33), 32, 0.6);
+      bump("#bw1", t(33) + 0.4);
+      out("#r-elif", t(37) - 0.1, 0.2);
+      type("#A7", t(38), 5, 0.25);
+      draw("r-else", t(38) + 0.1, 0.4);
+      type("#A8", t(39), 33, 0.6);
+      bump("#bw2", t(40));
+      pop("#n-else", t(45), { from: 0.6 });
+
+      /* ---- 3. Checks from the top. The first True wins, its block runs, the rest are skipped ---- */
+      out(["#r-else", "#n-else", "#n-elif"], t(48) - 0.2, 0.2);
+      tl.set("#s-hl", { y: 128 }, 0);
+      show("#s-hl", t(48), 0.25);
+      tl.fromTo("#s-hl", { y: 0 }, { y: 128, duration: 0.5, ease: "power2.inOut", immediateRender: false }, t(48));
+      pop("#t3", t(55), { from: 0.5, ease: "back.out(2.2)" });
+      hlTo(4, t(58));
+      show("#o1", t(59), 0.25);
+      dim(["#A5", "#A6", "#A7", "#A8"], t(62), 0.5);
+      pop("#n-skip", t(64), { from: 0.6 });
+      // fourteen grams: too salty
+      draw("r-14", t(65), 0.4);
+      bump("#s-salt", t(65));
+      dip(t(66));
+      light(0, t(69));
+
+      // three: too bland
+      out(["#r-14", "#n-skip", "#t3", "#o1"], t(71) - 0.2, 0.15);
+      dim(["#A5", "#A6", "#A7", "#A8"], t(71) - 0.2, 1);
+      unlight(0, t(71) - 0.2);
+      swap("#cv14", "#cv3", t(71));
+      swap("#sv14", "#sv3", t(71));
+      hlTo(3, t(71));
+      dip(t(71));
+      pop("#f3", t(71) + 0.15, { from: 0.6, d: 0.25 });
+      hlTo(5, t(71) + 0.3);
+      pop("#t5", t(71) + 0.45, { from: 0.6, d: 0.25 });
+      hlTo(6, t(71) + 0.6);
+      show("#o2", t(71) + 0.7, 0.2);
+      light(1, t(71) + 0.7);
+
+      // nine: neither, so else serves it
+      out(["#t5", "#o2"], t(74) - 0.2, 0.15);
+      unlight(1, t(74) - 0.2);
+      swap("#cv3", "#cv9", t(74));
+      swap("#sv3", "#sv9", t(74));
+      hlTo(3, t(74));
+      dip(t(74));
+      hlTo(5, t(75));
+      pop("#f5", t(75) + 0.2, { from: 0.6, d: 0.3 });
+      hlTo(7, t(77));
+      hlTo(8, t(78));
+      show("#o3", t(78) + 0.1, 0.2);
+      light(2, t(78));
+      pop("#s-one", t(80), { from: 0.6 });
+      bump("#bw2", t(83));
+
+      /* ---- 4. Ben's protein: 20 or more is good, 40 or more is great. Ben eats 50 ---- */
+      const soupWorld = ["#s-salt", "#s-pot", "#s-spoon", "#s-counter", "#bw0", "#bw1", "#bw2", "#bl0", "#bl1", "#bl2", "#ck2", "#s-one"];
+      out(soupWorld, t(85) - 0.3, 0.3);
+      out([...soupLines, "#f3", "#f5", "#o3", "#s-hl"], t(85) - 0.3, 0.25);
+      swap("#fn1", "#fn2", t(85));
+      pop("#s-ben", t(86), { from: 0.8 });
+      show(".s-sc", t(86) + 0.2, 0.3);
+      show("#s-scale", t(86) + 0.2, 0.3);
+      type("#B1", t(86) + 0.2, 14, 0.4);
+      type("#B3", t(88), 19, 0.45);
+      type("#B4", t(88) + 0.5, 17, 0.4);
+      pop("#netA", t(92), { from: 0.7 });
+      type("#B5", t(94), 21, 0.45);
+      type("#B6", t(94) + 0.5, 18, 0.4);
+      pop("#netB", t(98), { from: 0.7 });
+      type("#B7", t(98) + 0.3, 5, 0.2);
+      type("#B8", t(98) + 0.5, 22, 0.45);
+      pop("#benv", t(101), { from: 0.6 });
+      pop("#s-dot", t(101), { from: 0.4, ease: "back.out(2.2)" });
+      // the first check is already True
+      tl.set("#s-hl", { y: 128 }, t(102));
+      show("#s-hl", t(104), 0.2);
+      draw("r-c20", t(106), 0.45);
+      pop("#t3", t(111), { from: 0.5, ease: "back.out(2.2)" });
+      // the wide net catches him first
+      tl.to("#s-dot", { y: 72, duration: 0.45, ease: "bounce.out" }, t(113));
+      bump("#netA", t(115));
+      show("#o4", t(115), 0.25);
+      out("#r-c20", t(117), 0.2);
+      // great never gets a chance
+      dim(["#B5", "#B6", "#B7", "#B8"], t(118), 0.5);
+      show("#s-miss", t(119), 0.25);
+      dim("#netB", t(119), 0.45);
+      show("#s-netmiss", t(119), 0.25);
+      pop("#s-never", t(120), { from: 0.6 });
+
+      /* ---- 5. The fix is the order: the narrow check first. 40, then 20, then else ---- */
+      out(["#s-miss", "#s-netmiss", "#s-never", "#t3", "#o4", "#s-hl"], t(124) - 0.1, 0.2);
+      dim(["#B5", "#B6", "#B7", "#B8", "#netB"], t(124), 1);
+      tl.to("#s-dot", { y: 0, duration: 0.4, ease: "power2.inOut" }, t(124));
+      tl.fromTo("#s-cursor", { opacity: 0, x: 760, y: 1000 }, { opacity: 1, x: 532, y: 350, duration: 0.5, ease: "power3.out", immediateRender: false }, t(125));
+      // swap the two checks
+      swap("#B3", "#F3", t(131));
+      swap("#B4", "#F4", t(131) + 0.05);
+      swap("#B5", "#F5", t(131) + 0.1);
+      swap("#B6", "#F6", t(131) + 0.15);
+      tl.to("#netB", { y: -180, duration: 0.5, ease: "power2.inOut" }, t(131));
+      tl.to("#netA", { y: 180, duration: 0.5, ease: "power2.inOut" }, t(131));
+      tl.to("#s-cursor", { opacity: 0, duration: 0.3 }, t(133));
+      // forty, then twenty, then else
+      tl.set("#s-hl", { y: 128 }, t(134) - 0.1);
+      show("#s-hl", t(134), 0.2);
+      draw("r-40", t(134), 0.35);
+      tl.to("#s-dot", { y: 72, duration: 0.45, ease: "bounce.out" }, t(134) + 0.2);
+      bump("#netB", t(134) + 0.5);
+      show("#o5", t(134) + 0.5, 0.2);
+      hlTo(5, t(136));
+      hlTo(7, t(138));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 57.85);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

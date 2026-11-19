@@ -1,0 +1,11 @@
+You taste the soup. Too salty? Add water. Too bland? Add salt. Neither? Then it is just right, so serve it.
+
+In Python, if asks the first question. el-if, short for else if, asks the next one. And else catches everything left over, so it needs no question.
+
+Python checks from the top. The first True wins. Its block runs, and the rest are skipped. Fourteen grams of salt? Too salty. Three? Too bland. Nine? Neither, so else serves it. Exactly one bowl, every time.
+
+Now Ben's protein. Twenty grams or more is good. Forty or more is great. Ben eats fifty. But the first check, twenty or more, is already True. The wide net catches him first, and great never gets a chance.
+
+The fix is the order. Put the narrow check first. Forty, then twenty, then else.
+
+Top to bottom. The first True wins, and exactly one block runs.

@@ -1,0 +1,13 @@
+Three friends, one dinner. Ben is vegetarian. Chloe is gluten free. Ana needs at least 60 grams of carbs.
+
+To feed Ben and Chloe together, a dish must be vegetarian and gluten free. And is two gates in a row. Both must open. Mushroom risotto? Yes, and yes. True. Lasagne? Vegetarian, yes. Gluten free, no. The second gate stays shut. False.
+
+Or is two gates side by side. Ana can have pasta or rice. Only the rice is ready, but one open gate is enough. True.
+
+Not is a switch. It flips True to False, and False to True.
+
+The classic bug. If dish equals pasta, or rice. Python reads rice on its own, and plain text counts as yes. The gate is welded open. A salad walks through, and Ana gets no carbs.
+
+The fix is to ask the whole question twice. Dish equals pasta, or dish equals rice. Now the salad stops.
+
+And needs both. Or needs one. Not flips the answer.

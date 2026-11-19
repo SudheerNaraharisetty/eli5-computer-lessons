@@ -1,0 +1,46 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; top: 130px; font: 700 104px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    .t-head span { opacity: 0; display: inline-block; margin-right: 34px; }
+    .t-card { left: 110px; padding: 0 34px; height: 104px; line-height: 104px; background: #fff; border-radius: 26px; font-size: 44px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card b { font: 700 44px/104px "JetBrains Mono", monospace; color: #3b37e6; }
+    #t-c1 { top: 380px; }
+    #t-c2 { top: 520px; }
+    #t-c3 { top: 660px; }
+    #t-next { left: 110px; top: 850px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="6.9" data-track-index="1">
+      <div class="t-abs t-head"><span id="t-h1">And needs both.</span><span id="t-h2">Or needs one.</span></div>
+      <div id="t-c1" class="t-abs t-card"><b>a and b</b>&nbsp; → both must be True</div>
+      <div id="t-c2" class="t-abs t-card"><b>a or b</b>&nbsp; → one True is enough</div>
+      <div id="t-c3" class="t-abs t-card"><b>not a</b>&nbsp; → flips True and False</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 23: Truthy and falsy</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 64.2;
+      const g = { and: 64.35, or: 65.639, not: 67.113 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.and - S - 0.1));
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.and - S + 0.4);
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.or - S - 0.1);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.or - S + 0.4);
+      tl.fromTo("#t-c3", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.not - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 4.6);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

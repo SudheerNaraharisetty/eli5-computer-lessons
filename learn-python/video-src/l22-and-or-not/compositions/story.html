@@ -1,0 +1,495 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* the guest grid */
+    #s-grid { left: 96px; top: 40px; width: 1728px; height: 352px; background: #fff; border-radius: 24px; overflow: hidden; }
+    .g-head { position: absolute; top: 0; height: 124px; }
+    .g-av { position: absolute; left: 34px; top: 24px; width: 76px; height: 76px; border-radius: 50%; box-shadow: 0 0 0 4px #0e0c1d; color: #fff; font: 800 40px/76px "Manrope", sans-serif; text-align: center; }
+    .g-name { position: absolute; left: 132px; top: 14px; font: 800 44px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .g-need { position: absolute; left: 132px; top: 68px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    .g-line { position: absolute; left: 0; width: 1728px; height: 3px; background: #ece7df; }
+    .g-vline { position: absolute; top: 0; width: 3px; height: 352px; background: #ece7df; }
+    .g-dish { position: absolute; left: 34px; font: 800 38px/76px "Manrope", sans-serif; white-space: nowrap; }
+    .g-cell { position: absolute; height: 76px; width: 416px; opacity: 0; }
+    .g-cell svg { position: absolute; left: 34px; top: 20px; width: 36px; height: 36px; overflow: visible; }
+    .g-cell span { position: absolute; left: 92px; top: 0; font: 700 34px/76px "JetBrains Mono", monospace; color: #3e3b52; }
+    .g-col { position: absolute; top: 0; width: 416px; height: 352px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 440px; width: 1054px; height: 560px; background: #15132b; border-radius: 24px; opacity: 0; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(1) { left: 26px; }
+    #s-bar > i:nth-child(2) { left: 56px; background: #ffc24b; }
+    #s-bar > i:nth-child(3) { left: 86px; background: #4bd69b; }
+    .s-file { position: absolute; left: 130px; top: 0; font: 700 30px/64px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    #s-div { position: absolute; left: 0; top: 392px; width: 1054px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 400px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-grp { position: absolute; left: 0; top: 0; width: 1054px; height: 560px; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 38px/58px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-tok { position: absolute; font: 500 38px/58px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-tok.n { color: #ffc24b; }
+    .s-tok.s { color: #7cf0b5; }
+    .s-out { position: absolute; left: 40px; top: 452px; font: 500 38px/58px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-out.t { color: #7cf0b5; }
+    .s-out.f { color: #ff6b8b; }
+    .s-stamp { position: absolute; top: 452px; height: 58px; padding: 0 20px; border-radius: 12px; font: 800 32px/58px "Manrope", sans-serif; opacity: 0; white-space: nowrap; }
+    .s-stamp.f { background: #ff6b8b; color: #15132b; }
+    .s-stamp.t { background: #7cf0b5; color: #15132b; }
+
+    /* gate panel, right */
+    #s-gp { left: 1214px; top: 440px; width: 610px; height: 560px; background: #fbf8f4; border-radius: 24px; opacity: 0; }
+    .gp { position: absolute; left: 0; top: 0; width: 610px; height: 560px; opacity: 0; }
+    .gp > svg { position: absolute; left: 0; top: 0; width: 610px; height: 560px; overflow: visible; }
+    .gp-title { position: absolute; left: 32px; top: 18px; font: 700 46px/60px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .gp-title i { font-style: normal; font: 800 32px/60px "Manrope", sans-serif; color: #3e3b52; margin-left: 14px; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="64.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the guest grid: who can eat what -->
+        <div id="s-grid" class="s-abs s-ol">
+          <div class="g-line" style="top:124px"></div>
+          <div class="g-line" style="top:200px"></div>
+          <div class="g-line" style="top:276px"></div>
+          <div class="g-vline" style="left:480px"></div>
+          <div class="g-vline" style="left:896px"></div>
+          <div class="g-vline" style="left:1312px"></div>
+          <div class="g-head" style="left:0;width:480px"><div class="g-name" style="left:34px;top:34px;color:#3e3b52">Tonight</div></div>
+          <div class="g-col" id="col-a" style="left:480px">
+            <div class="g-head" id="h-ana" style="left:0px;width:416px"><div class="g-av" style="background:#3b37e6">A</div><div class="g-name">Ana</div><div class="g-need" id="n-ana">60 g carbs</div></div>
+            <div class="g-cell" id="c1a" style="left:0px;top:124px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg><span>72 g</span></div>
+            <div class="g-cell" id="c2a" style="left:0px;top:200px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg><span>65 g</span></div>
+            <div class="g-cell" id="c3a" style="left:0px;top:276px"><svg viewBox="0 0 36 36"><path d="M5 5 L31 31 M31 5 L5 31" fill="none" stroke="#b8235a" stroke-width="7" stroke-linecap="round" /></svg><span>8 g</span></div>
+          </div>
+          <div class="g-col" id="col-b" style="left:896px">
+            <div class="g-head" id="h-ben" style="left:0px;width:416px"><div class="g-av" style="background:#1f7a5c">B</div><div class="g-name">Ben</div><div class="g-need" id="n-ben">vegetarian</div></div>
+            <div class="g-cell" id="c1b" style="left:0px;top:124px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="g-cell" id="c2b" style="left:0px;top:200px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="g-cell" id="c3b" style="left:0px;top:276px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="g-col" id="col-c" style="left:1312px">
+            <div class="g-head" id="h-chl" style="left:0px;width:416px"><div class="g-av" style="background:#b8235a">C</div><div class="g-name">Chloe</div><div class="g-need" id="n-chl">gluten-free</div></div>
+            <div class="g-cell" id="c1c" style="left:0px;top:124px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+            <div class="g-cell" id="c2c" style="left:0px;top:200px"><svg viewBox="0 0 36 36"><path d="M5 5 L31 31 M31 5 L5 31" fill="none" stroke="#b8235a" stroke-width="7" stroke-linecap="round" /></svg></div>
+            <div class="g-cell" id="c3c" style="left:0px;top:276px"><svg viewBox="0 0 36 36"><path d="M2 19 L13 30 L34 5" fill="none" stroke="#1f7a5c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div class="g-dish" id="d1" style="top:124px">mushroom risotto</div>
+          <div class="g-dish" id="d2" style="top:200px">veggie lasagne</div>
+          <div class="g-dish" id="d3" style="top:276px">green salad</div>
+          <!-- cells: row r, column a (Ana), b (Ben), c (Chloe) -->
+        </div>
+
+        <!-- code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i></i><i></i><i></i>
+            <span class="s-file" id="f1">dinner.py</span>
+            <span class="s-file" id="f2">carbs.py</span>
+            <span class="s-file" id="f3">gluten.py</span>
+            <span class="s-file" id="f4">filter.py</span>
+          </div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+
+          <!-- 1: and -->
+          <div class="s-grp" id="c1">
+            <div class="s-ln" style="top:80px">dish <span class="o">=</span> </div>
+            <div class="s-tok s" id="v-ris" style="left:200px;top:80px;opacity:1">"risotto"</div>
+            <div class="s-tok s" id="v-las" style="left:200px;top:80px">"lasagne"</div>
+            <div class="s-ln" style="top:138px">is_vegetarian <span class="o">=</span> <span class="n">True</span></div>
+            <div class="s-ln" style="top:196px">is_gluten_free <span class="o">=</span> </div>
+            <div class="s-tok n" id="v-gt" style="left:428px;top:196px;opacity:1">True</div>
+            <div class="s-tok n" id="v-gf" style="left:428px;top:196px">False</div>
+            <div class="s-ln" id="L13" style="top:254px"><span class="k">print</span>(is_vegetarian <span class="k">and</span> is_gluten_free)</div>
+            <div class="s-out t" id="O1t">True</div>
+            <div class="s-out f" id="O1f">False</div>
+          </div>
+
+          <!-- 2: or -->
+          <div class="s-grp" id="c2">
+            <div class="s-ln" style="top:80px">has_pasta <span class="o">=</span> <span class="n">False</span></div>
+            <div class="s-ln" style="top:138px">has_rice <span class="o">=</span> <span class="n">True</span></div>
+            <div class="s-ln" id="L22" style="top:196px"><span class="k">print</span>(has_pasta <span class="k">or</span> has_rice)</div>
+            <div class="s-out t" id="O2t">True</div>
+          </div>
+
+          <!-- 3: not -->
+          <div class="s-grp" id="c3">
+            <div class="s-ln" style="top:80px">is_gluten_free <span class="o">=</span> </div>
+            <div class="s-tok n" id="v3t" style="left:428px;top:80px;opacity:1">True</div>
+            <div class="s-tok n" id="v3f" style="left:428px;top:80px">False</div>
+            <div class="s-ln" id="L31" style="top:138px"><span class="k">print</span>(<span class="k">not</span> is_gluten_free)</div>
+            <div class="s-out f" id="O3f">False</div>
+            <div class="s-out t" id="O3t">True</div>
+          </div>
+
+          <!-- 4: the always-True bug, then the fix -->
+          <div class="s-grp" id="c4">
+            <div class="s-ln" style="top:80px">dish <span class="o">=</span> <span class="s">"salad"</span></div>
+            <div class="s-ln" id="L41a" style="top:138px"><span class="k">if</span> dish <span class="o">==</span> <span class="s">"pasta"</span> <span class="k">or</span> <span class="s">"rice"</span>:</div>
+            <div class="s-ln" id="L41b" style="top:138px;opacity:0"><span class="k">if</span> dish <span class="o">==</span> <span class="s">"pasta"</span> <span class="k">or</span> dish <span class="o">==</span> <span class="s">"rice"</span>:</div>
+            <div class="s-ln" id="L42" style="top:196px">    <span class="k">print</span>(<span class="s">"Carbs for Ana!"</span>)</div>
+            <div class="s-ln" id="L43" style="top:254px"><span class="k">else</span>:</div>
+            <div class="s-ln" id="L44" style="top:312px">    <span class="k">print</span>(<span class="s">"No carbs yet"</span>)</div>
+            <div class="s-out f" id="O4f">Carbs for Ana!</div>
+            <div class="s-stamp f" id="st4" style="left:420px">WRONG</div>
+            <div class="s-out t" id="O4t">No carbs yet</div>
+            <div class="s-stamp t" id="st4t" style="left:380px">right</div>
+          </div>
+        </div>
+
+        <!-- gate panel -->
+        <div id="s-gp" class="s-abs s-ol">
+          <!-- 1: and, two gates in a row -->
+          <div class="gp" id="g1">
+            <div class="gp-title">and<i>both must open</i></div>
+            <svg viewBox="0 0 610 560">
+              <rect x="360" y="110" width="200" height="420" rx="16" fill="#ece7df" />
+              <text x="330" y="251" text-anchor="end" font-size="30" font-weight="800" fill="#0e0c1d">vegetarian?</text>
+              <text x="330" y="391" text-anchor="end" font-size="30" font-weight="800" fill="#0e0c1d">gluten-free?</text>
+              <g id="gA"></g>
+              <g id="gB"></g>
+              <g id="ch1"></g>
+              <g id="res1t" opacity="0"><rect x="40" y="436" width="170" height="64" rx="32" fill="#ddefe6" stroke="#0e0c1d" stroke-width="4" /><text x="125" y="479" text-anchor="middle" font-size="36" font-weight="800" fill="#1f7a5c">True</text></g>
+              <g id="res1f" opacity="0"><rect x="40" y="436" width="170" height="64" rx="32" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="4" /><text x="125" y="479" text-anchor="middle" font-size="36" font-weight="800" fill="#b8235a">False</text></g>
+            </svg>
+          </div>
+          <!-- 2: or, two gates side by side -->
+          <div class="gp" id="g2">
+            <div class="gp-title">or<i>one is enough</i></div>
+            <svg viewBox="0 0 610 560">
+              <rect x="70" y="200" width="200" height="300" rx="16" fill="#ece7df" />
+              <rect x="340" y="200" width="200" height="300" rx="16" fill="#ece7df" />
+              <text x="170" y="250" text-anchor="middle" font-size="32" font-weight="800" fill="#0e0c1d">pasta?</text>
+              <text x="440" y="250" text-anchor="middle" font-size="32" font-weight="800" fill="#0e0c1d">rice?</text>
+              <g id="gP"></g>
+              <g id="gR"></g>
+              <g id="ch2"></g>
+              <g id="res2t" opacity="0"><rect x="85" y="410" width="170" height="64" rx="32" fill="#ddefe6" stroke="#0e0c1d" stroke-width="4" /><text x="170" y="453" text-anchor="middle" font-size="36" font-weight="800" fill="#1f7a5c">True</text></g>
+            </svg>
+          </div>
+          <!-- 3: not, a switch and a light -->
+          <div class="gp" id="g3">
+            <div class="gp-title">not<i>flips it</i></div>
+            <svg viewBox="0 0 610 560">
+              <path d="M160 300 H250 M360 300 H440" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" />
+              <g id="in3t"><rect x="30" y="268" width="130" height="64" rx="32" fill="#ddefe6" stroke="#0e0c1d" stroke-width="4" /><text x="95" y="311" text-anchor="middle" font-size="34" font-weight="800" fill="#1f7a5c">True</text></g>
+              <g id="in3f" opacity="0"><rect x="30" y="268" width="130" height="64" rx="32" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="4" /><text x="95" y="311" text-anchor="middle" font-size="34" font-weight="800" fill="#b8235a">False</text></g>
+              <rect x="250" y="200" width="110" height="200" rx="18" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+              <g id="rock"><rect x="270" y="220" width="70" height="80" rx="10" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" /></g>
+              <text x="305" y="450" text-anchor="middle" font-size="34" font-weight="700" font-family="JetBrains Mono, monospace" fill="#3b37e6">not</text>
+              <path d="M478 360 h44 v26 h-44 z" fill="#6f6b80" stroke="#0e0c1d" stroke-width="4" />
+              <circle id="bulb-off" cx="500" cy="300" r="58" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+              <circle id="bulb-on" cx="500" cy="300" r="58" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" opacity="0" />
+              <g id="rays" opacity="0" stroke="#b9741a" stroke-width="6" stroke-linecap="round">
+                <path d="M500 214 v-30 M436 236 l-20 -20 M564 236 l20 -20 M414 300 h-28 M582 300 h20" />
+              </g>
+              <text id="out3f" x="500" y="450" text-anchor="middle" font-size="34" font-weight="800" fill="#b8235a">False</text>
+              <text id="out3t" x="500" y="450" text-anchor="middle" font-size="34" font-weight="800" fill="#1f7a5c" opacity="0">True</text>
+            </svg>
+          </div>
+          <!-- 4: the bug: a gate welded open -->
+          <div class="gp" id="g4">
+            <div class="gp-title">the bug<i>always yes</i></div>
+            <svg viewBox="0 0 610 560">
+              <rect x="40" y="200" width="250" height="300" rx="16" fill="#ece7df" />
+              <rect x="320" y="200" width="250" height="300" rx="16" fill="#ece7df" />
+              <text x="165" y="236" text-anchor="middle" font-size="30" font-weight="700" font-family="JetBrains Mono, monospace" fill="#0e0c1d">== "pasta"</text>
+              <text id="lbl-rice" x="445" y="236" text-anchor="middle" font-size="30" font-weight="700" font-family="JetBrains Mono, monospace" fill="#b8235a">"rice"</text>
+              <text id="lbl-rice2" x="445" y="236" text-anchor="middle" font-size="30" font-weight="700" font-family="JetBrains Mono, monospace" fill="#0e0c1d" opacity="0">== "rice"</text>
+              <g id="gQ"></g>
+              <g id="gW"></g>
+              <g id="weld" opacity="0" stroke="#b9741a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                <path d="M334 300 l6 -10 l6 10 l6 -10 l6 10 l6 -10 l6 10" />
+                <path d="M520 300 l6 -10 l6 10 l6 -10 l6 10 l6 -10 l6 10" />
+              </g>
+              <g id="yes4" opacity="0"><rect x="325" y="118" width="240" height="56" rx="26" fill="#fbebd2" stroke="#0e0c1d" stroke-width="4" /><text x="445" y="156" text-anchor="middle" font-size="30" font-weight="800" fill="#b9741a">counts as yes</text></g>
+              <g id="ch4"></g>
+              <g id="x4" opacity="0"><circle cx="445" cy="410" r="34" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="4" /><path d="M431 396 L459 424 M459 396 L431 424" stroke="#b8235a" stroke-width="7" stroke-linecap="round" /></g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-and" style="stroke:#ffc24b" />
+          <path id="r-gB" style="stroke:#b8235a" />
+          <path id="r-or" style="stroke:#ffc24b" />
+          <path id="r-not" style="stroke:#ffc24b" />
+          <path id="r-orrice" style="stroke:#ff9fb6" />
+          <path id="r-rice" style="stroke:#ffc24b" />
+          <path id="r-weld" style="stroke:#b8235a" />
+          <path id="r-ana" style="stroke:#b8235a" />
+          <path id="r-dish" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.383, 0.987, 1.219, 2.078, 2.415, 2.67, 3.704, 4.203, 4.412, 4.934, 5.712, 6.026, 6.269, 6.362, 6.594, 7.036, 7.361, 7.488, 8.557, 8.719, 9.009, 9.242, 9.369, 9.683, 10.391, 10.542, 10.844, 11.088, 11.238, 11.981, 12.249, 12.759, 13.688, 14.025, 14.199, 14.466, 14.826, 14.942, 15.07, 15.882, 16.219, 16.486, 17.125, 17.566, 18.483, 19.006, 19.365, 19.969, 20.654, 21.711, 22.581, 23.15, 23.638, 24.149, 24.845, 25.019, 25.391, 25.716, 26.088, 26.842, 27.748, 27.98, 28.143, 28.398, 28.735, 29.037, 29.234, 30.081, 30.43, 30.604, 30.778, 31.231, 31.486, 32.299, 32.601, 32.717, 32.996, 33.123, 33.495, 33.739, 34.075, 34.447, 34.807, 35.016, 35.747, 36.444, 36.699, 36.815, 36.897, 37.686, 37.895, 38.208, 38.429, 38.568, 38.963, 39.195, 39.567, 39.741, 40.461, 40.658, 41.157, 41.912, 42.191, 42.458, 42.876, 43.468, 43.781, 44.733, 45.244, 45.592, 45.987, 46.161, 46.37, 46.986, 47.229, 47.543, 48.031, 48.46, 48.948, 50.051, 50.225, 50.608, 50.817, 51.27, 52.024, 52.198, 52.582, 52.849, 53.22, 53.557, 53.882, 54.242, 54.486, 55.449, 55.635, 55.995, 56.169, 56.308, 56.541, 56.68, 56.935, 57.4, 58.375, 58.758, 59.234, 59.791, 60.047, 60.383, 60.906, 62.102, 62.438, 62.578, 62.996, 63.75, 64.145, 64.505, 65.039, 65.306, 65.654, 66.513, 66.827, 67.152, 67.303];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- gates and chips (static markup, built once before any tween) ---- */
+      // A gate across a lane: two posts and two doors that swing up around their hinges.
+      const gate = (id, cx, y, w, col) => {
+        const L = cx - w / 2, R = cx + w / 2;
+        document.getElementById(id).innerHTML =
+          `<rect x="${L - 10}" y="${y - 30}" width="16" height="60" rx="4" fill="#0e0c1d" />` +
+          `<rect x="${R - 6}" y="${y - 30}" width="16" height="60" rx="4" fill="#0e0c1d" />` +
+          `<rect id="${id}-l" x="${L + 6}" y="${y - 10}" width="${w / 2 - 8}" height="20" rx="6" fill="${col}" stroke="#0e0c1d" stroke-width="3" />` +
+          `<rect id="${id}-r" x="${cx + 2}" y="${y - 10}" width="${w / 2 - 8}" height="20" rx="6" fill="${col}" stroke="#0e0c1d" stroke-width="3" />`;
+        return { l: `#${id}-l`, r: `#${id}-r`, lo: `${L + 6} ${y}`, ro: `${R - 6} ${y}` };
+      };
+      // A dish chip drawn around (0, 0); GSAP moves it with x and y.
+      const chip = (id, items) => {
+        document.getElementById(id).innerHTML = items.map(([sid, txt, fill, col, w]) =>
+          `<g id="${sid}" opacity="0"><rect x="${-w / 2}" y="-30" width="${w}" height="60" rx="30" fill="${fill}" stroke="#0e0c1d" stroke-width="4" />` +
+          `<text x="0" y="11" text-anchor="middle" font-size="32" font-weight="800" fill="${col}">${txt}</text></g>`).join("");
+      };
+      const gA = gate("gA", 460, 240, 200, "#c9c6ff");
+      const gB = gate("gB", 460, 380, 200, "#c9c6ff");
+      const gP = gate("gP", 170, 330, 200, "#c9c6ff");
+      const gR = gate("gR", 440, 330, 200, "#c9c6ff");
+      const gQ = gate("gQ", 165, 330, 250, "#c9c6ff");
+      const gW = gate("gW", 445, 330, 250, "#c9c6ff");
+      chip("ch1", [["k-ris", "risotto", "#fff", "#0e0c1d", 170], ["k-las", "lasagne", "#fff", "#0e0c1d", 170]]);
+      chip("ch2", [["k-ana", "Ana", "#3b37e6", "#fff", 120]]);
+      chip("ch4", [["k-sal", "salad", "#fff", "#1f7a5c", 140]]);
+
+      /* ---- rings (page pixels) ---- */
+      // Code: 38px mono, 22.8px per char, text from x=136; line i centre y = 549 + 58*i.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const len = p.getTotalLength(); p.dataset.len = len;
+        p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      };
+      ring("r-and", 626, 723, 52, 32);      // "and" on line 4, cols 20-22
+      ring("r-gB", 1674, 822, 140, 38);     // gate B in the gate panel (svg 460,380)
+      ring("r-or", 524, 665, 42, 32);       // "or" on line 3, cols 16-17
+      ring("r-not", 307, 607, 52, 32);      // "not" on line 2, cols 6-8
+      ring("r-orrice", 672, 607, 118, 34);  // or "rice" on line 2, cols 19-27
+      ring("r-rice", 706, 607, 76, 32);     // "rice" on line 2, cols 22-27
+      ring("r-weld", 1659, 770, 160, 70);   // the welded gate (svg 445,330)
+      ring("r-ana", 650, 354, 110, 40);     // Ana's cell on the salad row
+      ring("r-dish", 729, 607, 104, 34);    // the new dish == , cols 22-29
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+            const dim = (sel, at, v) => tl.to(sel, { opacity: v > 0 ? 0.45 : 1, duration: 0.35, ease: "power2.inOut" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1, transformOrigin: "50% 50%" }, { scale: 1.05, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const shake = (sel, at) => tl.fromTo(sel, { rotation: 0 }, { rotation: 7, duration: 0.05, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, at);
+      const openG = (g, at, col) => {
+        tl.to(g.l, { rotation: -90, svgOrigin: g.lo, duration: 0.4, ease: "back.out(1.4)" }, at);
+        tl.to(g.r, { rotation: 90, svgOrigin: g.ro, duration: 0.4, ease: "back.out(1.4)" }, at);
+        if (col) tl.to([g.l, g.r], { fill: col, duration: 0.2 }, at);
+      };
+      const closeG = (g, at, col) => {
+        tl.to(g.l, { rotation: 0, svgOrigin: g.lo, duration: 0.3, ease: "power2.inOut" }, at);
+        tl.to(g.r, { rotation: 0, svgOrigin: g.ro, duration: 0.3, ease: "power2.inOut" }, at);
+        tl.to([g.l, g.r], { fill: col || "#c9c6ff", duration: 0.2 }, at);
+      };
+      const move = (sel, x, y, at, d) => tl.to(sel, { x, y, duration: d || 0.5, ease: "power2.inOut" }, at);
+
+      /* ---- 0. initial state: the grid is big and centred, lower panels hidden ---- */
+      tl.set("#s-grid", { y: 324 }, 0);
+      ["#k-ris", "#k-las"].forEach(s => tl.set(s, { x: 460, y: 160 }, 0));
+      tl.set("#k-ana", { x: 305, y: 140 }, 0);
+      tl.set("#k-sal", { x: 305, y: 140 }, 0);
+
+      /* ---- 1. Three friends, one dinner ---- */
+      bump("#h-ana", t(1));
+      bump("#h-ben", t(1) + 0.15);
+      bump("#h-chl", t(1) + 0.3);
+      pop("#n-ben", t(6), { from: 0.7 });
+      pop("#n-chl", t(9), { from: 0.7 });
+      pop("#n-ana", t(15), { from: 0.7 });
+      pop("#c1a", t(18) - 0.1, { from: 0.5 });
+      pop("#c2a", t(18) + 0.1, { from: 0.5 });
+      pop("#c3a", t(18) + 0.3, { from: 0.5 });
+
+      /* ---- 2. To feed Ben and Chloe: and ---- */
+      tl.to("#s-grid", { y: 0, duration: 0.7, ease: "expo.inOut" }, t(19) - 0.2);
+      dim("#col-a", t(21), 0.6);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(23));
+      tl.fromTo("#s-gp", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(23) + 0.15);
+      show("#f1", t(23));
+      tl.set("#c1", { opacity: 1 }, t(23));
+      tl.set("#L13", { opacity: 0 }, 0);
+      type("#L13", t(29) - 0.2, 39);
+      draw("r-and", t(30), 0.4);
+      show("#g1", t(33));
+      out("#r-and", t(34), 0.2);
+      pop("#gA", t(36), { from: 0.7 });
+      pop("#gB", t(36) + 0.2, { from: 0.7 });
+      bump("#gA", t(40));
+      bump("#gB", t(41));
+      // risotto: yes and yes
+      pop("#k-ris", t(43), { from: 0.5 });
+      bump("#v-ris", t(43));
+      openG(gA, t(45), "#7cf0b5");
+      move("#k-ris", 460, 310, t(45) + 0.2);
+      pop("#c1b", t(45), { from: 0.5 });
+      openG(gB, t(47), "#7cf0b5");
+      move("#k-ris", 460, 470, t(47) + 0.2);
+      pop("#c1c", t(47), { from: 0.5 });
+      pop("#O1t", t(48), { from: 0.7, d: 0.3 });
+      pop("#res1t", t(48), { from: 0.6 });
+      // lasagne: yes, then no
+      out(["#k-ris", "#res1t"], t(49) - 0.25, 0.2);
+      out("#O1t", t(49) - 0.25, 0.2);
+      closeG(gA, t(49) - 0.2);
+      closeG(gB, t(49) - 0.2);
+      swap("#v-ris", "#v-las", t(49));
+      pop("#k-las", t(49) + 0.1, { from: 0.5 });
+      openG(gA, t(50) + 0.2, "#7cf0b5");
+      move("#k-las", 460, 310, t(50) + 0.4);
+      pop("#c2b", t(51), { from: 0.5 });
+      swap("#v-gt", "#v-gf", t(52));
+      tl.to([gB.l, gB.r], { fill: "#ff9fb6", duration: 0.2 }, t(54));
+      move("#k-las", 460, 318, t(54), 0.15);
+      shake("#k-las", t(54) + 0.2);
+      pop("#c2c", t(54), { from: 0.5 });
+      draw("r-gB", t(56), 0.45);
+      pop("#O1f", t(60), { from: 0.7, d: 0.3 });
+      pop("#res1f", t(60), { from: 0.6 });
+
+      /* ---- 3. or: two gates side by side ---- */
+      out(["#g1", "#c1", "#f1", "#r-gB"], t(61) - 0.3, 0.3);
+      dim("#col-a", t(61) - 0.3, 0);
+      dim(["#col-b", "#col-c"], t(61) - 0.3, 0.6);
+      show("#g2", t(61));
+      show("#c2", t(61));
+      show("#f2", t(61));
+      pop("#gP", t(64), { from: 0.7 });
+      pop("#gR", t(64) + 0.2, { from: 0.7 });
+      bump("#gP", t(66));
+      bump("#gR", t(66));
+      pop("#k-ana", t(68), { from: 0.5 });
+      bump("#c2 .s-ln:nth-child(1)", t(71));
+      bump("#c2 .s-ln:nth-child(2)", t(73));
+      draw("r-or", t(72), 0.35);
+      tl.to([gP.l, gP.r], { fill: "#ff9fb6", duration: 0.2 }, t(74));
+      openG(gR, t(76), "#7cf0b5");
+      out("#r-or", t(80), 0.2);
+      move("#k-ana", 440, 200, t(80), 0.4);
+      move("#k-ana", 440, 440, t(82), 0.6);
+      pop("#O2t", t(85), { from: 0.7, d: 0.3 });
+      pop("#res2t", t(85), { from: 0.6 });
+
+      /* ---- 4. not: a switch ---- */
+      out(["#g2", "#c2", "#f2"], t(86) - 0.3, 0.3);
+      dim("#col-b", t(86) - 0.3, 0.6);
+      dim("#col-c", t(86) - 0.3, 0);
+      dim("#col-a", t(86) - 0.3, 0.6);
+      show("#g3", t(86));
+      show("#c3", t(86));
+      show("#f3", t(86));
+      draw("r-not", t(86) + 0.3, 0.4);
+      bump("#g3 svg", t(89));
+      pop("#O3f", t(92), { from: 0.7, d: 0.3 });
+      bump("#in3t", t(92));
+      bump("#out3f", t(94));
+      out("#r-not", t(95), 0.2);
+      // flip
+      swap("#v3t", "#v3f", t(96));
+      tl.to("#in3t", { opacity: 0, duration: 0.15 }, t(96) - 0.1);
+      tl.to("#in3f", { opacity: 1, duration: 0.2 }, t(96));
+      tl.to("#rock", { y: 80, duration: 0.25, ease: "back.out(2)" }, t(96) + 0.2);
+      tl.to("#bulb-on", { opacity: 1, duration: 0.2 }, t(98) - 0.1);
+      tl.to("#rays", { opacity: 1, duration: 0.2 }, t(98));
+      tl.to("#out3f", { opacity: 0, duration: 0.15 }, t(98) - 0.1);
+      tl.to("#out3t", { opacity: 1, duration: 0.2 }, t(98));
+      swap("#O3f", "#O3t", t(98));
+
+      /* ---- 5. The classic bug: or "rice" ---- */
+      out(["#g3", "#c3", "#f3"], t(99) - 0.3, 0.3);
+      dim("#col-a", t(99) - 0.3, 0);
+      dim("#col-c", t(99) - 0.3, 0.6);
+      tl.set("#c4", { opacity: 1 }, t(99));
+      show("#f4", t(99));
+      tl.set(["#L41a", "#L42", "#L43", "#L44"], { opacity: 0 }, 0);
+      type("#L41a", t(102), 29);
+      show(["#L42", "#L43", "#L44"], t(105));
+      draw("r-orrice", t(106), 0.45);
+      show("#g4", t(107));
+      pop("#gQ", t(107) + 0.2, { from: 0.7 });
+      pop("#gW", t(107) + 0.4, { from: 0.7 });
+      out("#r-orrice", t(108), 0.2);
+      draw("r-rice", t(110), 0.4);
+      bump("#lbl-rice", t(110));
+      pop("#yes4", t(117), { from: 0.5 });
+      openG(gW, t(121), "#7cf0b5");
+      show("#weld", t(123), 0.2);
+      draw("r-weld", t(123), 0.45);
+      out("#r-rice", t(123), 0.2);
+      // the salad walks through
+      pop("#c3b", t(126) - 0.2, { from: 0.5 });
+      pop("#c3c", t(126), { from: 0.5 });
+      pop("#k-sal", t(126), { from: 0.5 });
+      move("#k-sal", 445, 200, t(127), 0.35);
+      move("#k-sal", 445, 440, t(127) + 0.35, 0.6);
+      pop("#O4f", t(128), { from: 0.7, d: 0.3 });
+      draw("r-ana", t(130), 0.45);
+      bump("#c3a", t(132));
+      pop("#st4", t(132), { from: 0.4, ease: "back.out(2.4)" });
+
+      /* ---- 6. The fix: ask the whole question twice ---- */
+      out(["#r-ana", "#yes4"], t(134), 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0, x: 900, y: 760 }, { opacity: 1, x: 632, y: 596, duration: 0.6, ease: "power3.out", immediateRender: false }, t(138));
+      swap("#L41a", "#L41b", t(147));
+      draw("r-dish", t(147) + 0.15, 0.4);
+      tl.to("#s-cursor", { opacity: 0, x: 900, y: 760, duration: 0.4, ease: "power2.in" }, t(148));
+      out(["#lbl-rice", "#weld", "#r-weld"], t(148), 0.2);
+      show("#lbl-rice2", t(148) + 0.1, 0.2);
+      closeG(gW, t(148) + 0.1);
+      out(["#O4f", "#st4", "#k-sal"], t(149), 0.2);
+      out("#r-dish", t(150), 0.2);
+      tl.set("#k-sal", { x: 445, y: 140 }, t(149) + 0.25);
+      show("#k-sal", t(149) + 0.35, 0.2);
+      move("#k-sal", 445, 290, t(150) - 0.3, 0.45);
+      shake("#k-sal", t(150) + 0.15);
+      pop("#x4", t(150) + 0.1, { from: 0.5 });
+      pop("#O4t", t(150) - 0.1, { from: 0.7, d: 0.3 });
+      pop("#st4t", t(150), { from: 0.4, ease: "back.out(2.4)" });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.28, ease: "power2.in" }, 63.9);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

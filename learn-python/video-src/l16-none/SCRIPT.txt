@@ -1,0 +1,15 @@
+Three jars sit on your kitchen shelf. Each has a label, and each looks empty. But they mean three different things.
+
+Chloe has not picked her dessert yet. So her jar holds None. None is Python's value for no answer yet. It has its own type, NoneType.
+
+Ben drank zero protein shakes today. Zero is a real answer, a count. So his jar holds zero.
+
+The last jar holds a slip of paper with no words on it. That is empty text.
+
+Here is Chloe's order slip. Dessert, blank. Is it None? True. Later, she decides. Chocolate mousse. The blank fills in.
+
+Now the trap. Ben's jar was set to None by mistake. After the gym, add one shake. None plus one bounces off. Type error. Python cannot do maths with no answer. Use zero, and zero plus one is one.
+
+None is not zero, not empty text, and not False.
+
+None is the empty jar. It means no answer yet.

@@ -1,0 +1,47 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-h1 { left: 110px; top: 110px; font: 700 120px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h1 code { font: 700 112px/1.1 "JetBrains Mono", monospace; color: #3b37e6; letter-spacing: 0; }
+    .t-card { left: 110px; width: 1300px; height: 116px; display: flex; align-items: center; padding: 0 34px; background: #fff; border-radius: 26px; font-size: 48px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card .t-sym { width: 130px; font: 700 64px/116px "JetBrains Mono", monospace; color: #3b37e6; }
+    .t-card .t-lbl { width: 520px; }
+    .t-card .t-ex { font: 700 48px/116px "JetBrains Mono", monospace; color: #3e3b52; }
+    .t-card .t-ex b { color: #1f7a5c; }
+    #t-c1 { top: 330px; }
+    #t-c2 { top: 490px; }
+    #t-c3 { top: 650px; }
+    #t-next { left: 110px; top: 850px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.1" data-track-index="1">
+      <div id="t-h1" class="t-abs"><code>()</code> Brackets first.</div>
+      <div id="t-c1" class="t-abs t-card"><span class="t-sym">/</span><span class="t-lbl">for exact</span><span class="t-ex">12 / 3 → <b>4.0</b></span></div>
+      <div id="t-c2" class="t-abs t-card"><span class="t-sym">//</span><span class="t-lbl">for whole</span><span class="t-ex">14 // 3 → <b>4</b></span></div>
+      <div id="t-c3" class="t-abs t-card"><span class="t-sym">%</span><span class="t-lbl">for the rest</span><span class="t-ex">14 % 3 → <b>2</b></span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 8: Text</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 56.9;
+      const g = { brackets: 57.187, one: 58.557, two: 60.113, percent: 61.808 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.brackets - S - 0.1);
+      tl.fromTo("#t-c1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.one - S - 0.05);
+      tl.fromTo("#t-c2", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.two - S - 0.05);
+      tl.fromTo("#t-c3", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.percent - S - 0.05);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 6.6);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

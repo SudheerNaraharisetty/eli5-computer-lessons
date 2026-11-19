@@ -1,0 +1,19 @@
+Ana, Ben and Chloe are coming to dinner, and dinner needs a little maths. Python does it with signs you already know.
+
+Double the pasta. Two hundred and fifty, times two. Five hundred grams.
+
+Now split the bill. Dinner is sixty dollars, plus a fifteen dollar tip, shared by three friends.
+
+Sixty plus fifteen, divided by three. Python says sixty five each. That is wrong.
+
+Python divides before it adds. So only the tip got split.
+
+Put brackets around the sum. Brackets go first. Now each friend pays twenty five.
+
+See the point zero? One slash always gives a float, even when it divides evenly.
+
+Now dessert. Fourteen cookies, three plates. Two slashes deal whole cookies only. Four each.
+
+The percent sign gives the leftovers. Two cookies, still on the tray.
+
+Brackets first. One slash for exact. Two slashes for whole. Percent for the rest.

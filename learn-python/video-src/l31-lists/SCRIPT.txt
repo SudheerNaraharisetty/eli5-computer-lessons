@@ -1,0 +1,15 @@
+On your fridge hangs a shopping list. One paper, many items, in order. Flour, eggs, milk.
+
+In Python, that is a list. Square brackets around it, and a comma between the items. Each item is its own value, here text in quotes.
+
+And you can add to it. Shopping dot append, butter, writes a new item at the bottom.
+
+The whole list is one value. Think of one jar, holding many slips.
+
+Ask len how long it is. It counts the slips, not the letters. Four.
+
+Now drop one comma, between flour and eggs. Python glues the two words into one slip. Flour eggs, as one word. No error. The list just has one item fewer. Three.
+
+Put the comma back, and the slips come apart again.
+
+A list is one value that holds many, in order. And unlike text, it can grow.

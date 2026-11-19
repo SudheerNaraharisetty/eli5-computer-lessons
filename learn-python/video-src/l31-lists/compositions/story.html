@@ -1,0 +1,329 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the fridge with the paper list */
+    #fridge { left: 1190px; top: 70px; width: 620px; height: 920px; border-radius: 36px; background: #fff; }
+    #fr-line { left: 1190px; top: 250px; width: 620px; height: 5px; background: #0e0c1d; }
+    .handle { left: 1226px; width: 20px; border-radius: 10px; background: #0e0c1d; }
+    #h1 { top: 120px; height: 90px; } #h2 { top: 300px; height: 190px; }
+    #paper { left: 1330px; top: 300px; width: 420px; height: 560px; border-radius: 6px; background: #fbf8f4; box-shadow: 0 0 0 4px #0e0c1d, 8px 10px 0 4px #0e0c1d; }
+    #magnet { left: 1514px; top: 276px; width: 52px; height: 52px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #p-head { left: 1330px; top: 334px; width: 420px; text-align: center; font: 700 52px/64px "Fraunces", serif; }
+    .rule { left: 1360px; width: 360px; height: 3px; background: #ece7df; }
+    #order { left: 1342px; top: 418px; width: 40px; height: 360px; }
+
+    /* slips: written lines on the paper, then slips in the jar */
+    .slip { left: 1400px; width: 300px; height: 76px; }
+    .slip .bg { position: absolute; inset: 0; border-radius: 14px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; opacity: 0; }
+    .slip span { position: absolute; left: 26px; top: 0; font: 800 44px/76px "Manrope", sans-serif; color: #0e0c1d; white-space: nowrap; }
+    #sl1 { top: 420px; } #sl2 { top: 510px; } #sl3 { top: 600px; } #sl4 { top: 690px; }
+    #fe { color: #b8235a; opacity: 0; }
+    .num { width: 52px; height: 52px; border-radius: 50%; background: #0e0c1d; color: #fff; text-align: center; font: 800 30px/52px "Manrope", sans-serif; }
+    #b1 { left: 1336px; top: 432px; } #b2 { left: 1336px; top: 522px; } #b3 { left: 1336px; top: 612px; } #b4 { left: 1336px; top: 702px; }
+
+    /* the jar */
+    #jar { left: 1320px; top: 370px; width: 440px; height: 470px; border-radius: 30px 30px 70px 70px; background: #e6e3ff; }
+    #lid { left: 1310px; top: 322px; width: 460px; height: 44px; border-radius: 12px; background: #0e0c1d; }
+    #tag { left: 1390px; top: 248px; width: 300px; height: 60px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 36px/60px "JetBrains Mono", monospace; color: #3b37e6; }
+    .pill { height: 70px; line-height: 70px; border-radius: 999px; text-align: center; font-size: 34px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .pill b { font: 700 34px/70px "JetBrains Mono", monospace; }
+    #lenp { left: 1260px; top: 884px; width: 560px; background: #fff; color: #0e0c1d; }
+    #lenp b { color: #3b37e6; }
+    .lv { display: inline-block; position: relative; width: 24px; height: 70px; vertical-align: top; }
+    .lv i { position: absolute; left: 0; top: 0; font: 700 34px/70px "JetBrains Mono", monospace; font-style: normal; opacity: 0; }
+    #lv4 { color: #1f7a5c; } #lv3 { color: #b8235a; } #lv4b { color: #1f7a5c; }
+
+    /* code panel on the left: 38px mono = 22.8 px per char, text at page x 136, row r top at panel y 88 + (r - 1) * 60 */
+    #s-code { left: 96px; top: 96px; width: 1000px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1000px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .p { color: #ffc24b; }
+    #s-div { position: absolute; left: 40px; top: 470px; width: 920px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 478px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .o1 { top: 524px; } .o2 { top: 584px; }
+    #oL3 { color: #ff8fab; }
+    #oS2 { color: #ff8fab; }
+    .s-note { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #b9741a; }
+    #gap { position: absolute; left: 467px; top: 84px; width: 35px; height: 68px; border-radius: 8px; border: 3px dashed #ff6b8b; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="52.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the fridge and the paper list -->
+        <div id="s-fridge" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="fridge" class="s-abs s-ol"></div>
+          <div id="fr-line" class="s-abs"></div>
+          <div id="h1" class="s-abs handle"></div>
+          <div id="h2" class="s-abs handle"></div>
+          <div id="paper" class="s-abs"></div>
+          <div id="p-head" class="s-abs">Shopping</div>
+          <div class="s-abs rule" style="top:494px"></div>
+          <div class="s-abs rule" style="top:584px"></div>
+          <div class="s-abs rule" style="top:674px"></div>
+          <div class="s-abs rule" style="top:764px"></div>
+          <div id="magnet" class="s-abs"></div>
+          <svg id="order" class="s-abs s-hide" viewBox="0 0 40 360"><path d="M20 6 L20 330" stroke="#3b37e6" stroke-width="6" stroke-linecap="round" /><path d="M6 322 L20 350 L34 322 Z" fill="#3b37e6" /></svg>
+        </div>
+
+        <!-- the jar (after the fridge) -->
+        <div id="s-jar" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="jar" class="s-abs s-ol"></div>
+          <div id="lid" class="s-abs"></div>
+          <div id="tag" class="s-abs">shopping</div>
+        </div>
+
+        <!-- the slips -->
+        <div id="sl1" class="s-abs slip"><div class="bg"></div><span id="fl" class="s-hide">flour</span><span id="fe">floureggs</span></div>
+        <div id="sl2" class="s-abs slip"><div class="bg"></div><span id="eg" class="s-hide">eggs</span></div>
+        <div id="sl3" class="s-abs slip"><div class="bg"></div><span id="mi" class="s-hide">milk</span></div>
+        <div id="sl4" class="s-abs slip"><div class="bg"></div><span id="bu" class="s-hide">butter</span></div>
+        <div id="b1" class="s-abs num s-hide">1</div>
+        <div id="b2" class="s-abs num s-hide">2</div>
+        <div id="b3" class="s-abs num s-hide">3</div>
+        <div id="b4" class="s-abs num s-hide">4</div>
+        <div id="lenp" class="s-abs pill s-hide"><b>len(shopping)</b> gives <span class="lv"><i id="lv4">4</i><i id="lv3">3</i><i id="lv4b">4</i></span></div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>shopping.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px">shopping = <span class="p">[</span><span class="s">"flour"</span><span class="p">,</span> <span class="s">"eggs"</span><span class="p">,</span> <span class="s">"milk"</span><span class="p">]</span></div>
+          <div class="s-ln" id="L1x" style="top:88px">shopping = <span class="p">[</span><span class="s">"flour"</span> <span class="s">"eggs"</span><span class="p">,</span> <span class="s">"milk"</span><span class="p">]</span></div>
+          <div class="s-ln" id="L2" style="top:148px">shopping.<span class="k">append</span>(<span class="s">"butter"</span>)</div>
+          <div class="s-ln" id="L3" style="top:208px"><span class="k">print</span>(shopping)</div>
+          <div class="s-ln" id="L4" style="top:268px"><span class="k">print</span>(<span class="k">len</span>(shopping))</div>
+          <div id="gap"></div>
+          <div class="s-note" id="n-list" style="left:40px; top:380px">a list</div>
+          <div class="s-note" id="n-br" style="left:40px; top:380px">[ ] around it, a comma between items</div>
+          <div class="s-note ok" id="n-val" style="left:40px; top:380px">3 values, each text in quotes</div>
+          <div class="s-note" id="n-add" style="left:620px; top:150px">adds at the end</div>
+          <div class="s-note" id="n-cnt" style="left:500px; top:270px">counts items</div>
+          <div class="s-note bad" id="n-miss" style="left:40px; top:380px">missing comma</div>
+          <div class="s-note warn" id="n-err" style="left:40px; top:690px">No error. Just a wrong list.</div>
+          <div class="s-note ok" id="n-back" style="left:40px; top:380px">comma back: 4 items</div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out o1" id="oS">['flour', 'eggs', 'milk', 'butter']</div>
+          <div class="s-out o1" id="oS2">['floureggs', 'milk', 'butter']</div>
+          <div class="s-out o1" id="oS3">['flour', 'eggs', 'milk', 'butter']</div>
+          <div class="s-out o2" id="oL">4</div>
+          <div class="s-out o2" id="oL3">3</div>
+          <div class="s-out o2" id="oL4">4</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-lb" style="stroke:#ffc24b" />
+          <path id="r-rb" style="stroke:#ffc24b" />
+          <path id="r-c1" style="stroke:#ffc24b" />
+          <path id="r-c2" style="stroke:#ffc24b" />
+          <path id="r-v1" style="stroke:#4bd69b" />
+          <path id="r-v2" style="stroke:#4bd69b" />
+          <path id="r-v3" style="stroke:#4bd69b" />
+          <path id="r-app" style="stroke:#ffc24b" />
+          <path id="r-bu" style="stroke:#3b37e6" />
+          <path id="r-len" style="stroke:#ffc24b" />
+          <path id="r-fe" style="stroke:#b8235a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.221, 0.453, 0.778, 1.08, 1.196, 1.625, 2.252, 2.496, 3.007, 3.309, 3.901, 4.145, 4.911, 5.492, 6.026, 7.059, 7.291, 7.883, 8.139, 8.301, 8.417, 9.195, 9.567, 10.031, 10.403, 10.623, 10.844, 10.948, 11.32, 11.749, 11.912, 13.05, 13.375, 13.862, 14.095, 14.303, 14.617, 15.453, 15.778, 16.242, 16.416, 17.287, 17.507, 17.612, 17.786, 18.018, 18.227, 18.97, 19.423, 19.702, 20.48, 21.014, 21.385, 21.501, 21.745, 22.221, 22.43, 22.558, 23.475, 23.649, 23.893, 24.206, 24.392, 24.706, 25.553, 25.855, 26.041, 26.331, 26.83, 27.33, 27.678, 28.932, 29.326, 29.617, 29.826, 30.069, 30.244, 30.836, 31.033, 31.393, 31.532, 32.217, 32.426, 32.542, 33.843, 34.795, 35.213, 35.573, 35.828, 36.339, 36.792, 37.256, 37.5, 38.405, 38.939, 39.369, 39.497, 39.729, 40.1, 40.46, 40.774, 41.83, 42.26, 42.736, 43.084, 43.374, 44.048, 44.338, 45.058, 45.232, 45.592, 45.882, 46.114, 46.393, 46.939, 48.03, 48.796, 49.028, 49.133, 49.47, 50.12, 50.306, 50.41, 50.816, 51.06, 51.443, 52.395, 52.593, 52.918, 53.104, 53.405, 53.858, 54.09, 54.659, 55.158, 55.437, 56.354, 56.772, 57.26, 57.922, 58.224, 58.63];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 22.8 px per char. Row r centre y = 214 + (r - 1) * 60.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * 22.8;
+      ring("r-lb", cx(11, 11) + 4, 214, 25, 34);      // [
+      ring("r-rb", cx(35, 35) + 4, 214, 25, 34);      // ]
+      ring("r-c1", cx(19, 19) + 4, 214, 24, 34);      // first comma
+      ring("r-c2", cx(27, 27) + 4, 214, 24, 34);      // second comma
+      ring("r-v1", cx(12, 18), 214, 88, 36);      // "flour"
+      ring("r-v2", cx(21, 26), 214, 76, 36);      // "eggs"
+      ring("r-v3", cx(29, 34), 214, 76, 36);      // "milk"
+      ring("r-app", cx(8, 14), 274, 92, 36);      // .append, row 2
+      ring("r-bu", 1530, 728, 170, 56);           // butter on the paper
+      ring("r-len", cx(6, 8), 394, 46, 36);       // len, row 4
+      ring("r-fe", 1560, 458, 210, 64);           // the glued slip
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.12); pop(to, at, { from: 0.7, d: 0.35 }); };
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 760, y: 760 }, 0);
+      // The fridge starts in the middle of the frame and moves right when the code arrives.
+      tl.set(["#s-fridge", ".slip"], { x: -420 }, 0);
+      tl.to(["#s-fridge", ".slip"], { x: 0, duration: 0.6, ease: "power3.inOut" }, t(16) - 0.3);
+
+      /* ---- 1. The fridge. One paper, many items, in order. Flour, eggs, milk ---- */
+      bump("#fridge", t(2));
+      bump("#magnet", t(5));
+      bump("#paper", t(8));
+      show("#order", t(11), 0.3);
+      type("#fl", t(13), 5, 0.35);
+      type("#eg", t(14), 4, 0.3);
+      type("#mi", t(15), 4, 0.3);
+
+      /* ---- 2. In Python, that is a list. Square brackets, commas, each item a value ---- */
+      out("#order", t(16), 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(16));
+      type("#L1", t(17), 36, 0.7);
+      pop("#n-list", t(21), { from: 0.6 });
+      draw("r-lb", t(22), 0.3);
+      draw("r-rb", t(23), 0.3);
+      swap("#n-list", "#n-br", t(24));
+      draw("r-c1", t(28), 0.3);
+      draw("r-c2", t(28) + 0.2, 0.3);
+      out(["#r-lb", "#r-rb", "#r-c1", "#r-c2"], t(32) - 0.2, 0.2);
+      draw("r-v1", t(33), 0.35);
+      draw("r-v2", t(33) + 0.25, 0.35);
+      draw("r-v3", t(33) + 0.5, 0.35);
+      bump("#fl", t(33));
+      bump("#eg", t(33) + 0.25);
+      bump("#mi", t(33) + 0.5);
+      swap("#n-br", "#n-val", t(37));
+      out(["#r-v1", "#r-v2", "#r-v3"], t(41) + 0.3, 0.2);
+
+      /* ---- 3. Add to it. shopping.append("butter") writes a new item at the bottom ---- */
+      out("#n-val", t(42), 0.2);
+      tl.fromTo("#s-cursor", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, t(45) - 0.2);
+      cursorTo(140, 268, t(45) - 0.2);
+      type("#L2", t(48), 25, 0.9);
+      cursorTo(710, 268, t(48), 0.9);
+      draw("r-app", t(50), 0.35);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(51));
+      type("#bu", t(51) + 0.1, 6, 0.4);
+      pop("#n-add", t(52), { from: 0.6 });
+      draw("r-bu", t(58), 0.45);
+      out(["#r-app", "#r-bu"], t(59) - 0.1, 0.2);
+
+      /* ---- 4. The whole list is one value. One jar, holding many slips ---- */
+      out("#n-add", t(59), 0.2);
+      type("#L3", t(60), 15, 0.35);
+      show("#oS", t(64), 0.25);
+      out("#s-fridge", t(67), 0.35);
+      pop("#s-jar", t(68), { from: 0.85 });
+      show(".slip .bg", t(69), 0.35);
+      bump("#sl1", t(70));
+      bump("#sl2", t(70) + 0.12);
+      bump("#sl3", t(70) + 0.24);
+      bump("#sl4", t(70) + 0.36);
+
+      /* ---- 5. len counts the slips, not the letters. Four ---- */
+      type("#L4", t(72), 20, 0.45);
+      draw("r-len", t(73), 0.35);
+      pop("#b1", t(79), { from: 0.3 });
+      pop("#b2", t(79) + 0.25, { from: 0.3 });
+      pop("#b3", t(80), { from: 0.3 });
+      pop("#b4", t(81), { from: 0.3 });
+      pop("#n-cnt", t(82), { from: 0.6 });
+      out("#r-len", t(84), 0.2);
+      show("#oL", t(85), 0.2);
+      pop("#lenp", t(85), { from: 0.7 });
+      pop("#lv4", t(85) + 0.1, { from: 0.5 });
+
+      /* ---- 6. Drop one comma. Python glues flour and eggs into one slip. No error. One item fewer ---- */
+      out("#n-cnt", t(86), 0.2);
+      tl.set("#s-cursor", { x: 560, y: 260 }, t(86));
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(86));
+      cursorTo(578, 214, t(87), 0.35);
+      tl.set("#L1x", { opacity: 1 }, t(89));
+      tl.set("#L1", { opacity: 0 }, t(89));
+      show("#gap", t(89), 0.2);
+      pop("#n-miss", t(89) + 0.1, { from: 0.6 });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(90));
+      bump("#sl1", t(91));
+      bump("#sl2", t(93));
+      out(["#b1", "#b2", "#b3", "#b4"], t(94), 0.2);
+      // eggs slides into flour, and the two words become one slip
+      tl.to("#sl2", { y: -90, duration: 0.5, ease: "power2.in" }, t(95));
+      tl.to("#sl2", { opacity: 0, duration: 0.15 }, t(95) + 0.4);
+      out("#fl", t(100) - 0.15, 0.12);
+      pop("#fe", t(100), { from: 0.7 });
+      tl.to(["#sl3", "#sl4"], { y: -90, duration: 0.45, ease: "power2.inOut" }, t(100) + 0.3);
+      draw("r-fe", t(102), 0.45);
+      out("#oS", t(102) - 0.1, 0.12);
+      show("#oS2", t(102), 0.2);
+      pop("#n-err", t(107), { from: 0.6 });
+      // renumber: 3 slips
+      pop("#b1", t(113), { from: 0.3 });
+      pop("#b2", t(113) + 0.2, { from: 0.3 });
+      pop("#b3", t(114), { from: 0.3 });
+      swap("#oL", "#oL3", t(116));
+      swap("#lv4", "#lv3", t(116));
+      tl.to("#lenp", { backgroundColor: "#fbe0ea", duration: 0.2 }, t(116));
+
+      /* ---- 7. Put the comma back: the slips come apart again ---- */
+      out(["#n-err", "#r-fe"], t(117), 0.2);
+      tl.set("#s-cursor", { x: 560, y: 260 }, t(117));
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(117));
+      cursorTo(578, 214, t(117) + 0.1, 0.3);
+      tl.set("#L1", { opacity: 1 }, t(119));
+      tl.set("#L1x", { opacity: 0 }, t(119));
+      out(["#gap", "#n-miss"], t(119), 0.15);
+      pop("#n-back", t(120), { from: 0.6 });
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(120) + 0.2);
+      out(["#b1", "#b2", "#b3"], t(121), 0.15);
+      out("#fe", t(123) - 0.1, 0.12);
+      pop("#fl", t(123), { from: 0.7 });
+      tl.to(["#sl3", "#sl4"], { y: 0, duration: 0.45, ease: "power2.inOut" }, t(123));
+      tl.set("#sl2", { y: 0 }, t(123));
+      pop("#sl2", t(124), { from: 0.5 });
+      out("#oS2", t(124) - 0.1, 0.12);
+      show("#oS3", t(124), 0.2);
+      swap("#oL3", "#oL4", t(125));
+      swap("#lv3", "#lv4b", t(125));
+      tl.to("#lenp", { backgroundColor: "#ddefe6", duration: 0.2 }, t(125));
+      ["#sl1", "#sl2", "#sl3", "#sl4"].forEach((sl, k) => bump(sl, t(125) + 0.3 + k * 0.12));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 52.6);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

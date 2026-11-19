@@ -1,0 +1,13 @@
+A sauce bubbles on your stove. Before every stir, you check. Is it thick yet? No? Stir again.
+
+In Python, that is a while loop. While stirs is less than five, run the lines pushed in under it. The question is asked at the top of every round.
+
+Three parts keep it safe. Stirs starts at zero, before the loop. The question uses it. And stirs plus equals one moves it toward the end. One, two, three, four, five. Five is not less than five, so the loop stops.
+
+Water warms twelve degrees a minute, from twenty. Thirty-two, forty-four, fifty-six. After seven minutes it reaches one hundred and four, and the gate closes.
+
+Now forget the change line. Stirs stays at zero, so the question stays True, and the spoon spins forever. Press Stop. In VS Code, press Control C.
+
+Put the line back, and the sauce is done.
+
+Set it, check it, change it. A while loop repeats until its question turns False.

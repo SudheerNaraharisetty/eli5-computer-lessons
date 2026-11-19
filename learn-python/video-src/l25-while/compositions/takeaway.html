@@ -1,0 +1,50 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h1 { top: 100px; }
+    #t-h2 { top: 640px; font-size: 64px; }
+    .t-card { left: 110px; height: 96px; line-height: 96px; padding: 0 34px 0 14px; background: #fff; border-radius: 26px; font-size: 40px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card i { display: inline-block; width: 64px; height: 64px; margin: 16px 18px 0 0; border-radius: 50%; color: #fff; background: #0e0c1d; font: 800 36px/64px "Manrope", sans-serif; font-style: normal; text-align: center; vertical-align: top; }
+    .t-card b { font: 700 42px/96px "JetBrains Mono", monospace; color: #3b37e6; margin-left: 10px; }
+    #t-c1 { top: 270px; }
+    #t-c2 { top: 390px; }
+    #t-c3 { top: 510px; }
+    #t-c3 b { color: #1f7a5c; }
+    #t-next { left: 110px; top: 860px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.35" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">Set it, check it, change it.</div>
+      <div id="t-c1" class="t-abs t-card"><i>1</i>set it, before the loop <b>stirs = 0</b></div>
+      <div id="t-c2" class="t-abs t-card"><i>2</i>check it, every round <b>while stirs &lt; 5:</b></div>
+      <div id="t-c3" class="t-abs t-card"><i>3</i>change it, toward False <b>stirs += 1</b></div>
+      <div id="t-h2" class="t-abs t-head">A while loop repeats until its question turns False.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 26: for loops</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 62.35;
+      const g = { set: 62.458, check: 63.189, change: 63.967, a: 65.29 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.set - S - 0.15));
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.set - S + 0.05);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.check - S);
+      tl.fromTo("#t-c3", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.change - S);
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.a - S - 0.1);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 7.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

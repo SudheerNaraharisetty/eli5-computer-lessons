@@ -1,0 +1,431 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panel, left */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; border-radius: 24px 24px 0 0; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(1) { left: 26px; }
+    #s-bar > i:nth-child(2) { left: 56px; background: #ffc24b; }
+    #s-bar > i:nth-child(3) { left: 86px; background: #4bd69b; }
+    .s-file { position: absolute; left: 130px; top: 0; font: 700 30px/64px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    .s-grp { position: absolute; left: 0; top: 0; width: 1054px; height: 888px; }
+    .s-ln { position: absolute; left: 40px; font: 500 40px/64px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .o { color: #ff9fb6; }
+    .s-div { position: absolute; left: 0; width: 1054px; height: 3px; background: #2e2a58; }
+    .s-outlbl { position: absolute; left: 40px; font: 800 30px/48px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 36px/56px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    #s-stream { position: absolute; left: 0; top: 424px; width: 1054px; height: 352px; overflow: hidden; }
+    #s-streamin { position: absolute; left: 0; top: 0; width: 1054px; height: 3400px; opacity: 0; }
+    #s-streamin .s-out { opacity: 1; color: #eceaff; }
+    .s-badge { position: absolute; left: 700px; height: 52px; padding: 0 22px 0 8px; border-radius: 999px; font: 800 32px/52px "Manrope", sans-serif; color: #15132b; white-space: nowrap; opacity: 0; }
+    .s-badge b { display: inline-block; width: 40px; height: 40px; margin: 6px 12px 0 0; border-radius: 50%; background: #15132b; color: #fff; font: 800 28px/40px "Manrope", sans-serif; text-align: center; vertical-align: top; }
+    #bd1 { top: 90px; background: #c9c6ff; }
+    #bd2 { top: 154px; background: #ffc24b; }
+    #bd3 { top: 218px; background: #7cf0b5; }
+    #s-miss { position: absolute; left: 520px; top: 218px; height: 52px; padding: 0 22px; border-radius: 999px; background: #f7d5e1; color: #b8235a; font: 800 32px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 3px #b8235a; }
+    .s-btn { position: absolute; left: 40px; top: 800px; width: 200px; height: 60px; border-radius: 999px; font: 800 32px/60px "Manrope", sans-serif; text-align: center; opacity: 0; }
+    #s-stop { background: #ff6b8b; color: #15132b; }
+    #s-run { background: #7cf0b5; color: #15132b; }
+    #s-stopped { position: absolute; left: 280px; top: 806px; font: 800 32px/48px "Manrope", sans-serif; color: #ffc24b; white-space: nowrap; opacity: 0; }
+    #s-loop { position: absolute; left: 0; top: 0; width: 1054px; height: 888px; overflow: visible; }
+
+    /* right panel */
+    #s-right { left: 1214px; top: 96px; width: 610px; height: 888px; background: #fbf8f4; border-radius: 28px; }
+    .s-scene { position: absolute; left: 0; top: 0; width: 610px; height: 888px; }
+    .s-title { position: absolute; left: 36px; top: 26px; font: 700 50px/1.2 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .s-gate { position: absolute; left: 60px; top: 116px; width: 490px; height: 156px; background: #fff; border-radius: 22px; opacity: 0; }
+    .s-cond { position: absolute; left: 0; top: 12px; width: 490px; text-align: center; font: 700 40px/64px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .s-cond.w { font: 800 40px/64px "Manrope", sans-serif; }
+    .s-gsvg { position: absolute; left: 0; top: 80px; width: 490px; height: 64px; overflow: visible; }
+    .s-chip { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; top: 300px; height: 60px; padding: 0 28px; border-radius: 999px; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-chip.t { background: #ddefe6; color: #1f7a5c; }
+    .s-chip.f { background: #f7d5e1; color: #b8235a; }
+    .s-chip.q { background: #fbebd2; color: #8a560f; }
+    .s-pill { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; top: 790px; height: 76px; padding: 0 34px; border-radius: 999px; font: 800 38px/76px "Manrope", sans-serif; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .s-pill.t { background: #ddefe6; color: #1f7a5c; }
+    #s-pot { position: absolute; left: 105px; top: 362px; width: 400px; height: 400px; overflow: visible; }
+    #s-count { position: absolute; left: 237px; top: 494px; width: 136px; height: 136px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #s-count .lb { position: absolute; left: 0; top: 14px; width: 136px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; }
+    .s-num { position: absolute; left: 0; top: 46px; width: 136px; text-align: center; font: 700 60px/76px "JetBrains Mono", monospace; opacity: 0; }
+    #s-keys { position: absolute; left: 0; right: 0; margin: 0 auto; width: fit-content; top: 786px; height: 84px; white-space: nowrap; opacity: 0; }
+    #s-keys span { display: inline-block; vertical-align: top; font: 800 32px/84px "Manrope", sans-serif; color: #3e3b52; }
+    #s-keys .key { height: 72px; margin-top: 2px; padding: 0 24px; border-radius: 14px; background: #fff; color: #0e0c1d; font: 700 38px/72px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; opacity: 0; }
+    #s-keys .plus { margin: 0 16px; opacity: 0; }
+
+    /* boiling water */
+    #s-thermo { position: absolute; left: 40px; top: 330px; width: 140px; height: 520px; overflow: visible; }
+    #s-mark { position: absolute; left: 176px; top: 418px; font: 800 30px/40px "Manrope", sans-serif; color: #b8235a; white-space: nowrap; }
+    .s-temp { position: absolute; left: 230px; top: 500px; font: 800 100px/120px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-min { position: absolute; left: 236px; top: 640px; font: 700 44px/60px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; opacity: 0; }
+
+    /* marks */
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.35" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right panel -->
+        <div id="s-right" class="s-abs s-ol">
+          <!-- the sauce: beats 1 to 3, 5 and 6 -->
+          <div id="sc1" class="s-scene">
+            <div class="s-title" id="ti1">The sauce</div>
+            <div class="s-gate s-ol" id="g1">
+              <div class="s-cond w" id="cq1" style="opacity:1">thick yet?</div>
+              <div class="s-cond" id="cq2">stirs &lt; 5</div>
+              <svg class="s-gsvg" viewBox="0 0 490 64">
+                <rect x="136" y="6" width="16" height="58" rx="5" fill="#0e0c1d" />
+                <rect x="338" y="6" width="16" height="58" rx="5" fill="#0e0c1d" />
+                <rect id="bar1" x="148" y="16" width="196" height="16" rx="8" fill="#1f7a5c" />
+                <rect id="bar1r" x="148" y="16" width="196" height="16" rx="8" fill="#b8235a" opacity="0" />
+              </svg>
+            </div>
+            <div class="s-chip q" id="ch-no">No: stir again</div>
+            <div class="s-chip t" id="ch-t">True: stir</div>
+            <div class="s-chip f" id="ch-f">False: stop</div>
+            <svg id="s-pot" viewBox="0 0 400 400">
+              <rect x="-6" y="182" width="36" height="36" rx="10" fill="#0e0c1d" />
+              <rect x="370" y="182" width="36" height="36" rx="10" fill="#0e0c1d" />
+              <circle cx="200" cy="200" r="182" fill="#3e3b52" stroke="#0e0c1d" stroke-width="6" />
+              <circle cx="200" cy="200" r="156" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" />
+              <path d="M110 120 q30 -26 70 -20" fill="none" stroke="#e57a9e" stroke-width="8" stroke-linecap="round" />
+              <path d="M250 300 q40 -10 52 -44" fill="none" stroke="#e57a9e" stroke-width="8" stroke-linecap="round" />
+              <g id="spoon">
+                <line x1="330" y1="200" x2="420" y2="200" stroke="#0e0c1d" stroke-width="22" stroke-linecap="round" />
+                <line x1="330" y1="200" x2="420" y2="200" stroke="#d9a066" stroke-width="12" stroke-linecap="round" />
+                <ellipse cx="300" cy="200" rx="40" ry="28" fill="#d9a066" stroke="#0e0c1d" stroke-width="5" />
+              </g>
+            </svg>
+            <div id="s-count">
+              <div class="lb">stirs</div>
+              <div class="s-num" id="n0">0</div>
+              <div class="s-num" id="n1">1</div>
+              <div class="s-num" id="n2">2</div>
+              <div class="s-num" id="n3">3</div>
+              <div class="s-num" id="n4">4</div>
+              <div class="s-num" id="n5">5</div>
+            </div>
+            <div class="s-pill t" id="p-thick">Thick! Serve it.</div>
+            <div id="s-keys"><span>VS Code:</span> <span class="key" id="k-ctrl">Ctrl</span><span class="plus" id="k-plus">+</span><span class="key" id="k-c">C</span></div>
+          </div>
+
+          <!-- beat 4: boiling water -->
+          <div id="sc2" class="s-scene" style="opacity:0">
+            <div class="s-title">Boiling water</div>
+            <div class="s-gate s-ol" id="g2" style="opacity:1">
+              <div class="s-cond" style="opacity:1">temp_c &lt; 100</div>
+              <svg class="s-gsvg" viewBox="0 0 490 64">
+                <rect x="136" y="6" width="16" height="58" rx="5" fill="#0e0c1d" />
+                <rect x="338" y="6" width="16" height="58" rx="5" fill="#0e0c1d" />
+                <rect id="bar2" x="148" y="16" width="196" height="16" rx="8" fill="#1f7a5c" />
+                <rect id="bar2r" x="148" y="16" width="196" height="16" rx="8" fill="#b8235a" opacity="0" />
+              </svg>
+            </div>
+            <div class="s-chip t" id="ch2-t">True: heat 1 more minute</div>
+            <div class="s-chip f" id="ch2-f">False: it boils</div>
+            <svg id="s-thermo" viewBox="0 0 140 520">
+              <rect x="50" y="20" width="40" height="440" rx="20" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+              <rect id="fill" x="58" y="40" width="24" height="420" fill="#b8235a" />
+              <circle cx="70" cy="470" r="40" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" />
+              <line x1="24" y1="110" x2="132" y2="110" stroke="#b8235a" stroke-width="4" stroke-dasharray="10 7" />
+            </svg>
+            <div id="s-mark">100 °C</div>
+            <div class="s-temp" id="tp0" style="opacity:1">20 °C</div>
+            <div class="s-temp" id="tp1">32 °C</div>
+            <div class="s-temp" id="tp2">44 °C</div>
+            <div class="s-temp" id="tp3">56 °C</div>
+            <div class="s-temp" id="tp4">68 °C</div>
+            <div class="s-temp" id="tp5">80 °C</div>
+            <div class="s-temp" id="tp6">92 °C</div>
+            <div class="s-temp" id="tp7" style="color:#b8235a">104 °C</div>
+            <div class="s-min" id="mn0" style="opacity:1">minute 0</div>
+            <div class="s-min" id="mn1">minute 1</div>
+            <div class="s-min" id="mn2">minute 2</div>
+            <div class="s-min" id="mn3">minute 3</div>
+            <div class="s-min" id="mn4">minute 4</div>
+            <div class="s-min" id="mn5">minute 5</div>
+            <div class="s-min" id="mn6">minute 6</div>
+            <div class="s-min" id="mn7">minute 7</div>
+          </div>
+        </div>
+
+        <!-- code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i></i><i></i><i></i>
+            <span class="s-file" id="f1" style="opacity:1">stir.py</span>
+            <span class="s-file" id="f2">boil.py</span>
+          </div>
+
+          <!-- stir.py -->
+          <div class="s-grp" id="c1">
+            <div class="s-ln" id="L0" style="top:84px">stirs <span class="o">=</span> <span class="n">0</span></div>
+            <div class="s-ln" id="L1" style="top:148px"><span class="k">while</span> stirs <span class="o">&lt;</span> <span class="n">5</span>:</div>
+            <div class="s-ln" id="L2" style="top:212px">    stirs <span class="o">+=</span> <span class="n">1</span></div>
+            <div class="s-ln" id="L3" style="top:276px">    <span class="k">print</span>(<span class="s">f"Stir </span>{stirs}<span class="s">"</span>)</div>
+            <svg id="s-loop" viewBox="0 0 1054 888">
+              <path id="lp" d="M36 308 C 6 308, 6 180, 30 180" fill="none" stroke="#ffc24b" stroke-width="5" stroke-linecap="round" />
+              <path id="lph" d="M38 180 L24 170 L24 190 Z" fill="#ffc24b" opacity="0" />
+            </svg>
+            <div class="s-badge" id="bd1"><b>1</b>set it</div>
+            <div class="s-badge" id="bd2"><b>2</b>check it</div>
+            <div class="s-badge" id="bd3"><b>3</b>change it</div>
+            <div id="s-miss">missing</div>
+            <div id="o1area" class="s-grp" style="opacity:0">
+              <div class="s-div" style="top:360px"></div>
+              <div class="s-outlbl" style="top:372px">output</div>
+            </div>
+            <div class="s-out" id="o1" style="top:430px">Stir 1</div>
+            <div class="s-out" id="o2" style="top:486px">Stir 2</div>
+            <div class="s-out" id="o3" style="top:542px">Stir 3</div>
+            <div class="s-out" id="o4" style="top:598px">Stir 4</div>
+            <div class="s-out" id="o5" style="top:654px">Stir 5</div>
+            <div id="s-stream" data-layout-allow-overflow><div id="s-streamin">
+              <div class="s-out" style="top:6px">Stir 0</div><div class="s-out" style="top:62px">Stir 0</div><div class="s-out" style="top:118px">Stir 0</div><div class="s-out" style="top:174px">Stir 0</div><div class="s-out" style="top:230px">Stir 0</div><div class="s-out" style="top:286px">Stir 0</div><div class="s-out" style="top:342px">Stir 0</div><div class="s-out" style="top:398px">Stir 0</div><div class="s-out" style="top:454px">Stir 0</div><div class="s-out" style="top:510px">Stir 0</div>
+              <div class="s-out" style="top:566px">Stir 0</div><div class="s-out" style="top:622px">Stir 0</div><div class="s-out" style="top:678px">Stir 0</div><div class="s-out" style="top:734px">Stir 0</div><div class="s-out" style="top:790px">Stir 0</div><div class="s-out" style="top:846px">Stir 0</div><div class="s-out" style="top:902px">Stir 0</div><div class="s-out" style="top:958px">Stir 0</div><div class="s-out" style="top:1014px">Stir 0</div><div class="s-out" style="top:1070px">Stir 0</div>
+              <div class="s-out" style="top:1126px">Stir 0</div><div class="s-out" style="top:1182px">Stir 0</div><div class="s-out" style="top:1238px">Stir 0</div><div class="s-out" style="top:1294px">Stir 0</div><div class="s-out" style="top:1350px">Stir 0</div><div class="s-out" style="top:1406px">Stir 0</div><div class="s-out" style="top:1462px">Stir 0</div><div class="s-out" style="top:1518px">Stir 0</div><div class="s-out" style="top:1574px">Stir 0</div><div class="s-out" style="top:1630px">Stir 0</div>
+              <div class="s-out" style="top:1686px">Stir 0</div><div class="s-out" style="top:1742px">Stir 0</div><div class="s-out" style="top:1798px">Stir 0</div><div class="s-out" style="top:1854px">Stir 0</div><div class="s-out" style="top:1910px">Stir 0</div><div class="s-out" style="top:1966px">Stir 0</div><div class="s-out" style="top:2022px">Stir 0</div><div class="s-out" style="top:2078px">Stir 0</div><div class="s-out" style="top:2134px">Stir 0</div><div class="s-out" style="top:2190px">Stir 0</div>
+              <div class="s-out" style="top:2246px">Stir 0</div><div class="s-out" style="top:2302px">Stir 0</div><div class="s-out" style="top:2358px">Stir 0</div><div class="s-out" style="top:2414px">Stir 0</div><div class="s-out" style="top:2470px">Stir 0</div><div class="s-out" style="top:2526px">Stir 0</div><div class="s-out" style="top:2582px">Stir 0</div><div class="s-out" style="top:2638px">Stir 0</div><div class="s-out" style="top:2694px">Stir 0</div><div class="s-out" style="top:2750px">Stir 0</div>
+            </div></div>
+            <div class="s-btn" id="s-stop">■ Stop</div>
+            <div class="s-btn" id="s-run">▶ Run</div>
+            <div id="s-stopped">Stopped. You pressed Stop.</div>
+          </div>
+
+          <!-- boil.py -->
+          <div class="s-grp" id="c2" style="opacity:0">
+            <div class="s-ln" style="top:84px;opacity:1">temp_c <span class="o">=</span> <span class="n">20</span></div>
+            <div class="s-ln" style="top:148px;opacity:1">minutes <span class="o">=</span> <span class="n">0</span></div>
+            <div class="s-ln" style="top:212px;opacity:1"><span class="k">while</span> temp_c <span class="o">&lt;</span> <span class="n">100</span>:</div>
+            <div class="s-ln" style="top:276px;opacity:1">    minutes <span class="o">+=</span> <span class="n">1</span></div>
+            <div class="s-ln" style="top:340px;opacity:1">    temp_c <span class="o">+=</span> <span class="n">12</span></div>
+            <div class="s-ln" style="top:404px;opacity:1"><span class="k">print</span>(minutes, <span class="s">"minutes"</span>)</div>
+            <div class="s-div" style="top:488px"></div>
+            <div class="s-outlbl" style="top:500px">output</div>
+            <div class="s-out" id="o2out" style="top:558px">7 minutes</div>
+          </div>
+        </div>
+
+        <!-- rings and pointer -->
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-cond" style="stroke:#ffc24b" />
+          <path id="r-zero" style="stroke:#c9c6ff" />
+          <path id="r-inc" style="stroke:#7cf0b5" />
+          <path id="r-twelve" style="stroke:#ffc24b" />
+          <path id="r-twenty" style="stroke:#ffc24b" />
+          <path id="r-miss" style="stroke:#ff6b8b" />
+          <path id="r-pot0" style="stroke:#ffc24b; stroke-width:9" />
+          <path id="r-stop" style="stroke:#ff6b8b; stroke-width:8" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.209, 0.569, 0.94, 1.068, 1.242, 2.194, 2.577, 2.926, 3.471, 3.657, 4.377, 4.621, 4.772, 5.062, 5.677, 6.629, 7.082, 7.988, 8.22, 8.8, 9.033, 9.16, 9.265, 9.636, 10.356, 10.646, 11.041, 11.157, 11.366, 11.575, 12.179, 12.399, 12.527, 12.934, 13.27, 13.479, 13.851, 14.454, 14.605, 15.047, 15.197, 15.627, 15.778, 15.906, 16.219, 16.439, 16.892, 17.775, 18.111, 18.46, 18.727, 18.889, 19.713, 20.155, 20.549, 20.677, 21.199, 21.664, 21.792, 22.535, 22.686, 23.162, 23.603, 24.172, 24.415, 24.81, 25.135, 25.634, 25.936, 26.273, 26.401, 26.784, 26.958, 27.991, 28.328, 28.711, 29.152, 29.559, 30.58, 30.987, 31.184, 31.416, 31.672, 31.915, 32.647, 32.867, 33.018, 33.402, 34.713, 35.119, 35.514, 35.944, 36.327, 36.42, 36.942, 37.209, 38.115, 39.02, 39.845, 41.4, 41.83, 42.236, 42.654, 42.817, 43.258, 43.467, 43.815, 43.978, 44.616, 44.825, 44.965, 45.371, 46.648, 46.938, 47.333, 47.472, 47.879, 48.529, 48.958, 49.365, 49.597, 50.282, 50.479, 50.595, 51.072, 51.467, 52.14, 52.349, 52.477, 53.011, 53.835, 54.903, 55.24, 56.25, 56.494, 56.923, 57.341, 57.69, 58.305, 58.955, 59.176, 59.303, 59.559, 59.919, 60.116, 60.244, 60.673, 60.94, 61.858, 62.217, 62.589, 62.96, 63.367, 63.796, 64.69, 64.853, 65.201, 65.503, 66.026, 66.327, 66.49, 67.082, 67.86];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- rings (page pixels) ---- */
+      // Code: 40px mono, 24px per char, text from x=136; line i centre y = 212 + 64*i.
+      const ring = (id, cx, cy, rx, ry, dashed) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        if (dashed) { p.style.strokeDasharray = "16 12"; return; }
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      ring("r-cond", 388, 276, 124, 38);      // stirs < 5 on line 2, cols 6-14
+      ring("r-zero", 340, 212, 30, 34);       // 0 on line 1, col 8
+      ring("r-inc", 352, 340, 138, 38);       // stirs += 1 on line 3, cols 4-13
+      ring("r-miss", 352, 340, 138, 38, true); // the gap where stirs += 1 was
+      ring("r-twelve", 496, 468, 40, 36);     // 12 on line 5 of boil.py, cols 14-15
+      ring("r-twenty", 376, 212, 40, 36);     // 20 on line 1 of boil.py, cols 9-10
+      ring("r-pot0", 1519, 658, 86, 86);      // the stirs counter in the pot
+      ring("r-stop", 236, 926, 124, 46);      // the Stop button
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const swap = (from, to, at) => { out(from, at - 0.1, 0.1); pop(to, at, { from: 0.7, d: 0.3 }); };
+      const type = (sel, at, n) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // The spoon turns about the pot's centre. Keep the angle in a variable so every tween is absolute.
+      let rot = 0;
+      const stir = (at, turns, d) => {
+        tl.fromTo("#spoon", { rotation: rot, svgOrigin: "200 200" }, { rotation: rot + 360 * turns, svgOrigin: "200 200", duration: d, ease: turns > 1 ? "none" : "power1.inOut", immediateRender: false }, at);
+        rot += 360 * turns;
+      };
+      const gateClose = (bar, red, at) => {
+        tl.fromTo(bar, { scaleX: 0.1, svgOrigin: "148 24" }, { scaleX: 1, svgOrigin: "148 24", duration: 0.35, ease: "bounce.out", immediateRender: false }, at);
+        tl.set(red, { opacity: 1 }, at + 0.3);
+        tl.set(bar, { opacity: 0 }, at + 0.3);
+      };
+      const cursorTo = (x, y, at) => tl.fromTo("#s-cursor", { opacity: 0, x: x + 420, y: y + 260 }, { opacity: 1, x, y, duration: 0.55, ease: "power3.out", immediateRender: false }, at);
+      const cursorAway = (at) => tl.to("#s-cursor", { opacity: 0, x: "+=380", y: "+=240", duration: 0.4, ease: "power2.in" }, at);
+
+      // initial state of the bars (open, green)
+      gsap.set(["#bar1", "#bar2"], { scaleX: 0.1, svgOrigin: "148 24" });
+      gsap.set("#n0", { opacity: 1 });
+
+      /* ---- 1. A sauce on the stove. Before every stir, check: thick yet? ---- */
+      bump("#s-pot", t(1));
+      pop("#g1", t(6) - 0.05, { from: 0.6 });
+      bump("#g1", t(10));
+      bump("#cq1", t(13));
+      pop("#ch-no", t(15), { from: 0.6 });
+      stir(t(16), 1, 0.45);
+      stir(t(17), 1, 0.45);
+
+      /* ---- 2. while stirs < 5: the question is asked at the top of every round ---- */
+      tl.fromTo("#s-code", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(18) - 0.1);
+      type("#L1", t(23), 16);
+      swap("#cq1", "#cq2", t(26));
+      out("#ch-no", t(26) - 0.1, 0.15);
+      draw("r-cond", t(26) + 0.1, 0.45);
+      show("#L2", t(31), 0.3);
+      show("#L3", t(31) + 0.25, 0.3);
+      bump(["#L2", "#L3"], t(34));
+      out("#r-cond", t(38), 0.2);
+      draw("lp", t(41), 0.6);
+      tl.set("#lph", { opacity: 1 }, t(41) + 0.55);
+      bump("#L1", t(44));
+      bump("#g1", t(44));
+
+      /* ---- 3. Three parts: set, check, change. Then 5 rounds and the loop stops ---- */
+      out(["#lp", "#lph"], t(48) - 0.1, 0.2);
+      type("#L0", t(53), 9);
+      pop("#bd1", t(53) + 0.2, { from: 0.6 });
+      draw("r-zero", t(56), 0.4);
+      bump("#s-count", t(56));
+      out("#r-zero", t(60) - 0.2, 0.15);
+      pop("#bd2", t(61), { from: 0.6 });
+      bump("#L1", t(61));
+      cursorTo(330, 330, t(64) - 0.3);
+      draw("r-inc", t(65), 0.45);
+      pop("#bd3", t(66), { from: 0.6 });
+      cursorAway(t(69));
+      out("#r-inc", t(72) - 0.3, 0.2);
+      show("#o1area", t(72) - 0.2, 0.3);
+      pop("#ch-t", t(74) - 0.25, { from: 0.6 });
+      for (let k = 1; k <= 5; k++) {
+        const at = t(73 + k);
+        stir(at, 1, 0.32);
+        swap(`#n${k - 1}`, `#n${k}`, at + 0.05);
+        pop(`#o${k}`, at + 0.05, { from: 0.8, d: 0.25 });
+        bump("#g1", at);
+      }
+      bump("#s-count", t(79));
+      swap("#ch-t", "#ch-f", t(81));
+      gateClose("#bar1", "#bar1r", t(85));
+      pop("#p-thick", t(87), { from: 0.6 });
+
+      /* ---- 4. Boiling water: 12 degrees a minute from 20, until it passes 100 ---- */
+      out(["#sc1", "#c1", "#f1"], t(89) - 0.35, 0.3);
+      show(["#sc2", "#c2", "#f2"], t(89) - 0.05);
+      tl.set("#fill", { scaleY: 20 / 120, svgOrigin: "70 460" }, 0);
+      draw("r-twelve", t(91), 0.4);
+      out("#r-twelve", t(95) - 0.1, 0.15);
+      draw("r-twenty", t(96), 0.4);
+      out("#r-twenty", t(97) + 0.3, 0.15);
+      pop("#ch2-t", t(97) - 0.1, { from: 0.6 });
+      const heat = [t(97), t(98), t(99), t(99) + 0.5, t(99) + 0.95, t(100) - 0.25, t(101)];
+      heat.forEach((at, i) => {
+        const k = i + 1, temp = 20 + 12 * k;
+        swap(`#mn${k - 1}`, `#mn${k}`, at);
+        bump("#g2", at);
+        if (k < 7) swap(`#tp${k - 1}`, `#tp${k}`, at);
+        if (k < 7) tl.fromTo("#fill", { scaleY: (temp - 12) / 120, svgOrigin: "70 460" }, { scaleY: temp / 120, svgOrigin: "70 460", duration: 0.3, ease: "power2.out", immediateRender: false }, at);
+      });
+      swap("#tp6", "#tp7", t(105));
+      tl.fromTo("#fill", { scaleY: 92 / 120, svgOrigin: "70 460" }, { scaleY: 104 / 120, svgOrigin: "70 460", duration: 0.5, ease: "power2.out", immediateRender: false }, t(105));
+      bump("#s-mark", t(105) + 0.3);
+      swap("#ch2-t", "#ch2-f", t(111));
+      gateClose("#bar2", "#bar2r", t(111));
+      pop("#o2out", t(112), { from: 0.7, d: 0.3 });
+
+      /* ---- 5. Forget the change line: the spoon spins forever. Press Stop. Ctrl+C ---- */
+      out(["#sc2", "#c2", "#f2"], t(113) - 0.35, 0.3);
+      // reset the sauce scene: counter back to 0, gate open, outputs cleared
+      tl.set(["#n5", "#p-thick", "#ch-f", "#bar1r", "#bd1", "#bd2", "#bd3", "#o1", "#o2", "#o3", "#o4", "#o5"], { opacity: 0 }, t(113) - 0.1);
+      tl.set("#n0", { opacity: 1 }, t(113) - 0.1);
+      tl.set("#bar1", { opacity: 1, scaleX: 0.1, svgOrigin: "148 24" }, t(113) - 0.1);
+      show(["#sc1", "#c1", "#f1"], t(113) - 0.05);
+      out("#L2", t(114), 0.35);
+      show("#r-miss", t(116), 0.25);
+      pop("#s-miss", t(116) + 0.1, { from: 0.6 });
+      draw("r-pot0", t(118), 0.45);
+      bump("#s-count", t(121));
+      out("#r-pot0", t(123), 0.2);
+      pop("#ch-t", t(124), { from: 0.6 });
+      bump("#g1", t(126));
+      // the program runs: Stop shows, output streams, the spoon spins until Stop
+      const runFrom = t(127), stopAt = t(133) + 0.15;
+      pop("#s-stop", runFrom - 0.2, { from: 0.7, d: 0.3 });
+      show("#s-streamin", runFrom, 0.15);
+      tl.fromTo("#s-streamin", { y: 0 }, { y: -2440, duration: stopAt - runFrom, ease: "none", immediateRender: false }, runFrom);
+      stir(runFrom, Math.round((stopAt - runFrom) / 0.42), stopAt - runFrom);
+      cursorTo(220, 900, t(132) - 0.35);
+      draw("r-stop", t(133) - 0.05, 0.4);
+      bump("#s-stop", t(133) - 0.05);
+      swap("#s-stop", "#s-run", stopAt + 0.1);
+      pop("#s-stopped", stopAt + 0.15, { from: 0.8, d: 0.3 });
+      cursorAway(t(134));
+      out("#r-stop", t(135), 0.2);
+      show("#s-keys", t(135), 0.25);
+      pop("#k-ctrl", t(138) - 0.05, { from: 0.5 });
+      show("#k-plus", t(138) + 0.2, 0.2);
+      pop("#k-c", t(139) - 0.05, { from: 0.5 });
+      bump(["#k-ctrl", "#k-c"], t(139) + 0.35);
+
+      /* ---- 6. Put the line back: 5 stirs, and the sauce is done ---- */
+      cursorTo(220, 320, t(140) - 0.3);
+      out(["#s-streamin", "#s-stopped", "#s-run"], t(140), 0.2);
+      out("#s-keys", t(141), 0.2);
+      type("#L2", t(142) - 0.05, 14);
+      out(["#r-miss", "#s-miss"], t(142) + 0.3, 0.2);
+      out("#ch-t", t(142) + 0.3, 0.15);
+      cursorAway(t(142) + 0.5);
+      pop("#ch-t", t(142) + 0.35, { from: 0.8, d: 0.25 });
+      for (let k = 1; k <= 5; k++) {
+        const at = t(142) + 0.3 + 0.22 * k;
+        stir(at, 1, 0.2);
+        tl.set(`#n${k - 1}`, { opacity: 0 }, at + 0.08);
+        tl.set(`#n${k}`, { opacity: 1, scale: 1 }, at + 0.08);
+        pop(`#o${k}`, at + 0.05, { from: 0.8, d: 0.2 });
+      }
+      swap("#ch-t", "#ch-f", 61.5);
+      gateClose("#bar1", "#bar1r", 61.5);
+      pop("#p-thick", 61.62, { from: 0.6, d: 0.35 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 62.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

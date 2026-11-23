@@ -1,0 +1,15 @@
+Ben wants the protein in his lunch. Kitchen Coach needs one recipe card that works for any food, in any amount.
+
+So the card gets two empty jars: grams, and per one hundred grams. They are called parameters.
+
+Call protein in, with one hundred and fifty, and seventeen. These arguments drop into the jars, in order. The card does the maths, and return hands the dish back. Twenty five point five.
+
+The call becomes that value. You can store it, add it, or print it.
+
+Lentils: two hundred grams, at nine. Eighteen. Add them up. Forty three point five.
+
+Now break it. The card prints instead of returning. The number shows on the screen, but the chute hands back an empty plate. None. And None plus None is a type error.
+
+Fix it. Return the value, and print outside the card.
+
+Parameters bring ingredients in. Return hands the dish back.

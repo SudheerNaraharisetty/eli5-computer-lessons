@@ -1,0 +1,52 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 112px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    .t-head .g { color: #1f7a5c; }
+    .t-head .d { color: #b8235a; }
+    #t-h1 { top: 110px; }
+    #t-h2 { top: 260px; font-size: 80px; }
+    #t-h3 { top: 360px; font-size: 80px; }
+    .t-card { left: 110px; padding: 0 34px; height: 104px; line-height: 104px; background: #fff; border-radius: 26px; font-size: 42px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card b { font: 700 42px/104px "JetBrains Mono", monospace; color: #3b37e6; }
+    .t-card .g { color: #1f7a5c; }
+    #t-c1 { top: 530px; }
+    #t-c2 { top: 670px; }
+    #t-next { left: 110px; top: 860px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.4" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head"><span class="a">Loop over the items.</span></div>
+      <div id="t-h2" class="t-abs t-head">Build a <span class="g">new list</span></div>
+      <div id="t-h3" class="t-abs t-head">instead of <span class="d">cutting</span> the old one.</div>
+      <div id="t-c1" class="t-abs t-card"><b>for item in basket:</b> hands you every item</div>
+      <div id="t-c2" class="t-abs t-card"><b class="g">safe.append(item)</b> and the basket stays whole</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 36: Tuples</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 57.6;
+      const g = { loop: 57.686, build: 59.428, instead: 60.496, cutting: 60.995 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.loop - S - 0.1));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.build - S - 0.1);
+      tl.fromTo("#t-h3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.instead - S - 0.1);
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.cutting - S + 0.6);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.cutting - S + 1.3);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 5.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

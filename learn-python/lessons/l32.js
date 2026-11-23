@@ -185,7 +185,7 @@
           'Text has positions too, one per character. <code>"pasta"[0]</code> is <code>"p"</code> and <code>"pasta"[-1]</code> is <code>"a"</code>. Reading works exactly like a list.',
           'Changing does not. <code>dish[0] = "b"</code> stops with <code>TypeError: \'str\' object does not support item assignment</code>. Lesson 9 said it: <b>text never changes</b>. Text tools hand you a new copy instead. So build the new text and store it in the jar: <code>dish = dish.replace("p", "b")</code>.',
           'Lists are the opposite: you <b>can</b> change their items. Keep that difference in mind when you meet tuples in lesson 36.',
-          'Next, lesson 33, Slicing, takes <b>several</b> items at once, like the first three on the list. And lesson 35, Looping over lists, shows <code>enumerate</code>, which hands a loop each index and item together.'
+          'Next, lesson 33, Slicing, takes <b>several</b> items at once, like the first three on the list. And lesson 77, enumerate and zip, shows <code>enumerate</code>, which hands a loop each index and item together.'
         ]
       }
     ],

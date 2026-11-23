@@ -1,0 +1,357 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Kitchen Coach card (left, before the code arrives) */
+    #kc { left: 216px; top: 300px; width: 800px; height: 420px; border-radius: 30px; background: #fff; }
+    #kc-h { left: 216px; top: 350px; width: 800px; text-align: center; font: 700 72px/90px "Fraunces", serif; }
+    #kc-s { left: 216px; top: 450px; width: 800px; text-align: center; font: 800 36px/50px "Manrope", sans-serif; color: #3e3b52; }
+    .kc-chip { top: 560px; width: 190px; height: 76px; border-radius: 999px; background: #fbebd2; text-align: center; font: 700 36px/76px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    /* the notebook page on the right: rows at top 220 + i * 72, text at x 1230, 22.8 px per char */
+    #nb { left: 1190px; top: 96px; width: 640px; height: 888px; border-radius: 24px; background: #fff; }
+    .rule { left: 1214px; width: 592px; height: 3px; background: #ece7df; }
+    #nb-margin { left: 1210px; top: 200px; width: 3px; height: 680px; background: #fbe0ea; }
+    #tab { left: 1222px; top: 122px; width: 380px; height: 58px; border-radius: 14px; background: #e6e3ff; }
+    .tab-t { left: 1242px; top: 122px; font: 700 30px/58px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    .row { left: 1232px; font: 700 38px/72px "JetBrains Mono", monospace; white-space: pre; }
+    .row.old { color: #6f6b80; }
+    .row.ok { color: #1f7a5c; }
+    .row.bad { color: #b8235a; }
+    .own { left: 1222px; top: 900px; height: 54px; padding: 0 24px; border-radius: 999px; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; }
+    #own-1 { background: #ece7df; color: #3e3b52; }
+    #own-2 { background: #e6e3ff; color: #3b37e6; padding-left: 70px; }
+    #ana { left: 1228px; top: 903px; width: 48px; height: 48px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 800 28px/48px "Manrope", sans-serif; box-shadow: 0 0 0 3px #0e0c1d; }
+    #saved { left: 1606px; top: 900px; height: 54px; width: 200px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 30px/54px "Manrope", sans-serif; padding-left: 66px; white-space: nowrap; }
+    #saved-ok { left: 1614px; top: 905px; width: 44px; height: 44px; }
+    #plus { left: 1640px; top: 307px; width: 58px; height: 58px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 44px/56px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #stamp { left: 1340px; top: 560px; width: 330px; height: 110px; border-radius: 16px; border: 8px solid #b8235a; color: #b8235a; text-align: center; font: 800 68px/94px "Manrope", sans-serif; letter-spacing: 0.06em; background: rgba(251, 248, 244, 0.94); }
+    #eraser { left: 0; top: 0; width: 170px; height: 90px; }
+    #pen { left: 0; top: 0; width: 60px; height: 130px; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .bn { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; white-space: nowrap; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .bad { color: #ff8fab; }
+    .s-ln .gd { color: #4bd69b; }
+    .s-ln .nl { color: #ffc24b; }
+    .s-note { position: absolute; left: 40px; height: 58px; padding: 0 26px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 32px/58px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note b { font: 700 32px/58px "JetBrains Mono", monospace; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- Kitchen Coach and next week's list -->
+        <div id="kc-g" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="kc" class="s-abs s-ol"></div>
+          <div id="kc-h" class="s-abs">Kitchen Coach</div>
+          <div id="kc-s" class="s-abs">next week's shopping list</div>
+          <div id="kc-1" class="s-abs kc-chip s-hide" style="left:296px">oats</div>
+          <div id="kc-2" class="s-abs kc-chip s-hide" style="left:521px">rice</div>
+          <div id="kc-3" class="s-abs kc-chip s-hide" style="left:746px">tofu</div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="bn" id="bn-1">shopping.py</span><span class="bn s-hide" id="bn-2">dinner_log.py</span><span class="bn s-hide" id="bn-3">log_run.py</span></div>
+          <!-- shopping.py -->
+          <div class="s-ln" id="S1" style="top:88px">shopping = [<span class="s">"oats"</span>, <span class="s">"rice"</span>, <span class="s">"tofu"</span>]</div>
+          <div class="s-ln" id="S3" style="top:188px">f = <span class="f">open</span>(<span class="s">"shopping.txt"</span>, <span class="bad">"w"</span>)</div>
+          <div class="s-ln" id="S4" style="top:238px"><span class="k">for</span> item <span class="k">in</span> shopping:</div>
+          <div class="s-ln" id="S5" style="top:288px">    f.<span class="f">write</span>(item)</div>
+          <div class="s-ln" id="S5b" style="top:288px">    f.<span class="f">write</span>(<span class="s">f"{item}</span><span class="nl">\n</span><span class="s">"</span>)</div>
+          <div class="s-ln" id="S6" style="top:338px">f.<span class="f">close</span>()</div>
+          <!-- dinner_log.py -->
+          <div class="s-ln" id="D1" style="top:88px">f = <span class="f">open</span>(<span class="s">"dinner_log.txt"</span>, <span class="gd">"a"</span>)</div>
+          <div class="s-ln" id="D2" style="top:138px">f.<span class="f">write</span>(<span class="s">"Mon: lentil soup\n"</span>)</div>
+          <div class="s-ln" id="D3" style="top:188px">f.<span class="f">close</span>()</div>
+          <div class="s-ln" id="D5" style="top:288px">f = <span class="f">open</span>(<span class="s">"dinner_log.txt"</span>, <span class="gd">"a"</span>)</div>
+          <div class="s-ln" id="D6" style="top:338px">f.<span class="f">write</span>(<span class="s">"Tue: bean chili\n"</span>)</div>
+          <div class="s-ln" id="D7" style="top:388px">f.<span class="f">close</span>()</div>
+          <!-- log_run.py -->
+          <div class="s-ln" id="A1" style="top:88px">f = <span class="f">open</span>(<span class="s">"training_log.txt"</span>, <span class="bad">"w"</span>)</div>
+          <div class="s-ln" id="A1b" style="top:88px">f = <span class="f">open</span>(<span class="s">"training_log.txt"</span>, <span class="gd">"a"</span>)</div>
+          <div class="s-ln" id="A2" style="top:138px">f.<span class="f">write</span>(<span class="s">"Thu: 8 km\n"</span>)</div>
+          <div class="s-ln" id="A3" style="top:188px">f.<span class="f">close</span>()</div>
+
+          <div class="s-note bad" id="n-new" style="top:520px"><b>"w"</b>: no file yet? Python makes it.</div>
+          <div class="s-note bad" id="n-old" style="top:610px"><b>"w"</b>: a file is there? Wiped first.</div>
+          <div class="s-note bad" id="n-nonl" style="top:520px">write adds no new line</div>
+          <div class="s-note ok" id="n-nl" style="top:520px"><b>\n</b> ends each line</div>
+          <div class="s-note ok" id="n-a" style="top:520px"><b>"a"</b>: add to the end</div>
+          <div class="s-note bad" id="n-gone" style="top:520px">5 runs gone. No undo.</div>
+          <div class="s-note ok" id="n-safe" style="top:520px"><b>"a"</b>: the old runs stay</div>
+        </div>
+
+        <!-- the notebook -->
+        <div id="nb" class="s-abs s-ol"></div>
+        <div id="tab" class="s-abs"></div>
+        <div id="tab-1" class="s-abs tab-t">shopping.txt</div>
+        <div id="tab-2" class="s-abs tab-t s-hide">dinner_log.txt</div>
+        <div id="tab-3" class="s-abs tab-t s-hide">training_log.txt</div>
+        <div id="nb-margin" class="s-abs"></div>
+        <div class="s-abs rule" style="top:290px"></div>
+        <div class="s-abs rule" style="top:362px"></div>
+        <div class="s-abs rule" style="top:434px"></div>
+        <div class="s-abs rule" style="top:506px"></div>
+        <div class="s-abs rule" style="top:578px"></div>
+        <div class="s-abs rule" style="top:650px"></div>
+        <div class="s-abs rule" style="top:722px"></div>
+        <div class="s-abs rule" style="top:794px"></div>
+        <div class="s-abs rule" style="top:866px"></div>
+
+        <!-- last week's list -->
+        <div id="old-0" class="s-abs row old" style="top:220px">flour</div>
+        <div id="old-1" class="s-abs row old" style="top:292px">eggs</div>
+        <div id="old-2" class="s-abs row old" style="top:364px">milk</div>
+        <div id="own-1" class="s-abs own">last week's list</div>
+        <!-- no new line: the words crash together -->
+        <div id="w1" class="s-abs row s-hide" style="top:220px">oats</div>
+        <div id="w2" class="s-abs row s-hide" style="top:220px; left:1323.2px">rice</div>
+        <div id="w3" class="s-abs row s-hide" style="top:220px; left:1414.4px">tofu</div>
+        <!-- with \n: one item per line -->
+        <div id="g0" class="s-abs row ok s-hide" style="top:220px">oats</div>
+        <div id="g1" class="s-abs row ok s-hide" style="top:292px">rice</div>
+        <div id="g2" class="s-abs row ok s-hide" style="top:364px">tofu</div>
+        <!-- the dinner log -->
+        <div id="d0" class="s-abs row s-hide" style="top:220px">Mon: lentil soup</div>
+        <div id="d1" class="s-abs row ok s-hide" style="top:292px">Tue: bean chili</div>
+        <div id="plus" class="s-abs s-hide">+</div>
+        <!-- Ana's training log -->
+        <div id="a0" class="s-abs row s-hide" style="top:220px">Sat: 16 km</div>
+        <div id="a1" class="s-abs row s-hide" style="top:292px">Sun: 5 km</div>
+        <div id="a2" class="s-abs row s-hide" style="top:364px">Mon: 8 km</div>
+        <div id="a3" class="s-abs row s-hide" style="top:436px">Tue: 10 km</div>
+        <div id="a4" class="s-abs row s-hide" style="top:508px">Wed: 6 km</div>
+        <div id="at0" class="s-abs row bad s-hide" style="top:220px">Thu: 8 km</div>
+        <div id="at5" class="s-abs row ok s-hide" style="top:580px">Thu: 8 km</div>
+        <div id="own-2" class="s-abs own s-hide">Ana's runs</div>
+        <div id="ana" class="s-abs s-hide">A</div>
+
+        <div id="saved" class="s-abs s-hide">saved</div>
+        <svg id="saved-ok" class="s-abs s-hide" viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="#1f7a5c" /><path d="M12 23 L19 30 L32 15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <div id="stamp" class="s-abs s-hide" data-layout-allow-overlap>WRONG</div>
+
+        <svg id="eraser" class="s-abs s-hide" viewBox="0 0 170 90" data-layout-allow-overlap><g transform="rotate(-18 85 45)"><rect x="18" y="22" width="134" height="52" rx="10" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="5" /><rect x="18" y="22" width="48" height="52" rx="10" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" /></g></svg>
+        <svg id="pen" class="s-abs s-hide" viewBox="0 0 60 130" data-layout-allow-overlap><g transform="rotate(28 30 65)"><rect x="18" y="4" width="24" height="92" rx="6" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4" /><path d="M18 96 L42 96 L30 124 Z" fill="#fbebd2" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /><path d="M26 114 L34 114 L30 124 Z" fill="#0e0c1d" /></g></svg>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-tab" style="stroke:#3b37e6" />
+          <path id="r-w" style="stroke:#ff6b8b" />
+          <path id="r-write" style="stroke:#ffc24b" />
+          <path id="r-crash" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="r-nl" style="stroke:#ffc24b" />
+          <path id="r-close" style="stroke:#4bd69b" />
+          <path id="r-a" style="stroke:#4bd69b" />
+          <path id="r-w3" style="stroke:#ff6b8b" />
+          <path id="r-a3" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.36, 0.882, 1.358, 1.718, 2.183, 2.496, 2.798, 3.204, 3.855, 4.226, 4.516, 4.667, 5.503, 5.666, 5.735, 6.072, 6.478, 7.001, 7.326, 7.605, 7.837, 8.8, 9.009, 9.381, 9.509, 9.822, 10.066, 10.658, 10.89, 12.005, 12.388, 12.759, 12.841, 13.201, 14.141, 14.303, 14.512, 14.803, 14.965, 15.604, 15.79, 15.999, 16.161, 16.324, 16.707, 17.636, 17.88, 18.135, 18.6, 18.96, 19.296, 19.819, 20.004, 20.132, 21.073, 21.293, 21.746, 22.164, 22.501, 22.756, 23.453, 23.627, 24.068, 24.486, 25.577, 25.902, 26.564, 26.866, 27.632, 28.166, 28.538, 29.548, 29.966, 30.453, 30.744, 30.953, 31.255, 32.032, 32.381, 32.497, 32.926, 33.205, 33.368, 33.542, 34.575, 34.749, 34.83, 35.051, 35.225, 35.829, 36.189, 36.294, 36.468, 36.596, 37.002, 37.455, 37.675, 38.883, 39.347, 39.904, 40.195, 41.089, 41.414, 41.507, 41.623, 42.319, 42.563, 42.714, 43.805, 44.13, 44.444, 44.595, 45.024, 45.303, 45.454, 45.605, 46.568, 46.975, 47.288, 47.532, 48.008, 48.542, 48.751, 49.088, 49.216, 49.517, 49.738, 50.655, 50.806, 51.12, 51.526, 51.944, 52.246, 52.431, 53.302, 53.523, 54.092, 54.37, 55.427, 55.764, 55.868, 56.135, 56.634, 56.867, 57.029, 57.308, 57.61, 58.492, 58.91, 59.258, 59.351, 59.665, 60.396, 60.547, 60.884, 61.232, 61.58, 61.731, 61.905, 62.613, 62.927, 63.066, 63.275, 63.589];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (id !== "r-crash") { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const CW = 18;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      ring("r-tab", 1412, 151, 214, 46);              // the file name on the notebook tab
+      ring("r-w", cx(25, 27), ry(3), rw(25, 27) - 4, 28);  // "w"
+      ring("r-write", cx(4, 16), ry(5), rw(4, 16), 30); // f.write(item)
+      ring("r-crash", 1374, 256, 170, 46);            // oatsricetofu
+      ring("r-nl", cx(20, 21), ry(5), rw(20, 21), 28); // \n
+      ring("r-close", cx(0, 8), ry(6), rw(0, 8), 28);  // f.close()
+      ring("r-a", cx(27, 29), ry(1), rw(27, 29), 28);  // "a"
+      ring("r-w3", cx(29, 31), ry(1), rw(29, 31), 28); // "w" on Ana's log
+      ring("r-a3", cx(29, 31), ry(1), rw(29, 31), 28); // "a" on Ana's log
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (id === "r-crash") { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swap = (a, b, at) => { out(a, at, 0.15); pop(b, at + 0.1, { from: 0.5 }); };
+      // The pen writes a row: it slides along the row while the text types in. Row top y, chars n.
+      const rowY = (i) => 220 + i * 72;
+      const write = (sel, at, row, x0, n, d) => {
+        d = d || Math.max(0.3, 0.05 * n);
+        tl.set("#pen", { x: x0 - 10, y: rowY(row) - 70 }, at - 0.01);
+        tl.to("#pen", { opacity: 1, duration: 0.12 }, at);
+        tl.to("#pen", { x: x0 - 10 + n * 22.8, duration: d, ease: `steps(${n})` }, at);
+        type(sel, at, n, d);
+      };
+      const penOut = (at) => tl.to("#pen", { opacity: 0, duration: 0.2 }, at);
+      // The eraser zigzags down the page over rows first..last, fading each row as it passes.
+      const erase = (rows, at, sels) => {
+        const n = rows.length, step = 0.22;
+        tl.set("#eraser", { x: 1240, y: rowY(rows[0]) - 10 }, at - 0.01);
+        tl.to("#eraser", { opacity: 1, duration: 0.12 }, at);
+        rows.forEach((r, k) => {
+          tl.to("#eraser", { x: k % 2 ? 1240 : 1560, y: rowY(r) - 10, duration: step, ease: "power1.inOut" }, at + k * step);
+          out(sels[k], at + k * step + 0.08, step);
+        });
+        tl.to("#eraser", { opacity: 0, duration: 0.2 }, at + n * step + 0.05);
+      };
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 600, y: 500 }, 0);
+      tl.set("#stamp", { rotation: -8 }, 0);
+
+      /* ---- 1. After dinner, Kitchen Coach saves next week's list ---- */
+      bump("#kc-h", t(2));
+      pop("#kc-1", t(9), { from: 0.5 });
+      pop("#kc-2", t(10), { from: 0.5 });
+      pop("#kc-3", t(12), { from: 0.5 });
+      out("#kc-g", t(13), 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(13) + 0.1);
+      type("#S1", t(13) + 0.45, 35, 0.6);
+      draw("r-tab", t(17), 0.5);
+
+      /* ---- 2. open with "w": a clean page ---- */
+      out("#r-tab", t(22) - 0.2, 0.2);
+      type("#S3", t(23), 30, 0.5);
+      draw("r-w", t(27), 0.4);
+      bump("#nb", t(31));
+      pop("#n-new", t(35), { from: 0.6 });
+      pop("#n-old", t(40), { from: 0.6 });
+      erase([0, 1, 2], t(44) - 0.1, ["#old-0", "#old-1", "#old-2"]);
+      out("#own-1", t(44) + 0.5, 0.2);
+
+      /* ---- 3. write adds no new line: the words crash together ---- */
+      out(["#n-new", "#n-old", "#r-w"], t(46) - 0.2, 0.2);
+      type("#S4", t(46), 21, 0.35);
+      type("#S5", t(46) + 0.4, 17, 0.3);
+      type("#S6", t(46) + 0.75, 9, 0.2);
+      write("#w1", t(50), 0, 1232, 4, 0.3);
+      write("#w2", t(52), 0, 1323.2, 4, 0.3);
+      write("#w3", t(54) + 0.15, 0, 1414.4, 4, 0.3);
+      penOut(t(55));
+      draw("r-write", t(55), 0.45);
+      pop("#n-nonl", t(58), { from: 0.6 });
+      tl.to(["#w1", "#w2", "#w3"], { color: "#b8235a", duration: 0.2 }, t(63));
+      draw("r-crash", t(63));
+      bump(["#w1", "#w2", "#w3"], t(63) + 0.05);
+
+      /* ---- 4. Add \n yourself: every item gets its own line. Close, and it is saved ---- */
+      tl.set("#s-cursor", { x: 520, y: 420 }, t(65) - 0.4);
+      cursorIn(t(65) - 0.4);
+      cursorTo(136 + 20 * CW, 396, t(65) - 0.4, 0.4);
+      out(["#r-write", "#n-nonl"], t(65), 0.2);
+      swap("#S5", "#S5b", t(66));
+      cursorOut(t(67) + 0.2);
+      draw("r-nl", t(67), 0.4);
+      pop("#n-nl", t(68), { from: 0.6 });
+      out(["#w1", "#w2", "#w3", "#r-crash"], t(72) - 0.3, 0.2);
+      write("#g0", t(72), 0, 1232, 4, 0.3);
+      write("#g1", t(73), 1, 1232, 4, 0.3);
+      write("#g2", t(74), 2, 1232, 4, 0.3);
+      penOut(t(75) + 0.1);
+      out(["#r-nl", "#n-nl"], t(78) - 0.2, 0.2);
+      draw("r-close", t(78), 0.4);
+      pop(["#saved", "#saved-ok"], t(84), { from: 0.5 });
+
+      /* ---- 5. "a" for append: the dinner log grows ---- */
+      out(["#S1", "#S3", "#S4", "#S5b", "#S6", "#r-close", "#g0", "#g1", "#g2", "#saved", "#saved-ok"], t(85), 0.25);
+      swap("#tab-1", "#tab-2", t(86));
+      swap("#bn-1", "#bn-2", t(86));
+      type("#D1", t(90), 32, 0.5);
+      draw("r-a", t(95), 0.4);
+      pop("#n-a", t(97), { from: 0.6 });
+      type("#D2", t(98), 28, 0.4);
+      type("#D3", t(98) + 0.35, 9, 0.2);
+      write("#d0", t(99), 0, 1232, 16, 0.5);
+      penOut(t(99) + 0.6);
+      type("#D5", t(100), 32, 0.4);
+      type("#D6", t(101), 27, 0.35);
+      type("#D7", t(101) + 0.3, 9, 0.2);
+      write("#d1", t(101) + 0.35, 1, 1232, 15, 0.5);
+      penOut(t(102) + 0.3);
+      pop("#plus", t(105) - 0.1, { from: 0.4 });
+
+      /* ---- 6. The danger: "w" on Ana's training log ---- */
+      out(["#D1", "#D2", "#D3", "#D5", "#D6", "#D7", "#r-a", "#n-a", "#d0", "#d1", "#plus"], t(106), 0.25);
+      swap("#tab-2", "#tab-3", t(109));
+      swap("#bn-2", "#bn-3", t(109));
+      pop(["#own-2", "#ana"], t(109) + 0.1, { from: 0.6 });
+      ["#a0", "#a1", "#a2", "#a3", "#a4"].forEach((s, k) => pop(s, t(112) + k * 0.14, { from: 0.7 }));
+      type("#A1", t(117), 34, 0.5);
+      type("#A2", t(119) + 0.2, 21, 0.35);
+      type("#A3", t(120) + 0.2, 9, 0.2);
+      draw("r-w3", t(127), 0.4);
+      erase([0, 1, 2, 3, 4], t(131) - 0.1, ["#a0", "#a1", "#a2", "#a3", "#a4"]);
+      write("#at0", t(135) - 0.15, 0, 1232, 9, 0.35);
+      penOut(t(135) + 0.35);
+      pop("#n-gone", t(134), { from: 0.6 });
+      tl.fromTo("#stamp", { opacity: 0, scale: 2.2, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(136) + 0.1);
+
+      /* ---- 7. Open it with "a": her runs stay safe ---- */
+      out(["#stamp", "#n-gone", "#r-w3"], t(139), 0.25);
+      tl.set("#s-cursor", { x: 760, y: 330 }, t(139));
+      cursorIn(t(139));
+      cursorTo(136 + 30 * CW, 196, t(139), 0.45);
+      swap("#A1", "#A1b", t(142));
+      cursorOut(t(143) + 0.2);
+      draw("r-a3", t(142) + 0.1, 0.4);
+      out("#at0", t(142) + 0.2, 0.2);
+      ["#a0", "#a1", "#a2", "#a3", "#a4"].forEach((s, k) => pop(s, t(142) + 0.35 + k * 0.1, { from: 0.7 }));
+      write("#at5", t(145) - 0.1, 5, 1232, 9, 0.35);
+      penOut(t(146) + 0.2);
+      pop("#n-safe", t(142) + 0.5, { from: 0.6 });
+      pop(["#saved", "#saved-ok"], t(145) + 0.3, { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 58.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

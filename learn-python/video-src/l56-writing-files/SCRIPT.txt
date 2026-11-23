@@ -1,0 +1,15 @@
+After dinner, Kitchen Coach saves next week's shopping list. Oats, rice and tofu, in a file called shopping dot t x t.
+
+It opens the file with W, for write. W starts a clean page. A new file is made. An old one is wiped first.
+
+F dot write puts each item on the page. But write adds no new line. The words crash together.
+
+Add backslash n yourself, after each item. Every item gets its own line. Close the file, and it is saved.
+
+For a log that grows, open it with the letter A, for append. Monday's dinner. Then Tuesday's, added at the bottom.
+
+Now the danger. Ana keeps her training log in a file. Kitchen Coach adds tonight's run, but opens the file with W. The clean page wipes all her runs. No warning, no undo.
+
+Open it with A, and her runs stay safe.
+
+W starts a clean page. The letter A adds to the end. Write the new lines yourself.

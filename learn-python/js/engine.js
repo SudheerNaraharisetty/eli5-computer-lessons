@@ -148,8 +148,9 @@
       try { await py.loadPackagesFromImports(m.src); } catch (e) { /* a bad import shows up as a normal error below */ }
       chunks = []; pend = []; size = 0; cut = false; need = null; answers = m.answers || []; ai = 0; last = Date.now();
       // Every run starts in a fresh, empty kitchen folder, with the box's ready-made files (o.files) in it.
+      // Modules imported from that folder by an earlier run are forgotten, so a seeded kitchen.py is always read fresh.
       try {
-        py.runPython("import os, shutil\nos.chdir('/')\nshutil.rmtree('/home/pyodide/kitchen', ignore_errors=True)\nos.makedirs('/home/pyodide/kitchen')\nos.chdir('/home/pyodide/kitchen')");
+        py.runPython("import os, shutil, sys, importlib\nfor _n, _m in list(sys.modules.items()):\n    if (getattr(_m, '__file__', None) or '').startswith('/home/pyodide/kitchen/'): del sys.modules[_n]\nimportlib.invalidate_caches()\nos.chdir('/')\nshutil.rmtree('/home/pyodide/kitchen', ignore_errors=True)\nos.makedirs('/home/pyodide/kitchen')\nos.chdir('/home/pyodide/kitchen')");
         for (const [name, text] of Object.entries(m.files || {})) {
           const full = '/home/pyodide/kitchen/' + name, dir = full.slice(0, full.lastIndexOf('/'));
           py.FS.mkdirTree(dir);

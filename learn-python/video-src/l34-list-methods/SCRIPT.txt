@@ -1,0 +1,17 @@
+Saturday morning. The shopping list for your three friends hangs on the fridge. Milk, flour, eggs, rice.
+
+Your phone buzzes. Ben: add tofu. Shopping dot append, tofu. It goes on at the bottom.
+
+Chloe: take the flour off, I'm gluten free. Shopping dot remove, flour. Crossed off.
+
+Ana: bananas first! Shopping dot insert, zero, bananas. Index zero is the top of the list.
+
+Last, sort it, so you can walk the shop from A to Z.
+
+Every method changed the same paper. No new list was made. So what does a method hand back? Nothing. None.
+
+Now watch. Shopping equals shopping dot sort. The list gets sorted, and then the answer, None, goes into the jar. Your shopping list is gone.
+
+The fix: call the method on its own line. And when you want a new sorted list, use sorted.
+
+List methods change the list itself. They hand back None.

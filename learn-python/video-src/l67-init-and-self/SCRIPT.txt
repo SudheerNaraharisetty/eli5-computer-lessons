@@ -1,0 +1,15 @@
+Last lesson, you set up each dish by hand. A name. Then the protein. And one day, you forget a line.
+
+So give the class a prep station. Write def, then init, with two underscores on each side. Python runs it by itself, every time you make a new dish.
+
+Call Dish with lentil soup and eighteen. The arguments travel in. Lentil soup goes into name. Eighteen goes into protein.
+
+And self? Self is the new plate being set up. Python hands it over for you. That is why you pass two arguments, not three.
+
+Self dot name equals name. The label goes on the plate. Self dot protein equals protein. Eighteen grams.
+
+Ben wants a protein shake. One line. Thirty grams, set up the same way.
+
+Forget the protein, and Python stops right there. Type error. Missing one required positional argument: protein. No half-made dish leaves the station.
+
+Init sets up every new object. Self is the one being made.

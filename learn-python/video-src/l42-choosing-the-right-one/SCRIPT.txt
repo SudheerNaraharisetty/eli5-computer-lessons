@@ -1,0 +1,15 @@
+Kitchen Coach is planning a dinner party. It has four jobs, and four drawers: a list, a tuple, a dict and a set.
+
+Job one: the order of the courses. Does the order matter, and will it change? Yes and yes. That is a list.
+
+Job two: the oven setting. One hundred and eighty degrees, fan. A fixed record. That is a tuple.
+
+Job three: each guest's protein goal. Will you look it up by a name? Then use a dict.
+
+Job four: every allergen anyone has. You only ask, is it in there? That is a set.
+
+Pick the wrong drawer. Put the guests in a list, and finding Ben means walking past every item, one by one. Put the allergens in a list, and nuts shows up twice.
+
+Swap in a dict, and Python jumps straight to Ben. Swap in a set, and nuts appears once. The code gets shorter, too.
+
+Pick the container by the question you will ask it.

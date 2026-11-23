@@ -1,0 +1,440 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Kitchen Coach, holding the pantry in memory */
+    #coach { left: 1190px; top: 96px; width: 640px; height: 380px; border-radius: 26px; background: #fff; }
+    #coach-av { left: 1218px; top: 116px; width: 64px; height: 64px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 800 34px/64px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #coach-h { left: 1304px; top: 120px; font: 700 40px/56px "Fraunces", serif; white-space: nowrap; }
+    .jar { top: 212px; width: 170px; height: 170px; border-radius: 18px 18px 26px 26px; background: #fbebd2; box-shadow: 0 0 0 4px #0e0c1d; }
+    .jar-lid { top: 196px; width: 130px; height: 22px; border-radius: 8px; background: #0e0c1d; }
+    .jar-v { top: 240px; width: 170px; text-align: center; font: 700 44px/60px "JetBrains Mono", monospace; color: #1f7a5c; }
+    .jar-v.gone { color: #6f6b80; }
+    .jar-n { top: 316px; width: 170px; text-align: center; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; }
+    .pill { height: 56px; padding: 0 26px; border-radius: 999px; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.ac { background: #e6e3ff; color: #3b37e6; }
+    .pill b { font: 700 30px/56px "JetBrains Mono", monospace; }
+
+    /* the recipe notebook: pantry.txt */
+    #nb { left: 1190px; top: 96px; width: 640px; height: 380px; border-radius: 18px; background: #fbf8f4; }
+    #nb-margin { left: 1262px; top: 110px; width: 3px; height: 352px; background: #e8a5bd; }
+    .nb-rule { left: 1270px; width: 540px; height: 3px; background: #ece7df; }
+    .nb-ln { left: 1290px; font: 700 40px/60px "JetBrains Mono", monospace; white-space: nowrap; color: #0e0c1d; }
+    #nb-tab { left: 1600px; top: 70px; width: 210px; height: 52px; border-radius: 12px; background: #e6e3ff; color: #3b37e6; text-align: center; font: 700 30px/52px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    #spiral { left: 1200px; top: 112px; width: 40px; height: 350px; }
+    #cover { left: 1190px; top: 96px; width: 640px; height: 380px; border-radius: 18px; background: #3b37e6; transform-origin: 50% 0%; }
+    #cover-t { left: 1190px; top: 210px; width: 640px; text-align: center; font: 700 56px/72px "Fraunces", serif; color: #fff; }
+    #cover-s { left: 1190px; top: 290px; width: 640px; text-align: center; font: 700 34px/48px "JetBrains Mono", monospace; color: #e6e3ff; }
+    #shelf-line { left: 1160px; top: 500px; width: 700px; height: 8px; border-radius: 4px; background: #0e0c1d; }
+
+    /* the empty shelf */
+    #shelf { left: 1190px; top: 96px; width: 640px; height: 380px; border-radius: 18px; border: 6px dashed #b8235a; background: rgba(251, 224, 234, 0.35); }
+    #shelf-t { left: 1190px; top: 230px; width: 640px; text-align: center; font: 700 48px/64px "JetBrains Mono", monospace; color: #b8235a; }
+
+    /* strips and chips in the work area */
+    .strip { height: 70px; border-radius: 10px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; font: 700 36px/70px "JetBrains Mono", monospace; white-space: nowrap; padding: 0 22px; }
+    .strip i { font-style: normal; color: #b8235a; }
+    .nl { width: 62px; height: 62px; border-radius: 12px; background: #fbe0ea; color: #b8235a; text-align: center; font: 800 44px/62px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #big-l { left: 1190px; top: 524px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .chip { height: 68px; padding: 0 22px; border-radius: 34px; font: 700 38px/68px "JetBrains Mono", monospace; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .chip.t { background: #fbebd2; color: #9a5d10; }
+    .chip.n { background: #ddefe6; color: #1f7a5c; }
+    .chip-l { font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #sc { left: 0; top: 0; width: 70px; height: 70px; }
+
+    /* the pantry dict */
+    #dict { left: 1190px; top: 790px; width: 640px; height: 190px; border-radius: 22px; background: #ddefe6; }
+    #dict-h { left: 1220px; top: 800px; font: 700 34px/50px "JetBrains Mono", monospace; white-space: nowrap; }
+    .dict-r { left: 1250px; font: 700 34px/44px "JetBrains Mono", monospace; white-space: nowrap; }
+    .dict-r b { color: #1f7a5c; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .bad { color: #ff8fab; }
+    #s-div { position: absolute; left: 40px; top: 636px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; right: 40px; top: 646px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+    .s-out.dim { color: #c9c6ff; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.8" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>coach.py</span></div>
+          <!-- before: the pantry lives in the program -->
+          <div class="s-ln" id="C0" style="top:88px">pantry = {<span class="s">"rice"</span>: <span class="n">900</span>, <span class="s">"oats"</span>: <span class="n">400</span>, <span class="s">"lentils"</span>: <span class="n">0</span>}</div>
+          <!-- open, read, close -->
+          <div class="s-ln" id="A1" style="top:88px">f = <span class="f">open</span>(<span class="s">"pantry.txt"</span>)</div>
+          <div class="s-ln" id="A2" style="top:138px">text = f.<span class="f">read</span>()</div>
+          <div class="s-ln" id="A3" style="top:188px">f.<span class="f">close</span>()</div>
+          <!-- line by line -->
+          <div class="s-ln" id="B2" style="top:138px"><span class="k">for</span> line <span class="k">in</span> f:</div>
+          <div class="s-ln" id="S3" style="top:188px">    line = line.<span class="f">strip</span>()</div>
+          <div class="s-ln" id="B3" style="top:188px">    <span class="k">print</span>(line)</div>
+          <div class="s-ln" id="B4" style="top:238px">f.<span class="f">close</span>()</div>
+          <div class="s-ln" id="C4" style="top:238px">    name, grams = line.<span class="f">split</span>(<span class="s">","</span>)</div>
+          <div class="s-ln" id="C5" style="top:288px">    <span class="k">print</span>(grams + <span class="n">150</span>)</div>
+          <div class="s-ln" id="C5b" style="top:288px">    pantry[name] = <span class="f">int</span>(grams)</div>
+          <div class="s-ln" id="D1" style="top:88px">pantry = {}</div>
+          <div class="s-ln" id="D8" style="top:438px"><span class="k">print</span>(pantry)</div>
+          <div class="s-ln" id="E2" style="top:138px">f = <span class="f">open</span>(<span class="bad">"pantyr.txt"</span>)</div>
+          <!-- catch it -->
+          <div class="s-ln" id="F1" style="top:88px"><span class="k">try</span>:</div>
+          <div class="s-ln" id="F2" style="top:138px">    f = <span class="f">open</span>(<span class="s">"pantyr.txt"</span>)</div>
+          <div class="s-ln" id="F3" style="top:188px"><span class="k">except</span> <span class="f">FileNotFoundError</span>:</div>
+          <div class="s-ln" id="F4" style="top:238px">    <span class="k">print</span>(<span class="s">"No notebook yet."</span>)</div>
+
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out dim" id="o-end" style="top:652px">(the program ends)</div>
+          <div class="s-out" id="oB0" style="top:652px">rice,900</div>
+          <div class="s-out" id="oB2" style="top:736px">oats,400</div>
+          <div class="s-out" id="oB4" style="top:820px">lentils,0</div>
+          <div class="s-out" id="oS0" style="top:652px">rice,900</div>
+          <div class="s-out" id="oS1" style="top:694px">oats,400</div>
+          <div class="s-out" id="oS2" style="top:736px">lentils,0</div>
+          <div class="s-out err" id="oC0" style="top:652px">TypeError: can only concatenate str (not "int") to str</div>
+          <div class="s-out" id="oD0" style="top:652px">{'rice': 900, 'oats': 400, 'lentils': 0}</div>
+          <div class="s-out err" id="oE0" style="top:652px">FileNotFoundError: [Errno 2] No such file</div>
+          <div class="s-out err" id="oE1" style="top:694px">  or directory: 'pantyr.txt'</div>
+          <div class="s-out" id="oF0" style="top:652px">No notebook yet.</div>
+        </div>
+
+        <!-- Kitchen Coach, with the pantry in memory -->
+        <div id="coach-g" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="coach" class="s-abs s-ol"></div>
+          <div id="coach-av" class="s-abs">K</div>
+          <div id="coach-h" class="s-abs">Kitchen Coach</div>
+          <div class="s-abs jar-lid" style="left:1245px"></div>
+          <div class="s-abs jar-lid" style="left:1445px"></div>
+          <div class="s-abs jar-lid" style="left:1645px"></div>
+          <div class="s-abs jar" style="left:1225px"></div>
+          <div class="s-abs jar" style="left:1425px"></div>
+          <div class="s-abs jar" style="left:1625px"></div>
+          <div id="jv-0" class="s-abs jar-v s-hide" style="left:1225px">900</div>
+          <div id="jv-1" class="s-abs jar-v s-hide" style="left:1425px">400</div>
+          <div id="jv-2" class="s-abs jar-v s-hide" style="left:1625px">0</div>
+          <div id="je-0" class="s-abs jar-v gone s-hide" style="left:1225px">?</div>
+          <div id="je-1" class="s-abs jar-v gone s-hide" style="left:1425px">?</div>
+          <div id="je-2" class="s-abs jar-v gone s-hide" style="left:1625px">?</div>
+          <div id="jn-0" class="s-abs jar-n s-hide" style="left:1225px">rice</div>
+          <div id="jn-1" class="s-abs jar-n s-hide" style="left:1425px">oats</div>
+          <div id="jn-2" class="s-abs jar-n s-hide" style="left:1625px">lentils</div>
+        </div>
+        <div id="p-ends" class="s-abs pill bad s-hide" style="left:1340px; top:540px">memory wiped</div>
+
+        <!-- the notebook on the shelf -->
+        <div id="shelf-line" class="s-abs s-hide"></div>
+        <div id="nb-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="nb" class="s-abs s-ol"></div>
+          <div id="nb-margin" class="s-abs"></div>
+          <div class="s-abs nb-rule" style="top:236px"></div>
+          <div class="s-abs nb-rule" style="top:306px"></div>
+          <div class="s-abs nb-rule" style="top:376px"></div>
+          <div class="s-abs nb-rule" style="top:446px"></div>
+          <svg id="spiral" class="s-abs" viewBox="0 0 40 350"><g fill="#f6f1eb" stroke="#0e0c1d" stroke-width="3"><circle cx="20" cy="20" r="9" /><circle cx="20" cy="74" r="9" /><circle cx="20" cy="128" r="9" /><circle cx="20" cy="182" r="9" /><circle cx="20" cy="236" r="9" /><circle cx="20" cy="290" r="9" /></g></svg>
+          <div id="nl-0" class="s-abs nb-ln s-hide" style="top:176px">rice,900</div>
+          <div id="nl-1" class="s-abs nb-ln s-hide" style="top:246px">oats,400</div>
+          <div id="nl-2" class="s-abs nb-ln s-hide" style="top:316px">lentils,0</div>
+        </div>
+        <div id="cover-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="cover" class="s-abs s-ol"></div>
+          <div id="cover-t" class="s-abs">Recipe notebook</div>
+          <div id="cover-s" class="s-abs">the pantry</div>
+        </div>
+        <div id="nb-tab" class="s-abs s-hide">pantry.txt</div>
+        <div id="shelf-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="shelf" class="s-abs"></div>
+          <div id="shelf-t" class="s-abs">pantyr.txt ?</div>
+        </div>
+
+        <!-- read(): one big string -->
+        <div id="big-l" class="s-abs s-hide">text = one big string:</div>
+        <div id="big" class="s-abs strip s-hide" style="left:1190px; top:580px; width:640px; font-size:30px; padding:0 16px">rice,900<i>↵</i>oats,400<i>↵</i>lentils,0<i>↵</i></div>
+
+        <!-- one line, read by the loop -->
+        <div id="ls" class="s-abs strip s-hide" style="left:1230px; top:560px; width:220px">rice,900</div>
+        <div id="ls-nl" class="s-abs nl s-hide" style="left:1466px; top:564px">↵</div>
+        <div id="pn" class="s-abs nl s-hide" style="left:1548px; top:564px">↵</div>
+        <div id="pn-l" class="s-abs chip-l s-hide" style="left:1500px; top:640px">print adds one more</div>
+        <svg id="sc" class="s-abs s-hide" viewBox="0 0 70 70"><g fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"><path d="M28 34 L64 12" /><path d="M28 36 L64 58" /><circle cx="16" cy="22" r="10" /><circle cx="16" cy="48" r="10" /></g></svg>
+
+        <!-- split: two chips, then int() -->
+        <div id="ch-name" class="s-abs chip t s-hide" style="left:1230px; top:660px">"rice"</div>
+        <div id="ch-grams" class="s-abs chip t s-hide" style="left:1460px; top:660px">"900"</div>
+        <div id="ch-num" class="s-abs chip n s-hide" style="left:1470px; top:660px">900</div>
+        <div id="ch-add" class="s-abs chip n s-hide" style="left:1660px; top:660px">+ 150</div>
+        <div id="l-name" class="s-abs chip-l s-hide" style="left:1262px; top:736px">name</div>
+        <div id="l-grams" class="s-abs chip-l s-hide" style="left:1484px; top:736px">grams</div>
+        <div id="p-text" class="s-abs pill ac s-hide" style="left:1190px; top:560px">a file is <b>text</b></div>
+        <div id="p-stop" class="s-abs pill bad s-hide" style="left:1560px; top:560px">TypeError</div>
+
+        <!-- the pantry, a dict again -->
+        <div id="dict-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="dict" class="s-abs s-ol"></div>
+          <div id="dict-h" class="s-abs">pantry = {</div>
+          <div id="dr-0" class="s-abs dict-r" style="top:846px">"rice": <b>900</b>,</div>
+          <div id="dr-1" class="s-abs dict-r" style="top:890px">"oats": <b>400</b>,</div>
+          <div id="dr-2" class="s-abs dict-r" style="top:934px">"lentils": <b>0</b> }</div>
+        </div>
+        <div id="p-fnf" class="s-abs pill bad s-hide" style="left:1190px; top:560px">FileNotFoundError</div>
+        <div id="p-caught" class="s-abs pill ok s-hide" style="left:1190px; top:660px">caught: empty pantry</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-open" style="stroke:#ffc24b" />
+          <path id="r-read" style="stroke:#ffc24b" />
+          <path id="r-close" style="stroke:#ffc24b" />
+          <path id="r-for" style="stroke:#ffc24b" />
+          <path id="r-gap1" style="stroke:#ff8fab; stroke-dasharray: 14 12" />
+          <path id="r-gap2" style="stroke:#ff8fab; stroke-dasharray: 14 12" />
+          <path id="r-nl" style="stroke:#b8235a" />
+          <path id="r-strip" style="stroke:#4bd69b" />
+          <path id="r-split" style="stroke:#ffc24b" />
+          <path id="r-comma" style="stroke:#b8235a" />
+          <path id="r-quote" style="stroke:#b8235a" />
+          <path id="r-int" style="stroke:#4bd69b" />
+          <path id="r-typo" style="stroke:#ff8fab; stroke-dasharray: 14 12" />
+          <path id="r-exc" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.511, 0.859, 1.161, 1.347, 2.125, 2.612, 3.03, 4.168, 4.331, 4.493, 4.609, 5.132, 5.689, 5.944, 7.012, 7.233, 7.546, 7.663, 8.092, 8.266, 8.371, 8.8, 9.88, 10.054, 10.461, 10.902, 11.401, 11.68, 12.04, 12.353, 13.142, 13.444, 13.758, 14.002, 15.139, 15.673, 16.231, 16.533, 17.554, 17.891, 18.019, 18.483, 18.773, 19.679, 19.98, 20.259, 20.41, 20.526, 20.77, 21.223, 21.571, 21.884, 22.163, 22.987, 23.312, 23.707, 24.288, 24.566, 24.833, 24.973, 25.263, 25.484, 25.878, 26.11, 26.215, 26.528, 27.364, 27.631, 27.922, 28.038, 28.189, 29.094, 29.396, 29.744, 30.058, 30.22, 30.336, 30.754, 31.01, 31.393, 31.706, 32.09, 32.426, 32.658, 33.657, 34.087, 34.504, 34.679, 35.41, 35.828, 36.234, 36.536, 36.838, 37.047, 37.186, 37.929, 38.254, 38.359, 38.719, 38.951, 39.078, 39.949, 40.17, 40.321, 40.843, 41.18, 42.178, 42.445, 42.561, 42.968, 43.13, 43.525, 43.641, 43.757, 44.489, 44.791, 45.359, 46.381, 46.695, 47.066, 47.194, 47.635, 47.937, 48.099, 48.471, 49.458, 49.771, 49.899, 50.398, 50.572, 50.688, 51.838, 52.267, 52.383, 52.627, 52.987, 53.173, 53.301, 53.673, 53.858, 54.892, 55.31, 55.565, 55.96, 56.726, 57.109, 57.237, 57.458, 57.887, 58.108, 59.327, 59.698, 59.838, 60.662, 60.987, 61.138, 61.486, 61.776, 62.194, 62.45, 62.752, 62.868, 63.402, 63.843];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const DASHED = ["r-gap1", "r-gap2", "r-typo"];
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!DASHED.includes(id)) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const CW = 18, OW = 16.8;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      const OY = (k) => 96 + 652 + 21 + k * 42; // centre of output line k (0 = first)
+      ring("r-open", cx(4, 9), ry(1), rw(4, 9), 28);        // open(
+      ring("r-read", cx(9, 14), ry(2), rw(9, 14), 28);      // read()
+      ring("r-close", cx(2, 8), ry(3), rw(2, 8), 28);       // close()
+      ring("r-for", cx(0, 13), ry(2), rw(0, 13), 30);       // for line in f:
+      ring("r-gap1", 136 + 200, OY(1), 220, 20);            // the empty output line 2
+      ring("r-gap2", 136 + 200, OY(3), 220, 20);            // the empty output line 4
+      ring("r-nl", 1497, 595, 50, 46);                      // the hidden newline on the strip
+      ring("r-strip", cx(16, 22), ry(3), rw(16, 22), 28);   // strip()
+      ring("r-split", cx(23, 32), ry(4), rw(23, 32), 28);   // split(",")
+      ring("r-comma", 1230 + 22 + 4.5 * 21.6, 595, 22, 40); // the comma on the strip
+      ring("r-quote", 1460 + 74, 694, 92, 48);              // "900", still text
+      ring("r-int", cx(19, 28), ry(5), rw(19, 28), 28);     // int(grams)
+      ring("r-typo", cx(9, 20), ry(2), rw(9, 20), 28);      // "pantyr.txt"
+      ring("r-exc", cx(0, 24), ry(3), rw(0, 24), 30);       // except FileNotFoundError:
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        if (DASHED.includes(id)) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at); return; }
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.12, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swap = (a, b, at) => { out(a, at, 0.15); pop(b, at + 0.1, { from: 0.5 }); };
+      const moveY = (sels, y, at) => tl.to(sels, { y: y, duration: 0.4, ease: "power2.inOut" }, at);
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 1500, y: 700 }, 0);
+      tl.set("#C0", { opacity: 1 }, 0);
+
+      /* ---- 1. Kitchen Coach knows the pantry. The program ends, and it forgets ---- */
+      bump("#coach-av", t(1));
+      [5, 6, 7].forEach((w, i) => { pop([`#jv-${i}`, `#jn-${i}`], t(w), { from: 0.5 }); });
+      show("#o-end", t(12), 0.3);
+      pop("#p-ends", t(12) + 0.1, { from: 0.6 });
+      out("#C0", t(14), 0.4);
+      [0, 1, 2].forEach((i) => { swap(`#jv-${i}`, `#je-${i}`, t(14) + i * 0.12); });
+
+      /* ---- 2. Write it down, in a recipe notebook: pantry.txt ---- */
+      out(["#coach-g", "#je-0", "#je-1", "#je-2", "#jn-0", "#jn-1", "#jn-2", "#p-ends"], t(18), 0.3);
+      out("#o-end", t(18), 0.2);
+      pop("#nb-g", t(18) + 0.3, { from: 0.85 });
+      pop("#shelf-line", t(22), { from: 0.9 });
+      bump("#nb", t(22));
+      pop("#nb-tab", t(26), { from: 0.5 });
+      type("#nl-0", t(34) - 0.2, 8, 0.4);
+      type("#nl-1", t(34) + 0.2, 8, 0.4);
+      type("#nl-2", t(34) + 0.6, 9, 0.4);
+      bump("#nl-0", t(35));
+      // the notebook closes again before we open it in code
+      show("#cover-g", t(37) + 0.3, 0.3);
+      tl.fromTo("#cover-g", { scaleY: 0, transformOrigin: "50% 9%" }, { scaleY: 1, duration: 0.45, ease: "power2.out", immediateRender: false }, t(37) + 0.3);
+
+      /* ---- 3. open, read, close ---- */
+      type("#A1", t(39), 22, 0.45);
+      draw("r-open", t(43), 0.4);
+      tl.to("#cover-g", { scaleY: 0, duration: 0.5, ease: "power2.in" }, t(43));
+      out("#r-open", t(44) - 0.1, 0.2);
+      type("#A2", t(44), 15, 0.35);
+      draw("r-read", t(44) + 0.3, 0.4);
+      show("#big-l", t(49), 0.3);
+      pop("#big", t(51), { from: 0.7 });
+      bump("#big", t(53));
+      out("#r-read", t(54), 0.2);
+      type("#A3", t(55), 9, 0.3);
+      draw("r-close", t(55) + 0.2, 0.4);
+      tl.to("#cover-g", { scaleY: 1, duration: 0.4, ease: "power2.out" }, t(55) + 0.2);
+
+      /* ---- 4. Line by line, with gaps. strip() snips the newline ---- */
+      out(["#A2", "#A3", "#r-close", "#big", "#big-l"], t(57), 0.25);
+      tl.to("#cover-g", { scaleY: 0, duration: 0.5, ease: "power2.in" }, t(58));
+      // the first line slides out of the notebook as a strip
+      tl.fromTo("#ls", { opacity: 0, x: 60, y: -384 }, { opacity: 1, x: 0, y: 0, duration: 0.7, ease: "power2.inOut", immediateRender: false }, t(60));
+      tl.fromTo("#ls-nl", { opacity: 0, x: 60, y: -384 }, { opacity: 1, x: 0, y: 0, duration: 0.7, ease: "power2.inOut", immediateRender: false }, t(60));
+      type("#B2", t(63), 14, 0.35);
+      type("#B3", t(66), 15, 0.35);
+      type("#B4", t(66) + 0.4, 9, 0.25);
+      draw("r-for", t(65), 0.4);
+      out("#r-for", t(67), 0.2);
+      show("#oB0", t(67), 0.2);
+      show("#oB2", t(67) + 0.25, 0.2);
+      show("#oB4", t(67) + 0.5, 0.2);
+      draw("r-gap1", t(71));
+      draw("r-gap2", t(71) + 0.15);
+      draw("r-nl", t(77), 0.45);
+      pop("#pn", t(82), { from: 0.4 });
+      show("#pn-l", t(82) + 0.2, 0.3);
+      out(["#r-gap1", "#r-gap2", "#r-nl"], t(85) - 0.3, 0.2);
+      // strip(): a new line 3; print and close move down
+      tl.set("#s-cursor", { x: 560, y: 300 }, t(85) - 0.5);
+      cursorIn(t(85) - 0.5);
+      cursorTo(136 + 4 * CW, 198, t(85) - 0.5, 0.4);
+      moveY(["#B3", "#B4"], 50, t(85) - 0.1);
+      type("#S3", t(85) + 0.25, 23, 0.4);
+      cursorOut(t(85) + 0.5);
+      draw("r-strip", t(86), 0.4);
+      // the scissors snip the newline off
+      tl.set("#sc", { x: 1440, y: 560 }, t(86));
+      show("#sc", t(86), 0.15);
+      tl.fromTo("#sc", { rotation: 0 }, { rotation: -18, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, t(86) + 0.2);
+      tl.to("#ls-nl", { y: 120, rotation: 25, opacity: 0, duration: 0.5, ease: "power2.in" }, t(86) + 0.4);
+      out(["#sc", "#pn", "#pn-l"], t(88) + 0.2, 0.25);
+      out(["#oB0", "#oB2", "#oB4"], t(86) + 0.5, 0.15);
+      show("#oS0", t(86) + 0.6, 0.2);
+      show("#oS1", t(86) + 0.7, 0.2);
+      show("#oS2", t(86) + 0.8, 0.2);
+      out("#r-strip", t(88) + 0.6, 0.2);
+
+      /* ---- 5. split, a file is text, + 150 stops, int(), a dict ---- */
+      out(["#oS0", "#oS1", "#oS2"], t(90), 0.2);
+      swap("#B3", "#C4", t(89));
+      draw("r-split", t(89) + 0.3, 0.4);
+      draw("r-comma", t(95) - 0.2, 0.4);
+      out(["#ls", "#r-comma"], t(96) - 0.15, 0.15);
+      out("#r-split", t(96), 0.2);
+      tl.fromTo("#ch-name", { opacity: 0, x: 0, y: -100 }, { opacity: 1, x: 0, y: 0, duration: 0.45, ease: "back.out(1.4)", immediateRender: false }, t(96));
+      tl.fromTo("#ch-grams", { opacity: 0, x: -60, y: -100 }, { opacity: 1, x: 0, y: 0, duration: 0.45, ease: "back.out(1.4)", immediateRender: false }, t(96) + 0.1);
+      show("#l-name", t(98), 0.25);
+      bump("#ch-name", t(98));
+      show("#l-grams", t(101), 0.25);
+      bump("#ch-grams", t(101));
+      pop("#p-text", t(106) - 0.3, { from: 0.6 });
+      draw("r-quote", t(106), 0.45);
+      // add 150: print(grams + 150) and a "+ 150" chip
+      moveY("#B4", 100, t(107) - 0.1);
+      type("#C5", t(107) + 0.2, 22, 0.4);
+      pop("#ch-add", t(109), { from: 0.5 });
+      out("#r-quote", t(114), 0.2);
+      tl.fromTo("#ch-add", { x: 0 }, { x: 10, duration: 0.06, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(117));
+      out("#s-outlbl", t(117) - 0.1, 0.1);
+      type("#oC0", t(117), 55, 0.7);
+      pop("#p-stop", t(117), { from: 0.6 });
+      // int() turns the text into a number
+      out(["#p-stop", "#ch-add", "#p-text"], t(118) - 0.2, 0.2);
+      swap("#C5", "#C5b", t(118));
+      out("#oC0", t(118), 0.2);
+      show("#s-outlbl", t(118) + 0.2, 0.2);
+      draw("r-int", t(118) + 0.3, 0.4);
+      swap("#ch-grams", "#ch-num", t(124));
+      bump("#ch-num", t(125));
+      out("#r-int", t(125) + 0.3, 0.2);
+      // a dict again: pantry = {} on top, print(pantry) at the bottom
+      moveY(["#A1", "#B2", "#S3", "#C4", "#C5b"], 50, t(126));
+      moveY("#B4", 150, t(126));
+      type("#D1", t(128), 11, 0.3);
+      type("#D8", t(128) + 0.35, 13, 0.3);
+      pop("#dict-g", t(128), { from: 0.85 });
+      [0, 1, 2].forEach((i) => { pop(`#dr-${i}`, t(131) + i * 0.15, { from: 0.6 }); });
+      show("#oD0", t(131) + 0.2, 0.3);
+
+      /* ---- 6. A wrong name: the shelf is empty. FileNotFoundError. Catch it ---- */
+      out(["#ch-name", "#ch-num", "#l-name", "#l-grams"], t(132), 0.25);
+      tl.set("#s-cursor", { x: 600, y: 300 }, t(132));
+      cursorIn(t(132));
+      cursorTo(136 + 10 * CW, 248, t(132), 0.45);
+      swap("#A1", "#E2", t(135));
+      draw("r-typo", t(135) + 0.2);
+      cursorOut(t(135) + 0.4);
+      out(["#nb-g", "#nb-tab", "#cover-g"], t(138), 0.35);
+      pop("#shelf-g", t(140) - 0.3, { from: 0.9 });
+      out(["#oD0", "#dict-g", "#dr-0", "#dr-1", "#dr-2"], t(140), 0.25);
+      type("#oE0", t(141), 41, 0.5);
+      type("#oE1", t(141) + 0.45, 28, 0.35);
+      pop("#p-fnf", t(141) + 0.1, { from: 0.6 });
+      // catch it with try and except
+      out(["#D1", "#E2", "#B2", "#S3", "#C4", "#C5b", "#B4", "#D8", "#r-typo"], t(145) - 0.1, 0.25);
+      type("#F1", t(145) + 0.1, 4, 0.15);
+      type("#F2", t(145) + 0.25, 26, 0.35);
+      type("#F3", t(145) + 0.6, 25, 0.35);
+      type("#F4", t(145) + 0.95, 32, 0.4);
+      draw("r-exc", t(150), 0.45);
+      out(["#oE0", "#oE1"], t(147) - 0.1, 0.15);
+      show("#oF0", t(147), 0.25);
+      pop("#p-caught", t(147) + 0.1, { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 59.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

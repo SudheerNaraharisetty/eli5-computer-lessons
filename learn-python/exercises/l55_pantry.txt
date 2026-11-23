@@ -1,0 +1,7 @@
+rice,900
+oats,400
+lentils,0
+pasta,150
+flour,1000
+cocoa,90
+chickpeas,450

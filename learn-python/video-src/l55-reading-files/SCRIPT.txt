@@ -1,0 +1,13 @@
+Kitchen Coach knows your pantry. Rice, oats, lentils. But when the program ends, it forgets.
+
+So write it down, in a recipe notebook. A text file, pantry dot T X T. One line per item. Rice, comma, nine hundred.
+
+Open the notebook with open. Read hands you the whole page, as one big string. Then close it.
+
+Or read it line by line, with a for loop. But look at the gaps. Each line ends with a hidden new line, and print adds its own. Strip snips it off.
+
+Split cuts each line at the comma, into a name and the grams. But a file is text. Add a hundred and fifty to the grams, and Python stops. Int turns the text into a real number. Now the pantry is a dictionary.
+
+Spell the name wrong, and the shelf is empty. File not found error. Catch it with try and except.
+
+Open the notebook, read it line by line, and turn the text into data.

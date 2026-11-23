@@ -1,0 +1,11 @@
+Ana, Ben and Chloe each send you a list for the weekend. You join them into one shopping list. Eggs, three times. Rice, three times. This list is wrong.
+
+A set keeps one of each. Pass the list to set, and every duplicate bounces off. Seven things to buy.
+
+Add milk, and it goes in. Add eggs again, and nothing changes. Is tofu in the set? True. A set answers that fast.
+
+Now the kitchen maths. Write each list as a set, in curly braces. And gives what all three want: eggs and rice. The bar means or: anything anyone wants. Minus gives what Ben wants and Chloe does not: bread and tofu.
+
+Two catches. A set has no order, so it has no index. Wanted, zero, is a type error. Need an order? Use sorted. And empty curly braces make a dictionary. For an empty set, write set, with brackets.
+
+A set keeps one of each, and answers in or not in fast.

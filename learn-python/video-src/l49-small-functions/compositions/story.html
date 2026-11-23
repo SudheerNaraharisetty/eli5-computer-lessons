@@ -1,0 +1,395 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .ln.gl { opacity: 0; }
+
+    /* dark code panels */
+    .panel { background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar { position: absolute; left: 0; top: 0; width: 100%; height: 60px; background: #211e40; }
+    .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .bar > span { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 36px; font: 500 28px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .ln .k { color: #c9c6ff; }
+    .ln .n { color: #ffc24b; }
+    .ln .s { color: #7cf0b5; }
+    .ln .f { color: #8fd3ff; }
+    .ln .c { color: #a9a5c9; }
+    .ln .ok { color: #4bd69b; }
+    .band { position: absolute; left: 16px; width: 1208px; height: 50px; border-radius: 8px; opacity: 0; }
+    .b1 { background: rgba(143, 211, 255, 0.2); }
+    .b2 { background: rgba(75, 214, 155, 0.22); }
+    .b3 { background: rgba(255, 194, 75, 0.22); }
+    .b4 { background: rgba(255, 143, 171, 0.22); }
+    .div { position: absolute; left: 36px; height: 3px; background: #2e2a58; }
+    .lbl { position: absolute; left: 36px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .out { position: absolute; left: 36px; font: 500 28px/46px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .out.g { color: #7cf0b5; }
+    .out.p { color: #ff8fab; }
+    .say { font: 800 30px/46px "Manrope", sans-serif; color: #eceaff; white-space: nowrap; }
+    .say b { color: #0e0c1d; background: #ff8fab; padding: 0 10px; border-radius: 10px; display: inline-block; }
+
+    /* the giant card */
+    #g { left: 96px; top: 60px; width: 1240px; height: 940px; }
+    .qm { position: absolute; left: 1196px; font: 800 36px/50px "Manrope", sans-serif; color: #ff8fab; }
+
+    /* job pills to the right of the giant card */
+    .job { left: 1376px; height: 60px; padding: 0 24px 0 70px; border-radius: 999px; background: #fff; font: 800 30px/60px "Manrope", sans-serif; white-space: nowrap; }
+    .job .nb, .badge { position: absolute; width: 44px; height: 44px; border-radius: 50%; color: #fff; text-align: center; font: 800 28px/44px "Manrope", sans-serif; box-shadow: 0 0 0 3px #0e0c1d; }
+    .job .nb { left: 8px; top: 8px; }
+    .c1 { background: #3b37e6; }
+    .c2 { background: #1f7a5c; }
+    .c3 { background: #b9741a; }
+    .c4 { background: #b8235a; }
+
+    /* friends' messages */
+    .msg { left: 1376px; top: 60px; width: 454px; height: 140px; border-radius: 28px; background: #fff; }
+    .msg .av { position: absolute; left: 22px; top: 34px; width: 72px; height: 72px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/72px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .msg .who { position: absolute; left: 116px; top: 16px; font: 800 28px/40px "Manrope", sans-serif; }
+    .msg .txt { position: absolute; left: 116px; top: 62px; font: 800 30px/50px "Manrope", sans-serif; white-space: nowrap; }
+
+    .pill { height: 56px; padding: 0 24px; border-radius: 999px; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    #copybox { left: 112px; top: 232px; width: 1208px; height: 458px; border-radius: 14px; border: 5px dashed #ff8fab; }
+
+    /* the short plan_dinner and the four small cards */
+    #p { left: 96px; top: 96px; width: 940px; height: 470px; }
+    .card { left: 1080px; width: 750px; height: 168px; border-radius: 22px; background: #fff; overflow: visible; }
+    .card .strip { position: absolute; left: 0; top: 0; width: 26px; height: 168px; border-radius: 22px 0 0 22px; }
+    .card .badge { left: -22px; top: 62px; }
+    .card .ti { position: absolute; left: 52px; top: 14px; font: 700 28px/44px "JetBrains Mono", monospace; color: #3b37e6; white-space: pre; }
+    .card .jb { position: absolute; left: 52px; top: 62px; font: 800 28px/44px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .card .rt { position: absolute; left: 52px; top: 114px; height: 42px; padding: 0 18px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 28px/42px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .rowb { width: 44px; height: 44px; }
+
+    /* Chloe's app */
+    #chl { left: 96px; top: 610px; width: 940px; height: 220px; }
+    #v765 { left: 132px; top: 748px; font: 700 52px/64px "JetBrains Mono", monospace; color: #7cf0b5; }
+    #m-chl2 { left: 96px; top: 872px; width: 560px; height: 120px; border-radius: 28px; background: #fff; }
+    #m-chl2 .av { position: absolute; left: 22px; top: 24px; width: 72px; height: 72px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/72px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; background: #b8235a; }
+    #m-chl2 .txt { position: absolute; left: 116px; top: 34px; font: 800 34px/52px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* the check, on one card */
+    #scrim { left: 0; top: 0; width: 1920px; height: 1080px; background: rgba(246, 241, 235, 0.93); }
+    #k { left: 260px; top: 110px; width: 1400px; height: 720px; }
+    #k .ln { left: 40px; font: 500 30px/54px "JetBrains Mono", monospace; }
+    #k-out { left: 300px; top: 700px; font: 700 48px/60px "JetBrains Mono", monospace; }
+    #k-st1, #k-st2 { left: 420px; top: 702px; }
+
+    .cutl { left: 100px; width: 1236px; height: 0; border-top: 5px dashed #ff8fab; opacity: 0; transform-origin: 0 50%; }
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+    #sc { left: 0; top: 0; width: 84px; height: 84px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- ============ the giant card ============ -->
+        <div id="g" class="s-abs panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>kitchen_coach.py</span></div>
+          <div class="band b1" id="bd1" style="top:176px; height:200px"></div>
+          <div class="band b2" id="bd2a" style="top:376px"></div>
+          <div class="band b3" id="bd3a" style="top:426px"></div>
+          <div class="band b2" id="bd2b" style="top:526px"></div>
+          <div class="band b3" id="bd3b" style="top:576px"></div>
+          <div class="band b4" id="bd4" style="top:626px; height:100px"></div>
+          <div class="ln" id="A1" style="top:76px"><span class="k">def</span> <span class="f">plan_dinner</span>(guests):</div>
+          <div class="ln gl" id="A2" style="top:126px">    <span class="k">for</span> name, avoid <span class="k">in</span> guests.items():</div>
+          <div class="ln gl" id="A3" style="top:176px">        safe = []</div>
+          <div class="ln gl" id="A4" style="top:226px">        <span class="k">for</span> food <span class="k">in</span> MENU:</div>
+          <div class="ln gl" id="A5" style="top:276px">            <span class="k">if</span> HAS.get(food) <span class="k">not in</span> avoid:</div>
+          <div class="ln gl" id="A6" style="top:326px">                safe.append(food)</div>
+          <div class="ln gl" id="A7" style="top:376px">        protein = <span class="n">0</span></div>
+          <div class="ln gl" id="A8" style="top:426px">        kcal = <span class="n">0</span></div>
+          <div class="ln gl" id="A9" style="top:476px">        <span class="k">for</span> food <span class="k">in</span> safe:</div>
+          <div class="ln gl" id="A10" style="top:526px">            protein = PROTEIN[food]</div>
+          <div class="ln gl" id="A11" style="top:576px">            kcal += KCAL[food]</div>
+          <div class="ln gl" id="A12" style="top:626px">        foods = <span class="s">", "</span>.join(safe)</div>
+          <div class="ln gl" id="A13" style="top:676px">        <span class="k">print</span>(<span class="s">f"{name}: {foods} ({protein} g protein, {kcal} kcal)"</span>)</div>
+          <div class="qm s-hide" id="q2" style="top:126px">?</div>
+          <div class="qm s-hide" id="q3" style="top:176px">?</div>
+          <div class="qm s-hide" id="q4" style="top:226px">?</div>
+          <div class="qm s-hide" id="q5" style="top:276px">?</div>
+          <div class="qm s-hide" id="q6" style="top:326px">?</div>
+          <div class="qm s-hide" id="q7" style="top:376px">?</div>
+          <div class="qm s-hide" id="q8" style="top:426px">?</div>
+          <div class="qm s-hide" id="q9" style="top:476px">?</div>
+          <div class="qm s-hide" id="q10" style="top:526px">?</div>
+          <div class="qm s-hide" id="q11" style="top:576px">?</div>
+          <div class="qm s-hide" id="q12" style="top:626px">?</div>
+          <div class="div" style="top:736px; width:1168px"></div>
+          <div class="lbl" style="top:744px">run it</div>
+          <div class="out s-hide" id="o-c1" style="top:790px">kcal = <span style="color:#8fd3ff">plan_dinner</span>({<span style="color:#7cf0b5">"Chloe"</span>: {<span style="color:#7cf0b5">"gluten"</span>}})</div>
+          <div class="out g s-hide" id="o-c2" style="top:838px">Chloe: chili, chicken, salad, pudding (6 g protein, 765 kcal)</div>
+          <div class="out p s-hide" id="o-c3" style="top:886px">kcal is None</div>
+          <div class="out s-hide" id="o-b1" style="top:790px"><span style="color:#8fd3ff">plan_dinner</span>({<span style="color:#7cf0b5">"Ben"</span>: {<span style="color:#7cf0b5">"meat"</span>}})</div>
+          <div class="out g s-hide" id="o-b2" style="top:838px">Ben: pasta, chili, salad, pudding (6 g protein, 980 kcal)</div>
+          <div class="say s-hide" id="o-and" style="position:absolute; left:36px; top:812px">plan_dinner picks safe foods <b id="and1">and</b> adds protein <b id="and2">and</b> adds kcal <b id="and3">and</b> prints</div>
+        </div>
+        <div id="cut1" class="s-abs cutl" style="top:234px"></div>
+        <div id="cut2" class="s-abs cutl" style="top:434px"></div>
+        <div id="cut3" class="s-abs cutl" style="top:684px"></div>
+        <div id="copybox" class="s-abs s-hide"></div>
+        <div id="p-copy" class="s-abs pill bad s-hide" style="left:900px; top:300px">copy half the card?</div>
+
+        <!-- job pills -->
+        <div id="j1" class="s-abs job s-ol s-hide" style="top:281px"><span class="nb c1">1</span>pick safe foods</div>
+        <div id="j2" class="s-abs job s-ol s-hide" style="top:431px"><span class="nb c2">2</span>add up protein</div>
+        <div id="j3" class="s-abs job s-ol s-hide" style="top:541px"><span class="nb c3">3</span>add up kcal</div>
+        <div id="j4" class="s-abs job s-ol s-hide" style="top:706px"><span class="nb c4">4</span>print the menu</div>
+
+        <!-- Chloe, then Ben -->
+        <div id="m-chl" class="s-abs msg s-ol s-hide"><div class="av" style="background:#b8235a">C</div><div class="who" style="color:#b8235a">Chloe</div><div class="txt">kcal as a number?</div></div>
+        <div id="m-ben" class="s-abs msg s-ol s-hide"><div class="av" style="background:#1f7a5c">B</div><div class="who" style="color:#1f7a5c">Ben</div><div class="txt">only 6 g protein?</div></div>
+
+        <!-- ============ after the cut ============ -->
+        <div id="p" class="s-abs panel s-ol s-hide">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>kitchen_coach.py</span></div>
+          <div class="ln" id="P1" style="top:80px"><span class="k">def</span> <span class="f">plan_dinner</span>(guests):</div>
+          <div class="ln" id="P2" style="top:130px">    <span class="k">for</span> name, avoid <span class="k">in</span> guests.items():</div>
+          <div class="ln s-hide" id="P3" style="top:180px">        safe = <span class="f">pick_safe</span>(MENU, avoid)</div>
+          <div class="ln s-hide" id="P4" style="top:230px">        protein = <span class="f">count_protein</span>(safe)</div>
+          <div class="ln s-hide" id="P5" style="top:280px">        kcal = <span class="f">count_kcal</span>(safe)</div>
+          <div class="ln s-hide" id="P6" style="top:330px">        <span class="k">print</span>(<span class="f">format_menu</span>(name, safe, protein, kcal))</div>
+        </div>
+        <div id="rb1" class="s-abs badge rowb c1 s-hide" style="left:178px; top:279px">1</div>
+        <div id="rb2" class="s-abs badge rowb c2 s-hide" style="left:178px; top:329px">2</div>
+        <div id="rb3" class="s-abs badge rowb c3 s-hide" style="left:178px; top:379px">3</div>
+        <div id="rb4" class="s-abs badge rowb c4 s-hide" style="left:178px; top:429px">4</div>
+
+        <div id="k1" class="s-abs card s-ol s-hide" style="top:96px"><div class="strip c1"></div><div class="badge c1">1</div><div class="ti">pick_safe(foods, avoid)</div><div class="jb">one job: pick the safe foods</div><div class="rt" id="rt1">returns a list of foods</div></div>
+        <div id="k2" class="s-abs card s-ol s-hide" style="top:294px"><div class="strip c2"></div><div class="badge c2">2</div><div class="ti">count_protein(foods)</div><div class="jb">one job: add up the protein</div><div class="rt" id="rt2">returns grams</div></div>
+        <div id="k3" class="s-abs card s-ol s-hide" style="top:492px"><div class="strip c3"></div><div class="badge c3">3</div><div class="ti">count_kcal(foods)</div><div class="jb">one job: add up the kcal</div><div class="rt" id="rt3">returns kcal</div></div>
+        <div id="k4" class="s-abs card s-ol s-hide" style="top:690px"><div class="strip c4"></div><div class="badge c4">4</div><div class="ti">format_menu(name, foods, protein, kcal)</div><div class="jb">one job: write one menu line</div><div class="rt" id="rt4">returns text</div></div>
+
+        <div id="chl" class="s-abs panel s-ol s-hide">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>chloe_app.py</span></div>
+          <div class="ln" id="CH1" style="top:76px">kcal = <span class="f">count_kcal</span>(<span class="f">pick_safe</span>(MENU, {<span class="s">"gluten"</span>}))</div>
+        </div>
+        <div id="v765" class="s-abs s-hide">765</div>
+        <div id="m-chl2" class="s-abs s-ol s-hide"><div class="av">C</div><div class="txt">765 kcal. Perfect!</div></div>
+
+        <!-- ============ check one card on its own ============ -->
+        <div id="k" class="s-abs panel s-ol s-hide" data-layout-allow-overlap>
+          <div class="bar" style="height:64px"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>check_one_card.py</span></div>
+          <div class="ln" style="top:84px"><span class="k">def</span> <span class="f">count_protein</span>(foods):</div>
+          <div class="ln" style="top:138px">    <span class="s">"""Return the grams of protein in the foods."""</span></div>
+          <div class="ln" style="top:192px">    total = <span class="n">0</span></div>
+          <div class="ln" style="top:246px">    <span class="k">for</span> food <span class="k">in</span> foods:</div>
+          <div class="ln" id="K5" style="top:300px">        total = PROTEIN[food]</div>
+          <div class="ln s-hide" id="K5b" style="top:300px">        total <span class="ok">+=</span> PROTEIN[food]</div>
+          <div class="ln" style="top:354px">    <span class="k">return</span> total</div>
+          <div class="ln s-hide" id="K8" style="top:462px"><span class="k">print</span>(<span class="f">count_protein</span>([<span class="s">"chili"</span>, <span class="s">"salad"</span>]))  <span class="c"># want 21</span></div>
+          <div class="div" style="top:530px; width:1320px; left:40px"></div>
+          <div class="lbl" style="top:540px; left:40px">output</div>
+        </div>
+        <div id="k-out3" class="s-abs s-hide" style="left:300px; top:700px; font:700 48px/60px 'JetBrains Mono', monospace; color:#ff8fab">3</div>
+        <div id="k-out21" class="s-abs s-hide" style="left:300px; top:700px; font:700 48px/60px 'JetBrains Mono', monospace; color:#7cf0b5">21</div>
+        <div id="k-st1" class="s-abs pill bad s-hide">3 is not 21</div>
+        <div id="k-st2" class="s-abs pill ok s-hide">21, checked ✓</div>
+        <div id="k-bug" class="s-abs pill bad s-hide" style="left:920px; top:409px">the bug is here</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-plan" style="stroke:#ffc24b" />
+          <path id="r-mid" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+          <path id="r-six" style="stroke:#ff6b8b" />
+          <path id="r-c3" style="stroke:#b9741a" />
+          <path id="r-v765" style="stroke:#4bd69b" />
+          <path id="r-chili" style="stroke:#ffc24b" />
+          <path id="r-salad" style="stroke:#ffc24b" />
+          <path id="r-want" style="stroke:#4bd69b" />
+          <path id="r-bug" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+        </svg>
+        <svg id="sc" class="s-abs s-hide" viewBox="0 0 84 84">
+          <circle cx="16" cy="22" r="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+          <circle cx="16" cy="62" r="12" fill="#fff" stroke="#0e0c1d" stroke-width="5" />
+          <path d="M26 28 L80 52" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+          <path d="M26 56 L80 32" stroke="#0e0c1d" stroke-width="7" stroke-linecap="round" />
+          <circle cx="48" cy="42" r="4" fill="#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.766, 0.987, 1.219, 1.521, 1.939, 2.241, 2.786, 3.17, 3.982, 4.18, 4.458, 4.598, 4.899, 5.433, 5.77, 5.909, 6.362, 6.513, 7.338, 7.581, 7.93, 8.057, 9.009, 9.334, 9.752, 10.031, 10.286, 11.529, 11.947, 12.26, 12.411, 12.91, 13.119, 13.282, 13.758, 13.967, 14.153, 15.0, 15.221, 15.488, 15.859, 16.195, 16.73, 16.997, 17.31, 17.728, 18.785, 18.97, 19.191, 19.33, 19.829, 19.969, 20.154, 20.526, 20.805, 20.921, 21.513, 21.745, 21.861, 22.268, 22.662, 22.767, 22.883, 23.707, 24.044, 24.334, 24.717, 25.124, 25.274, 26.168, 26.47, 26.703, 26.819, 27.678, 27.98, 28.189, 28.305, 28.63, 29.35, 29.535, 29.663, 29.849, 29.953, 30.232, 30.673, 30.836, 31.056, 31.254, 31.381, 31.939, 32.38, 32.763, 33.065, 33.622, 33.936, 34.574, 34.934, 35.259, 36.71, 37.221, 37.929, 38.208, 38.498, 38.858, 39.067, 39.323, 39.799, 39.996, 40.994, 41.285, 41.598, 41.947, 42.19, 42.492, 42.782, 43.375, 43.804, 44.152, 44.454, 44.756, 45.464, 45.824, 46.114, 46.242, 46.637, 47.31, 47.659, 47.96, 48.332, 48.495, 48.715, 49.656, 50.004, 50.132, 50.503, 50.712, 50.852, 51.304, 51.548, 52.349, 52.558, 52.848, 53.684, 53.859, 54.172, 54.311, 54.416, 54.636, 55.217, 55.937, 56.389, 57.249, 57.899, 58.201, 58.793, 59.118, 60.232, 60.592, 61.138, 61.335, 61.684, 61.893, 62.403, 62.926, 63.181];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.style.strokeDasharray) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const line = (id, x1, y, x2) => {
+        const p = document.getElementById(id); p.setAttribute("d", `M${x1} ${y} L${x2} ${y}`);
+        p.dataset.len = x2 - x1;
+      };
+      // Giant card: 28 px mono, 16.8 px per char, text at page x 132, row r centre y = 161 + (r - 1) * 50.
+      const G = (c) => 132 + c * 16.8;
+      const gy = (r) => 161 + (r - 1) * 50;
+      ring("r-plan", G(4) + 5.5 * 16.8, gy(1), 6.5 * 16.8, 30);              // plan_dinner
+      ring("r-mid", G(21.5), (gy(7) + gy(11)) / 2, 310, 200); // rows 7 to 11
+      ring("r-six", G(35) + 5.5 * 16.8, 921, 5.5 * 16.8 + 34, 34);          // "6 g protein" in Ben's line
+      ring("r-c3", 1132 + 8.5 * 16.8, 528, 8.5 * 16.8 + 36, 34);           // count_kcal(foods) title
+      ring("r-v765", 132 + 1.5 * 31.2, 780, 72, 42);                        // 765
+      // Check card: 30 px mono, 18 px per char, text at page x 300, row r centre y = 221 + (r - 1) * 54.
+      const K = (c) => 300 + c * 18;
+      const ky = (r) => 221 + (r - 1) * 54;
+      ring("r-chili", K(24.5), ky(8), 92, 34);
+      ring("r-salad", K(33.5), ky(8), 92, 34);
+      ring("r-want", K(46.5), ky(8), 112, 34);
+      ring("r-bug", K(18.5), ky(5), 236, 40);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      // A dashed cut line is drawn by widening a clip, so its own dashes stay.
+      const cut = (id, at, d) => {
+        tl.fromTo("#" + id, { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: d, ease: "none", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 600, y: 700 }, 0);
+      tl.set("#sc", { x: 40, y: 194 }, 0);
+
+      /* ---- 1. One big recipe card, plan_dinner, with four jobs ---- */
+      tl.fromTo("#g", { y: 0 }, { y: -8, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 0.2);
+      tl.fromTo(".gl", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.06, ease: "power2.out", immediateRender: false }, t(4));
+      draw("r-plan", t(8), 0.45);
+      out("#r-plan", t(11) - 0.2, 0.2);
+      show("#bd1", t(11), 0.3); pop("#j1", t(11), { from: 0.7 });
+      show(["#bd2a", "#bd2b"], t(17), 0.3); pop("#j2", t(17), { from: 0.7 });
+      show(["#bd3a", "#bd3b"], t(19), 0.3); pop("#j3", t(19), { from: 0.7 });
+      show("#bd4", t(21), 0.3); pop("#j4", t(21), { from: 0.7 });
+      bump("#j1", t(24)); bump("#j2", t(24) + 0.12); bump("#j3", t(24) + 0.24); bump("#j4", t(24) + 0.36);
+
+      /* ---- 2. Chloe wants the kcal as a number. The card only prints: None ---- */
+      pop("#m-chl", t(29), { from: 0.7 });
+      bump("#m-chl", t(35));
+      type("#o-c1", t(35) + 0.1, 40, 0.8);
+      show("#o-c2", t(43), 0.25);
+      pop("#o-c3", t(47), { from: 0.5 });
+      show("#copybox", t(54), 0.3);
+      pop("#p-copy", t(54) + 0.1, { from: 0.6 });
+
+      /* ---- 3. A bug hides in the middle: Ben gets 6 g protein ---- */
+      out(["#copybox", "#p-copy", "#o-c1", "#o-c2", "#o-c3", "#m-chl"], t(60), 0.25);
+      draw("r-mid", t(62), 0.6);
+      pop("#m-ben", t(65), { from: 0.7 });
+      show("#o-b1", t(65), 0.2);
+      show("#o-b2", t(65) + 0.3, 0.2);
+      draw("r-six", t(67), 0.4);
+      out("#r-mid", t(71) - 0.2, 0.2);
+      tl.fromTo(["#q2", "#q3", "#q4", "#q5", "#q6", "#q7", "#q8", "#q9", "#q10", "#q11", "#q12"], { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.25, stagger: 0.08, ease: "back.out(2)", immediateRender: false }, t(71));
+
+      /* ---- 4. Cut the card up. If you need "and", split it ---- */
+      out(["#q2", "#q3", "#q4", "#q5", "#q6", "#q7", "#q8", "#q9", "#q10", "#q11", "#q12", "#r-six", "#o-b1", "#o-b2", "#m-ben"], t(75), 0.25);
+      tl.to("#sc", { opacity: 1, duration: 0.15 }, t(76) - 0.15);
+      tl.to("#sc", { x: 1290, duration: 0.42, ease: "none" }, t(76));
+      cut("cut1", t(76), 0.42);
+      tl.set("#sc", { x: 40, y: 392 }, t(76) + 0.45);
+      tl.to("#sc", { x: 1290, duration: 0.42, ease: "none" }, t(76) + 0.48);
+      cut("cut2", t(76) + 0.48, 0.42);
+      tl.set("#sc", { x: 40, y: 642 }, t(76) + 0.93);
+      tl.to("#sc", { x: 1290, duration: 0.42, ease: "none" }, t(76) + 0.96);
+      cut("cut3", t(76) + 0.96, 0.42);
+      out("#sc", t(76) + 1.4, 0.2);
+      show("#o-and", t(80), 0.3);
+      bump("#and1", t(85)); bump("#and2", t(85) + 0.15); bump("#and3", t(85) + 0.3);
+
+      // split: the giant card leaves, the short plan_dinner and four small cards arrive
+      tl.to("#g", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power2.in" }, t(91));
+      out(["#j1", "#j2", "#j3", "#j4", "#cut1", "#cut2", "#cut3"], t(91), 0.3);
+      tl.fromTo("#p", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(91) + 0.35);
+      const cardIn = (sel, at) => tl.fromTo(sel, { opacity: 0, x: -260, rotation: -4 }, { opacity: 1, x: 0, rotation: 0, duration: 0.5, ease: "back.out(1.3)", immediateRender: false }, at);
+      cardIn("#k1", t(93));
+      cardIn("#k2", t(95));
+      cardIn("#k3", t(97));
+      cardIn("#k4", t(100));
+      tl.fromTo(".card .jb", { color: "#3e3b52" }, { color: "#3b37e6", duration: 0.2, yoyo: true, repeat: 1, immediateRender: false }, t(102));
+      pop(["#rt1", "#rt2", "#rt3", "#rt4"], t(107), { from: 0.5 });
+
+      /* ---- 5. plan_dinner is just four calls ---- */
+      type("#P3", t(111), 37, 0.35);
+      type("#P4", t(111) + 0.4, 37, 0.35);
+      type("#P5", t(111) + 0.8, 31, 0.35);
+      type("#P6", t(111) + 1.2, 53, 0.45);
+      pop("#rb1", t(115), { from: 0.3 });
+      pop("#rb2", t(115) + 0.1, { from: 0.3 });
+      pop("#rb3", t(115) + 0.2, { from: 0.3 });
+      pop("#rb4", t(115) + 0.3, { from: 0.3 });
+
+      /* ---- 6. Chloe's number is one call: 765 ---- */
+      tl.fromTo("#chl", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(117) - 0.1);
+      tl.set("#s-cursor", { x: 132, y: 720 }, t(118) - 0.3);
+      cursorIn(t(118) - 0.3);
+      type("#CH1", t(118), 46, 0.9);
+      cursorTo(132 + 46 * 16.8, 720, t(118), 0.9);
+      cursorOut(t(118) + 1.0);
+      draw("r-c3", t(120), 0.4);
+      pop("#v765", t(122), { from: 0.4 });
+      draw("r-v765", t(124), 0.4);
+      pop("#m-chl2", t(125), { from: 0.7 });
+
+      /* ---- 7. Check one card on its own ---- */
+      out(["#r-c3", "#r-v765"], t(127) - 0.2, 0.2);
+      bump("#k2", t(127) - 0.1);
+      out(["#p", "#rb1", "#rb2", "#rb3", "#rb4", "#k1", "#k2", "#k3", "#k4", "#chl", "#v765", "#m-chl2"], t(127) + 0.2, 0.3);
+      tl.fromTo("#k", { opacity: 0, scale: 0.6, x: 300, y: -200 }, { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(127) + 0.3);
+      type("#K8", t(133) - 0.1, 51, 0.6);
+      draw("r-chili", t(133) + 0.3, 0.3);
+      draw("r-salad", t(135), 0.3);
+      draw("r-want", t(138), 0.4);
+      out(["#r-chili", "#r-salad"], t(140), 0.2);
+      pop("#k-out3", t(143), { from: 0.4 });
+      pop("#k-st1", t(143) + 0.15, { from: 0.6 });
+      out("#r-want", t(144), 0.2);
+      draw("r-bug", t(148), 0.5);
+      pop("#k-bug", t(148) + 0.3, { from: 0.6 });
+      tl.set("#s-cursor", { x: 760, y: 560 }, t(150));
+      cursorIn(t(150));
+      cursorTo(K(14) + 4, ky(5) + 6, t(150) + 0.1, 0.45);
+      out(["#r-bug", "#k-bug"], t(151) - 0.1, 0.2);
+      out("#K5", t(151) + 0.1, 0.15);
+      pop("#K5b", t(151) + 0.1, { from: 0.8, d: 0.35 });
+      cursorOut(t(152));
+      out(["#k-out3", "#k-st1"], t(152), 0.15);
+      pop("#k-out21", t(152) + 0.1, { from: 0.4 });
+      pop("#k-st2", t(153) - 0.1, { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 58.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

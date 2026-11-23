@@ -1,0 +1,57 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 110px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h1 { top: 100px; }
+    #t-sub { left: 114px; top: 370px; font: 800 44px/60px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    .t-card { left: 110px; height: 104px; padding: 0 34px 0 0; line-height: 104px; background: #fff; border-radius: 26px; font-size: 44px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card .nb { display: inline-block; width: 104px; text-align: center; margin-right: 22px; background: #3b37e6; color: #fff; border-radius: 26px 0 0 26px; }
+    #t-c1 { top: 470px; }
+    #t-c2 { top: 610px; }
+    #t-c3 { top: 750px; }
+    .mini { left: 1180px; width: 640px; height: 96px; border-radius: 20px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    .mini .st { position: absolute; left: 0; top: 0; width: 24px; height: 96px; border-radius: 20px 0 0 20px; }
+    .mini .nm { position: absolute; left: 50px; top: 24px; font: 700 32px/48px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    #t-next { left: 110px; top: 910px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.6" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">One <span class="a">card</span>, one dish.</div>
+      <div id="t-sub" class="t-abs">Small functions are easy to</div>
+      <div id="t-c1" class="t-abs t-card"><span class="nb">1</span>read</div>
+      <div id="t-c2" class="t-abs t-card"><span class="nb">2</span>reuse</div>
+      <div id="t-c3" class="t-abs t-card"><span class="nb">3</span>check</div>
+      <div id="m1" class="t-abs mini" style="top:300px"><div class="st" style="background:#3b37e6"></div><div class="nm">pick_safe()</div></div>
+      <div id="m2" class="t-abs mini" style="top:430px"><div class="st" style="background:#1f7a5c"></div><div class="nm">count_protein()</div></div>
+      <div id="m3" class="t-abs mini" style="top:560px"><div class="st" style="background:#b9741a"></div><div class="nm">count_kcal()</div></div>
+      <div id="m4" class="t-abs mini" style="top:690px"><div class="st" style="background:#b8235a"></div><div class="nm">format_menu()</div></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 50: Recursion</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 58.4;
+      const g = { one: 58.499, dish: 59.718, small: 60.832, read: 62.493, reuse: 63.003, check: 63.781 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.one - S - 0.1));
+      tl.fromTo(["#m1", "#m2", "#m3", "#m4"], { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.12, ease: "back.out(1.4)" }, 0.5);
+      tl.fromTo("#t-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.small - S - 0.1);
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.read - S);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.reuse - S);
+      tl.fromTo("#t-c3", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.check - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 6.2);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

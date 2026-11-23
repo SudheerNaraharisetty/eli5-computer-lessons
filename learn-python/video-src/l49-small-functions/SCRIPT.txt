@@ -1,0 +1,15 @@
+Kitchen Coach has one big recipe card now. Plan dinner. It picks the safe foods, adds up protein and calories, and prints the menu. Four jobs on one card.
+
+Chloe wants her calories as a number, for her app. But this card only prints, and hands back None. To get the number, you would copy half the card.
+
+And a bug hides in the middle. Ben gets six grams of protein. Which line is wrong?
+
+So cut the card up. If you need the word "and" to say what it does, split it. Pick safe. Count protein. Count K cal. Format menu. One job each, and each returns its answer.
+
+Now plan dinner is just four calls.
+
+Chloe's number is one call. Seven hundred and sixty five.
+
+Check each card on its own. Chili and salad should be twenty one grams. It says three. The bug is in this tiny card. Plus equals. Fixed.
+
+One card, one dish. Small functions are easy to read, reuse and check.

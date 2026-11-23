@@ -1,0 +1,13 @@
+Every morning, Kitchen Coach prints Ben's breakfast checklist. Oats, banana, coffee, water.
+
+The program plans 3 mornings, so the same 4 lines are copied 3 times. Monday, Tuesday, Wednesday.
+
+Then Ben asks for peanut butter, for extra protein. You add it to Monday. Then Tuesday. Wednesday is missed, and nobody notices.
+
+The fix is a recipe card. Write def, a name, empty brackets and a colon. The steps go underneath, pushed in. Writing the card cooks nothing yet.
+
+To use it, call it by name, with brackets. Print breakfast, 3 times. Now add peanut butter once, on the card, and every morning gets it.
+
+Two traps. Forget the brackets, and nothing happens. No error at all. Call it before the def line, and Python stops with a name error. Write the card first.
+
+Write the steps once with def. Call them by name whenever you need them.

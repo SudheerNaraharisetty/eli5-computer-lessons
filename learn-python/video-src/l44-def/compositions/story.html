@@ -1,0 +1,303 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* paper checklists */
+    .paper { top: 150px; width: 300px; height: 330px; background: #fff; border-radius: 18px; }
+    .ph { position: absolute; left: 0; top: 14px; width: 300px; text-align: center; font: 700 36px/48px "Fraunces", serif; }
+    .it { position: absolute; left: 22px; height: 44px; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .it i { display: inline-block; width: 24px; height: 24px; margin: 0 14px -3px 0; border-radius: 6px; box-shadow: 0 0 0 3px #0e0c1d; background: #fff; }
+    .it.pbi { color: #1f7a5c; }
+    .it.pbi i { box-shadow: 0 0 0 3px #1f7a5c; background: #ddefe6; }
+    .miss { position: absolute; left: 14px; width: 272px; height: 48px; border-radius: 24px; text-align: center; font: 800 28px/44px "Manrope", sans-serif; color: #b8235a; border: 4px dashed #b8235a; opacity: 0; }
+    #title { left: 870px; top: 56px; height: 60px; line-height: 60px; padding: 0 28px; border-radius: 999px; font-size: 32px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; white-space: nowrap; }
+    #title b { display: inline-block; width: 40px; height: 40px; margin: 0 12px -6px -8px; border-radius: 50%; background: #1f7a5c; color: #fff; font-size: 28px; line-height: 40px; text-align: center; }
+
+    /* the recipe card */
+    #card { left: 1130px; top: 560px; width: 440px; height: 330px; background: #fbebd2; border-radius: 22px; }
+    .chd { position: absolute; left: 0; top: 12px; width: 440px; text-align: center; font: 700 32px/48px "JetBrains Mono", monospace; color: #3b37e6; }
+    .chl { position: absolute; left: 24px; top: 66px; width: 392px; height: 3px; background: #0e0c1d; }
+    #arrows { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #arrows .arl { fill: none; stroke: #3b37e6; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #arrows .arh { fill: #3b37e6; opacity: 0; }
+    .callt { font: 800 28px/40px "Manrope", sans-serif; color: #3b37e6; }
+
+    .pill { height: 64px; line-height: 64px; padding: 0 28px; border-radius: 999px; font-size: 32px; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .pill.a { background: #e6e3ff; color: #3b37e6; }
+    .pill.d { background: #fbe0ea; color: #b8235a; }
+    .pill.g { background: #ddefe6; color: #1f7a5c; }
+    .pill.w { background: #fbebd2; color: #8a560f; }
+    .pill b { font: 700 32px/64px "JetBrains Mono", monospace; }
+    .mid { left: 870px; top: 580px; }
+    .bot { left: 870px; top: 916px; }
+
+    /* code panel */
+    #s-code { left: 96px; top: 96px; width: 720px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 720px; height: 64px; background: #211e40; display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+    #s-bar > i { width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { margin-left: 14px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #bwrap { position: absolute; left: 0; top: 0; width: 720px; height: 888px; }
+    .s-ln { position: absolute; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln.pb { background: rgba(124, 240, 181, 0.16); }
+    .s-ln.bad { background: rgba(255, 107, 139, 0.22); }
+    #wedbox { left: 20px; top: 612px; width: 600px; height: 228px; border: 4px dashed #ff8fb1; border-radius: 16px; opacity: 0; }
+    #bodybar { left: 56px; top: 136px; width: 14px; height: 168px; border: 4px solid #7cf0b5; border-right: none; border-radius: 6px 0 0 6px; opacity: 0; }
+    .s-err { position: absolute; left: 30px; top: 724px; width: 660px; padding: 14px 22px; border-radius: 16px; background: #3a1530; color: #ff8fb1; font: 600 28px/42px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; z-index: 5; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.55" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="title" class="s-abs"><b>B</b>Ben's breakfast checklist</div>
+        <div id="pp0" class="s-abs paper s-ol" style="left:870px"><div class="ph">Monday</div><div id="p0-oats" class="it" style="top:80px"><i></i>oats</div><div id="p0-banana" class="it" style="top:128px"><i></i>banana</div><div id="p0-coffee" class="it" style="top:176px"><i></i>coffee</div><div id="p0-water" class="it" style="top:224px"><i></i>water</div><div id="p0-pb" class="it pbi" style="top:176px"><i></i>peanut butter</div></div><div id="pp1" class="s-abs paper s-ol s-hide" style="left:1200px"><div class="ph">Tuesday</div><div id="p1-oats" class="it" style="top:80px"><i></i>oats</div><div id="p1-banana" class="it" style="top:128px"><i></i>banana</div><div id="p1-coffee" class="it" style="top:176px"><i></i>coffee</div><div id="p1-water" class="it" style="top:224px"><i></i>water</div><div id="p1-pb" class="it pbi" style="top:176px"><i></i>peanut butter</div></div><div id="pp2" class="s-abs paper s-ol s-hide" style="left:1530px"><div class="ph">Wednesday</div><div id="p2-oats" class="it" style="top:80px"><i></i>oats</div><div id="p2-banana" class="it" style="top:128px"><i></i>banana</div><div id="p2-coffee" class="it" style="top:176px"><i></i>coffee</div><div id="p2-water" class="it" style="top:224px"><i></i>water</div><div id="p2-pb" class="it pbi" style="top:176px"><i></i>peanut butter</div><div id="miss" class="miss" style="top:172px">missed</div></div>
+        <svg id="arrows" class="s-abs" viewBox="0 0 1920 1080"><path id="ar0" class="arl" d="M1230 552 L1020 498" /><path id="ah0" class="arh" d="M1020 498 L1038.3 515.1 L1044.3 491.9 Z" /><path id="ar1" class="arl" d="M1350 552 L1350 498" /><path id="ah1" class="arh" d="M1350 498 L1338.0 520.0 L1362.0 520.0 Z" /><path id="ar2" class="arl" d="M1470 552 L1680 498" /><path id="ah2" class="arh" d="M1680 498 L1655.7 491.9 L1661.7 515.1 Z" /></svg>
+        <div id="callt" class="s-abs callt s-hide" style="left:1410px; top:500px">call</div>
+        <div id="card" class="s-abs s-ol s-hide"><div id="ch" class="chd s-hide">print_breakfast</div><div id="chl" class="chl"></div><div id="k-oats" class="it s-hide" style="top:84px"><i></i>oats</div><div id="k-banana" class="it s-hide" style="top:132px"><i></i>banana</div><div id="k-coffee" class="it s-hide" style="top:180px"><i></i>coffee</div><div id="k-water" class="it s-hide" style="top:228px"><i></i>water</div><div id="k-pb" class="it pbi s-hide" style="top:180px"><i></i>peanut butter</div></div>
+
+        <div id="pl-ben" class="s-abs pill w mid s-hide">Ben: add peanut butter, please</div>
+        <div id="pl-miss" class="s-abs pill d bot s-hide">no error. Nobody notices.</div>
+        <div id="pl-none" class="s-abs pill a bot s-hide">def writes the card. Nothing runs yet.</div>
+        <div id="pl-call" class="s-abs pill g bot s-hide">a call: the name, then <b>()</b></div>
+        <div id="pl-once" class="s-abs pill g bot s-hide">changed once, on the card</div>
+        <div id="pl-quiet" class="s-abs pill d bot s-hide">no brackets: nothing, no error</div>
+        <div id="pl-first" class="s-abs pill g bot s-hide">write the card first, then call it</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i></i><i></i><i></i><span>mornings.py</span></div>
+          <div id="awrap">
+<div class="s-ln" id="A1" data-n="15" style="top:88px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Monday&quot;</span>)</div>
+<div class="s-ln" id="A2" data-n="20" style="top:132px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 50 g oats&quot;</span>)</div>
+<div class="s-ln" id="A3" data-n="19" style="top:176px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 banana&quot;</span>)</div>
+<div class="s-ln" id="A4" data-n="19" style="top:220px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 coffee&quot;</span>)</div>
+<div class="s-ln" id="A5" data-n="23" style="top:264px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 500 ml water&quot;</span>)</div>
+<div class="s-ln" id="A6" data-n="16" style="top:308px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Tuesday&quot;</span>)</div>
+<div class="s-ln" id="A7" data-n="20" style="top:352px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 50 g oats&quot;</span>)</div>
+<div class="s-ln" id="A8" data-n="19" style="top:396px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 banana&quot;</span>)</div>
+<div class="s-ln" id="A9" data-n="19" style="top:440px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 coffee&quot;</span>)</div>
+<div class="s-ln" id="A10" data-n="23" style="top:484px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 500 ml water&quot;</span>)</div>
+<div class="s-ln" id="A11" data-n="18" style="top:528px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Wednesday&quot;</span>)</div>
+<div class="s-ln" id="A12" data-n="20" style="top:572px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 50 g oats&quot;</span>)</div>
+<div class="s-ln" id="A13" data-n="19" style="top:616px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 banana&quot;</span>)</div>
+<div class="s-ln" id="A14" data-n="19" style="top:660px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 1 coffee&quot;</span>)</div>
+<div class="s-ln" id="A15" data-n="23" style="top:704px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 500 ml water&quot;</span>)</div>
+<div class="s-ln pb" id="AP1" data-n="29" style="top:220px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 15 g peanut butter&quot;</span>)</div>
+<div class="s-ln pb" id="AP2" data-n="29" style="top:484px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;- 15 g peanut butter&quot;</span>)</div>
+          </div>
+          <div id="wedbox" class="s-abs"></div>
+          <div id="bwrap">
+<div class="s-ln" id="Bdef" data-n="3" style="top:88px; left:40.0px"><span class="k">def</span></div><div class="s-ln" id="Bname" data-n="15" style="top:88px; left:107.2px">print_breakfast</div><div class="s-ln" id="Bbr" data-n="2" style="top:88px; left:359.2px">()</div><div class="s-ln" id="Bco" data-n="1" style="top:88px; left:392.8px">:</div><div class="s-ln" id="B2" data-n="24" style="top:132px; left:40.0px">    <span class="k">print</span>(<span class="s">&quot;- 50 g oats&quot;</span>)</div><div class="s-ln" id="B3" data-n="23" style="top:176px; left:40.0px">    <span class="k">print</span>(<span class="s">&quot;- 1 banana&quot;</span>)</div><div class="s-ln" id="B4" data-n="23" style="top:220px; left:40.0px">    <span class="k">print</span>(<span class="s">&quot;- 1 coffee&quot;</span>)</div><div class="s-ln" id="B5" data-n="27" style="top:264px; left:40.0px">    <span class="k">print</span>(<span class="s">&quot;- 500 ml water&quot;</span>)</div><div class="s-ln pb" id="BP" data-n="33" style="top:220px; left:40.0px">    <span class="k">print</span>(<span class="s">&quot;- 15 g peanut butter&quot;</span>)</div><div class="s-ln" id="C1" data-n="15" style="top:352px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Monday&quot;</span>)</div><div class="s-ln" id="C2n" data-n="15" style="top:396px; left:40.0px">print_breakfast</div><div class="s-ln" id="C3" data-n="16" style="top:440px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Tuesday&quot;</span>)</div><div class="s-ln" id="C4" data-n="17" style="top:484px; left:40.0px">print_breakfast()</div><div class="s-ln" id="C5" data-n="18" style="top:528px; left:40.0px"><span class="k">print</span>(<span class="s">&quot;Wednesday&quot;</span>)</div><div class="s-ln" id="C6" data-n="17" style="top:572px; left:40.0px">print_breakfast()</div><div class="s-ln" id="C2b" data-n="2" style="top:396px; left:292.0px">()</div>
+            <div id="bodybar" class="s-abs"></div>
+          </div>
+<div class="s-ln bad" id="D1" data-n="17" style="top:88px; left:40.0px">print_breakfast()</div>
+          <div class="s-err" id="oerr">NameError: name 'print_breakfast'
+is not defined</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-def" style="stroke:#ffc24b" />
+          <path id="r-name" style="stroke:#ffc24b" />
+          <path id="r-br" style="stroke:#ffc24b" />
+          <path id="r-co" style="stroke:#ffc24b" />
+          <path id="r-call" style="stroke:#7cf0b5" />
+          <path id="r-nob" style="stroke:#ff8fb1" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.348, 0.801, 1.3, 1.73, 2.113, 2.485, 3.007, 4.063, 4.481, 5.085, 5.596, 6.467, 6.618, 7.094, 7.512, 7.825, 8.452, 8.638, 8.754, 9.079, 9.369, 9.718, 9.95, 10.461, 10.809, 11.796, 12.295, 12.957, 14.129, 14.478, 14.803, 15.221, 15.372, 15.72, 16.231, 16.497, 16.915, 17.844, 18.053, 18.274, 18.39, 18.529, 19.017, 19.295, 20.294, 20.805, 20.979, 21.432, 21.722, 22.175, 23.208, 23.359, 23.649, 23.812, 23.963, 24.427, 25.182, 25.553, 26.052, 26.215, 26.853, 27.225, 27.805, 28.026, 28.119, 29.106, 29.28, 29.64, 29.826, 30.638, 31.033, 31.811, 32.229, 32.333, 32.693, 33.123, 33.552, 34.4, 34.597, 34.887, 35.317, 35.631, 35.747, 36.002, 36.432, 36.699, 37.685, 37.987, 38.672, 39.009, 39.659, 39.938, 40.147, 40.472, 40.797, 41.192, 41.424, 41.54, 42.132, 42.353, 42.597, 42.933, 43.316, 43.955, 44.361, 45.325, 45.685, 45.789, 46.358, 46.637, 47.055, 47.995, 48.343, 48.727, 49.005, 49.702, 49.992, 50.097, 50.41, 50.538, 50.863, 51.165, 51.478, 51.954, 52.326, 52.5, 52.616, 52.883, 53.557, 53.87, 53.986, 54.369, 55.054, 55.368, 55.472, 55.89, 56.273, 56.506, 57.318, 57.597, 57.783, 58.015, 58.34, 58.735, 58.862, 59.106];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const RH = 44, SLOT = 48;
+
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L;
+      };
+      const col = (c) => 136 + c * 16.8;
+      const mid = (a, b) => (col(a) + col(b + 1)) / 2;
+      const half = (a, b) => (b - a + 1) * 16.8 / 2 + 12;
+      const row = (r) => 206.0 + RH * (r - 1);
+      const codeRing = (id, r, a, b) => ring(id, mid(a, b), row(r), half(a, b), 30);
+      codeRing("r-def", 1, 0, 2);
+      codeRing("r-name", 1, 4, 18);
+      codeRing("r-br", 1, 19, 20);
+      codeRing("r-co", 1, 21, 21);
+      codeRing("r-call", 9, 15, 16);   // the () of the Monday call, after the peanut butter row is added
+      codeRing("r-nob", 9, 15, 16);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, v) => tl.to(sel, { opacity: v, duration: 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const drawArrow = (k, at) => {
+        const p = document.getElementById("ar" + k), L = p.getTotalLength();
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, at);
+        show("#ah" + k, at + 0.35, 0.15);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (id, at, d) => {
+        const n = +document.getElementById(id).dataset.n;
+        tl.fromTo("#" + id, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || Math.min(0.7, 0.025 * n), ease: `steps(${n})`, immediateRender: false }, at);
+      };
+      const shift = (ids, at, dy) => tl.to(ids.map((i) => "#" + i), { y: dy, duration: 0.35, ease: "power2.inOut" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x - 4, y: y - 3, duration: d || 0.6, ease: "power2.inOut" }, at);
+      const items = (d) => ["oats", "banana", "coffee", "water"].map((n) => `#p${d}-${n}`);
+      const fillPaper = (d, at, step) => items(d).forEach((s, k) => pop(s, at + k * (step || 0.12), { from: 0.6, d: 0.3 }));
+      // peanut butter arrives on a paper (or the card): coffee and water slide down a slot, then it pops in
+      const addPB = (pre, at) => {
+        tl.to([`#${pre}-coffee`, `#${pre}-water`], { y: SLOT, duration: 0.35, ease: "power2.inOut" }, at);
+        pop(`#${pre}-pb`, at + 0.3, { from: 0.5, d: 0.35 });
+      };
+
+      // Frame 0: Ben's checklist title, the Monday paper and an empty code panel.
+      tl.set("#s-cursor", { x: 1500, y: 960 }, 0);
+
+      /* ---- 1. Every morning: oats, banana, coffee, water ---- */
+      type("A1", t(2), 0.4);
+      ["oats", "banana", "coffee", "water"].forEach((n, k) => {
+        type("A" + (k + 2), t(8 + k), 0.4);
+        pop(`#p0-${n}`, t(8 + k) + 0.1, { from: 0.6, d: 0.35 });
+      });
+
+      /* ---- 2. 3 mornings: the same lines, copied 3 times ---- */
+      ["A6", "A7", "A8", "A9", "A10"].forEach((id, k) => type(id, t(23) + k * 0.12, 0.3));
+      ["A11", "A12", "A13", "A14", "A15"].forEach((id, k) => type(id, t(24) + k * 0.12, 0.3));
+      pop("#pp1", t(15) + 0.2, { from: 0.7 });
+      pop("#pp2", t(15) + 0.45, { from: 0.7 });
+      fillPaper(1, t(23) + 0.2, 0.1);
+      fillPaper(2, t(24) + 0.2, 0.1);
+      bump("#pp0", t(26)); bump("#pp1", t(27)); bump("#pp2", t(28));
+
+      /* ---- 3. Peanut butter: Monday, Tuesday... Wednesday missed ---- */
+      pop("#pl-ben", t(30), { from: 0.6 });
+      bump("#title", t(33));
+      show("#s-cursor", t(38) - 0.4, 0.2);
+      cursorTo(465, 300, t(38) - 0.3, 0.7);
+      shift(["A4", "A5", "A6", "A7", "A8", "A9", "A10", "A11", "A12", "A13", "A14", "A15"], t(42) - 0.1, RH);
+      type("AP1", t(42) + 0.25, 0.5);
+      addPB("p0", t(42) + 0.2);
+      cursorTo(465, 564, t(43) - 0.2, 0.5);
+      shift(["A9", "A10", "A11", "A12", "A13", "A14", "A15"], t(44) - 0.1, 2 * RH);
+      type("AP2", t(44) + 0.25, 0.5);
+      addPB("p1", t(44) + 0.2);
+      cursorTo(1480, 900, t(45) - 0.1, 0.6);
+      out("#s-cursor", t(45) + 0.5, 0.2);
+      out("#pl-ben", t(45), 0.2);
+      tl.to(["#p2-coffee", "#p2-water"], { y: SLOT, duration: 0.35, ease: "power2.inOut" }, t(46));
+      pop("#miss", t(47), { from: 0.5 });
+      show("#wedbox", t(47), 0.3);
+      pop("#pl-miss", t(49), { from: 0.6 });
+
+      /* ---- 4. The fix: a recipe card. def, a name, brackets, a colon ---- */
+      const B4 = t(51) - 0.3;
+      out(["#awrap", "#wedbox", "#miss", "#pl-miss", "#title"], B4, 0.3);
+      [0, 1, 2].forEach((d) => out([...items(d), `#p${d}-pb`], B4, 0.3));
+      [0, 1, 2].forEach((d) => tl.set([`#p${d}-coffee`, `#p${d}-water`], { y: 0 }, B4 + 0.35));
+      pop("#card", t(55), { from: 0.7 });
+      type("Bdef", t(58), 0.2); draw("r-def", t(58), 0.35);
+      type("Bname", t(60), 0.4); draw("r-name", t(60), 0.4); show("#ch", t(60), 0.3);
+      type("Bbr", t(62), 0.15); draw("r-br", t(62), 0.35);
+      type("Bco", t(65), 0.1); draw("r-co", t(65), 0.35);
+      out(["#r-def", "#r-name", "#r-br", "#r-co"], t(67), 0.25);
+      ["oats", "banana", "coffee", "water"].forEach((n, k) => {
+        type("B" + (k + 2), t(67) + k * 0.35, 0.4);
+        pop(`#k-${n}`, t(67) + k * 0.35 + 0.2, { from: 0.6, d: 0.3 });
+      });
+      show("#bodybar", t(70), 0.3);
+      pop("#pl-none", t(74), { from: 0.6 });
+
+      /* ---- 5. Call it by name, with brackets. 3 times. Then peanut butter, once ---- */
+      out(["#pl-none", "#bodybar"], t(78) - 0.2, 0.2);
+      type("C1", t(81), 0.3);
+      type("C2n", t(82), 0.35); type("C2b", t(85), 0.1);
+      drawArrow(0, t(84));
+      fillPaper(0, t(84) + 0.3, 0.1);
+      draw("r-call", t(86), 0.4);
+      pop("#pl-call", t(86), { from: 0.6 });
+      show("#callt", t(84) + 0.2, 0.3);
+      type("C3", t(87), 0.3); type("C4", t(87) + 0.35, 0.35);
+      type("C5", t(88), 0.3); type("C6", t(88) + 0.35, 0.35);
+      drawArrow(1, t(89)); fillPaper(1, t(89) + 0.3, 0.08);
+      drawArrow(2, t(89) + 0.3); fillPaper(2, t(89) + 0.6, 0.08);
+      // the ring on () was drawn for row 9 (after the shift); before the shift the call sits on row 8
+      gsap.set("#r-call", { y: -RH });
+      out(["#r-call", "#pl-call"], t(91) - 0.2, 0.2);
+      show("#s-cursor", t(91), 0.2);
+      tl.set("#s-cursor", { x: 1480, y: 960 }, t(91));
+      cursorTo(532, 300, t(91) + 0.05, 0.6);
+      shift(["B4", "B5", "C1", "C2n", "C2b", "C3", "C4", "C5", "C6"], t(93) - 0.1, RH);
+      type("BP", t(93) + 0.25, 0.5);
+      addPB("k", t(93) + 0.2);
+      out("#s-cursor", t(95), 0.2);
+      pop("#pl-once", t(96), { from: 0.6 });
+      addPB("p0", t(100));
+      addPB("p1", t(100) + 0.35);
+      addPB("p2", t(100) + 0.7);
+
+      /* ---- 6. Trap 1: no brackets, nothing happens. Trap 2: call before def ---- */
+      out("#pl-once", t(104) - 0.2, 0.2);
+      show("#s-cursor", t(106) - 0.3, 0.2);
+      tl.set("#s-cursor", { x: 1480, y: 960 }, t(106) - 0.3);
+      cursorTo(411, 564, t(106) - 0.2, 0.6);
+      draw("r-nob", t(107), 0.35);
+      out("#C2b", t(108), 0.25);
+      out("#s-cursor", t(108) + 0.4, 0.2);
+      dim([...items(0), "#p0-pb"], t(110), 0.12);
+      out("#arrows #ar0, #arrows #ah0", t(110), 0.2);
+      pop("#pl-quiet", t(110), { from: 0.6 });
+      // back to normal before trap 2
+      const B6 = t(116) - 0.2;
+      out(["#r-nob", "#pl-quiet"], B6, 0.2);
+      show("#C2b", B6, 0.2);
+      dim([...items(0), "#p0-pb"], B6, 1);
+      dim(["#ar0", "#ah0"], B6, 1);
+      tl.to("#bwrap", { y: RH, duration: 0.4, ease: "power2.inOut" }, t(117));
+      type("D1", t(118) + 0.1, 0.45);
+      pop("#oerr", t(122), { from: 0.85 });
+      dim(["#pp0", "#pp1", "#pp2", "#card", "#arrows", "#callt"], t(123), 0.25);
+      pop("#pl-first", t(128) + 0.05, { from: 0.6 });
+      out("#D1", t(131), 0.25);
+      out("#oerr", t(131), 0.25);
+      tl.to("#bwrap", { y: 0, duration: 0.4, ease: "power2.inOut" }, t(131) + 0.2);
+      dim(["#pp0", "#pp1", "#pp2", "#card", "#arrows", "#callt"], t(131) + 0.2, 1);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 55.55 - 0.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

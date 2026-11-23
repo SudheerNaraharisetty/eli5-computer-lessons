@@ -1,0 +1,15 @@
+Kitchen Coach makes porridge for your friends. Most days, the amounts are the same. Two hundred and fifty millilitres of milk, and one gram of salt.
+
+So write them on the card, in pencil. These are default values.
+
+Ana's call gives only the oats. Eighty. The other jars keep their usual amounts.
+
+Chloe wants sixty grams, and no salt. So name the jar. Salt g, equals zero. Python finds the jar by name, and swaps the one for a zero.
+
+Without the name, you might write porridge, sixty, zero. But the second number fills the second jar. That is the milk. Dry oats, with salt. No error. Just the wrong breakfast.
+
+One trap. A default list, like basket equals empty brackets, is made only once, when the card is written. Every call shares that one basket. Bananas, tofu, rice flour, all in one.
+
+Default to None, and make a fresh list inside.
+
+Defaults cover the usual. Keywords say exactly which ingredient you mean.

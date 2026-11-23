@@ -1,0 +1,361 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Ben */
+    #ben { left: 1190px; top: 96px; width: 640px; height: 110px; border-radius: 22px; background: #fff; }
+    #ben-av { left: 1214px; top: 115px; width: 72px; height: 72px; border-radius: 50%; background: #1f7a5c; color: #fff; font: 700 40px/72px "Fraunces", serif; text-align: center; box-shadow: 0 0 0 4px #0e0c1d; }
+    #ben-n { left: 1308px; top: 104px; font: 700 40px/56px "Fraunces", serif; }
+    #ben-s { left: 1308px; top: 156px; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #ben-ok { left: 1300px; top: 148px; }
+
+    /* books: spine label written bottom to top */
+    .book { border-radius: 10px 10px 4px 4px; }
+    .book > span { position: absolute; left: 0; bottom: 16px; width: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; align-items: center; justify-content: flex-end; font: 800 28px/1 "Manrope", sans-serif; white-space: nowrap; }
+    .spine { border-radius: 6px 6px 2px 2px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #plank { left: 1190px; top: 520px; width: 300px; height: 16px; border-radius: 4px; background: #0e0c1d; }
+
+    /* the shop */
+    #shop-a { left: 1540px; top: 236px; width: 290px; height: 70px; border-radius: 14px 14px 0 0; background: #3b37e6; }
+    #shop-a > b { position: absolute; left: 0; top: 0; width: 290px; text-align: center; font: 700 44px/70px "Fraunces", serif; color: #fff; }
+    #shop-b { left: 1548px; top: 306px; width: 274px; height: 214px; background: #fff; }
+
+    /* the flying book with pip under it */
+    #fly { left: 1652px; top: 334px; width: 64px; height: 250px; }
+    #fly-b { left: 0; top: 0; width: 64px; height: 180px; background: #3b37e6; }
+    #fly-b > span { color: #fff; }
+    #fly-t { left: 10px; top: 200px; width: 100px; height: 46px; border-radius: 12px; background: #e6e3ff; color: #3b37e6; font: 700 30px/46px "JetBrains Mono", monospace; text-align: center; }
+    #fly-x { left: 1556px; top: 316px; width: 72px; height: 72px; }
+
+    #lock { left: 1200px; top: 226px; width: 80px; height: 94px; }
+
+    .pill { height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.warn { background: #fbebd2; color: #b9741a; }
+
+    /* the project folder with its own small shelf */
+    #proj { left: 1190px; top: 650px; width: 640px; height: 330px; border-radius: 22px; background: #fff; }
+    #proj-h { left: 1214px; top: 664px; font: 700 30px/44px "JetBrains Mono", monospace; white-space: nowrap; }
+    #proj-f { left: 1214px; top: 726px; height: 46px; padding: 0 14px; border-radius: 12px; background: #e6e3ff; color: #3b37e6; font: 700 28px/46px "JetBrains Mono", monospace; white-space: nowrap; }
+    #venv { left: 1500px; top: 700px; width: 306px; height: 262px; border-radius: 16px; background: #ddefe6; border: 5px dashed #1f7a5c; }
+    #venv-h { left: 1500px; top: 712px; width: 306px; text-align: center; font: 700 30px/44px "JetBrains Mono", monospace; color: #1f7a5c; }
+    #venv-p { left: 1516px; top: 940px; width: 274px; height: 12px; border-radius: 4px; background: #0e0c1d; }
+    #p-on { left: 1214px; top: 880px; }
+    #list { left: 1200px; top: 790px; width: 292px; height: 170px; background: #fbebd2; border-radius: 6px; }
+    .li { left: 1210px; font: 700 28px/40px "JetBrains Mono", monospace; white-space: nowrap; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .c { color: #a9a6c8; }
+    .s-ln.r { color: #ff8fab; }
+    .s-ln.g { color: #7cf0b5; }
+    .s-ln.c { color: #a9a6c8; }
+    #s-div { position: absolute; left: 40px; top: 690px; width: 960px; height: 3px; background: #2e2a58; opacity: 0; }
+    .olbl { position: absolute; right: 40px; top: 640px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; white-space: nowrap; opacity: 0; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 46px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- Ben, on screen from the first frame -->
+        <div id="ben" class="s-abs s-ol"></div>
+        <div id="ben-av" class="s-abs">B</div>
+        <div id="ben-n" class="s-abs">Ben</div>
+        <div id="ben-s" class="s-abs">protein per meal, as a table</div>
+        <div id="ben-ok" class="s-abs pill ok s-hide">same books ✓</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="ttl" id="tt-file">ben_table.py</span>
+            <span class="ttl" id="tt-term">terminal</span>
+          </div>
+          <!-- A: ben_table.py -->
+          <div class="s-ln pa" id="A1" style="top:88px"><span class="k">from</span> tabulate <span class="k">import</span> tabulate</div>
+          <div class="s-ln pa" id="A3" style="top:188px">cols = [<span class="s">"Meal"</span>, <span class="s">"Dish"</span>, <span class="s">"Protein (g)"</span>]</div>
+          <div class="s-ln pa" id="A4" style="top:238px">meals = [</div>
+          <div class="s-ln pa" id="A5" style="top:288px">    [<span class="s">"Breakfast"</span>, <span class="s">"Greek yogurt"</span>, <span class="n">20</span>],</div>
+          <div class="s-ln pa" id="A6" style="top:338px">    [<span class="s">"Lunch"</span>, <span class="s">"Lentil soup"</span>, <span class="n">18</span>],</div>
+          <div class="s-ln pa" id="A7" style="top:388px">    [<span class="s">"Dinner"</span>, <span class="s">"Tofu stir-fry"</span>, <span class="n">32</span>],</div>
+          <div class="s-ln pa" id="A8" style="top:438px">]</div>
+          <div class="s-ln pa" id="A9" style="top:488px"><span class="f">print</span>(<span class="f">tabulate</span>(meals, headers=cols))</div>
+          <div id="s-div" class="pa"></div>
+          <div class="olbl pa" id="ol-run">python3 ben_table.py</div>
+          <div class="s-out err pa" id="o-err" style="top:702px">ModuleNotFoundError: No module named 'tabulate'</div>
+          <!-- B: pip install into the shared Python -->
+          <div class="s-ln pb" id="B1" style="top:88px">$ python3 -m pip install tabulate</div>
+          <div class="s-note pb" id="n-m" style="left:220px; top:150px">the pip of THIS python3</div>
+          <div class="s-ln r pb" id="B2" style="top:138px">error: externally-managed-environment</div>
+          <div class="s-ln r pb" id="B3" style="top:188px">× This environment is externally managed</div>
+          <!-- C: make a venv, switch it on, install, run -->
+          <div class="s-ln pc" id="C1" style="top:88px">$ python3 -m venv .venv</div>
+          <div class="s-ln pc" id="C2" style="top:138px">$ source .venv/bin/activate</div>
+          <div class="s-ln pc" id="C3" style="top:188px"><span class="s">(.venv)</span> $ python3 -m pip install tabulate</div>
+          <div class="s-ln g pc" id="C4" style="top:238px">Successfully installed tabulate-0.10.0</div>
+          <div class="s-ln pc" id="C5" style="top:288px"><span class="s">(.venv)</span> $ python3 ben_table.py</div>
+          <div class="s-out pc" id="T1" style="top:350px">Meal       Dish             Protein (g)</div>
+          <div class="s-out pc" id="T2" style="top:392px">---------  -------------  -------------</div>
+          <div class="s-out pc" id="T3" style="top:434px">Breakfast  Greek yogurt              20</div>
+          <div class="s-out pc" id="T4" style="top:476px">Lunch      Lentil soup               18</div>
+          <div class="s-out pc" id="T5" style="top:518px">Dinner     Tofu stir-fry             32</div>
+          <!-- D: the shopping list, and Ben's laptop -->
+          <div class="s-ln pd" id="D1" style="top:88px"><span class="s">(.venv)</span> $ python3 -m pip freeze &gt; requirements.txt</div>
+          <div class="s-ln pd" id="D2" style="top:138px"><span class="s">(.venv)</span> $ cat requirements.txt</div>
+          <div class="s-ln g pd" id="D3" style="top:188px">tabulate==0.10.0</div>
+          <div class="s-ln c pd" id="D5" style="top:288px"># on Ben's laptop, in his own venv:</div>
+          <div class="s-ln pd" id="D6" style="top:338px">$ python3 -m pip install -r requirements.txt</div>
+          <div class="s-ln g pd" id="D7" style="top:388px">Successfully installed tabulate-0.10.0</div>
+        </div>
+
+        <!-- your shelf: the free cookbooks -->
+        <div id="bk-m" class="s-abs book s-ol s-hide" style="left:1206px; top:350px; width:64px; height:170px; background:#fbebd2"><span data-layout-allow-occlusion>math</span></div>
+        <div id="bk-j" class="s-abs book s-ol s-hide" style="left:1278px; top:320px; width:64px; height:200px; background:#e6e3ff"><span data-layout-allow-occlusion>json</span></div>
+        <div id="bk-r" class="s-abs book s-ol s-hide" style="left:1350px; top:360px; width:64px; height:160px; background:#fbe0ea"><span data-layout-allow-occlusion>random</span></div>
+        <div id="bk-p" class="s-abs book s-ol s-hide" style="left:1422px; top:330px; width:64px; height:190px; background:#ddefe6"><span data-layout-allow-occlusion>pathlib</span></div>
+        <div id="plank" class="s-abs s-hide"></div>
+        <div id="p-free" class="s-abs pill ok s-hide" style="left:1190px; top:552px">free with Python</div>
+        <div id="p-none" class="s-abs pill bad s-hide" style="left:1196px; top:248px">no table book</div>
+        <svg id="lock" class="s-abs s-hide" viewBox="0 0 100 118"><path d="M26 56 V36 a24 24 0 0 1 48 0 V56" fill="none" stroke="#b8235a" stroke-width="12" /><rect x="8" y="52" width="84" height="60" rx="10" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" /><circle cx="50" cy="80" r="9" fill="#fff" /></svg>
+        <div id="p-shared" class="s-abs pill bad s-hide" style="left:1190px; top:552px">shared: do not touch</div>
+
+        <!-- the shop: PyPI -->
+        <div id="shop" class="s-abs s-hide" style="left:0; top:0; width:1920px; height:1080px">
+          <div id="shop-b" class="s-abs s-ol"></div>
+          <div id="shop-a" class="s-abs s-ol"><b>PyPI</b></div>
+          <div class="s-abs spine" style="left:1566px; top:394px; width:36px; height:120px; background:#ece7df"></div>
+          <div class="s-abs spine" style="left:1610px; top:374px; width:34px; height:140px; background:#fbebd2"></div>
+          <div id="bk-tab" class="s-abs book spine" style="left:1652px; top:334px; width:64px; height:180px; background:#3b37e6"><span style="color:#fff" data-layout-allow-occlusion data-layout-allow-overlap>tabulate</span></div>
+          <div class="s-abs spine" style="left:1724px; top:384px; width:36px; height:130px; background:#ddefe6"></div>
+          <div class="s-abs spine" style="left:1768px; top:364px; width:36px; height:150px; background:#fbe0ea"></div>
+        </div>
+        <div id="p-shop" class="s-abs pill acc s-hide" style="left:1540px; top:552px">500,000+ books</div>
+
+        <!-- the project folder and its own small shelf -->
+        <div id="proj-g" class="s-abs s-hide" style="left:0; top:0; width:1920px; height:1080px">
+          <div id="proj" class="s-abs s-ol"></div>
+          <div id="proj-h" class="s-abs">kitchen-coach/</div>
+          <div id="proj-f" class="s-abs">ben_table.py</div>
+        </div>
+        <div id="venv-g" class="s-abs s-hide" style="left:0; top:0; width:1920px; height:1080px">
+          <div id="venv" class="s-abs"></div>
+          <div id="venv-h" class="s-abs">.venv/</div>
+          <div id="venv-p" class="s-abs"></div>
+        </div>
+        <div id="p-on" class="s-abs pill ok s-hide">switched on</div>
+        <div id="list-g" class="s-abs s-hide" style="left:0; top:0; width:1920px; height:1080px">
+          <div id="list" class="s-abs s-ol"></div>
+          <div class="s-abs li" style="top:802px">requirements.txt</div>
+          <div class="s-abs li" style="top:852px; color:#3b37e6">tabulate==0.10.0</div>
+          <div class="s-abs li" style="top:906px; font-family:Manrope, sans-serif; font-weight:800; color:#b9741a">shopping list</div>
+        </div>
+
+        <!-- the book pip carries -->
+        <div id="fly" class="s-abs s-hide">
+          <div id="fly-b" class="s-abs book spine"><span>tabulate</span></div>
+          <div id="fly-t" class="s-abs">pip</div>
+        </div>
+        <svg id="fly-x" class="s-abs s-hide" viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" /><path d="M28 28 L62 62 M62 28 L28 62" stroke="#fff" stroke-width="10" stroke-linecap="round" /></svg>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-imp" style="stroke:#ffc24b" />
+          <path id="r-err" style="stroke:#ff6b8b" />
+          <path id="r-shelf" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="r-m" style="stroke:#ffc24b" />
+          <path id="r-ext" style="stroke:#ff6b8b" />
+          <path id="r-venv" style="stroke:#4bd69b" />
+          <path id="r-on" style="stroke:#4bd69b" />
+          <path id="r-freeze" style="stroke:#ffc24b" />
+          <path id="r-dash-r" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.337, 0.639, 1.045, 1.37, 1.498, 1.765, 1.927, 2.473, 2.728, 2.914, 3.286, 4.284, 4.447, 4.69, 5.213, 5.399, 5.654, 5.863, 6.374, 6.653, 6.943, 7.361, 7.941, 8.243, 8.499, 8.812, 8.975, 9.718, 9.88, 10.147, 10.368, 10.623, 10.728, 11.099, 11.854, 12.202, 12.423, 12.713, 13.746, 14.269, 15.267, 15.534, 15.998, 16.625, 16.927, 17.484, 17.972, 19.098, 19.237, 19.469, 19.702, 19.969, 20.096, 20.271, 20.979, 21.165, 21.327, 21.617, 21.908, 22.024, 22.326, 22.476, 23.289, 23.788, 24.392, 24.822, 25.321, 25.669, 26.273, 27.515, 27.713, 27.817, 28.096, 28.293, 28.932, 29.175, 30.441, 31.196, 31.648, 32.577, 32.844, 33.216, 33.46, 34.121, 34.4, 34.667, 35.666, 35.828, 36.165, 36.316, 36.525, 36.861, 37.349, 37.988, 38.301, 38.591, 38.696, 38.812, 39.555, 39.787, 40.414, 41.517, 42.028, 42.608, 43.015, 43.409, 44.176, 44.501, 45.255, 45.662, 46.416, 47.078, 47.508, 47.67, 48.204, 48.599, 48.947, 49.493, 49.981, 50.178, 50.294, 50.689, 51.745, 51.92, 52.222, 52.872, 53.266, 53.824, 54.242, 54.346, 54.752, 55.229, 55.902, 56.181, 57.225, 57.539, 57.852, 57.98, 58.259, 58.572, 58.781, 59.013, 59.838, 60.151, 60.732, 61.51, 61.718, 61.823, 62.067, 62.543, 62.798, 62.891, 63.564, 63.89, 64.215];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const setPath = (id, d, dashed) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (dashed) p.dataset.fade = "1"; else { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const ring = (id, cx, cy, rx, ry, dashed) => setPath(id, ringD(cx, cy, rx, ry), dashed);
+      const CW = 18, OW = 16.8;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      ring("r-imp", cx(5, 12), ry(1), rw(5, 12), 28);                  // tabulate in  from tabulate import
+      ring("r-err", 136 + 23.5 * OW, 96 + 702 + 21, 23.5 * OW + 22, 30); // the ModuleNotFoundError line
+      ring("r-shelf", 1340, 430, 186, 150, true);                       // the whole free shelf
+      ring("r-m", cx(10, 15), ry(1), rw(10, 15), 28);                   // -m pip
+      ring("r-ext", cx(7, 36), ry(2), rw(7, 36), 30);                   // externally-managed-environment
+      ring("r-venv", cx(18, 22), ry(1), rw(18, 22), 28);                // .venv in  python3 -m venv .venv
+      ring("r-on", cx(0, 6), ry(3), rw(0, 6), 28);                      // (.venv) prompt
+      ring("r-freeze", cx(25, 30), ry(1), rw(25, 30), 28);              // freeze
+      ring("r-dash-r", cx(25, 26), ry(6), rw(25, 26) + 2, 28);          // -r
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        if (p.dataset.fade) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at); return; }
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      tl.set("#s-cursor", { x: 700, y: 640 }, 0);
+
+      /* ---- 1. Ben wants a neat table. Kitchen Coach's code ---- */
+      bump(["#ben", "#ben-av"], t(0) + 0.1);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(2));
+      show("#tt-file", t(2), 0.2);
+      type("#A1", t(2) + 0.3, 29, 0.4);
+      type("#A3", t(5), 35, 0.45);
+      type("#A4", t(7), 9, 0.2);
+      type("#A5", t(7) + 0.25, 38, 0.4);
+      type("#A6", t(7) + 0.55, 36, 0.4);
+      type("#A7", t(7) + 0.85, 39, 0.4);
+      type("#A8", t(9), 1, 0.1);
+      type("#A9", t(10), 37, 0.45);
+      bump("#ben-s", t(11));
+
+      /* ---- 2. The free cookbooks: no table book ---- */
+      show("#plank", t(13) - 0.15, 0.25);
+      pop(["#bk-m", "#bk-j", "#bk-r", "#bk-p"], t(13), { from: 0.8 });
+      pop("#p-free", t(13) + 0.3, { from: 0.7 });
+      draw("r-shelf", t(20));
+      pop("#p-none", t(21), { from: 0.7 });
+
+      /* ---- 3. PyPI: a shop of half a million cookbooks ---- */
+      out(["#r-shelf", "#p-none"], t(24) - 0.1, 0.2);
+      tl.fromTo("#shop", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)", immediateRender: false }, t(24));
+      pop("#p-shop", t(31), { from: 0.7 });
+      bump("#bk-tab", t(35));
+
+      /* ---- 4. import tabulate: ModuleNotFoundError ---- */
+      cursorIn(t(39) - 0.3);
+      cursorTo(136 + 9 * CW, ry(1) + 6, t(39) - 0.3, 0.4);
+      draw("r-imp", t(39) + 0.1, 0.4);
+      show(["#s-div", "#ol-run"], t(41), 0.2);
+      cursorOut(t(42));
+      type("#o-err", t(44), 47, 0.9);
+      draw("r-err", t(46), 0.45);
+      bump(["#bk-m", "#bk-j", "#bk-r", "#bk-p"], t(54));
+
+      /* ---- 5. pip carries it home: python3 -m pip install ---- */
+      out([".pa", "#tt-file", "#r-imp", "#r-err"], t(55), 0.25);
+      out("#p-shop", t(55), 0.2);
+      show("#tt-term", t(55) + 0.2, 0.2);
+      tl.set("#fly", { opacity: 1 }, t(58));
+      pop("#fly-t", t(58), { from: 0.5 });
+      tl.to("#fly", { x: -174, y: -60, duration: 0.8, ease: "power2.inOut" }, t(60));
+      type("#B1", t(63), 33, 1.0);
+      draw("r-m", t(65), 0.4);
+      pop("#n-m", t(66) + 0.1, { from: 0.7 });
+
+      /* ---- 6. Homebrew refuses: the shared shelf is locked ---- */
+      out(["#n-m", "#r-m"], t(70), 0.2);
+      tl.fromTo("#lock", { opacity: 0, y: -40, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, t(74));
+      pop("#fly-x", t(76), { from: 0.4 });
+      tl.to("#fly", { x: -164, duration: 0.07, ease: "none", yoyo: true, repeat: 5 }, t(76));
+      type("#B2", t(77), 37, 0.9);
+      type("#B3", t(78), 40, 0.6);
+      draw("r-ext", t(78) + 0.3, 0.45);
+      out("#p-free", t(81) - 0.1, 0.2);
+      pop("#p-shared", t(83), { from: 0.7 });
+      bump("#lock", t(84));
+      out(["#fly-x", "#fly-t"], t(86) + 0.3, 0.2);
+      tl.to("#fly", { x: 0, y: 0, scale: 1, duration: 0.6, ease: "power2.inOut" }, t(86) + 0.3);
+
+      /* ---- 7. The fix: your own small shelf, a virtual environment ---- */
+      out(["#B1", "#B2", "#B3", "#r-ext"], t(87), 0.25);
+      tl.fromTo("#proj-g", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)", immediateRender: false }, t(91));
+      pop("#venv-g", t(93), { from: 0.6 });
+      bump("#proj-f", t(98));
+      bump("#venv-g", t(100));
+      type("#C1", t(102), 23, 1.6);
+      draw("r-venv", t(107), 0.35);
+      out("#r-venv", t(110), 0.2);
+      type("#C2", t(111), 27, 0.5);
+      tl.to("#venv", { backgroundColor: "#bfe5d2", duration: 0.3 }, t(112));
+      pop("#p-on", t(112), { from: 0.7 });
+      type("#C3", t(115), 41, 0.6);
+      draw("r-on", t(115) + 0.2, 0.35);
+
+      /* ---- 8. pip install works, and the table appears ---- */
+      tl.to("#fly", { x: -52, y: 426, duration: 0.8, ease: "power2.inOut" }, t(116));
+      out("#r-on", t(117) + 0.3, 0.2);
+      type("#C4", t(118), 38, 0.5);
+      type("#C5", t(119), 30, 0.4);
+      show("#T1", t(121), 0.2);
+      show("#T2", t(121) + 0.1, 0.2);
+      show("#T3", t(121) + 0.2, 0.2);
+      show("#T4", t(121) + 0.3, 0.2);
+      show("#T5", t(121) + 0.4, 0.2);
+      bump(["#ben", "#ben-av"], t(122));
+
+      /* ---- 9. pip freeze: a shopping list for Ben's laptop ---- */
+      out([".pc", "#p-on"], t(126) - 0.1, 0.25);
+      type("#D1", t(126), 49, 0.8);
+      draw("r-freeze", t(127), 0.35);
+      tl.fromTo("#list-g", { opacity: 0, y: 40, rotation: -4 }, { opacity: 1, y: 0, rotation: -1, duration: 0.5, ease: "back.out(1.6)", immediateRender: false }, t(130));
+      type("#D2", t(132), 30, 0.5);
+      show("#D3", t(134), 0.25);
+      out("#r-freeze", t(134), 0.2);
+      show("#D5", t(135), 0.25);
+      type("#D6", t(136), 44, 0.8);
+      draw("r-dash-r", t(138), 0.35);
+      show("#D7", t(139) - 0.2, 0.25);
+      out("#ben-s", t(139) - 0.2, 0.2);
+      pop("#ben-ok", t(139), { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 60.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,21 @@
+Ben wants Kitchen Coach to print his protein as a neat table.
+
+The free cookbooks that come with Python have no table book.
+
+But Pie P I does. A shop with half a million cookbooks, written by other cooks.
+
+Import tabulate, and Python says: no module named tabulate. The book is not on your shelf.
+
+So you ask pip to carry it home. Python three, dash m, pip install tabulate.
+
+On a Mac with Homebrew, it refuses. Externally managed environment. That shelf is shared. Do not touch.
+
+The fix is your own small shelf, right next to the project. A virtual environment.
+
+Python three, dash m, venv, dot venv, makes it. Activate switches it on.
+
+Now pip install works, and the table appears.
+
+For Ben's laptop, pip freeze writes a shopping list, requirements dot text. Ben buys the same books with one command.
+
+Free cookbooks first. When you need more, make a venv, and pip install.

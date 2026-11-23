@@ -1,0 +1,11 @@
+Ben logs his food for the day. Oats, tofu, lentils and eggs. The protein card from lesson forty five adds it up.
+
+But one line has a typo. Minus one hundred and fifty grams of tofu. The card hands back minus twenty five point five, and the day says eighteen point five. It should be sixty nine point five. No error. Just a wrong number.
+
+Some cooks return minus one to mean bad. But the caller forgets to check, and minus one slides into the total. Still wrong.
+
+Better: a guard at the top of the card. If grams is below zero, raise a value error, with a message. Grams must be zero or more, got minus one hundred and fifty. The card refuses, right where the problem starts. The message says what was wrong, and the value.
+
+The caller can catch it with try and except. Ben fixes the typo. Sixty nine point five.
+
+If the ingredients are wrong, refuse loudly with raise.

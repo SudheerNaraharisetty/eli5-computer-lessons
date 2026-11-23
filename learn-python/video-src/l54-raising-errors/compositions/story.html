@@ -1,0 +1,369 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Ben's food log: the list called day */
+    #log { left: 1190px; top: 96px; width: 640px; height: 396px; border-radius: 26px; background: #fff; }
+    #log-av { left: 1218px; top: 116px; width: 64px; height: 64px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 34px/64px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #log-h { left: 1304px; top: 120px; font: 700 40px/56px "Fraunces", serif; white-space: nowrap; }
+    #log-tag { left: 1650px; top: 128px; width: 150px; height: 44px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; text-align: center; font: 700 28px/44px "JetBrains Mono", monospace; }
+    .row-n { left: 1222px; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; }
+    .row-g { left: 1400px; width: 180px; font: 700 34px/64px "JetBrains Mono", monospace; white-space: nowrap; }
+    .row-a { left: 1584px; font: 800 34px/64px "Manrope", sans-serif; color: #6f6b80; }
+    .row-v { left: 1640px; width: 170px; font: 700 34px/64px "JetBrains Mono", monospace; white-space: nowrap; color: #1f7a5c; }
+    .row-v.bad, .row-g.bad { color: #b8235a; }
+    .row-v.ref { font: 800 30px/64px "Manrope", sans-serif; color: #b8235a; }
+
+    /* the total bowl */
+    #bowl { left: 1190px; top: 540px; width: 640px; height: 110px; border-radius: 22px 22px 60px 60px; background: #ddefe6; }
+    #b-lbl { left: 1222px; top: 540px; font: 700 40px/110px "JetBrains Mono", monospace; white-space: nowrap; }
+    .bv { left: 1440px; top: 540px; font: 700 48px/110px "JetBrains Mono", monospace; white-space: nowrap; color: #1f7a5c; }
+    .bv.bad { color: #b8235a; }
+    #b-ok { left: 1700px; top: 562px; width: 66px; height: 66px; border-radius: 50%; background: #1f7a5c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #stamp { left: 1580px; top: 596px; width: 250px; height: 92px; border-radius: 14px; border: 7px solid #b8235a; color: #b8235a; text-align: center; font: 800 56px/78px "Manrope", sans-serif; letter-spacing: 0.06em; background: rgba(251, 248, 244, 0.92); }
+    .pill { height: 50px; padding: 0 24px; border-radius: 999px; font: 800 30px/50px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill b { font: 700 30px/50px "JetBrains Mono", monospace; }
+
+    /* the recipe card protein_in, with a guard at the top */
+    #mach { left: 1190px; top: 740px; width: 640px; height: 240px; border-radius: 26px; background: #fbebd2; }
+    #m-title { left: 1222px; top: 752px; font: 700 34px/48px "JetBrains Mono", monospace; white-space: nowrap; }
+    #guard { left: 1214px; top: 808px; width: 592px; height: 70px; border-radius: 16px; background: #fbe0ea; border: 4px dashed #b8235a; }
+    #g-txt { left: 1290px; top: 808px; font: 700 32px/70px "JetBrains Mono", monospace; color: #b8235a; white-space: nowrap; }
+    #g-shield { left: 1228px; top: 816px; width: 52px; height: 56px; }
+    #m-form { left: 1190px; top: 900px; width: 640px; text-align: center; font: 700 32px/48px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; }
+    #flag { left: 1586px; top: 664px; width: 220px; height: 146px; transform-origin: 50% 100%; }
+    #flag-t { left: 1594px; top: 672px; width: 186px; height: 58px; text-align: center; font: 800 30px/58px "Manrope", sans-serif; color: #fff; white-space: nowrap; }
+    .chip { left: 0; top: 0; width: 150px; height: 64px; border-radius: 14px; color: #fff; text-align: center; font: 700 34px/64px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    #chip-150 { background: #b8235a; }
+    #chip-m1 { background: #b8235a; width: 96px; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .bad { color: #ff8fab; }
+    #s-div { position: absolute; left: 40px; top: 790px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; right: 40px; top: 800px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 46px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>day.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px"><span class="k">def</span> <span class="f">protein_in</span>(grams, per_100g):</div>
+          <div class="s-ln" id="G1" style="top:138px">    <span class="k">if</span> grams &lt; <span class="n">0</span>:</div>
+          <div class="s-ln" id="G2" style="top:188px">        <span class="k">return</span> <span class="bad">-1</span></div>
+          <div class="s-ln" id="G2r" style="top:188px">        <span class="k">raise</span> <span class="f">ValueError</span>(</div>
+          <div class="s-ln" id="G3" style="top:238px">            <span class="s">f"grams must be 0 or more, got {grams}"</span>)</div>
+          <div class="s-ln" id="A2" style="top:138px">    <span class="k">return</span> grams * per_100g / <span class="n">100</span></div>
+          <div class="s-ln" id="A4" style="top:188px">total = <span class="n">0</span></div>
+          <div class="s-ln" id="A5" style="top:238px"><span class="k">for</span> food, grams <span class="k">in</span> day:</div>
+          <div class="s-ln" id="A6" style="top:288px">    total += <span class="f">protein_in</span>(grams, protein[food])</div>
+          <div class="s-ln" id="T1" style="top:438px">    <span class="k">try</span>:</div>
+          <div class="s-ln" id="T2" style="top:488px">        total += <span class="f">protein_in</span>(grams, protein[food])</div>
+          <div class="s-ln" id="T3" style="top:538px">    <span class="k">except</span> <span class="f">ValueError</span> <span class="k">as</span> err:</div>
+          <div class="s-ln" id="T4" style="top:588px">        <span class="k">print</span>(<span class="s">f"Check {food}: {err}"</span>)</div>
+          <div class="s-ln" id="A7" style="top:338px"><span class="k">print</span>(total)</div>
+          <div class="s-note bad" id="n-m1" style="left:384px; top:190px">-1 means bad</div>
+          <div class="s-note bad" id="n-miss" style="left:360px; top:440px">missed: never checks for -1</div>
+          <div class="s-note bad" id="n-noerr" style="left:180px; top:798px">no error, just a wrong number</div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="o-695a" style="top:800px">69.5</div>
+          <div class="s-out" id="o-185" style="top:800px">18.5</div>
+          <div class="s-out" id="o-43" style="top:800px">43.0</div>
+          <div class="s-out err" id="o-err" style="top:800px">ValueError: grams must be 0 or more, got -150</div>
+          <div class="s-out" id="o-chk" style="top:800px">Check tofu: grams must be 0 or more, got -150</div>
+          <div class="s-out" id="o-44" style="top:842px">44.0</div>
+          <div class="s-out" id="o-695b" style="top:800px">69.5</div>
+        </div>
+
+        <!-- Ben's food log -->
+        <div id="log" class="s-abs s-ol"></div>
+        <div id="log-av" class="s-abs">B</div>
+        <div id="log-h" class="s-abs">Ben's day</div>
+        <div id="log-tag" class="s-abs">day</div>
+        <div id="rn-0" class="s-abs row-n s-hide" style="top:196px">oats</div>
+        <div id="rn-1" class="s-abs row-n s-hide" style="top:268px">tofu</div>
+        <div id="rn-2" class="s-abs row-n s-hide" style="top:340px">lentils</div>
+        <div id="rn-3" class="s-abs row-n s-hide" style="top:412px">eggs</div>
+        <div id="rg-0" class="s-abs row-g s-hide" style="top:196px">80 g</div>
+        <div id="rg-1" class="s-abs row-g s-hide" style="top:268px">150 g</div>
+        <div id="rg-1b" class="s-abs row-g bad s-hide" style="top:268px">-150 g</div>
+        <div id="rg-2" class="s-abs row-g s-hide" style="top:340px">200 g</div>
+        <div id="rg-3" class="s-abs row-g s-hide" style="top:412px">120 g</div>
+        <div id="ra-0" class="s-abs row-a s-hide" style="top:196px">→</div>
+        <div id="ra-1" class="s-abs row-a s-hide" style="top:268px">→</div>
+        <div id="ra-2" class="s-abs row-a s-hide" style="top:340px">→</div>
+        <div id="ra-3" class="s-abs row-a s-hide" style="top:412px">→</div>
+        <div id="rv-0" class="s-abs row-v s-hide" style="top:196px">10.4</div>
+        <div id="rv-1" class="s-abs row-v s-hide" style="top:268px">25.5</div>
+        <div id="rv-1n" class="s-abs row-v bad s-hide" style="top:268px">-25.5</div>
+        <div id="rv-1m" class="s-abs row-v bad s-hide" style="top:268px">-1</div>
+        <div id="rv-1r" class="s-abs row-v ref s-hide" style="top:268px">refused</div>
+        <div id="rv-1f" class="s-abs row-v s-hide" style="top:268px">25.5</div>
+        <div id="rv-2" class="s-abs row-v s-hide" style="top:340px">18.0</div>
+        <div id="rv-3" class="s-abs row-v s-hide" style="top:412px">15.6</div>
+
+        <!-- the total -->
+        <div id="bowl" class="s-abs s-ol"></div>
+        <div id="b-lbl" class="s-abs">total =</div>
+        <div id="bv-a" class="s-abs bv s-hide">69.5</div>
+        <div id="bv-b" class="s-abs bv bad s-hide">18.5</div>
+        <div id="bv-c" class="s-abs bv bad s-hide">43.0</div>
+        <div id="bv-d" class="s-abs bv s-hide">69.5</div>
+        <svg id="b-ok" class="s-abs s-hide" viewBox="0 0 66 66"><path d="M18 34 L29 45 L49 22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <div id="p-should" class="s-abs pill ok s-hide" style="left:1190px; top:672px">should be <b>69.5</b></div>
+
+        <!-- the recipe card -->
+        <div id="mach-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="mach" class="s-abs s-ol"></div>
+          <div id="m-title" class="s-abs">protein_in</div>
+          <div id="m-form" class="s-abs">grams * per_100g / 100</div>
+        </div>
+        <div id="guard-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="guard" class="s-abs"></div>
+          <svg id="g-shield" class="s-abs" viewBox="0 0 52 56"><path d="M26 3 L48 11 L48 27 C48 41 38 50 26 54 C14 50 4 41 4 27 L4 11 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="3.5" stroke-linejoin="round" /><path d="M16 28 L23 35 L37 20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <div id="g-txt" class="s-abs">guard: if grams &lt; 0</div>
+        </div>
+        <div id="flag-g" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <svg id="flag" class="s-abs" viewBox="0 0 220 146"><rect x="200" y="0" width="10" height="146" rx="4" fill="#0e0c1d" /><path d="M200 6 L8 6 L24 37 L8 68 L200 68 Z" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+          <div id="flag-t" class="s-abs">ValueError</div>
+        </div>
+
+        <div id="chip-150" class="s-abs chip s-hide" data-layout-allow-overlap>-150</div>
+        <div id="chip-m1" class="s-abs chip s-hide" data-layout-allow-overlap>-1</div>
+        <div id="stamp" class="s-abs s-hide" data-layout-allow-overlap>WRONG</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-typo" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="r-m1" style="stroke:#ff6b8b" />
+          <path id="r-call" style="stroke:#ff6b8b" />
+          <path id="r-guard" style="stroke:#4bd69b" />
+          <path id="r-cond" style="stroke:#ffc24b" />
+          <path id="r-raise" style="stroke:#ffc24b" />
+          <path id="r-fill" style="stroke:#ffc24b" />
+          <path id="r-row" style="stroke:#b8235a" />
+          <path id="r-what" style="stroke:#ffc24b" />
+          <path id="r-val" style="stroke:#ffc24b" />
+          <path id="r-exc" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.302, 0.569, 0.743, 1.01, 1.149, 1.265, 2.148, 2.531, 3.158, 3.68, 4.017, 4.969, 5.12, 5.573, 5.898, 6.118, 6.525, 6.943, 7.384, 7.744, 7.941, 8.638, 8.858, 9.056, 9.323, 9.509, 9.625, 10.646, 11.076, 11.308, 11.68, 11.842, 12.237, 12.794, 12.992, 14.153, 14.292, 14.571, 14.872, 15.163, 15.546, 15.964, 16.289, 16.603, 17.381, 17.59, 17.706, 17.961, 18.437, 19.122, 19.482, 20.446, 20.62, 20.84, 21.014, 21.56, 21.874, 22.199, 22.884, 23.139, 23.627, 23.975, 24.056, 24.312, 25.368, 25.658, 25.984, 26.39, 26.831, 27.133, 27.295, 27.621, 28.514, 28.689, 28.805, 29.176, 29.652, 29.803, 30.442, 30.662, 31.069, 31.336, 31.87, 32.079, 32.195, 33.182, 33.553, 34.041, 34.819, 35.028, 35.388, 35.481, 35.597, 35.829, 35.933, 36.049, 36.92, 37.152, 37.535, 37.686, 38.023, 38.65, 38.998, 39.196, 39.707, 40.183, 40.403, 40.531, 41.553, 42.005, 42.238, 42.4, 42.911, 43.155, 43.619, 43.933, 44.351, 44.548, 44.873, 45.024, 46.011, 46.185, 46.498, 47.671, 47.95, 48.147, 48.275, 48.716, 49.738, 49.9, 50.283, 50.585, 50.794, 50.98, 51.491, 51.746, 51.874, 52.71, 52.872, 53.186, 53.372, 53.743, 53.871, 54.08, 54.359, 54.521, 55.833, 56.181, 56.68, 56.82, 57.574, 58.097, 58.376, 58.689, 59.687, 59.885, 60.001, 60.593, 60.709, 61.197, 61.789, 62.52, 62.822];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (id !== "r-typo") { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const CW = 18, OW = 16.8;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      const ox = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * OW;
+      const orw = (c0, c1) => ((c1 - c0 + 1) * OW) / 2 + 12;
+      const OY = 96 + 800 + 21; // centre of output line 1
+      ring("r-typo", 1512, 300, 322, 44);                 // the tofu row in Ben's log
+      ring("r-m1", cx(8, 16), ry(3), rw(8, 16), 28);      // return -1
+      ring("r-call", cx(13, 44), ry(7), rw(13, 44), 30);  // the caller adds whatever comes back
+      ring("r-guard", cx(4, 16), ry(2), rw(4, 16), 30);   // if grams < 0:
+      ring("r-cond", cx(7, 15), ry(2), rw(7, 15), 26);    // grams < 0
+      ring("r-raise", cx(8, 23), ry(3), rw(8, 23), 28);   // raise ValueError
+      ring("r-fill", cx(43, 49), ry(4), rw(43, 49), 26); // {grams} fills in the value
+      ring("r-row", 1512, 300, 322, 44);                  // where the problem starts
+      ring("r-what", ox(12, 34), OY, orw(12, 34), 26);    // grams must be 0 or more
+      ring("r-val", ox(41, 44), OY, orw(41, 44), 26);     // -150
+      ring("r-exc", cx(4, 20), ry(10), rw(4, 20), 28);    // except ValueError
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (id === "r-typo") { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.1, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swap = (a, b, at) => { out(a, at, 0.15); pop(b, at + 0.1, { from: 0.5 }); };
+      const shift = (sels, dy, at) => tl.to(sels, { y: dy, duration: 0.4, ease: "power2.inOut" }, at);
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 1500, y: 600 }, 0);
+      tl.set("#stamp", { rotation: -8 }, 0);
+
+      /* ---- 1. Ben logs his day. The protein card from lesson 45 adds it up ---- */
+      tl.fromTo("#log-av", { scale: 1 }, { scale: 1.15, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 0.3);
+      [[7, 0], [8, 1], [9, 2], [11, 3]].forEach(([w, i]) => {
+        pop([`#rn-${i}`, `#rg-${i}`], t(w), { from: 0.7 });
+      });
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(12) - 0.1);
+      type("#L1", t(13), 32, 0.5);
+      type("#A2", t(13) + 0.45, 34, 0.5);
+      pop("#mach-g", t(14), { from: 0.85 });
+      type("#A4", t(15), 9, 0.3);
+      type("#A5", t(16), 23, 0.4);
+      type("#A6", t(17), 45, 0.55);
+      type("#A7", t(18), 12, 0.3);
+      [0, 1, 2, 3].forEach((i) => {
+        pop(`#ra-${i}`, t(19) + i * 0.15, { from: 0.6 });
+        pop(`#rv-${i}`, t(19) + i * 0.15 + 0.05, { from: 0.5 });
+      });
+      pop("#bv-a", t(21), { from: 0.5 });
+      show("#o-695a", t(21), 0.25);
+
+      /* ---- 2. A typo: -150 grams of tofu. The card does not care ---- */
+      draw("r-typo", t(27));
+      cursorIn(t(28) - 0.6);
+      cursorTo(1410, 292, t(28) - 0.6, 0.5);
+      swap("#rg-1", "#rg-1b", t(29));
+      cursorOut(t(31));
+      bump("#mach", t(37));
+      swap("#rv-1", "#rv-1n", t(40));
+      bump("#rv-1n", t(44));
+      out("#r-typo", t(46), 0.25);
+      swap("#bv-a", "#bv-b", t(49));
+      out("#o-695a", t(49), 0.15);
+      show("#o-185", t(49) + 0.1, 0.2);
+      pop("#p-should", t(55), { from: 0.6 });
+      pop("#n-noerr", t(60), { from: 0.6 });
+      tl.fromTo("#stamp", { opacity: 0, scale: 2.2, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(63));
+
+      /* ---- 3. Return -1 to mean bad. The caller forgets to check ---- */
+      out(["#stamp", "#p-should", "#n-noerr"], t(65) - 0.3, 0.25);
+      out("#o-185", t(65) - 0.3, 0.2);
+      tl.set("#s-cursor", { x: 360, y: 250 }, t(66));
+      cursorIn(t(66));
+      cursorTo(136 + 4 * CW, 196, t(66), 0.4);
+      shift(["#A2", "#A4", "#A5", "#A6", "#A7"], 100, t(67) - 0.1);
+      type("#G1", t(67) + 0.3, 17, 0.4);
+      type("#G2", t(67) + 0.7, 17, 0.4);
+      cursorOut(t(69) + 0.2);
+      draw("r-m1", t(69), 0.4);
+      pop("#n-m1", t(72), { from: 0.6 });
+      draw("r-call", t(75), 0.5);
+      pop("#n-miss", t(78), { from: 0.6 });
+      swap("#rv-1n", "#rv-1m", t(80));
+      // the -1 slides out of Ben's log into the total
+      tl.set("#chip-m1", { x: 1640, y: 268 }, t(81) - 0.05);
+      tl.to("#chip-m1", { opacity: 1, duration: 0.15 }, t(81));
+      tl.to("#chip-m1", { x: 1460, y: 563, duration: 0.8, ease: "power2.inOut" }, t(82));
+      tl.to("#chip-m1", { opacity: 0, scale: 0.6, duration: 0.2 }, t(84) - 0.05);
+      swap("#bv-b", "#bv-c", t(85));
+      show("#o-43", t(85) + 0.1, 0.2);
+      tl.fromTo("#stamp", { opacity: 0, scale: 2.2, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(87));
+
+      /* ---- 4. Better: a guard at the top of the card. raise ValueError, with a message ---- */
+      out(["#stamp", "#n-m1", "#n-miss", "#r-m1", "#r-call", "#bv-c", "#o-43", "#rv-1m"], t(88), 0.25);
+      pop("#guard-g", t(90), { from: 0.8 });
+      draw("r-guard", t(90) + 0.1, 0.5);
+      out("#r-guard", t(97) - 0.2, 0.2);
+      draw("r-cond", t(98), 0.4);
+      tl.set("#s-cursor", { x: 520, y: 330 }, t(101));
+      cursorIn(t(101));
+      cursorTo(136 + 8 * CW, 246, t(101), 0.35);
+      out(["#G2", "#r-cond"], t(102) - 0.05, 0.1);
+      type("#G2r", t(102), 25, 0.45);
+      cursorOut(t(103) + 0.2);
+      draw("r-raise", t(103), 0.4);
+      // the -150 chip walks up to the card and hits the guard
+      tl.set("#chip-150", { x: 1410, y: 268 }, t(102) - 0.05);
+      tl.to("#chip-150", { opacity: 1, duration: 0.15 }, t(102));
+      tl.to("#chip-150", { x: 1440, y: 742, duration: 0.8, ease: "power2.in" }, t(102) + 0.1);
+      tl.fromTo("#flag-g", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, t(104));
+      tl.fromTo("#flag", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(104));
+      tl.fromTo("#flag-t", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, t(104));
+      // with a message: the second line of raise
+      out("#r-raise", t(106), 0.2);
+      shift(["#A2", "#A4", "#A5", "#A6", "#A7"], 150, t(106));
+      type("#G3", t(107), 52, 0.7);
+      type("#o-err", t(109), 46, 1.6);
+      draw("r-fill", t(115), 0.4);
+      out("#r-fill", t(121), 0.2);
+      // the card refuses: the chip bounces back, the program stops
+      tl.fromTo("#mach-g", { x: 0 }, { x: 10, duration: 0.06, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(123));
+      tl.to("#chip-150", { x: 1410, y: 268, duration: 0.7, ease: "power2.out" }, t(123));
+      tl.to("#chip-150", { opacity: 0, duration: 0.35 }, t(123) + 0.3);
+      pop("#rv-1r", t(124) + 0.3, { from: 0.5 });
+      draw("r-row", t(127), 0.5);
+      out("#r-row", t(129), 0.2);
+      draw("r-what", t(132), 0.5);
+      draw("r-val", t(137), 0.4);
+
+      /* ---- 5. The caller catches it with try and except. Ben fixes the typo ---- */
+      out(["#r-what", "#r-val", "#flag-g"], t(138), 0.25);
+      out("#A6", t(141) - 0.1, 0.15);
+      shift("#A7", 300, t(141) - 0.1);
+      type("#T1", t(141), 8, 0.2);
+      type("#T2", t(141) + 0.25, 49, 0.5);
+      type("#T3", t(144), 29, 0.4);
+      type("#T4", t(144) + 0.4, 37, 0.45);
+      draw("r-exc", t(146), 0.4);
+      out("#o-err", t(146) + 0.3, 0.15);
+      show("#o-chk", t(146) + 0.4, 0.2);
+      show("#o-44", t(146) + 0.6, 0.2);
+      out("#r-exc", t(147) + 0.6, 0.2);
+      tl.set("#s-cursor", { x: 1500, y: 420 }, t(147));
+      cursorIn(t(147));
+      cursorTo(1410, 292, t(147), 0.5);
+      swap("#rg-1b", "#rg-1", t(150));
+      swap("#rv-1r", "#rv-1f", t(150) + 0.2);
+      cursorOut(t(151));
+      pop("#bv-d", t(151), { from: 0.5 });
+      pop("#b-ok", t(152), { from: 0.4 });
+      out(["#o-chk", "#o-44"], t(151) - 0.1, 0.15);
+      show("#o-695b", t(151), 0.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 59.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

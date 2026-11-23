@@ -1,0 +1,13 @@
+Kitchen Coach keeps a dinner log. Open the notebook. Write Ana's pasta. Write Ben's chili. Then close it.
+
+But tonight, Chloe types her servings as the word two. int fails. A value error, halfway through. The close line never runs. The notebook is left open on the counter, and the lines you wrote may never be saved.
+
+The fix is one word. With. With open the log, as f. Everything indented under it is the time the notebook is open. When the block ends, Python closes it for you. f dot closed is True.
+
+And if an error flies in halfway? The cover still snaps shut. Ana and Ben are safe on the page.
+
+Reading works the same way. One with can even open two notebooks. The pantry to read, and the shopping list to write.
+
+Try and finally can do this by hand. With is the short way.
+
+With opens the notebook, and always closes it, even when something goes wrong.

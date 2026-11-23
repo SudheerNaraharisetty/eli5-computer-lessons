@@ -1,0 +1,13 @@
+Kitchen Coach keeps one record for each friend. Guests is a dictionary, and each friend inside has a dictionary too: the calories, and a list of foods they like. Containers inside containers.
+
+For Ben's first favourite, read left to right, one step per bracket. Guests, Ben: open the cupboard, take out Ben's box. Likes: open the box, take out the jar. Zero: take the first one. Tofu.
+
+Ana wants rice too. Guests, Ana, likes, dot append, rice. The list inside changes, right where it lives.
+
+Skip a step, and Python stops. Guests, Ben, zero, is a key error. Ben's box has labels, not positions.
+
+Now plan three days. A list holding one empty list, times three. Add soup to Monday, and soup lands on every day. Three names, one plate.
+
+The fix: build the week in a loop, with a new list each time. Now soup stays on Monday.
+
+Read nested data one step at a time, and give each row its own list.

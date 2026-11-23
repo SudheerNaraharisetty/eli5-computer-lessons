@@ -1,0 +1,370 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 330px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+
+    /* the kitchen things: cards on the right, 640 x 190 */
+    .cardg { left: 1190px; width: 640px; height: 190px; }
+    .cardg > .bg { position: absolute; inset: 0; border-radius: 24px; background: #fff; }
+    .cardg > .strip { position: absolute; left: 0; top: 0; width: 20px; height: 190px; border-radius: 24px 0 0 24px; }
+    .cardg > .nm { position: absolute; left: 40px; top: 16px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    .cardg > .ty { position: absolute; left: 488px; top: 20px; width: 124px; height: 48px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; text-align: center; font: 700 30px/48px "JetBrains Mono", monospace; }
+    .pk { position: absolute; top: 82px; height: 88px; border-radius: 16px; }
+    .pk.kn { left: 36px; width: 290px; background: #ddefe6; }
+    .pk.do { left: 340px; width: 270px; background: #fbebd2; }
+    .pk > b { position: absolute; left: 16px; top: 4px; font: 800 28px/36px "Manrope", sans-serif; }
+    .pk.kn > b { color: #1f7a5c; }
+    .pk.do > b { color: #7a4708; }
+    .pk > span { position: absolute; left: 16px; top: 42px; font: 700 28px/40px "JetBrains Mono", monospace; white-space: nowrap; }
+    #qm { left: 1500px; top: 100px; width: 64px; height: 64px; border-radius: 50%; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 46px/64px "Fraunces", serif; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char, 28 px = 16.8 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .p { color: #a9a6c8; }
+    .ln .f { color: #8fd3ff; }
+    .ln .s { color: #7cf0b5; }
+    .ln .n { color: #ffc24b; }
+    .ot { position: absolute; left: 40px; font: 500 28px/50px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .ot.err { color: #ff8fab; }
+    .ot.plain { color: #eceaff; }
+    .dl { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .dl .pl { color: #7cf0b5; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    /* your own kind of object */
+    #dish { left: 196px; top: 420px; width: 840px; height: 300px; border-radius: 24px; border: 5px dashed #c9c6ff; }
+    #dish-n { left: 240px; top: 446px; font: 700 52px/64px "Fraunces", serif; color: #fff; white-space: nowrap; }
+    .dpk { position: absolute; top: 560px; height: 120px; border-radius: 18px; }
+    .dpk > b { position: absolute; left: 20px; top: 10px; font: 800 30px/40px "Manrope", sans-serif; }
+    .dpk > span { position: absolute; left: 20px; top: 58px; font: 700 34px/48px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Kitchen Coach<br />is full of <span class="a">things</span>.</div>
+
+        <!-- the kitchen things -->
+        <div id="g-pad" class="s-abs cardg s-hide" style="top:96px">
+          <div class="bg s-ol"></div><div class="strip" style="background:#b9741a"></div>
+          <div class="nm">Shopping pad</div>
+          <div class="ty s-hide" id="ty-pad">list</div>
+          <div class="pk kn s-hide" id="kn-pad"><b>knows</b><span>its items</span></div>
+          <div class="pk do s-hide" id="do-pad"><b>does</b><span>.append()</span></div>
+        </div>
+        <div id="g-lab" class="s-abs cardg s-hide" style="top:318px">
+          <div class="bg s-ol"></div><div class="strip" style="background:#3b37e6"></div>
+          <div class="nm">Label maker</div>
+          <div class="ty s-hide" id="ty-lab">str</div>
+          <div class="pk kn s-hide" id="kn-lab"><b>knows</b><span>its letters</span></div>
+          <div class="pk do s-hide" id="do-lab"><b>does</b><span>.upper()</span></div>
+        </div>
+        <div id="g-nb" class="s-abs cardg s-hide" style="top:540px">
+          <div class="bg s-ol"></div><div class="strip" style="background:#1f7a5c"></div>
+          <div class="nm">Notebook</div>
+          <div class="ty s-hide" id="ty-nb">Path</div>
+          <div class="pk kn s-hide" id="kn-nb"><b>knows</b><span>.name</span></div>
+          <div class="pk do s-hide" id="do-nb"><b>does</b><span>.read_text()</span></div>
+        </div>
+        <div id="g-cal" class="s-abs cardg s-hide" style="top:762px">
+          <div class="bg s-ol"></div><div class="strip" style="background:#b8235a"></div>
+          <div class="nm">Calendar</div>
+          <div class="ty s-hide" id="ty-cal">date</div>
+          <div class="pk kn s-hide" id="kn-cal"><b>knows</b><span>.year</span></div>
+          <div class="pk do s-hide" id="do-cal"><b>does</b><span>.weekday()</span></div>
+        </div>
+        <div id="qm" class="s-abs s-hide">?</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">python3</span></div>
+
+          <!-- A: type() -->
+          <div class="ln pa" id="A1" style="top:88px"><span class="p">&gt;&gt;&gt;</span> <span class="f">type</span>(shopping)</div>
+          <div class="ot pa" id="A2" style="top:138px">&lt;class 'list'&gt;</div>
+          <div class="ln pa" id="A3" style="top:188px"><span class="p">&gt;&gt;&gt;</span> <span class="f">type</span>(label)</div>
+          <div class="ot pa" id="A4" style="top:238px">&lt;class 'str'&gt;</div>
+          <div class="ln pa" id="A5" style="top:288px"><span class="p">&gt;&gt;&gt;</span> <span class="f">type</span>(notebook)</div>
+          <div class="ot pa" id="A6" style="top:338px">&lt;class 'pathlib.PosixPath'&gt;</div>
+          <div class="ln pa" id="A7" style="top:388px"><span class="p">&gt;&gt;&gt;</span> <span class="f">type</span>(race)</div>
+          <div class="ot pa" id="A8" style="top:438px">&lt;class 'datetime.date'&gt;</div>
+          <div class="s-note" id="n-type" style="left:40px; top:560px">type: the kind of thing it is</div>
+          <div class="s-note ok" id="n-obj" style="left:40px; top:560px">every value is an object</div>
+          <div class="s-note ok" id="n-kn" style="left:40px; top:400px">knows: no brackets</div>
+          <div class="s-note warn" id="n-do" style="left:40px; top:470px">does: brackets</div>
+
+          <!-- B: the dot -->
+          <div class="ln pb" id="B1" style="top:88px"><span class="p">&gt;&gt;&gt;</span> notebook.name</div>
+          <div class="ot pb" id="B2" style="top:138px">'soup.txt'</div>
+          <div class="ln pb" id="B3" style="top:188px"><span class="p">&gt;&gt;&gt;</span> race.year</div>
+          <div class="ot pb" id="B4" style="top:238px">2027</div>
+          <div class="ln pb" id="B5" style="top:288px"><span class="p">&gt;&gt;&gt;</span> label.upper()</div>
+          <div class="ot pb" id="B6" style="top:338px">'BEAN CHILI'</div>
+          <div class="ln pb" id="B7" style="top:388px"><span class="p">&gt;&gt;&gt;</span> shopping.append(<span class="s">"tofu"</span>)</div>
+          <div class="ln pb" id="B8" style="top:438px"><span class="p">&gt;&gt;&gt;</span> shopping</div>
+          <div class="ot pb" id="B9" style="top:488px">['oats', 'rice', 'tofu']</div>
+          <div class="s-note ok pb2" id="n-nob" style="left:430px; top:88px">no brackets: it knows</div>
+          <div class="s-note warn pb2" id="n-btn" style="left:430px; top:288px">( ) press the button</div>
+          <div class="s-note warn pb2" id="n-add" style="left:520px; top:488px">the pad adds it</div>
+
+          <!-- C: the wrong object -->
+          <div class="ln pc" id="C1" style="top:88px"><span class="p">&gt;&gt;&gt;</span> shopping.upper()</div>
+          <div class="ot plain pc" id="C2" style="top:138px">Traceback (most recent call last):</div>
+          <div class="ot plain pc" id="C3" style="top:188px">  File "&lt;python-input-9&gt;", line 1, in &lt;module&gt;</div>
+          <div class="ot plain pc" id="C4" style="top:238px">    shopping.upper()</div>
+          <div class="ot plain pc" id="C5" style="top:288px">    ^^^^^^^^^^^^^^</div>
+          <div class="ot err pc" id="C6" style="top:338px">AttributeError: 'list' object has no attribute 'upper'</div>
+          <div class="s-note bad pc" id="n-type2" style="left:40px; top:430px">read the type name: a list</div>
+          <div class="s-note ok pc" id="n-text" style="left:40px; top:500px">only a str has .upper()</div>
+
+          <!-- D: dir() -->
+          <div class="ln pd" id="D1" style="top:88px"><span class="p">&gt;&gt;&gt;</span> <span class="f">dir</span>(shopping)</div>
+          <div class="dl pd" style="top:142px">['__add__', '__class__', '__class_getitem__',</div>
+          <div class="dl pd" style="top:184px">'__contains__', '__delattr__', '__delitem__', '__dir__',</div>
+          <div class="dl pd" style="top:226px">'__doc__', '__eq__', '__format__', '__ge__',</div>
+          <div class="dl pd" style="top:268px">'__getattribute__', '__getitem__', '__getstate__',</div>
+          <div class="dl pd" style="top:310px">'__gt__', '__hash__', '__iadd__', '__imul__',</div>
+          <div class="dl pd" style="top:352px">'__init__', '__init_subclass__', '__iter__', '__le__',</div>
+          <div class="dl pd" style="top:394px">'__len__', '__lt__', '__mul__', '__ne__', '__new__',</div>
+          <div class="dl pd" style="top:436px">'__reduce__', '__reduce_ex__', '__repr__',</div>
+          <div class="dl pd" style="top:478px">'__reversed__', '__rmul__', '__setattr__',</div>
+          <div class="dl pd" style="top:520px">'__setitem__', '__sizeof__', '__str__',</div>
+          <div class="dl pd" id="Dm" style="top:562px"><span id="Dmu">'__subclasshook__',</span> <span class="pl">'append', 'clear', 'copy', 'count',</span></div>
+          <div class="dl pd" style="top:604px"><span class="pl">'extend', 'index', 'insert', 'pop', 'remove', 'reverse',</span></div>
+          <div class="dl pd" style="top:646px"><span class="pl">'sort']</span></div>
+          <div class="s-note ok pd" id="n-skip" style="left:40px; top:740px">skip the names with underscores</div>
+
+          <!-- E: your own kind of object -->
+          <div class="ln pe" id="E1" style="top:88px"><span class="p">&gt;&gt;&gt;</span> <span class="n">class</span> Dish:</div>
+          <div class="s-note pe" id="n-next" style="left:40px; top:200px">Next: lesson 66, Classes</div>
+        </div>
+        <div id="dish" class="s-abs s-hide"></div>
+        <div id="dish-n" class="s-abs s-hide">Dish: your own kind</div>
+        <div id="dk" class="s-abs dpk s-hide" style="left:240px; width:360px; background:#ddefe6"><b style="color:#1f7a5c">knows</b><span>protein</span></div>
+        <div id="dd" class="s-abs dpk s-hide" style="left:630px; width:360px; background:#fbebd2"><b style="color:#7a4708">does</b><span>.scale()</span></div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-dot" style="stroke:#ffc24b" />
+          <path id="r-name" style="stroke:#7cf0b5" />
+          <path id="r-cname" style="stroke:#1f7a5c" />
+          <path id="r-year" style="stroke:#7cf0b5" />
+          <path id="r-cyear" style="stroke:#1f7a5c" />
+          <path id="r-paren" style="stroke:#ffc24b" />
+          <path id="r-cupper" style="stroke:#b9741a" />
+          <path id="r-cappend" style="stroke:#b9741a" />
+          <path id="r-tofu" style="stroke:#ffc24b" />
+          <path id="r-cnope" style="stroke:#b8235a" />
+          <path id="r-elist" style="stroke:#ffc24b" />
+          <path id="r-eupper" style="stroke:#ffc24b" />
+          <path id="r-cupper2" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.488, 0.848, 1.022, 1.254, 1.37, 2.009, 2.159, 2.554, 3.042, 3.204, 3.553, 4.017, 4.226, 4.841, 5.016, 6.258, 6.502, 7.14, 7.593, 8.081, 8.266, 8.44, 9.59, 9.776, 9.973, 10.089, 10.739, 10.89, 11.157, 11.262, 11.471, 11.633, 12.481, 12.899, 13.108, 13.746, 13.967, 14.501, 14.675, 15.267, 15.488, 16.103, 16.324, 17.125, 17.345, 17.6, 18.1, 18.378, 18.692, 19.597, 19.841, 19.992, 20.526, 20.724, 20.944, 21.06, 21.269, 21.908, 22.07, 22.349, 22.825, 23.313, 23.835, 24.149, 24.729, 24.95, 25.681, 25.832, 26.273, 26.587, 26.9, 27.794, 28.108, 28.433, 29.036, 29.524, 30.673, 31.219, 31.498, 31.579, 32.229, 32.752, 33.053, 33.68, 34.017, 34.528, 34.807, 36.177, 36.595, 36.908, 37.686, 38.592, 38.754, 39.045, 39.393, 40.031, 40.368, 40.705, 40.833, 41.181, 41.471, 41.634, 41.947, 42.586, 42.829, 44.037, 44.71, 45.453, 45.604, 45.836, 46.266, 46.603, 46.916, 47.636, 48.46, 48.797, 48.959, 49.296, 49.737, 50.086, 50.538, 50.724, 51.49, 51.711, 51.99, 52.187, 52.292, 52.466, 53.011, 53.429, 54.242, 54.555, 54.671, 55.031, 55.275, 56.494, 56.819, 57.295, 57.458, 57.667, 57.887, 58.212, 58.503, 58.619, 59.327, 59.582, 60.766, 61.15, 61.649, 61.835, 61.986, 63.054, 63.263, 63.599, 64.029, 64.249, 64.389, 64.807, 65.016, 65.979, 66.188, 66.571, 67.013];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => {
+        const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry));
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, cw, from) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * cw, 96 + top + 25, (sub.length * cw) / 2 + 16, 28);
+      };
+      // pocket content on a card: knows text starts at x 1242, does at x 1546, centre y = card top + 146
+      const pock = (id, x0, cardTop, n) => ring(id, x0 + (n * 16.8) / 2, cardTop + 146, (n * 16.8) / 2 + 18, 30);
+
+      tok("r-dot", ">>> notebook.name", ".", 88, 18);
+      tok("r-name", ">>> notebook.name", ".name", 88, 18);
+      tok("r-year", ">>> race.year", ".year", 188, 18);
+      tok("r-paren", ">>> label.upper()", "()", 288, 18);
+      tok("r-tofu", "['oats', 'rice', 'tofu']", "'tofu'", 488, 16.8);
+      tok("r-elist", "AttributeError: 'list' object has no attribute 'upper'", "'list'", 338, 16.8);
+      tok("r-eupper", "AttributeError: 'list' object has no attribute 'upper'", "'upper'", 338, 16.8);
+      pock("r-cname", 1242, 540, 5);
+      pock("r-cyear", 1242, 762, 5);
+      pock("r-cupper", 1546, 318, 8);
+      pock("r-cupper2", 1546, 318, 8);
+      pock("r-cappend", 1546, 96, 9);
+      pock("r-cnope", 1546, 96, 9);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const tap = (card, at) => tl.fromTo(card, { scale: 1 }, { scale: 0.97, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+
+      tl.set("#s-cursor", { x: 900, y: 600 }, 0);
+
+      /* ---- 1. Kitchen Coach is full of things ---- */
+      bump("#intro", t(5) - 0.2, 1.03);
+      pop("#g-pad", t(7), { from: 0.85 });
+      pop("#g-lab", t(10), { from: 0.85 });
+      pop("#g-nb", t(13), { from: 0.85 });
+      pop("#g-cal", t(15), { from: 0.85 });
+
+      /* ---- 2. Every value is an object, with a type ---- */
+      out("#intro", t(16) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(16) + 0.1);
+      pop("#n-obj", t(22), { from: 0.7 });
+      bump(["#g-pad", "#g-lab", "#g-nb", "#g-cal"], t(22), 1.04);
+      out("#n-obj", t(26) - 0.15, 0.15);
+      pop("#n-type", t(26), { from: 0.7 });
+      type("#A1", t(33), 18, 0.4);
+      pop("#A2", t(37), { from: 0.9 });
+      pop("#ty-pad", t(37));
+      type("#A3", t(37) + 0.15, 15, 0.3);
+      pop("#A4", t(39), { from: 0.9 });
+      pop("#ty-lab", t(39));
+      type("#A5", t(39) + 0.15, 18, 0.35);
+      pop("#A6", t(41), { from: 0.9 });
+      pop("#ty-nb", t(41));
+      type("#A7", t(41) + 0.15, 14, 0.3);
+      pop("#A8", t(43), { from: 0.9 });
+      pop("#ty-cal", t(43));
+
+      /* ---- 3. Two pockets: what it knows, what it can do ---- */
+      out([".pa", "#n-type"], t(48), 0.3);
+      ["pad", "lab", "nb", "cal"].forEach((k, i) => {
+        pop("#kn-" + k, t(49) + i * 0.08, { from: 0.7 });
+        pop("#do-" + k, t(49) + 0.3 + i * 0.08, { from: 0.7 });
+      });
+      pop("#n-kn", t(52), { from: 0.7 });
+      bump(["#kn-pad", "#kn-lab", "#kn-nb", "#kn-cal"], t(52), 1.05);
+      pop("#n-do", t(57), { from: 0.7 });
+      bump(["#do-pad", "#do-lab", "#do-nb", "#do-cal"], t(57), 1.05);
+
+      /* ---- 4. The dot asks it: notebook.name, race.year ---- */
+      out(["#n-kn", "#n-do"], t(58) - 0.2, 0.2);
+      type("#B1", t(58), 17, 0.4);
+      draw("r-dot", t(59), 0.35);
+      tl.set("#s-cursor", { x: 1700, y: 1020 }, t(60) - 0.5);
+      cursorIn(t(60) - 0.5);
+      cursorTo(1420, 600, t(60) - 0.45, 0.45);
+      tap("#g-nb", t(60));
+      tl.to("#r-dot", { opacity: 0, duration: 0.2 }, t(62));
+      draw("r-name", t(62), 0.4);
+      draw("r-cname", t(64), 0.4);
+      pop("#B2", t(64) + 0.2, { from: 0.9 });
+      pop("#n-nob", t(66), { from: 0.7 });
+      bump("#kn-nb", t(70), 1.06);
+      cursorTo(1420, 820, t(72) - 0.3, 0.4);
+      type("#B3", t(72), 13, 0.3);
+      tap("#g-cal", t(72) + 0.1);
+      draw("r-year", t(74) - 0.1, 0.35);
+      draw("r-cyear", t(74) + 0.1, 0.35);
+      pop("#B4", t(75), { from: 0.9 });
+      cursorOut(t(76));
+
+      /* ---- 5. Brackets press a button: label.upper(), shopping.append("tofu") ---- */
+      pop("#n-btn", t(77), { from: 0.7 });
+      type("#B5", t(81), 17, 0.4);
+      tl.set("#s-cursor", { x: 1720, y: 560 }, t(81));
+      cursorIn(t(81));
+      cursorTo(1640, 460, t(81) + 0.05, 0.4);
+      draw("r-paren", t(83) - 0.1, 0.35);
+      draw("r-cupper", t(83), 0.4);
+      tap("#g-lab", t(83) + 0.2);
+      pop("#B6", t(84), { from: 0.9 });
+      cursorTo(1660, 240, t(88) - 0.4, 0.4);
+      type("#B7", t(88), 27, 0.55);
+      draw("r-cappend", t(90), 0.4);
+      tap("#g-pad", t(90) + 0.2);
+      type("#B8", t(91), 12, 0.3);
+      pop("#B9", t(91) + 0.45, { from: 0.9 });
+      draw("r-tofu", t(92) + 0.1, 0.4);
+      pop("#n-add", t(93) - 0.2, { from: 0.7 });
+      cursorOut(t(95));
+
+      /* ---- 6. Ask the shopping pad to do upper: it shrugs ---- */
+      out([".pb", ".pb2", "#r-name", "#r-cname", "#r-year", "#r-cyear", "#r-paren", "#r-cupper", "#r-cappend", "#r-tofu"], t(96) - 0.1, 0.25);
+      tl.set("#s-cursor", { x: 1700, y: 420 }, t(98));
+      cursorIn(t(98));
+      cursorTo(1600, 240, t(98) + 0.05, 0.4);
+      tap("#g-pad", t(99) + 0.2);
+      type("#C1", t(100), 20, 0.45);
+      tl.to("#g-pad", { rotation: -2.5, duration: 0.12, ease: "sine.inOut", yoyo: true, repeat: 5 }, t(105));
+      pop("#qm", t(105), { from: 0.4 });
+      draw("r-cnope", t(105) + 0.2, 0.4);
+      cursorOut(t(106));
+      show(["#C2", "#C3", "#C4", "#C5"], t(106), 0.25);
+      pop("#C6", t(106) + 0.35, { from: 0.95 });
+      draw("r-elist", t(109), 0.4);
+      draw("r-eupper", t(114), 0.4);
+      pop("#n-type2", t(115), { from: 0.7 });
+      bump("#ty-pad", t(117), 1.15);
+      pop("#n-text", t(119), { from: 0.7 });
+      draw("r-cupper2", t(120), 0.4);
+      bump("#do-lab", t(122), 1.06);
+
+      /* ---- 7. Not sure? Ask dir. Skip the underscores ---- */
+      out([".pc", "#qm", "#r-cnope", "#r-elist", "#r-eupper", "#r-cupper2"], t(123) - 0.1, 0.25);
+      type("#D1", t(129) - 0.3, 17, 0.35);
+      tl.fromTo(".dl", { opacity: 0 }, { opacity: 1, duration: 0.25, stagger: 0.04, immediateRender: false }, t(130) + 0.1);
+      tl.to(".dl", { opacity: 0.3, duration: 0.3 }, t(131) + 0.3);
+      tl.to(["#Dm", ".dl:has(.pl)"], { opacity: 1, duration: 0.3 }, t(131) + 0.3);
+      tl.to("#Dmu", { opacity: 0.3, duration: 0.3 }, t(131) + 0.3);
+      pop("#n-skip", t(133), { from: 0.7 });
+      bump("#do-pad", t(133) + 0.3, 1.06);
+
+      /* ---- 8. Next lesson: your own kind of object, with class ---- */
+      out([".pd"], t(136) - 0.1, 0.25);
+      pop("#n-next", t(136), { from: 0.7 });
+      pop("#dish", t(139), { from: 0.85 });
+      show("#dish-n", t(141), 0.3);
+      pop("#dk", t(142), { from: 0.7 });
+      pop("#dd", t(143) + 0.1, { from: 0.7 });
+      type("#E1", t(146), 15, 0.35);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 61.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

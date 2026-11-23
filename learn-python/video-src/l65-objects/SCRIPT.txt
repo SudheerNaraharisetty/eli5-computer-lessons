@@ -1,0 +1,17 @@
+Kitchen Coach is full of things. A shopping pad. A label maker. A notebook. A calendar.
+
+In Python, every value is an object. It has a type, the kind of thing it is. Ask with type. A list. A string. A path. A date.
+
+And every object has two pockets. What it knows, and what it can do.
+
+The dot asks it. Notebook dot name. No brackets: the notebook just knows it. Race dot year. Twenty twenty-seven.
+
+Brackets press a button. Label dot upper. Bean chili, in capitals. Shopping dot append, tofu. The pad adds it.
+
+Now ask the shopping pad to do upper. It shrugs. Attribute error. A list object has no attribute upper. Read the type name. Only text can shout.
+
+Not sure what it can do? Ask dir. Skip the names with underscores.
+
+Next lesson, you make your own kind of object, with class.
+
+Every value is an object. It knows things, and it can do things. The dot asks it.

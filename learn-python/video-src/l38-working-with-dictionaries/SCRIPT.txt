@@ -1,0 +1,13 @@
+Your pantry is a dictionary. Each jar is a key, and the grams left are its value. Rice, nine hundred. Oats, four hundred. Lentils, zero. Pasta, one hundred and fifty.
+
+Ben asks for quinoa. No quinoa jar. Square brackets would crash with a key error. Use get instead. Pantry dot get, quinoa, comma, zero. No jar? You get the zero.
+
+Ana wants a carb dinner. Rice, minus equals one hundred and fifty. The rice jar drops to seven hundred and fifty.
+
+Now the shopping list. For item, grams, in pantry dot items. Each round hands you a label and its grams. Under two hundred? Write it down. Lentils. Pasta.
+
+Now count this week's meals. Counts, food, plus equals one. Key error, on the very first oats. There is no oats tally yet.
+
+The fix. Counts, food, equals counts dot get, food, zero, plus one. Missing means zero. Oats, two. Rice, one. Tofu, one.
+
+Use get for maybe-missing keys, and items to walk the whole pantry.

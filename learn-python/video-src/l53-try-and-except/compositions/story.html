@@ -1,0 +1,400 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Ana's message */
+    .msg { left: 1190px; top: 96px; width: 640px; height: 120px; border-radius: 28px; background: #fff; }
+    .msg .av { position: absolute; left: 24px; top: 24px; width: 72px; height: 72px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/72px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; background: #3b37e6; }
+    .msg .who { position: absolute; left: 122px; top: 12px; font: 800 28px/40px "Manrope", sans-serif; color: #3b37e6; }
+    .msg .say { position: absolute; left: 122px; top: 54px; font: 800 36px/50px "Manrope", sans-serif; color: #0e0c1d; white-space: nowrap; }
+    .msg .say b { font: 700 38px/50px "JetBrains Mono", monospace; color: #3b37e6; }
+
+    /* the kitchen */
+    #counter { left: 1190px; top: 330px; width: 250px; height: 30px; border-radius: 8px; background: #ece7df; }
+    #cabinet { left: 1205px; top: 360px; width: 220px; height: 600px; background: #fbf8f4; border: 5px solid #0e0c1d; border-top: none; }
+    #cabinet i { position: absolute; left: 24px; width: 162px; height: 5px; background: #0e0c1d; opacity: 0.25; }
+    #floor { left: 1190px; top: 960px; width: 640px; height: 8px; border-radius: 4px; background: #0e0c1d; }
+    #s-nets { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-nets path, #s-nets line { fill: none; stroke-linecap: round; opacity: 0; }
+    .nlbl { font: 700 30px/44px "JetBrains Mono", monospace; white-space: nowrap; text-align: center; }
+    #nl-small { left: 1500px; top: 716px; width: 320px; color: #1f7a5c; }
+    #nl-giant { left: 1480px; top: 340px; width: 330px; color: #b8235a; font-size: 40px; line-height: 56px; }
+
+    /* the dish: a plate with an error tag riding on it. Plate centre is local (110, 86). */
+    #dish { left: 0; top: 0; width: 220px; height: 110px; }
+    #dish svg { position: absolute; left: 20px; top: 60px; width: 180px; height: 50px; overflow: visible; }
+    #dtag { position: absolute; left: 8px; top: 0; width: 204px; height: 48px; border-radius: 999px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; text-align: center; font: 700 28px/48px "JetBrains Mono", monospace; }
+    #shards { left: 1540px; top: 900px; width: 200px; height: 60px; overflow: visible; }
+    #bug { left: 0; top: 0; width: 80px; height: 70px; overflow: visible; }
+
+    /* lens: local centre (110, 110) */
+    #lens { left: 0; top: 0; width: 300px; height: 300px; }
+    #lens .glass { position: absolute; left: 0; top: 0; width: 220px; height: 220px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 0 8px #0e0c1d; }
+    #lens .hdl { position: absolute; left: -38px; top: 230px; width: 110px; height: 22px; border-radius: 11px; background: #0e0c1d; transform: rotate(-45deg); }
+    #lens .txt { position: absolute; left: 0; top: 0; width: 220px; text-align: center; font: 700 36px/220px "JetBrains Mono", monospace; color: #b8235a; }
+
+    .tag { height: 56px; padding: 0 22px; border-radius: 999px; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .tag.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    .tag.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    .tag.mono { font: 700 30px/56px "JetBrains Mono", monospace; }
+
+    /* code panel on the left: 34px mono = 20.4 px per char, text at page x 136, row r centre at page y 212 + (r - 1) * 56 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 34px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .st { color: #9be7c4; }
+    .s-ln .g { color: #ff8fab; }
+    #s-div { position: absolute; left: 40px; top: 600px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 608px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 34px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-out.ok { color: #7cf0b5; }
+    .s-out.err { color: #ff8fab; font-size: 30px; }
+    .s-out b { font-weight: 500; color: #ffc24b; }
+    .s-note { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>coach.py</span></div>
+          <!-- 1. the crash -->
+          <div class="s-ln" id="A1" style="top:88px">servings = <span class="f">int</span>(<span class="f">input</span>(<span class="st">"How many servings? "</span>))</div>
+          <div class="s-ln" id="A2" style="top:144px"><span class="f">print</span>(<span class="st">f"Pasta: {servings * 100} g"</span>)</div>
+          <div class="s-ln" id="A3" style="top:200px"><span class="f">print</span>(<span class="st">f"Sauce: {servings * 80} g"</span>)</div>
+          <div class="s-ln" id="A4" style="top:256px"><span class="f">print</span>(<span class="st">"Plan ready. Enjoy!"</span>)</div>
+          <div class="s-note bad" id="n-never" style="left:40px; top:330px">every line after it: never runs</div>
+          <!-- 2. try and except -->
+          <div class="s-ln" id="B1" style="top:88px">answer = <span class="f">input</span>(<span class="st">"How many servings? "</span>)</div>
+          <div class="s-ln" id="B2" style="top:144px"><span class="k">try</span>:</div>
+          <div class="s-ln" id="B3" style="top:200px">    servings = <span class="f">int</span>(answer)</div>
+          <div class="s-ln" id="B4" style="top:256px"><span class="k">except</span> <span class="f">ValueError</span>:</div>
+          <div class="s-ln" id="B5" style="top:312px">    <span class="f">print</span>(<span class="st">"Please type a number."</span>)</div>
+          <!-- 3. the loop -->
+          <div class="s-ln" id="C1" style="top:88px"><span class="k">while</span> <span class="k">True</span>:</div>
+          <div class="s-ln" id="C2" style="top:144px">    answer = <span class="f">input</span>(<span class="st">"How many servings? "</span>)</div>
+          <div class="s-ln" id="C3" style="top:200px">    <span class="k">try</span>:</div>
+          <div class="s-ln" id="C4" style="top:256px">        servings = <span class="f">int</span>(answer)</div>
+          <div class="s-ln" id="C4x" style="top:256px">        servings = <span class="f">int</span>(<span class="g">anwser</span>)</div>
+          <div class="s-ln" id="C4f" style="top:256px">        servings = <span class="f">int</span>(answer)</div>
+          <div class="s-ln" id="C5" style="top:312px">        <span class="k">break</span></div>
+          <div class="s-ln" id="C6" style="top:368px">    <span class="k">except</span> <span class="f">ValueError</span>:</div>
+          <div class="s-ln" id="C6x" style="top:368px">    <span class="g">except:</span></div>
+          <div class="s-ln" id="C6f" style="top:368px">    <span class="k">except</span> <span class="f">ValueError</span>:</div>
+          <div class="s-ln" id="C7" style="top:424px">        <span class="f">print</span>(<span class="st">"Please type a number."</span>)</div>
+          <div class="s-ln" id="C9" style="top:536px"><span class="f">print</span>(<span class="st">f"Cooking for {servings}."</span>)</div>
+
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <!-- output, stage 1 -->
+          <div class="s-out" id="o1" style="top:652px">How many servings? </div>
+          <div class="s-out" id="o1b" style="top:652px">                   <b>two</b></div>
+          <div class="s-out err" id="o1e1" style="top:700px">ValueError: invalid literal for int()</div>
+          <div class="s-out err" id="o1e2" style="top:748px">with base 10: 'two'</div>
+          <!-- output, try and the loop -->
+          <div class="s-out" id="o2a" style="top:652px">How many servings? <b>two</b></div>
+          <div class="s-out" id="o2b" style="top:700px">Please type a number.</div>
+          <div class="s-out" id="o2c" style="top:748px">How many servings? </div>
+          <div class="s-out" id="o2cb" style="top:748px">                   <b>3</b></div>
+          <div class="s-out ok" id="o2d" style="top:796px">Cooking for 3.</div>
+          <!-- output, the giant net -->
+          <div class="s-out" id="o3a" style="top:652px">How many servings? <b>3</b></div>
+          <div class="s-out" id="o3b" style="top:700px">Please type a number.</div>
+          <div class="s-out" id="o3c" style="top:748px">How many servings? <b>3</b></div>
+          <div class="s-out" id="o3d" style="top:796px">Please type a number.</div>
+          <!-- output, the small net -->
+          <div class="s-out err" id="o4a" style="top:652px">NameError: name 'anwser' is not defined.</div>
+          <div class="s-out err" id="o4b" style="top:700px">Did you mean: 'answer'?</div>
+          <div class="s-out" id="o5a" style="top:652px">How many servings? <b>3</b></div>
+          <div class="s-out ok" id="o5b" style="top:700px">Cooking for 3.</div>
+        </div>
+
+        <!-- Ana -->
+        <div id="m-ana" class="s-abs msg s-ol"><div class="av">A</div><div class="who">Ana</div>
+          <div class="say" id="say0">is typing...</div>
+          <div class="say s-hide" id="say1">types <b>two</b></div>
+          <div class="say s-hide" id="say2">types <b>3</b></div>
+          <div class="say s-hide" id="say3">types <b>3</b>, again</div>
+        </div>
+
+        <!-- the kitchen -->
+        <div id="cabinet" class="s-abs"><i style="top:150px"></i><i style="top:330px"></i></div>
+        <div id="counter" class="s-abs s-ol"></div>
+        <div id="floor" class="s-abs"></div>
+        <svg id="s-nets" class="s-abs" viewBox="0 0 1920 1080">
+          <!-- small net: anchors (1520, 600) and (1800, 600), lowest point y 700 -->
+          <g id="net-s">
+            <path class="nm" d="M1520 600 Q1660 800 1800 600" style="stroke:#1f7a5c; stroke-width:6" />
+            <path class="nm" d="M1552 640 Q1660 740 1768 640" style="stroke:#1f7a5c; stroke-width:3" />
+            <path class="nm" d="M1567 600 L1567 656 M1613 600 L1613 684 M1660 600 L1660 700 M1707 600 L1707 684 M1753 600 L1753 656" style="stroke:#1f7a5c; stroke-width:3" />
+          </g>
+          <!-- giant net: anchors (1456, 420) and (1832, 420), lowest point y 840 -->
+          <g id="net-g">
+            <path class="nm" d="M1456 420 Q1644 1260 1832 420" style="stroke:#b8235a; stroke-width:7" />
+            <path class="nm" d="M1474 520 Q1644 1100 1814 520" style="stroke:#b8235a; stroke-width:3" />
+            <path class="nm" d="M1496 620 Q1644 1000 1792 620" style="stroke:#b8235a; stroke-width:3" />
+            <path class="nm" d="M1519 420 L1519 670 M1581 420 L1581 790 M1644 420 L1644 840 M1707 420 L1707 790 M1769 420 L1769 670" style="stroke:#b8235a; stroke-width:3" />
+          </g>
+        </svg>
+        <div id="nl-small" class="s-abs nlbl s-hide">except ValueError</div>
+        <div id="nl-giant" class="s-abs nlbl s-hide">except:</div>
+        <div id="t-every" class="s-abs tag bad s-hide" style="left:1478px; top:240px">catches every error</div>
+        <div id="t-caught" class="s-abs tag ok s-hide" style="left:1572px; top:792px">caught</div>
+        <div id="t-crash" class="s-abs tag bad s-hide" style="left:1566px; top:820px">crash</div>
+        <div id="t-hidden" class="s-abs tag bad s-hide" style="left:1458px; top:896px">a real bug, hidden</div>
+        <div id="t-forever" class="s-abs tag bad s-hide" style="left:1550px; top:240px">forever</div>
+        <div id="t-name" class="s-abs tag bad mono s-hide" style="left:1597px; top:836px">NameError</div>
+        <svg id="shards" class="s-abs s-hide" viewBox="0 0 200 60">
+          <path d="M20 58 l18 -22 l14 22 z M70 58 l26 -16 l8 16 z M120 58 l12 -26 l18 26 z M160 58 l20 -12 l6 12 z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" />
+        </svg>
+
+        <!-- the dish -->
+        <div id="dish" class="s-abs">
+          <div id="dtag" class="s-hide">ValueError</div>
+          <svg viewBox="0 0 180 50"><ellipse cx="90" cy="28" rx="84" ry="20" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><ellipse cx="90" cy="22" rx="44" ry="11" fill="#fbebd2" stroke="#0e0c1d" stroke-width="4" /></svg>
+        </div>
+
+        <!-- the bug: local centre (40, 36) -->
+        <svg id="bug" class="s-abs s-hide" viewBox="0 0 80 70">
+          <g stroke="#0e0c1d" stroke-width="4" stroke-linecap="round"><path d="M22 28 l-16 -10 M20 40 l-18 0 M22 52 l-14 12 M58 28 l16 -10 M60 40 l18 0 M58 52 l14 12" /></g>
+          <ellipse cx="40" cy="42" rx="22" ry="22" fill="#b8235a" stroke="#0e0c1d" stroke-width="4" />
+          <circle cx="40" cy="16" r="11" fill="#0e0c1d" />
+          <line x1="40" y1="22" x2="40" y2="62" stroke="#0e0c1d" stroke-width="3" />
+        </svg>
+
+        <!-- the magnifier -->
+        <div id="lens" class="s-abs s-hide"><div class="hdl"></div><div class="glass"></div><div class="txt">NameError</div></div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-int" style="stroke:#ffc24b" />
+          <path id="r-verr" style="stroke:#ff6b8b" />
+          <path id="r-try" style="stroke:#ffc24b" />
+          <path id="r-exc" style="stroke:#4bd69b" />
+          <path id="r-break" style="stroke:#ffc24b" />
+          <path id="r-bare" style="stroke:#ff6b8b" />
+          <path id="r-typo" style="stroke:#ff6b8b" />
+          <path id="r-exc2" style="stroke:#4bd69b" />
+          <path id="r-risky" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.836, 1.474, 1.741, 1.997, 3.146, 3.506, 3.866, 3.994, 4.54, 5.48, 5.863, 6.258, 6.525, 6.618, 6.978, 7.268, 7.384, 8.464, 9.009, 9.601, 9.787, 10.286, 11.169, 11.378, 11.61, 11.842, 12.156, 12.376, 12.725, 13.63, 13.793, 14.013, 14.408, 15.012, 15.778, 16.045, 16.254, 16.451, 16.869, 17.195, 17.996, 19.064, 19.459, 19.702, 20.364, 20.829, 21.235, 21.514, 21.723, 22.524, 22.744, 22.953, 23.278, 23.812, 23.987, 24.23, 24.753, 25.171, 25.345, 25.473, 26.053, 26.576, 27.295, 27.644, 27.957, 28.038, 28.572, 28.898, 29.06, 29.199, 29.292, 29.617, 29.884, 30.244, 30.535, 30.941, 31.312, 31.765, 32.775, 33.158, 33.553, 34.087, 34.703, 35.167, 35.341, 36.049, 36.537, 36.769, 37.28, 38.07, 38.232, 38.499, 38.998, 39.532, 40.043, 40.798, 40.972, 41.239, 41.645, 41.808, 43.015, 43.282, 43.433, 43.596, 43.909, 44.327, 44.536, 44.838, 45.477, 45.663, 45.813, 46.208, 46.475, 46.963, 47.845, 48.217, 48.623, 49.053, 49.285, 50.005, 50.411, 50.736, 50.829, 51.351, 52.327, 52.674, 52.825, 53.22, 54.091, 54.544, 55.124, 55.531, 56.157, 56.541, 56.692, 57.017, 57.469, 58.421, 58.677, 58.805, 59.269, 59.617, 60.476, 60.987, 61.661, 62.032, 62.206, 62.52, 62.88, 63.089, 63.878, 64.226, 64.586, 64.691, 64.807, 65.155, 65.434, 65.62, 65.782];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const prep = (p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; };
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d); prep(p);
+      };
+      // Code text starts at page x 136, 20.4 px per char. Row r centre y = 212 + (r - 1) * 56.
+      const CW = 20.4;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 16;
+      const ry = (r) => 212 + (r - 1) * 56;
+      ring("r-int", cx(11, 13), ry(1), rw(11, 13), 30);      // int( on the crash line
+      ring("r-verr", 136 + 5 * 18, 96 + 700 + 24, 5 * 18 + 18, 30); // ValueError in the output
+      ring("r-try", cx(0, 3), ry(2), rw(0, 3), 30);          // try:
+      ring("r-exc", cx(0, 17), ry(4), rw(0, 17), 30);        // except ValueError:
+      ring("r-break", cx(8, 12), ry(5), rw(8, 12), 30);      // break
+      ring("r-bare", cx(4, 10), ry(6), rw(4, 10), 30);       // except:
+      ring("r-typo", cx(23, 28), ry(4), rw(23, 28), 30);     // anwser
+      ring("r-exc2", cx(4, 21), ry(6), rw(4, 21), 30);       // except ValueError: (in the loop)
+      ring("r-risky", cx(8, 29), ry(4), rw(8, 29), 32);      // the one risky line
+      document.querySelectorAll("#s-nets .nm").forEach(prep);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = typeof id === "string" ? document.getElementById(id) : id;
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const swapLine = (a, b, at) => { tl.to(a, { opacity: 0, duration: 0.15 }, at); tl.fromTo(b, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, at + 0.1); };
+      const swapSay = (a, b, at) => { tl.to(a, { opacity: 0, duration: 0.12 }, at); tl.fromTo(b, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.25, ease: "back.out(2)", immediateRender: false }, at + 0.08); };
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const drawNet = (id, at) => document.getElementById(id).querySelectorAll(".nm").forEach((p, i) => draw(p, at + i * 0.08, 0.5));
+      const hideNet = (id, at) => tl.to(document.getElementById(id).querySelectorAll(".nm"), { opacity: 0, duration: 0.25 }, at);
+
+      // The dish: its plate centre is local (110, 86).
+      const P = (x, y) => ({ x: x - 110, y: y - 86 });
+      const COUNTER = [1320, 312], EDGE = [1420, 312], NET = [1660, 676], FLOOR = [1640, 944];
+      // Slide to the edge, then fall in an arc to (x, y).
+      const fall = (at, x, y, d) => {
+        tl.to("#dish", Object.assign(P(EDGE[0], EDGE[1]), { duration: 0.4, ease: "power1.in" }), at);
+        tl.to("#dish", { x: x - 110, duration: d, ease: "power1.out" }, at + 0.4);
+        tl.to("#dish", { y: y - 86, duration: d, ease: "power2.in" }, at + 0.4);
+        tl.to("#dish", { rotation: 14, duration: d, ease: "power1.in" }, at + 0.4);
+      };
+      // The bug: local centre (40, 36).
+      const B = (x, y) => ({ x: x - 40, y: y - 36 });
+      // The lens: glass centre is local (110, 110).
+      const Lz = (x, y) => ({ x: x - 110, y: y - 110 });
+
+      /* ---- set up ---- */
+      tl.set("#dish", Object.assign(P(COUNTER[0], COUNTER[1]), { rotation: 0 }), 0);
+      tl.set("#s-cursor", { x: 700, y: 700 }, 0);
+      tl.set("#bug", B(1420, 296), 0);
+      tl.set("#lens", Lz(1900, 1000), 0);
+
+      /* ---- 1. Kitchen Coach asks. Ana types the word two ---- */
+      type("#A1", t(3) - 0.2, 44, 0.8);
+      show("#o1", t(4), 0.25);
+      show(["#A2", "#A3", "#A4"], t(5) - 0.2, 0.35);
+      bump("#m-ana", t(6));
+      swapSay("#say0", "#say1", t(10) - 0.1);
+      show("#o1b", t(10), 0.2);
+
+      /* ---- 2. int cannot read a word. ValueError. Crash. The rest never runs ---- */
+      draw("r-int", t(11), 0.4);
+      show(["#o1e1", "#o1e2"], t(19), 0.25);
+      draw("r-verr", t(19) + 0.3, 0.4);
+      pop("#dtag", t(19), { from: 0.5 });
+      tl.fromTo("#dish", { rotation: 0 }, { rotation: -6, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, t(20));
+      fall(t(21), FLOOR[0], FLOOR[1], 0.75);
+      tl.to("#dish", { opacity: 0, duration: 0.08 }, t(21) + 1.15);
+      pop("#shards", t(21) + 1.15, { from: 0.4, d: 0.3 });
+      pop("#t-crash", t(23), { from: 0.5 });
+      out("#r-int", t(24), 0.2);
+      tl.to(["#A2", "#A3", "#A4"], { opacity: 0.3, duration: 0.3 }, t(25));
+      pop("#n-never", t(26), { from: 0.6 });
+      bump("#t-crash", t(33));
+
+      /* ---- 3. Put the risky line inside try. except ValueError is a net ---- */
+      out(["#A1", "#A2", "#A3", "#A4", "#n-never", "#o1", "#o1b", "#o1e1", "#o1e2", "#r-verr", "#shards", "#t-crash"], t(36) - 0.1, 0.25);
+      swapSay("#say1", "#say0", t(36));
+      tl.set("#dish", Object.assign(P(COUNTER[0], COUNTER[1]), { rotation: 0 }), t(36) + 0.2);
+      tl.set("#dtag", { opacity: 0 }, t(36) + 0.2);
+      pop("#dish", t(37), { from: 0.5 });
+      show("#B1", t(37) + 0.1, 0.3);
+      type("#B2", t(41), 4, 0.25);
+      show("#B3", t(41) + 0.15, 0.3);
+      draw("r-try", t(42), 0.4);
+      type("#B4", t(45), 18, 0.5);
+      show("#B5", t(46), 0.3);
+      out("#r-try", t(45), 0.2);
+      draw("r-exc", t(45) + 0.5, 0.45);
+      drawNet("net-s", t(50) - 0.15);
+      show("#nl-small", t(50), 0.3);
+
+      /* ---- 4. When that error falls, the net catches it. The program carries on ---- */
+      swapSay("#say0", "#say1", t(51) - 0.1);
+      show("#o2a", t(51), 0.25);
+      pop("#dtag", t(53), { from: 0.5 });
+      fall(t(54) - 0.3, NET[0], NET[1], 0.75);
+      tl.fromTo("#net-s", { y: 0 }, { y: 14, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(57) - 0.25);
+      tl.to("#dish", { rotation: 0, duration: 0.3, ease: "back.out(2)" }, t(57) - 0.2);
+      pop("#t-caught", t(57), { from: 0.5 });
+      out("#r-exc", t(59), 0.2);
+      show("#o2b", t(64), 0.25);
+
+      /* ---- 5. A while True loop asks again. Ana types 3. break. Cooking for 3 ---- */
+      out(["#B1", "#B2", "#B3", "#B4", "#B5"], t(68), 0.2);
+      show(["#C2", "#C3", "#C4", "#C5", "#C6", "#C7", "#C9"], t(68) + 0.2, 0.3);
+      type("#C1", t(72), 11, 0.35);
+      out("#t-caught", t(74), 0.2);
+      show("#o2c", t(78), 0.25);
+      swapSay("#say1", "#say2", t(82) - 0.15);
+      show("#o2cb", t(82), 0.2);
+      draw("r-break", t(83), 0.35);
+      show("#o2d", t(84), 0.25);
+      tl.set("#dtag", { opacity: 0 }, t(84) - 0.01);
+      tl.to("#dish", Object.assign(P(COUNTER[0], COUNTER[1] - 40), { duration: 0.35, ease: "power2.out" }), t(84));
+      tl.to("#dish", Object.assign(P(COUNTER[0], COUNTER[1]), { duration: 0.25, ease: "bounce.out" }), t(84) + 0.35);
+
+      /* ---- 6. A giant net. A bare except catches every error, and hides a typo ---- */
+      out(["#r-break", "#o2a", "#o2b", "#o2c", "#o2cb", "#o2d"], t(87), 0.25);
+      hideNet("net-s", t(88));
+      out("#nl-small", t(88), 0.25);
+      drawNet("net-g", t(89));
+      show("#nl-giant", t(90), 0.3);
+      swapLine("#C6", "#C6x", t(93) - 0.1);
+      draw("r-bare", t(93) + 0.3, 0.4);
+      pop("#t-every", t(95), { from: 0.6 });
+      out("#t-every", t(97) - 0.1, 0.2);
+      tl.set("#s-cursor", { x: 820, y: 520 }, t(97) - 0.3);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(97) - 0.3);
+      cursorTo(cx(23, 28) - 20, ry(4) + 14, t(97) - 0.1, 0.45);
+      swapLine("#C4", "#C4x", t(99));
+      draw("r-typo", t(99) + 0.3, 0.4);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(101));
+      // the bug drops into the giant net
+      pop("#bug", t(102) - 0.2, { from: 0.4, d: 0.3 });
+      tl.to("#bug", { x: 1700 - 40, duration: 0.7, ease: "power1.out" }, t(102) + 0.2);
+      tl.to("#bug", { y: 760 - 36, duration: 0.7, ease: "power2.in" }, t(102) + 0.2);
+      tl.fromTo("#net-g", { y: 0 }, { y: 12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, t(102) + 0.85);
+      // the lens shows what is in the net
+      tl.set("#lens", { opacity: 1 }, t(104) - 0.4);
+      tl.to("#lens", Object.assign(Lz(1700, 770), { duration: 0.5, ease: "power3.out" }), t(104) - 0.4);
+      pop("#t-hidden", t(108), { from: 0.6 });
+      tl.to("#lens", Object.assign(Lz(1900, 1060), { opacity: 0, duration: 0.4, ease: "power2.in" }), t(114) - 0.1);
+      bump("#t-hidden", t(114));
+      // Ana types 3, and hears: please type a number. Forever.
+      swapSay("#say2", "#say3", t(116));
+      show("#o3a", t(117), 0.25);
+      show("#o3b", t(121) - 0.1, 0.25);
+      show("#o3c", t(124) - 0.2, 0.2);
+      show("#o3d", t(125), 0.2);
+      pop("#t-forever", t(125), { from: 0.6 });
+
+      /* ---- 7. The small net. Catch ValueError only, around the one risky line ---- */
+      out(["#t-forever", "#t-hidden", "#r-bare", "#r-typo", "#o3a", "#o3b", "#o3c", "#o3d", "#nl-giant"], t(126), 0.25);
+      hideNet("net-g", t(128) - 0.1);
+      drawNet("net-s", t(128));
+      show("#nl-small", t(128) + 0.2, 0.3);
+      // the bug is not a ValueError: it falls through the small net to the floor
+      tl.to("#bug", { y: 940 - 36, duration: 0.55, ease: "power2.in" }, t(128) + 0.1);
+      swapLine("#C6x", "#C6f", t(130));
+      draw("r-exc2", t(130) + 0.3, 0.4);
+      out("#r-exc2", t(134) - 0.1, 0.2);
+      draw("r-risky", t(137) - 0.2, 0.45);
+      // the typo shows itself
+      show(["#o4a", "#o4b"], t(141) - 0.2, 0.25);
+      pop("#t-name", t(141), { from: 0.5 });
+      bump("#bug", t(142));
+      // fix it
+      out("#r-risky", t(144) - 0.25, 0.2);
+      swapLine("#C4x", "#C4f", t(144) - 0.15);
+      out(["#bug", "#t-name", "#o4a", "#o4b"], t(144) + 0.05, 0.2);
+      show("#o5a", t(144) + 0.2, 0.2);
+      show("#o5b", t(144) + 0.35, 0.25);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 61.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Kitchen Coach asks: how many servings? Ana types the word, two.
+
+Int cannot turn a word into a number. Value error. The program crashes, and every line after it never runs. The whole evening's plan, gone.
+
+So put the risky line inside try. Under it, except value error is a net. When that error falls, the net catches it, and the program carries on. Please type a number.
+
+Wrap it in a while true loop, and Kitchen Coach asks again. Ana types three. Break. Cooking for three.
+
+Now, a giant net. A bare except catches every error. But look. Answer is misspelt. That is a name error, a real bug, and the giant net hides it. Ana types three, and hears: please type a number. Forever.
+
+Use the small net. Catch value error only, around the one risky line. Now the typo shows itself. Fix it.
+
+Catch the one error you expect, as close to the risky line as you can.

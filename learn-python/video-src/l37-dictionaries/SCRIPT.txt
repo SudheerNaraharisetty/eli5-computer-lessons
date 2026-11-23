@@ -1,0 +1,17 @@
+Ben lifts weights, so he counts protein. Grams in every hundred grams of food.
+
+In a list, that is seventeen, nine and thirteen. But which one is tofu? You have to remember the position.
+
+A dictionary is a spice rack with labels. Curly brackets. Each jar has a key, a colon, and a value. Tofu, seventeen. Lentils, nine. Eggs, thirteen.
+
+Now ask by name. Protein, tofu, gives seventeen. No positions to remember.
+
+A new food? Give it a new key. Oats, thirteen, slides onto the rack.
+
+A new pack of tofu says fifteen. Use the same key again, and the old value is replaced. Each key appears only once.
+
+Then Ben asks for tempeh. There is no such label. Key error. Tofu with a capital T fails too. Keys must match exactly.
+
+So check the spelling, or ask first. If tempeh in protein.
+
+A dictionary finds things by name, not by position.

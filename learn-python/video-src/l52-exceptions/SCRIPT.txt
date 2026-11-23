@@ -1,0 +1,13 @@
+Kitchen Coach plans Friday dinner for three friends. Then the pan starts to smoke.
+
+Ana typed her servings as a word. Two. Python cannot turn that into a number, so it stops. Value error.
+
+The calories are split between zero guests. Zero division error. Ben asks for quinoa, and the rack has no such key. Key error.
+
+Each one is an exception. Python stops, and tells you what burnt, in a traceback. Most people read it from the top, and stare at a line that looks fine.
+
+Read it from the bottom. One. The last line names the problem. Division by zero. Two. Just above it, the line where it burnt. Line two, in kcal per guest. Three. Walk up. Line five called it, and line nine sent zero guests.
+
+Exceptions have named types, all one family. Value error, type error, key error, index error. All exceptions.
+
+When it burns, read the last line first. It names the problem and points to the line.

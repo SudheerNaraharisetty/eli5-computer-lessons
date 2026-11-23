@@ -1,0 +1,412 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* ---- the kitchen: heading, friends, the pan ---- */
+    #k-head { left: 110px; top: 100px; font: 700 76px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #k-head span { color: #3b37e6; }
+    .fr { top: 226px; width: 210px; height: 84px; }
+    .fr .av { position: absolute; left: 0; top: 4px; width: 76px; height: 76px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/76px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .fr .nm { position: absolute; left: 92px; top: 18px; font: 800 34px/48px "Manrope", sans-serif; }
+    #k-pan { left: 96px; top: 360px; width: 760px; height: 560px; overflow: visible; }
+
+    /* ---- the three burnt dishes ---- */
+    .card { left: 900px; width: 930px; height: 200px; border-radius: 24px; background: #fff; }
+    .card .who { position: absolute; left: 28px; top: 16px; height: 56px; font: 800 34px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .card .who .av { display: inline-block; width: 52px; height: 52px; margin-right: 14px; border-radius: 50%; color: #fff; text-align: center; font: 800 28px/52px "Manrope", sans-serif; vertical-align: top; margin-top: 2px; }
+    .card .who b { color: #1f7a5c; }
+    .card .strip { position: absolute; left: 22px; top: 80px; width: 886px; height: 56px; border-radius: 12px; background: #15132b; }
+    .card .cd { position: absolute; left: 44px; top: 80px; font: 500 30px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .card .cd .s { color: #7cf0b5; }
+    .card .cd .n { color: #ffc24b; }
+    .card .msg { position: absolute; left: 28px; top: 144px; font: 700 30px/48px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; opacity: 0; }
+    .pill { position: absolute; right: 26px; top: 18px; height: 54px; padding: 0 22px; border-radius: 999px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; font: 800 32px/54px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #n-exc { left: 900px; top: 820px; height: 64px; padding: 0 30px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; }
+    #n-exc b { color: #ffc24b; }
+
+    /* ---- the smoke alarm: the traceback, left. 28px mono = 16.8 px per char, text from x 186 ---- */
+    #tb { left: 96px; top: 96px; width: 860px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar { position: absolute; left: 0; top: 0; width: 100%; height: 64px; background: #211e40; }
+    .bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; white-space: nowrap; }
+    .bar > span b { color: #ff8fab; }
+    .tr { position: absolute; left: 90px; font: 500 28px/48px "JetBrains Mono", monospace; color: #c9c6ff; white-space: pre; opacity: 0; }
+    .tr.out { color: #7cf0b5; }
+    .tr.src { color: #eceaff; }
+    .tr.mk { color: #ff8fab; font-weight: 700; }
+    .tr.last { color: #ffffff; font-weight: 700; }
+    .tr.last span { color: #ffc24b; }
+
+    /* ---- the code, right. 30px mono = 18 px per char, text from x 1080, row r centre y 212 + (r - 1) * 52 ---- */
+    #cp { left: 1010px; top: 96px; width: 820px; height: 604px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .hl { position: absolute; left: 0; width: 820px; height: 52px; opacity: 0; }
+    .hl.red { background: rgba(255, 107, 139, 0.22); box-shadow: inset 8px 0 0 #ff6b8b; }
+    .hl.yel { background: rgba(255, 194, 75, 0.18); box-shadow: inset 8px 0 0 #ffc24b; }
+    .hl.grn { background: rgba(75, 214, 155, 0.18); box-shadow: inset 8px 0 0 #4bd69b; }
+    .no { position: absolute; left: 14px; width: 36px; text-align: right; font: 500 30px/52px "JetBrains Mono", monospace; color: #8e8ac0; }
+    .cl { position: absolute; left: 70px; font: 500 30px/52px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .cl .k { color: #c9c6ff; }
+    .cl .f { color: #8fd3ff; }
+    .cl .n { color: #ffc24b; }
+    .cl .s { color: #7cf0b5; }
+
+    .note { height: 60px; padding: 0 26px; border-radius: 999px; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; }
+    .note.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    .note.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    .note.dark { background: #b8235a; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+
+    .badge { width: 46px; height: 46px; border-radius: 50%; background: #ff6b8b; color: #15132b; text-align: center; font: 800 28px/46px "Manrope", sans-serif; }
+    .badge.ink { background: #ffc24b; }
+
+    /* ---- the family of exceptions, right ---- */
+    #fam { left: 1010px; top: 96px; width: 820px; height: 888px; border-radius: 24px; background: #fff; }
+    #fx { left: 1046px; top: 124px; width: 300px; height: 80px; border-radius: 18px; background: #e6e3ff; color: #3b37e6; text-align: center; font: 700 38px/80px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    #f-sub { left: 1390px; top: 136px; font: 800 30px/56px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .fr2 { left: 1150px; width: 640px; height: 76px; border-radius: 16px; background: #fbf8f4; box-shadow: 0 0 0 4px #0e0c1d; }
+    .fr2 .nm { position: absolute; left: 22px; top: 0; font: 700 34px/76px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; }
+    .fr2 .tg { position: absolute; right: 16px; top: 14px; height: 48px; padding: 0 18px; border-radius: 999px; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; }
+    .fr2 .tg.fire { background: #b8235a; color: #fff; opacity: 0; }
+    .fr2 .tg.l55 { background: #ece7df; color: #3e3b52; }
+    .fon { left: 1150px; width: 640px; height: 76px; border-radius: 16px; opacity: 0; }
+    .fon.acc { background: #e6e3ff; box-shadow: 0 0 0 4px #3b37e6; }
+    .fon.red { background: #fbe0ea; box-shadow: 0 0 0 6px #b8235a; }
+    .fon .nm { position: absolute; left: 22px; top: 0; font: 700 34px/76px "JetBrains Mono", monospace; white-space: nowrap; }
+    .fon.acc .nm { color: #3b37e6; }
+    .fon.red .nm { color: #b8235a; }
+    #f-more { left: 1150px; top: 884px; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- ===== the kitchen ===== -->
+        <div id="kitchen" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="k-head" class="s-abs">Friday <span>dinner</span></div>
+          <div id="fr-a" class="s-abs fr s-hide" style="left:110px"><div class="av" style="background:#3b37e6">A</div><div class="nm">Ana</div></div>
+          <div id="fr-b" class="s-abs fr s-hide" style="left:330px"><div class="av" style="background:#1f7a5c">B</div><div class="nm">Ben</div></div>
+          <div id="fr-c" class="s-abs fr s-hide" style="left:550px"><div class="av" style="background:#b8235a">C</div><div class="nm">Chloe</div></div>
+
+          <svg id="k-pan" class="s-abs" viewBox="0 0 760 560">
+            <!-- smoke: grey wisps, drawn when the voice says smoke -->
+            <g id="smoke">
+              <path id="sm1" d="M210 300 C180 260 240 230 210 190 C180 150 240 120 210 80" fill="none" stroke="#6f6b80" stroke-width="12" stroke-linecap="round" />
+              <path id="sm2" d="M330 290 C300 250 360 220 330 180 C300 140 360 110 330 60" fill="none" stroke="#6f6b80" stroke-width="12" stroke-linecap="round" />
+              <path id="sm3" d="M450 300 C420 260 480 230 450 190 C420 150 480 120 450 80" fill="none" stroke="#6f6b80" stroke-width="12" stroke-linecap="round" />
+            </g>
+            <!-- the food in the pan -->
+            <g id="food">
+              <ellipse cx="240" cy="356" rx="62" ry="26" fill="#d9a441" stroke="#0e0c1d" stroke-width="5" />
+              <ellipse cx="350" cy="350" rx="70" ry="30" fill="#d9a441" stroke="#0e0c1d" stroke-width="5" />
+              <ellipse cx="460" cy="358" rx="58" ry="24" fill="#d9a441" stroke="#0e0c1d" stroke-width="5" />
+            </g>
+            <g id="burnt" opacity="0">
+              <ellipse cx="240" cy="356" rx="62" ry="26" fill="#3e2a22" stroke="#0e0c1d" stroke-width="5" />
+              <ellipse cx="350" cy="350" rx="70" ry="30" fill="#3e2a22" stroke="#0e0c1d" stroke-width="5" />
+              <ellipse cx="460" cy="358" rx="58" ry="24" fill="#3e2a22" stroke="#0e0c1d" stroke-width="5" />
+            </g>
+            <!-- the pan -->
+            <rect x="560" y="378" width="190" height="34" rx="14" fill="#0e0c1d" />
+            <path d="M110 370 L590 370 L560 470 Q556 486 538 486 L162 486 Q144 486 140 470 Z" fill="#0e0c1d" />
+            <rect x="96" y="360" width="508" height="22" rx="10" fill="#3e3b52" stroke="#0e0c1d" stroke-width="4" />
+            <!-- the stove -->
+            <rect x="60" y="500" width="600" height="40" rx="12" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" />
+            <path id="flame" d="M300 500 q-10 -22 4 -34 q4 16 14 10 q2 -14 12 -22 q14 20 6 46 z" fill="#b9741a" stroke="#0e0c1d" stroke-width="3" />
+          </svg>
+        </div>
+
+        <!-- card 1: Ana typed a word -->
+        <div id="c1" class="s-abs card s-ol s-hide" style="top:110px">
+          <div class="who"><span class="av" style="background:#3b37e6">A</span>Servings? <b id="c1-two" style="opacity:0">two</b></div>
+          <div class="strip"></div>
+          <div class="cd" id="c1-cd">servings = int(<span class="s">"two"</span>)</div>
+          <div class="msg" id="c1-msg">invalid literal for int() with base 10: 'two'</div>
+          <div class="pill" id="c1-pill">ValueError</div>
+        </div>
+        <!-- card 2: zero guests -->
+        <div id="c2" class="s-abs card s-ol s-hide" style="top:340px">
+          <div class="who">Guests who said yes: <b id="c2-zero" style="color:#b8235a">0</b></div>
+          <div class="strip"></div>
+          <div class="cd" id="c2-cd">share = <span class="n">2400</span> / guests</div>
+          <div class="msg" id="c2-msg">division by zero</div>
+          <div class="pill" id="c2-pill">ZeroDivisionError</div>
+        </div>
+        <!-- card 3: quinoa -->
+        <div id="c3" class="s-abs card s-ol s-hide" style="top:570px">
+          <div class="who"><span class="av" style="background:#1f7a5c">B</span>Quinoa, please!</div>
+          <div class="strip"></div>
+          <div class="cd" id="c3-cd">grams = protein[<span class="s">"quinoa"</span>]</div>
+          <div class="msg" id="c3-msg">'quinoa'</div>
+          <div class="pill" id="c3-pill">KeyError</div>
+        </div>
+        <div id="n-exc" class="s-abs s-hide">each one is an <b>exception</b></div>
+
+        <!-- ===== the smoke alarm: the traceback ===== -->
+        <div id="tb" class="s-abs s-ol s-hide">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span><b>smoke alarm</b> · dinner.py</span></div>
+          <div class="tr out" id="r0" style="top:94px">Each guest: 800.0 kcal</div>
+          <div class="tr" id="r1" style="top:142px">Traceback (most recent call last):</div>
+          <div class="tr" id="r2" style="top:190px">  File "dinner.py", line 9, in &lt;module&gt;</div>
+          <div class="tr src" id="r3" style="top:238px">    plan_dinner(0)</div>
+          <div class="tr mk" id="r4" style="top:286px">    ~~~~~~~~~~~^^^</div>
+          <div class="tr" id="r5" style="top:334px">  File "dinner.py", line 5, in plan_dinner</div>
+          <div class="tr src" id="r6" style="top:382px">    share = kcal_per_guest(2400, guests)</div>
+          <div class="tr" id="r7" style="top:430px">  File "dinner.py", line 2, in kcal_per_guest</div>
+          <div class="tr src" id="r8" style="top:478px">    return total_kcal / guests</div>
+          <div class="tr mk" id="r9" style="top:526px">           ~~~~~~~~~~~^~~~~~~~</div>
+          <div class="tr last" id="r10" style="top:574px"><span>ZeroDivisionError</span>: division by zero</div>
+        </div>
+
+        <!-- ===== the code ===== -->
+        <div id="cp" class="s-abs s-ol s-hide">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>dinner.py</span></div>
+          <div class="hl red" id="h2" style="top:142px"></div>
+          <div class="hl yel" id="h5" style="top:298px"></div>
+          <div class="hl grn" id="h9" style="top:506px"></div>
+          <div class="no" style="top:90px">1</div><div class="no" style="top:142px">2</div><div class="no" style="top:194px">3</div>
+          <div class="no" style="top:246px">4</div><div class="no" style="top:298px">5</div><div class="no" style="top:350px">6</div>
+          <div class="no" style="top:402px">7</div><div class="no" style="top:454px">8</div><div class="no" style="top:506px">9</div>
+          <div class="cl" style="top:90px"><span class="k">def</span> <span class="f">kcal_per_guest</span>(total_kcal, guests):</div>
+          <div class="cl" style="top:142px">    <span class="k">return</span> total_kcal / guests</div>
+          <div class="cl" style="top:246px"><span class="k">def</span> <span class="f">plan_dinner</span>(guests):</div>
+          <div class="cl" style="top:298px">    share = <span class="f">kcal_per_guest</span>(<span class="n">2400</span>, guests)</div>
+          <div class="cl" style="top:350px">    <span class="f">print</span>(<span class="s">f"Each guest: {share} kcal"</span>)</div>
+          <div class="cl" style="top:454px"><span class="f">plan_dinner</span>(<span class="n">3</span>)</div>
+          <div class="cl" style="top:506px"><span class="f">plan_dinner</span>(<span class="n">0</span>)</div>
+        </div>
+        <div id="n-fine" class="s-abs note bad s-hide" style="left:1010px; top:760px">line 9 looks fine...?</div>
+        <div id="n-burnt" class="s-abs note dark s-hide" style="left:1640px; top:232px">burnt</div>
+        <div id="n-called" class="s-abs note bad s-hide" style="left:1010px; top:760px">5 called it</div>
+        <div id="n-slip" class="s-abs note ok s-hide" style="left:1250px; top:760px">9 sent the 0 guests</div>
+
+        <!-- badges in the traceback gutter -->
+        <div id="b1" class="s-abs badge s-hide" style="left:135px; top:691px">1</div>
+        <div id="b2" class="s-abs badge s-hide" style="left:135px; top:547px">2</div>
+        <div id="b3" class="s-abs badge ink s-hide" style="left:135px; top:451px">3</div>
+
+        <!-- ===== the family ===== -->
+        <div id="famg" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="fam" class="s-abs s-ol"></div>
+          <svg class="s-abs" style="left:0;top:0;width:1920px;height:1080px" viewBox="0 0 1920 1080">
+            <path d="M1100 206 V 818 M1100 278 H1150 M1100 383 H1150 M1100 488 H1150 M1100 593 H1150 M1100 698 H1150 M1100 803 H1150" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" />
+          </svg>
+          <div id="fx" class="s-abs">Exception</div>
+          <div id="f-sub" class="s-abs">they are all Exceptions</div>
+          <div class="s-abs fr2" style="top:240px"><div class="nm">ValueError</div></div>
+          <div class="s-abs fr2" style="top:345px"><div class="nm">TypeError</div></div>
+          <div class="s-abs fr2" style="top:450px"><div class="nm">KeyError</div></div>
+          <div class="s-abs fr2" style="top:555px"><div class="nm">IndexError</div></div>
+          <div class="s-abs fr2" style="top:660px"><div class="nm">ZeroDivisionError</div><div class="tg fire" id="tg-fire">fired</div></div>
+          <div class="s-abs fr2" style="top:765px"><div class="nm">FileNotFoundError</div><div class="tg l55">lesson 55</div></div>
+          <div id="f-more" class="s-abs">and more: NameError, SyntaxError...</div>
+        </div>
+        <div id="on-v" data-layout-allow-overlap class="s-abs fon acc" style="top:240px"><div class="nm">ValueError</div></div>
+        <div id="on-t" data-layout-allow-overlap class="s-abs fon acc" style="top:345px"><div class="nm">TypeError</div></div>
+        <div id="on-k" data-layout-allow-overlap class="s-abs fon acc" style="top:450px"><div class="nm">KeyError</div></div>
+        <div id="on-i" data-layout-allow-overlap class="s-abs fon acc" style="top:555px"><div class="nm">IndexError</div></div>
+        <div id="on-z" data-layout-allow-overlap class="s-abs fon red" style="top:660px"><div class="nm">ZeroDivisionError</div></div>
+        <div id="tg-fire2" class="s-abs s-hide" style="left:1656px; top:674px; height:48px; padding:0 18px; border-radius:999px; background:#b8235a; color:#fff; font:800 28px/48px 'Manrope', sans-serif; white-space:nowrap">fired</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-top" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+          <path id="a-top" style="stroke:#ff6b8b" />
+          <path id="r-k9" style="stroke:#ff6b8b" />
+          <path id="a-up" style="stroke:#ffc24b" />
+          <path id="r-last" style="stroke:#ffc24b" />
+          <path id="r-div" style="stroke:#ff6b8b" />
+          <path id="r-f7" style="stroke:#ff6b8b" />
+          <path id="a-2" style="stroke:#ff6b8b" />
+          <path id="a-5" style="stroke:#ffc24b" />
+          <path id="a-9" style="stroke:#4bd69b" />
+          <path id="r-zero" style="stroke:#4bd69b" />
+          <path id="a-fire" style="stroke:#b8235a" />
+          <path id="r-fx" style="stroke:#3b37e6" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.488, 0.813, 1.184, 1.591, 1.892, 2.067, 2.45, 3.297, 3.564, 3.692, 4.04, 4.447, 4.598, 5.666, 6.06, 6.432, 6.594, 7.14, 7.419, 7.581, 8.812, 9.868, 10.368, 10.704, 10.983, 11.227, 11.471, 11.552, 11.935, 12.121, 12.249, 13.549, 14.153, 14.93, 15.093, 15.546, 15.639, 15.94, 16.324, 16.823, 17.647, 18.1, 18.692, 19.818, 20.19, 20.643, 20.794, 21.397, 21.595, 21.722, 22.001, 22.361, 22.663, 23.046, 23.859, 24.218, 25.043, 25.333, 25.519, 25.635, 25.739, 26.808, 27.284, 27.864, 28.073, 28.375, 28.514, 28.746, 29.443, 29.629, 29.745, 31.115, 31.382, 31.695, 31.904, 31.997, 32.171, 32.287, 32.729, 32.938, 33.356, 33.53, 33.623, 33.936, 34.11, 34.447, 35.352, 35.642, 35.782, 35.968, 36.095, 37.175, 37.953, 38.139, 38.429, 38.719, 39.044, 39.149, 39.822, 40.321, 40.554, 41.355, 42.028, 42.295, 42.562, 42.771, 42.945, 43.247, 43.456, 43.584, 44.454, 44.791, 45.453, 45.72, 46.324, 46.602, 47.369, 47.984, 48.367, 48.843, 49.18, 49.54, 49.865, 50.213, 50.422, 50.712, 51.2, 51.606, 52.105, 53.023, 53.882, 54.091, 54.497, 55.252, 55.577, 55.821, 56.61, 57.074, 57.527, 57.957, 58.375, 58.804, 59.292, 59.954, 60.627, 61.045, 62.659, 62.903, 63.019, 63.773, 64.11, 64.296, 64.714, 65.097, 65.84, 66.107, 66.525, 66.653, 67.152, 67.465, 67.883, 68.034, 68.162];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const prep = (p) => { const L = p.getTotalLength(); p.style.strokeDasharray = p.style.strokeDasharray && p.id === "r-top" ? p.style.strokeDasharray : L; p.style.strokeDashoffset = L; p.dataset.len = L; };
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d); prep(p);
+      };
+      const arrowPath = (id, x1, y1, qx, qy, x2, y2) => {
+        const a = Math.atan2(y2 - qy, x2 - qx), b = 26, s = 0.5;
+        const h1 = [x2 - b * Math.cos(a - s), y2 - b * Math.sin(a - s)], h2 = [x2 - b * Math.cos(a + s), y2 - b * Math.sin(a + s)];
+        const p = document.getElementById(id);
+        p.setAttribute("d", `M${x1} ${y1} Q${qx} ${qy} ${x2} ${y2} M${h1[0]} ${h1[1]} L${x2} ${y2} L${h2[0]} ${h2[1]}`);
+        prep(p);
+      };
+
+      // Traceback text: page x 186 + col * 16.8, row i centre y 214 + 48 * i.
+      const TB = ["Each guest: 800.0 kcal", "Traceback (most recent call last):", '  File "dinner.py", line 9, in <module>', "    plan_dinner(0)", "    ~~~~~~~~~~~^^^", '  File "dinner.py", line 5, in plan_dinner', "    share = kcal_per_guest(2400, guests)", '  File "dinner.py", line 2, in kcal_per_guest', "    return total_kcal / guests", "           ~~~~~~~~~~~^~~~~~~~", "ZeroDivisionError: division by zero"];
+      const TX = (c) => 186 + c * 16.8, TY = (i) => 214 + 48 * i;
+      const tbRing = (id, i, c0, c1) => ring(id, (TX(c0) + TX(c1 + 1)) / 2, TY(i), (TX(c1 + 1) - TX(c0)) / 2 + 14, 28);
+      // Code: page x 1080 + col * 18, line r centre y 212 + (r - 1) * 52.
+      const CX = (c) => 1080 + c * 18, CY = (r) => 212 + (r - 1) * 52;
+
+      tbRing("r-top", 2, 2, TB[2].length - 1);
+      ring("r-k9", (CX(0) + CX(14)) / 2, CY(9), (CX(14) - CX(0)) / 2 + 16, 30);
+      tbRing("r-last", 10, 0, TB[10].length - 1);
+      const dv = TB[10].indexOf("division");
+      tbRing("r-div", 10, dv, TB[10].length - 1);
+      const l2 = TB[7].indexOf("line 2");
+      tbRing("r-f7", 7, l2, TB[7].length - 1);
+      ring("r-zero", CX(12) + 9, CY(9), 24, 30);
+      ring("r-fx", 1196, 164, 172, 54);
+      const endX = (i) => TX(TB[i].length) + 16;
+      arrowPath("a-top", endX(2), TY(2), 1010, 640, CX(0) - 14, CY(9));
+      arrowPath("a-9", endX(2), TY(2) - 6, 1010, 300, CX(0) - 14, CY(9) - 4);
+      arrowPath("a-2", TX(TB[7].length) + 4, TY(7) - 22, 990, 300, CX(0) - 14, CY(2));
+      arrowPath("a-5", endX(5), TY(5), 990, 440, CX(0) - 14, CY(5));
+      arrowPath("a-up", 118, 700, 112, 450, 118, 300);
+      arrowPath("a-fire", TX(TB[10].length) + 14, TY(10) + 2, 980, 700, 1140, 698);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const slideIn = (sel, at) => tl.fromTo(sel, { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, at);
+
+      /* ---- set up: the smoke is hidden until the voice says smoke ---- */
+      ["sm1", "sm2", "sm3"].forEach((id) => prep(document.getElementById(id)));
+      tl.set("#s-cursor", { x: 600, y: 760 }, 0);
+
+      /* ---- 1. Kitchen Coach plans Friday dinner for three friends. The pan starts to smoke ---- */
+      pop("#fr-a", t(6), { from: 0.5 });
+      pop("#fr-b", t(6) + 0.15, { from: 0.5 });
+      pop("#fr-c", t(6) + 0.3, { from: 0.5 });
+      ["sm1", "sm2", "sm3"].forEach((id, i) => {
+        const p = document.getElementById(id);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: 0.9, ease: "power1.out", immediateRender: false }, t(11) + i * 0.15);
+      });
+      // the smoke keeps drifting up, a little at a time, for the whole kitchen part
+      tl.fromTo("#smoke", { y: 0 }, { y: -36, duration: 22, ease: "none", immediateRender: false }, t(11));
+
+      /* ---- 2. Ana typed her servings as a word. Two. Python stops. ValueError ---- */
+      slideIn("#c1", t(14));
+      pop("#c1-two", t(21), { from: 0.4 });
+      type("#c1-cd", t(22), 21, 0.6);
+      tl.to("#burnt", { opacity: 1, duration: 0.6, ease: "power1.inOut" }, t(31));
+      pop("#c1-pill", t(32), { from: 0.5 });
+      show("#c1-msg", t(32) + 0.2, 0.3);
+
+      /* ---- 3. The calories are split between zero guests. ZeroDivisionError. Quinoa. KeyError ---- */
+      slideIn("#c2", t(34));
+      type("#c2-cd", t(37), 20, 0.5);
+      bump("#c2-zero", t(39));
+      pop("#c2-pill", t(41), { from: 0.5 });
+      show("#c2-msg", t(41) + 0.2, 0.3);
+      slideIn("#c3", t(44));
+      type("#c3-cd", t(47), 25, 0.6);
+      pop("#c3-pill", t(55), { from: 0.5 });
+      show("#c3-msg", t(55) + 0.2, 0.3);
+
+      /* ---- 4. Each one is an exception ---- */
+      bump("#c1-pill", t(57));
+      bump("#c2-pill", t(57) + 0.15);
+      bump("#c3-pill", t(57) + 0.3);
+      pop("#n-exc", t(61), { from: 0.6 });
+
+      /* ---- 5. Python stops and tells you what burnt, in a traceback ---- */
+      out(["#kitchen", "#c1", "#c2", "#c3", "#n-exc"], t(63) + 0.1, 0.35);
+      tl.fromTo("#cp", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(65));
+      tl.fromTo("#tb", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(68));
+      for (let i = 0; i <= 10; i++) show("#r" + i, t(71) - 0.3 + i * 0.07, 0.15);
+
+      /* ---- 6. Most people read it from the top, and stare at a line that looks fine ---- */
+      tl.set("#s-cursor", { x: 700, y: 820 }, t(72) - 0.3);
+      cursorIn(t(72) - 0.3);
+      cursorTo(TX(20), TY(2) + 8, t(73), 0.6);
+      draw("r-top", t(78), 0.5);
+      cursorTo(CX(6), CY(9) + 14, t(80), 0.6);
+      draw("a-top", t(80), 0.6);
+      draw("r-k9", t(83), 0.4);
+      pop("#n-fine", t(85), { from: 0.6 });
+      cursorOut(t(86) + 0.3);
+
+      /* ---- 7. Read it from the bottom. 1 the last line. 2 the line where it burnt ---- */
+      out(["#r-top", "#a-top", "#r-k9", "#n-fine"], t(87), 0.25);
+      draw("a-up", t(91), 0.6);
+      pop("#b1", t(92), { from: 0.4 });
+      draw("r-last", t(96), 0.5);
+      out("#r-last", t(99) - 0.1, 0.15);
+      draw("r-div", t(99), 0.45);
+      pop("#b2", t(102), { from: 0.4 });
+      draw("r-f7", t(107), 0.5);
+      draw("a-2", t(111), 0.5);
+      show("#h2", t(112), 0.3);
+      pop("#n-burnt", t(114), { from: 0.6 });
+
+      /* ---- 8. Three. Walk up. Line 5 called it, and line 9 sent zero guests ---- */
+      pop("#b3", t(117), { from: 0.4 });
+      tl.set("#s-cursor", { x: TX(30), y: TY(7) + 6 }, t(118) - 0.25);
+      cursorIn(t(118) - 0.25);
+      cursorTo(TX(30), TY(5) + 6, t(118), 0.5);
+      draw("a-5", t(120), 0.5);
+      show("#h5", t(121), 0.3);
+      pop("#n-called", t(122), { from: 0.6 });
+      cursorTo(TX(30), TY(2) + 6, t(124), 0.5);
+      draw("a-9", t(125), 0.5);
+      show("#h9", t(126), 0.3);
+      draw("r-zero", t(128), 0.4);
+      pop("#n-slip", t(128) + 0.2, { from: 0.6 });
+      cursorOut(t(129));
+
+      /* ---- 9. Exceptions have named types, all one family ---- */
+      out(["#cp", "#h2", "#h5", "#h9", "#n-burnt", "#n-called", "#n-slip", "#a-2", "#a-5", "#a-9", "#r-zero", "#r-f7", "#a-up", "#b2", "#b3"], t(130) - 0.1, 0.3);
+      tl.fromTo("#famg", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(130) + 0.3);
+      draw("a-fire", t(133), 0.5);
+      show("#on-z", t(133) + 0.3, 0.3);
+      pop("#tg-fire2", t(133) + 0.4, { from: 0.5 });
+      show("#on-v", t(137), 0.2);
+      bump("#on-v", t(137));
+      show("#on-t", t(139), 0.2);
+      bump("#on-t", t(139));
+      show("#on-k", t(141), 0.2);
+      bump("#on-k", t(141));
+      show("#on-i", t(143), 0.2);
+      bump("#on-i", t(143));
+      draw("r-fx", t(145), 0.5);
+      bump("#fx", t(146));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 62.9);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,17 @@
+Kitchen Coach keeps a jar on the counter. Calories today. It starts at zero.
+
+Ana eats breakfast. A recipe card called eat should add four hundred and fifty.
+
+But every card cooks in its own pan. Any name the card fills in becomes a new jar, inside the pan. Same name, a different jar.
+
+So this line reads the pan jar, before anything is in it. It is empty. Python stops. Unbound local error.
+
+The counter jar is never touched.
+
+And when the card is done, the pan is washed. Its jars are gone.
+
+The fix: pass the total in. Return hands the new total back, and you pour it into the counter jar. Four hundred and fifty.
+
+You could write global, so the card reaches the counter jar. It works. But then any card can change your jar behind your back.
+
+What is made in the pan stays in the pan. Pass it in, hand it back.

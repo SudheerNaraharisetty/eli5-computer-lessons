@@ -1,0 +1,377 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Ana's message */
+    .msg { left: 1190px; top: 96px; width: 640px; height: 120px; border-radius: 28px; background: #fff; }
+    .msg .av { position: absolute; left: 24px; top: 24px; width: 72px; height: 72px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/72px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .msg .who { position: absolute; left: 122px; top: 12px; font: 800 28px/40px "Manrope", sans-serif; }
+    .msg .say { position: absolute; left: 122px; top: 54px; font: 800 36px/50px "Manrope", sans-serif; color: #0e0c1d; white-space: nowrap; }
+
+    /* the stove and the pan: the inside of one call */
+    #handle { left: 1716px; top: 404px; width: 124px; height: 30px; border-radius: 12px; background: #0e0c1d; }
+    #pan { left: 1196px; top: 262px; width: 540px; height: 290px; border-radius: 70px; background: #fbebd2; }
+    #stove { left: 1190px; top: 566px; width: 640px; height: 34px; border-radius: 10px; background: #0e0c1d; }
+    .ptitle { left: 1196px; top: 274px; width: 540px; text-align: center; font: 700 34px/48px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; }
+    #pt2 { color: #3b37e6; font-family: "Manrope", sans-serif; font-weight: 800; }
+    .jar { top: 352px; width: 210px; height: 120px; border-radius: 24px; background: #fff; border: 5px solid #0e0c1d; }
+    .jar.dash { background: #fbf8f4; border: 5px dashed #0e0c1d; }
+    .jar.red { background: #fbe0ea; border: 5px dashed #b8235a; }
+    .lid { top: 336px; width: 104px; height: 20px; border-radius: 8px; background: #0e0c1d; }
+    .lid.red { background: #b8235a; }
+    .jlbl { top: 480px; width: 260px; text-align: center; font: 700 30px/42px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; }
+    .jlbl.red { color: #b8235a; }
+    #empty { left: 1486px; top: 352px; width: 210px; text-align: center; font: 800 36px/120px "Manrope", sans-serif; color: #b8235a; }
+    #waves { left: 1196px; top: 262px; width: 540px; height: 290px; overflow: visible; }
+    #waves path { fill: none; stroke: #3b37e6; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+
+    /* the counter: the top of the file */
+    #slab { left: 1190px; top: 822px; width: 640px; height: 160px; border-radius: 22px; background: #ece7df; }
+    #slab-t { left: 1222px; top: 842px; font: 800 32px/44px "Manrope", sans-serif; color: #0e0c1d; }
+    #slab-s { left: 1222px; top: 888px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #cjar { left: 1530px; top: 668px; width: 250px; height: 150px; border-radius: 26px; background: #fff; }
+    #clid { left: 1595px; top: 646px; width: 120px; height: 24px; border-radius: 9px; background: #0e0c1d; }
+    #clbl { left: 1505px; top: 900px; width: 300px; text-align: center; font: 700 30px/42px "JetBrains Mono", monospace; color: #3e3b52; }
+    .cv { left: 1530px; top: 668px; width: 250px; text-align: center; font: 700 64px/150px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .cv.ok { color: #1f7a5c; }
+    .cv.bad { color: #b8235a; }
+    .tag { height: 56px; padding: 0 22px; border-radius: 999px; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .tag.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    .tag.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    .card { left: 1206px; width: 262px; height: 66px; border-radius: 16px; background: #fbebd2; text-align: center; font: 700 32px/66px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d, 0 7px 0 4px #0e0c1d; }
+
+    .chip { left: 0; top: 0; width: 150px; height: 84px; border-radius: 16px; background: #3b37e6; color: #fff; text-align: center; font: 700 50px/84px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    .chip.ok { background: #1f7a5c; }
+
+    /* code panel on the left: 34px mono = 20.4 px per char, text at page x 136, row r centre at page y 212 + (r - 1) * 56 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 34px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .g { color: #ff8fab; }
+    #s-div { position: absolute; left: 40px; top: 600px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 608px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 34px/48px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; font-size: 30px; }
+    .s-note { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-marks path.head { fill: #ffc24b; stroke: none; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="53" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>coach.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px">kcal_today = <span class="n">0</span></div>
+          <!-- the broken card -->
+          <div class="s-ln" id="L3" style="top:200px"><span class="k">def</span> <span class="f">eat</span>(kcal):</div>
+          <div class="s-ln" id="L4" style="top:256px">    kcal_today = kcal_today + kcal</div>
+          <div class="s-ln" id="L6" style="top:368px"><span class="f">eat</span>(<span class="n">450</span>)</div>
+          <!-- the fix -->
+          <div class="s-ln" id="F3" style="top:200px"><span class="k">def</span> <span class="f">eat</span>(total, kcal):</div>
+          <div class="s-ln" id="F4" style="top:256px">    <span class="k">return</span> total + kcal</div>
+          <div class="s-ln" id="F6" style="top:368px">kcal_today = <span class="f">eat</span>(kcal_today, <span class="n">450</span>)</div>
+          <!-- the global version -->
+          <div class="s-ln" id="G4" style="top:256px">    <span class="g">global</span> kcal_today</div>
+          <div class="s-ln" id="G5" style="top:312px">    kcal_today = kcal_today + kcal</div>
+          <div class="s-ln" id="G7" style="top:424px"><span class="f">eat</span>(<span class="n">450</span>)</div>
+
+          <div class="s-note" id="n-two" style="left:40px; top:500px">same name, two different jars</div>
+          <div class="s-note ok" id="n-fix" style="left:40px; top:500px">pass it in, hand it back</div>
+          <div class="s-note bad" id="n-glob" style="left:40px; top:500px">global: the card reaches outside its pan</div>
+          <div class="s-note bad" id="n-who" style="left:40px; top:500px">who changed it?</div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out err" id="o-e1" style="top:652px">UnboundLocalError: cannot access</div>
+          <div class="s-out err" id="o-e2" style="top:700px">local variable 'kcal_today'</div>
+          <div class="s-out err" id="o-e3" style="top:748px">where it is not associated with a value</div>
+          <div class="s-out" id="o-450" style="top:652px">kcal_today is now 450</div>
+          <div class="s-out" id="o-g450" style="top:652px">kcal_today is now 450</div>
+        </div>
+
+        <!-- Ana -->
+        <div id="m-ana" class="s-abs msg s-ol s-hide"><div class="av" style="background:#3b37e6">A</div><div class="who" style="color:#3b37e6">Ana</div><div class="say">breakfast: 450 kcal</div></div>
+
+        <!-- the stove and the pan -->
+        <div id="pang" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="handle" class="s-abs"></div>
+          <div id="pan" class="s-abs s-ol"></div>
+          <div id="stove" class="s-abs"></div>
+        </div>
+        <div id="pt1" class="s-abs ptitle s-hide">the pan: eat(450)</div>
+        <div id="pt2" class="s-abs ptitle s-hide">washed</div>
+        <div id="pt3" class="s-abs ptitle s-hide">the pan: eat(0, 450)</div>
+        <div id="pt4" class="s-abs ptitle s-hide">the pan: eat(450)</div>
+
+        <!-- pan jars -->
+        <div id="pjar1" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-abs jar" style="left:1246px"></div><div class="s-abs lid" style="left:1299px"></div>
+        </div>
+        <div id="pjar2d" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-abs jar dash" style="left:1486px"></div><div class="s-abs lid" style="left:1539px"></div>
+        </div>
+        <div id="pjar2r" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-abs jar red" style="left:1486px"></div><div class="s-abs lid red" style="left:1539px"></div>
+        </div>
+        <div id="pjar2s" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div class="s-abs jar" style="left:1486px"></div><div class="s-abs lid" style="left:1539px"></div>
+        </div>
+        <div id="pl1a" class="s-abs jlbl s-hide" style="left:1221px">kcal</div>
+        <div id="pl1b" class="s-abs jlbl s-hide" style="left:1221px">total</div>
+        <div id="pl1c" class="s-abs jlbl s-hide" style="left:1221px">kcal</div>
+        <div id="pl2a" class="s-abs jlbl s-hide" style="left:1461px">kcal_today</div>
+        <div id="pl2r" class="s-abs jlbl red s-hide" style="left:1461px">kcal_today</div>
+        <div id="pl2b" class="s-abs jlbl s-hide" style="left:1461px">kcal</div>
+        <div id="empty" class="s-abs s-hide">empty</div>
+        <svg id="waves" class="s-abs" viewBox="0 0 540 290">
+          <path id="w1" d="M60 120 q30 -22 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" />
+          <path id="w2" d="M40 170 q30 -22 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" />
+          <path id="w3" d="M60 220 q30 -22 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" />
+        </svg>
+
+        <!-- the counter: always on screen -->
+        <div id="slab" class="s-abs s-ol"></div>
+        <div id="slab-t" class="s-abs">the counter</div>
+        <div id="slab-s" class="s-abs">top of the file</div>
+        <div id="cjar" class="s-abs s-ol"></div>
+        <div id="clid" class="s-abs"></div>
+        <div id="clbl" class="s-abs">kcal_today</div>
+        <div id="cv0" class="s-abs cv s-hide">0</div>
+        <div id="cv450" class="s-abs cv ok s-hide">450</div>
+        <div id="cv0b" class="s-abs cv s-hide">0</div>
+        <div id="cv450b" class="s-abs cv ok s-hide">450</div>
+        <div id="cvq" class="s-abs cv bad s-hide">?</div>
+        <div id="t-still" class="s-abs tag ok s-hide" style="left:1206px; top:710px">never touched</div>
+        <div id="t-gone" class="s-abs tag bad s-hide" style="left:1300px; top:404px">jars gone</div>
+        <div id="bc1" class="s-abs card s-hide" style="top:660px">snack()</div>
+        <div id="bc2" class="s-abs card s-hide" style="top:752px">reset()</div>
+
+        <!-- flying values -->
+        <div id="ch450" class="s-abs chip s-hide">450</div>
+        <div id="ch0" class="s-abs chip s-hide">0</div>
+        <div id="ch450b" class="s-abs chip s-hide">450</div>
+        <div id="ch450c" class="s-abs chip ok s-hide">450</div>
+        <div id="ch450g" class="s-abs chip s-hide">450</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-l1" style="stroke:#ffc24b" />
+          <path id="r-left" style="stroke:#ffc24b" />
+          <path id="r-right" style="stroke:#ff6b8b" />
+          <path id="r-err" style="stroke:#ff6b8b" />
+          <path id="r-cjar" style="stroke:#1f7a5c" />
+          <path id="r-pour" style="stroke:#4bd69b" />
+          <path id="r-glob" style="stroke:#ff6b8b" />
+          <path id="a-read" style="stroke:#b8235a" />
+          <path id="a-reach" style="stroke:#b8235a" />
+          <path id="a-b1" style="stroke:#b8235a" />
+          <path id="a-b2" style="stroke:#b8235a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.453, 0.778, 1.08, 1.196, 1.556, 1.66, 1.788, 2.554, 3.088, 3.889, 4.098, 4.481, 4.632, 5.77, 6.165, 6.49, 7.57, 7.732, 8.115, 8.417, 8.754, 9.079, 9.288, 9.497, 9.752, 10.066, 10.228, 11.122, 11.355, 11.726, 12.086, 12.446, 12.562, 12.771, 13.096, 14.036, 14.373, 14.652, 14.768, 15.058, 15.383, 15.569, 16.056, 16.288, 16.567, 17.101, 17.74, 17.856, 18.831, 19.191, 19.632, 19.795, 20.178, 20.898, 21.083, 21.281, 21.536, 21.815, 21.931, 22.244, 22.744, 23.127, 23.568, 23.707, 23.847, 24.311, 24.508, 24.648, 25.6, 26.099, 27.097, 27.852, 28.235, 28.955, 29.106, 29.443, 29.721, 29.977, 30.29, 31.08, 31.265, 31.416, 31.521, 31.881, 32.032, 32.496, 32.658, 32.948, 33.169, 33.865, 34.202, 34.585, 34.806, 35.502, 35.677, 36.234, 36.605, 36.733, 37.151, 37.894, 38.335, 38.672, 38.8, 38.997, 39.415, 39.949, 40.146, 40.332, 40.599, 40.762, 41.052, 41.191, 41.621, 42.48, 42.782, 43.095, 43.246, 44.256, 44.431, 44.616, 44.907, 45.719, 45.905, 46.021, 46.404, 46.834, 46.973, 47.368, 48.053, 48.32, 49.098, 49.272, 49.504, 49.795, 50.143, 50.34, 50.689, 50.886, 51.211, 51.559, 51.757, 52.558, 52.778, 52.941, 53.22, 53.312, 53.429, 53.823, 54.172, 54.276, 54.392, 55.019, 55.356, 55.518, 55.89, 56.192, 56.343];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 20.4 px per char. Row r centre y = 212 + (r - 1) * 56.
+      const prep = (p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; };
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d); prep(p);
+      };
+      // An arrow: a curved line with an open arrowhead drawn in the same stroke.
+      const arrowPath = (id, x1, y1, qx, qy, x2, y2) => {
+        const a = Math.atan2(y2 - qy, x2 - qx), b = 26, s = 0.5;
+        const h1 = [x2 - b * Math.cos(a - s), y2 - b * Math.sin(a - s)], h2 = [x2 - b * Math.cos(a + s), y2 - b * Math.sin(a + s)];
+        const p = document.getElementById(id);
+        p.setAttribute("d", `M${x1} ${y1} Q${qx} ${qy} ${x2} ${y2} M${h1[0]} ${h1[1]} L${x2} ${y2} L${h2[0]} ${h2[1]}`);
+        prep(p);
+      };
+      const CW = 20.4;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 16;
+      const ry = (r) => 212 + (r - 1) * 56;
+      ring("r-l1", cx(0, 9), ry(1), rw(0, 9), 30);         // kcal_today on line 1
+      ring("r-left", cx(4, 13), ry(4), rw(4, 13), 30);     // kcal_today = (the jar it fills)
+      ring("r-right", cx(17, 26), ry(4), rw(17, 26), 30);  // kcal_today it reads
+      ring("r-err", 136 + 8.5 * 18, 96 + 652 + 24, 8.5 * 18 + 18, 32);  // UnboundLocalError
+      ring("r-cjar", 1655, 743, 160, 108);                 // the counter jar
+      ring("r-pour", cx(0, 11), ry(6), rw(0, 11), 30);     // kcal_today = on the fixed call line
+      ring("r-glob", cx(4, 20), ry(4), rw(4, 20), 30);     // global kcal_today
+      arrowPath("a-read", cx(17, 26) + 40, ry(4) - 36, 1060, 250, 1478, 400);   // the line reads the pan jar
+      arrowPath("a-reach", 1466, 600, 1480, 690, 1520, 735);                     // global reaches the counter jar
+      arrowPath("a-b1", 1474, 693, 1500, 700, 1522, 720);
+      arrowPath("a-b2", 1474, 785, 1500, 778, 1522, 768);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const swapLine = (a, b, at) => { tl.to(a, { opacity: 0, duration: 0.15 }, at); tl.fromTo(b, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, at + 0.1); };
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // A chip flies from (x0, y0) to (x1, y1), centre points, with a little hop.
+      const CHW = 150, CHH = 84;
+      const fly = (sel, x0, y0, x1, y1, at, d) => {
+        d = d || 0.8;
+        tl.set(sel, { x: x0 - CHW / 2, y: y0 - CHH / 2, scale: 0.5 }, at - 0.01);
+        tl.to(sel, { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }, at);
+        tl.to(sel, { x: x1 - CHW / 2, duration: d, ease: "power2.inOut" }, at + 0.15);
+        tl.to(sel, { y: Math.min(y0, y1) - 110 - CHH / 2, duration: d * 0.55, ease: "power2.out" }, at + 0.15);
+        tl.to(sel, { y: y1 - CHH / 2, duration: d * 0.45, ease: "power2.in" }, at + 0.15 + d * 0.55);
+      };
+      const J1 = [1351, 412], J2 = [1591, 412], CJ = [1655, 743];
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 600, y: 700 }, 0);
+
+      /* ---- 1. A jar on the counter: calories today. It starts at 0 ---- */
+      bump(["#cjar", "#clid"], t(4));
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(7) - 0.3);
+      type("#L1", t(8), 14, 0.5);
+      draw("r-l1", t(9), 0.4);
+      bump("#clbl", t(9));
+      pop("#cv0", t(13), { from: 0.4 });
+      out("#r-l1", t(13) + 0.4, 0.2);
+
+      /* ---- 2. Ana eats breakfast. A card called eat should add 450 ---- */
+      pop("#m-ana", t(14), { from: 0.8 });
+      type("#L3", t(18), 14, 0.5);
+      type("#L4", t(21), 34, 0.9);
+      type("#L6", t(24), 8, 0.35);
+
+      /* ---- 3. Every card cooks in its own pan. A name it fills in is a new jar ---- */
+      out("#m-ana", t(29), 0.3);
+      tl.fromTo("#pang", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)", immediateRender: false }, t(34) - 0.2);
+      show("#pt1", t(35) - 0.1, 0.3);
+      pop("#pjar1", t(35), { from: 0.5 });
+      fly("#ch450", cx(4, 6), ry(6), J1[0], J1[1], t(35) + 0.2, 0.75);
+      pop("#pl1a", t(35) + 0.9, { from: 0.6 });
+      draw("r-left", t(40), 0.4);
+      pop("#pjar2d", t(44), { from: 0.5 });
+      pop("#pl2a", t(45), { from: 0.6 });
+      pop("#n-two", t(49), { from: 0.6 });
+      bump(["#pjar2d", "#pl2a"], t(52));
+      bump(["#cjar", "#clid", "#cv0", "#clbl"], t(53));
+
+      /* ---- 4. This line reads the pan jar before anything is in it. Empty. Python stops ---- */
+      out(["#r-left", "#n-two"], t(54), 0.2);
+      tl.set("#s-cursor", { x: 700, y: 520 }, t(55) - 0.3);
+      cursorIn(t(55) - 0.3);
+      cursorTo(cx(17, 26) - 30, ry(4) + 10, t(55) - 0.2, 0.5);
+      draw("r-right", t(57), 0.4);
+      cursorOut(t(58));
+      draw("a-read", t(58), 0.6);
+      tl.to(["#pjar2d", "#pl2a"], { opacity: 0, duration: 0.2 }, t(68) - 0.1);
+      tl.set(["#pjar2r", "#pl2r"], { opacity: 1 }, t(68) - 0.1);
+      pop("#empty", t(68), { from: 0.5 });
+      show(["#o-e1", "#o-e2", "#o-e3"], t(70), 0.25);
+      draw("r-err", t(71), 0.45);
+
+      /* ---- 5. The counter jar is never touched ---- */
+      out(["#r-right", "#a-read", "#r-err"], t(74) - 0.1, 0.2);
+      draw("r-cjar", t(75), 0.5);
+      pop("#t-still", t(78), { from: 0.6 });
+
+      /* ---- 6. When the card is done, the pan is washed. Its jars are gone ---- */
+      out(["#r-cjar", "#t-still"], t(85), 0.25);
+      tl.to("#pt1", { opacity: 0, duration: 0.2 }, t(89) - 0.2);
+      show("#pt2", t(89), 0.2);
+      ["w1", "w2", "w3"].forEach((id, i) => draw(id, t(89) + i * 0.12, 0.6));
+      tl.to(["#pjar1", "#pl1a", "#ch450", "#pjar2r", "#pl2r", "#empty"], { opacity: 0, scale: 0.6, duration: 0.4, ease: "power2.in" }, t(91));
+      pop("#t-gone", t(93), { from: 0.6 });
+      out(["#w1", "#w2", "#w3"], t(93), 0.3);
+
+      /* ---- 7. The fix: pass the total in. Return hands it back. Pour it into the counter jar ---- */
+      out(["#t-gone", "#pt2", "#o-e1", "#o-e2", "#o-e3"], t(94), 0.25);
+      pop("#n-fix", t(95), { from: 0.6 });
+      swapLine("#L3", "#F3", t(96) - 0.1);
+      swapLine("#L6", "#F6", t(96) + 0.2);
+      show("#pt3", t(97), 0.3);
+      tl.set(["#pjar1", "#pjar2s"], { scale: 1 }, t(97) - 0.05);
+      pop(["#pjar1", "#pjar2s"], t(97), { from: 0.5 });
+      pop("#pl1b", t(98), { from: 0.6 });
+      pop("#pl2b", t(98) + 0.15, { from: 0.6 });
+      // the counter value goes in as total, and 450 as kcal
+      fly("#ch0", CJ[0], CJ[1], J1[0], J1[1], t(98), 0.75);
+      fly("#ch450b", cx(29, 31), ry(6), J2[0], J2[1], t(99), 0.75);
+      swapLine("#L4", "#F4", t(100) - 0.1);
+      // return hands the new total back out of the pan, then it is poured into the counter jar
+      tl.to(["#ch0", "#ch450b"], { opacity: 0, scale: 0.6, duration: 0.25 }, t(104) - 0.2);
+      fly("#ch450c", 1471, 412, 1471, 640, t(104), 0.6);
+      draw("r-pour", t(108), 0.4);
+      tl.to("#ch450c", { x: CJ[0] - CHW / 2, y: CJ[1] - CHH / 2, duration: 0.6, ease: "power2.inOut" }, t(108) + 0.1);
+      tl.to("#ch450c", { opacity: 0, scale: 0.5, duration: 0.2 }, t(112));
+      out("#cv0", t(112), 0.15);
+      pop("#cv450", t(114) - 0.1, { from: 0.4 });
+      show("#o-450", t(114), 0.3);
+      out("#r-pour", t(114) + 0.5, 0.25);
+
+      /* ---- 8. global: the card reaches the counter jar. It works. Any card can change it ---- */
+      out(["#n-fix", "#o-450", "#pt3", "#pl1b", "#pl2b", "#pjar2s", "#F3", "#F4", "#F6", "#cv450"], t(118) - 0.1, 0.25);
+      pop("#cv0b", t(118) + 0.2, { from: 0.6 });
+      tl.fromTo("#L3", { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t(118) + 0.15);
+      type("#G4", t(120), 21, 0.5);
+      tl.fromTo(["#G5", "#G7"], { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t(120) + 0.2);
+      draw("r-glob", t(121), 0.4);
+      pop("#n-glob", t(121) + 0.2, { from: 0.6 });
+      show("#pt4", t(122), 0.3);
+      pop("#pl1c", t(122) + 0.1, { from: 0.6 });
+      fly("#ch450g", cx(4, 6), ry(7), J1[0], J1[1], t(122), 0.7);
+      draw("a-reach", t(125), 0.5);
+      out("#cv0b", t(130) - 0.2, 0.15);
+      pop("#cv450b", t(130) - 0.1, { from: 0.4 });
+      show("#o-g450", t(130), 0.3);
+      out(["#r-glob", "#n-glob"], t(131), 0.2);
+      pop("#bc1", t(133), { from: 0.6 });
+      pop("#bc2", t(134), { from: 0.6 });
+      draw("a-b1", t(136), 0.35);
+      draw("a-b2", t(136) + 0.15, 0.35);
+      out("#cv450b", t(138) - 0.15, 0.15);
+      pop("#cvq", t(138), { from: 0.4 });
+      pop("#n-who", t(138), { from: 0.6 });
+      out("#o-g450", t(138), 0.2);
+      bump(["#cjar", "#clid", "#cvq"], t(141));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 52.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

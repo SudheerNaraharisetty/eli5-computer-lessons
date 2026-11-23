@@ -1,0 +1,13 @@
+Chloe cannot eat gluten. Her fridge card says: never flour, rye or barley. On a sticky note, anyone could change it.
+
+In Python, a set is that sticky note. Wrap it in frozen set, and the card is laminated. Try to add oats, and it bounces off. Attribute error. A frozen set has no add.
+
+Reading still works. Is rye on the card? True.
+
+Freezing has a second power. A frozen thing can be a label. Ana and Ben coming means pasta night. Use a plain set as the key, and Python stops. Type error. Unhashable type, set.
+
+Hashable means Python can make a fixed fingerprint of it. A set can change, so it cannot be a label. A frozen set can. Ben and Ana, or Ana and Ben: same label.
+
+New in Python three fifteen: frozen dict. Grandma's spice ratio, salt five, pepper two, locked for good.
+
+Freeze it when it must not change, or when it needs to be a label.

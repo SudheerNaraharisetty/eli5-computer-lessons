@@ -147,6 +147,15 @@
       }
       try { await py.loadPackagesFromImports(m.src); } catch (e) { /* a bad import shows up as a normal error below */ }
       chunks = []; pend = []; size = 0; cut = false; need = null; answers = m.answers || []; ai = 0; last = Date.now();
+      // Every run starts in a fresh, empty kitchen folder, with the box's ready-made files (o.files) in it.
+      try {
+        py.runPython("import os, shutil\nos.chdir('/')\nshutil.rmtree('/home/pyodide/kitchen', ignore_errors=True)\nos.makedirs('/home/pyodide/kitchen')\nos.chdir('/home/pyodide/kitchen')");
+        for (const [name, text] of Object.entries(m.files || {})) {
+          const full = '/home/pyodide/kitchen/' + name, dir = full.slice(0, full.lastIndexOf('/'));
+          py.FS.mkdirTree(dir);
+          py.FS.writeFile(full, text);
+        }
+      } catch (e) { }
       postMessage({ id: job, t: 'start' });
       const ns = py.globals.get('dict')();
       ns.set('__name__', '__main__');
@@ -214,10 +223,11 @@
   // Editable, runnable code block. lines: array of strings.
   // o: {title, inputs: ['Ana', '3']}. inputs are ready-made answers that input() uses first, in order;
   // when they run out, the output panel asks the learner.
+  // o.files: {'notebook.txt': 'oats\nrice\n'}. Each run starts in a fresh folder holding these files.
   function run(lines, o) {
     o = o || {};
     const src = lines.join('\n');
-    return `<div class="run" data-src="${esc(src)}" data-file="${esc(o.title || 'main.py')}"${o.inputs ? ` data-inputs="${esc(JSON.stringify(o.inputs.map(String)))}"` : ''}><div class="term code"><div class="tb"><i></i><i></i><i></i><span>${esc(o.title || 'main.py')} · you can edit this</span></div>` +
+    return `<div class="run" data-src="${esc(src)}" data-file="${esc(o.title || 'main.py')}"${o.files ? ` data-files="${esc(JSON.stringify(o.files))}"` : ''}${o.inputs ? ` data-inputs="${esc(JSON.stringify(o.inputs.map(String)))}"` : ''}><div class="term code"><div class="tb"><i></i><i></i><i></i><span>${esc(o.title || 'main.py')} · you can edit this</span></div>` +
       `<div class="ed"><div class="gut">${lineNos(lines.length)}</div><div class="scr"><div><pre aria-hidden="true">${lines.map(paint).join('\n')}\n</pre><textarea wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Python code you can edit">${esc(src)}</textarea></div></div></div>` +
       `<div class="runbar"><button type="button" class="btn small go" data-run>▶ Run</button><button type="button" class="btn small stop" data-stop hidden>■ Stop</button><button type="button" class="btn small" data-reset>Reset</button><span class="ver">${PY_NOTE}</span></div>` +
       `<div class="out" aria-live="polite"></div></div></div>`;
@@ -238,8 +248,10 @@
   function startRun(box, opts) {
     if (cur && cur.box === box) return;
     let answers = [];
+    let files = {};
     try { answers = JSON.parse(box.dataset.inputs || '[]'); } catch (e) { }
-    box._st = Object.assign({ src: box.querySelector('textarea').value, file: box.dataset.file, answers, seed: Math.floor(Math.random() * 2147483647), chunks: [] }, opts || {});
+    try { files = JSON.parse(box.dataset.files || '{}'); } catch (e) { }
+    box._st = Object.assign({ src: box.querySelector('textarea').value, file: box.dataset.file, answers, files, seed: Math.floor(Math.random() * 2147483647), chunks: [] }, opts || {});
     exec(box, false);
   }
   function exec(box, replay) {
@@ -257,7 +269,7 @@
       try { worker = newWorker(); }
       catch (e) { giveUp(box, 'This browser could not start Python in the background. Try a recent Chrome, Edge, Firefox or Safari.'); return; }
     }
-    worker.postMessage({ id, url: PYODIDE, src: st.src, file: st.file, answers: st.answers, seed: st.seed, check: st.check || '' });
+    worker.postMessage({ id, url: PYODIDE, src: st.src, file: st.file, answers: st.answers, files: st.files, seed: st.seed, check: st.check || '' });
   }
   function giveUp(box, msg) {
     if (cur && cur.box === box) { clearTimeout(cur.timer); cur = null; }
@@ -446,7 +458,7 @@
     // ok = True/False and, optionally, msg = "a specific hint". q.inputs: optional answers for input().
     fix(el, q, done) {
       const body = el.querySelector('.qbody');
-      body.innerHTML = run(q.code, { title: q.title || 'fix_me.py', inputs: q.inputs });
+      body.innerHTML = run(q.code, { title: q.title || 'fix_me.py', inputs: q.inputs, files: q.files });
       const box = body.querySelector('.run');
       const go = box.querySelector('[data-run]');
       go.removeAttribute('data-run'); go.setAttribute('data-fixrun', ''); go.textContent = '▶ Run and check';

@@ -1,0 +1,410 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .grp { left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* Kitchen Coach's to-do card */
+    #todo { left: 1190px; top: 150px; width: 640px; height: 400px; border-radius: 26px; background: #fff; }
+    #todo-h { left: 1226px; top: 178px; font: 700 44px/60px "Fraunces", serif; white-space: nowrap; }
+    .todo-r { left: 1226px; height: 72px; font: 800 34px/72px "Manrope", sans-serif; white-space: nowrap; }
+    .todo-r > i { display: inline-block; width: 34px; height: 34px; margin-right: 20px; vertical-align: -6px; border-radius: 8px; box-shadow: 0 0 0 4px #0e0c1d; background: #fbebd2; }
+
+    /* the calendar: days counted in each month */
+    #cal-h { left: 1190px; top: 92px; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .mon { top: 150px; width: 140px; height: 214px; border-radius: 20px; background: #fff; }
+    .mon-n { top: 166px; width: 140px; text-align: center; font: 700 36px/48px "Fraunces", serif; }
+    .mon-d { top: 222px; width: 140px; height: 72px; text-align: center; font: 700 60px/72px "JetBrains Mono", monospace; }
+    .mon-d.hand { color: #3b37e6; }
+    .mon-d.bad { color: #b8235a; }
+    .mon-c { top: 306px; width: 140px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .mon.red { background: #fbe0ea; }
+    .sum { left: 1190px; top: 404px; height: 66px; padding: 0 22px; border-radius: 16px; font: 700 40px/66px "JetBrains Mono", monospace; white-space: nowrap; }
+    .sum.bad { background: #e6e3ff; color: #3b37e6; }
+    .sum.ok { background: #ddefe6; color: #1f7a5c; }
+
+    /* the shelf: books stand on the plank at y 600 */
+    #plank { left: 1190px; top: 600px; width: 640px; height: 16px; border-radius: 4px; background: #0e0c1d; }
+    .book { width: 100px; border-radius: 10px 10px 4px 4px; }
+    .book > span { position: absolute; left: 0; bottom: 18px; width: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; align-items: center; justify-content: flex-end; font: 800 30px/1 "Manrope", sans-serif; white-space: nowrap; }
+
+    .pill { height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.warn { background: #fbebd2; color: #b9741a; }
+
+    /* the tally card */
+    #tally { left: 1190px; top: 690px; width: 640px; height: 290px; border-radius: 24px; background: #fff; }
+    .t-f { left: 1222px; height: 60px; font: 700 34px/60px "JetBrains Mono", monospace; white-space: nowrap; }
+    .t-bar { width: 14px; height: 48px; border-radius: 4px; background: #b9741a; }
+    .t-n { left: 1740px; height: 60px; font: 700 40px/60px "JetBrains Mono", monospace; }
+
+    /* the docs search card */
+    #docs { left: 1190px; top: 690px; width: 640px; height: 290px; border-radius: 24px; background: #fff; }
+    #docs-bar { left: 1190px; top: 690px; width: 640px; height: 62px; border-radius: 24px 24px 0 0; background: #ece7df; }
+    #docs-url { left: 1222px; top: 698px; font: 700 28px/46px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; }
+    #docs-q { left: 1222px; top: 780px; width: 576px; height: 64px; border-radius: 14px; box-shadow: 0 0 0 4px #0e0c1d; background: #fbf8f4; }
+    #docs-ql { left: 1244px; top: 788px; font: 800 30px/48px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #docs-qt { left: 1384px; top: 788px; font: 700 32px/48px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    #docs-r { left: 1222px; top: 878px; font: 800 30px/48px "Manrope", sans-serif; white-space: nowrap; }
+    #docs-r b { color: #3b37e6; font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .c { color: #a9a6c8; }
+    #s-div { position: absolute; left: 40px; top: 690px; width: 960px; height: 3px; background: #2e2a58; }
+    .olbl { position: absolute; right: 40px; top: 640px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; white-space: nowrap; opacity: 0; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 46px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.1" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- Kitchen Coach's to-do card: on screen from the first frame -->
+        <div id="todo-g" class="s-abs grp">
+          <div id="todo" class="s-abs s-ol"></div>
+          <div id="todo-h" class="s-abs">Kitchen Coach needs:</div>
+          <div id="td1" class="s-abs todo-r s-hide" style="top:270px"><i></i>Pick Friday's dinner</div>
+          <div id="td2" class="s-abs todo-r s-hide" style="top:358px"><i></i>Days to Ana's race</div>
+          <div id="td3" class="s-abs todo-r s-hide" style="top:446px"><i></i>Count this week's meals</div>
+        </div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="ttl" id="tt-hand">race_by_hand.py</span>
+            <span class="ttl" id="tt-race">race.py</span>
+            <span class="ttl" id="tt-tools">coach_tools.py</span>
+            <span class="ttl" id="tt-py">python3</span>
+          </div>
+          <!-- H: the hand-made day counter -->
+          <div class="s-ln ph" id="H1" style="top:88px"><span class="k">def</span> <span class="f">days_between</span>(y1, m1, d1, y2, m2, d2):</div>
+          <div class="s-ln ph" id="H2" style="top:138px">    start = y1 * <span class="n">360</span> + m1 * <span class="n">30</span> + d1</div>
+          <div class="s-ln ph" id="H3" style="top:188px">    end = y2 * <span class="n">360</span> + m2 * <span class="n">30</span> + d2</div>
+          <div class="s-ln ph" id="H4" style="top:238px">    <span class="k">return</span> end - start</div>
+          <div class="s-ln ph" id="H6" style="top:338px"><span class="f">print</span>(<span class="f">days_between</span>(<span class="n">2026</span>, <span class="n">11</span>, <span class="n">23</span>, <span class="n">2027</span>, <span class="n">2</span>, <span class="n">28</span>))</div>
+          <div class="s-note bad" id="n-30" style="left:560px; top:270px">every month = 30 days</div>
+          <!-- D: datetime does it -->
+          <div class="s-ln pd" id="D1" style="top:88px"><span class="k">from</span> datetime <span class="k">import</span> date</div>
+          <div class="s-ln pd" id="D3" style="top:188px">race = <span class="f">date</span>(<span class="n">2027</span>, <span class="n">2</span>, <span class="n">28</span>)</div>
+          <div class="s-ln pd" id="D4" style="top:238px">today = <span class="f">date</span>(<span class="n">2026</span>, <span class="n">11</span>, <span class="n">23</span>)</div>
+          <div class="s-ln pd" id="D5" style="top:288px"><span class="f">print</span>((race - today).days)</div>
+          <!-- C: Counter and random -->
+          <div class="s-ln pc" id="C1" style="top:88px"><span class="k">import</span> random</div>
+          <div class="s-ln pc" id="C2" style="top:138px"><span class="k">from</span> collections <span class="k">import</span> Counter</div>
+          <div class="s-ln pc" id="C4" style="top:238px">week = [<span class="s">"oats"</span>, <span class="s">"rice"</span>, <span class="s">"oats"</span>, <span class="s">"tofu"</span>, <span class="s">"oats"</span>, <span class="s">"rice"</span>]</div>
+          <div class="s-ln pc" id="C5" style="top:288px"><span class="f">print</span>(<span class="f">Counter</span>(week))</div>
+          <div class="s-ln pc" id="C6" style="top:338px"><span class="f">print</span>(random.<span class="f">choice</span>([<span class="s">"pasta"</span>, <span class="s">"risotto"</span>, <span class="s">"tacos"</span>]))</div>
+          <!-- F: ask help -->
+          <div class="s-ln pf" id="F1" style="top:88px"><span class="c">&gt;&gt;&gt;</span> <span class="k">import</span> math</div>
+          <div class="s-ln pf" id="F2" style="top:138px"><span class="c">&gt;&gt;&gt;</span> <span class="f">help</span>(math.ceil)</div>
+          <div class="s-ln pf" id="F3" style="top:188px">ceil(x, /)</div>
+          <div class="s-ln pf" id="F4" style="top:238px">    Return the ceiling of x as an Integral.</div>
+          <div class="s-ln pf" id="F5" style="top:288px">    This is the smallest integer &gt;= x.</div>
+
+          <div id="s-div"></div>
+          <div class="olbl" id="ol-out">output</div>
+          <div class="s-out err" id="o-95" style="top:702px">95</div>
+          <div class="s-note bad" id="n-wrong" style="left:120px; top:700px">wrong by 2 days</div>
+          <div class="s-out" id="o-97" style="top:702px">97</div>
+          <div class="s-out" id="o-cnt" style="top:702px">Counter({'oats': 3, 'rice': 2, 'tofu': 1})</div>
+          <div class="s-out" id="o-fri" style="top:744px">risotto</div>
+        </div>
+
+        <!-- the calendar -->
+        <div id="cal" class="s-abs grp">
+          <div id="cal-h" class="s-abs s-hide">days counted, 23 Nov to race day</div>
+          <div id="m-nov" class="s-abs mon s-ol s-hide" style="left:1190px"></div>
+          <div id="m-dec" class="s-abs mon s-ol s-hide" style="left:1350px"></div>
+          <div id="m-jan" class="s-abs mon s-ol s-hide" style="left:1510px"></div>
+          <div id="m-feb" class="s-abs mon s-ol s-hide" style="left:1670px"></div>
+          <div id="mn-nov" class="s-abs mon-n s-hide" style="left:1190px">Nov</div>
+          <div id="mn-dec" class="s-abs mon-n s-hide" style="left:1350px">Dec</div>
+          <div id="mn-jan" class="s-abs mon-n s-hide" style="left:1510px">Jan</div>
+          <div id="mn-feb" class="s-abs mon-n s-hide" style="left:1670px">Feb</div>
+          <div id="md-nov" class="s-abs mon-d s-hide" style="left:1190px">7</div>
+          <div id="md-dec" class="s-abs mon-d hand s-hide" style="left:1350px">30</div>
+          <div id="md-jan" class="s-abs mon-d hand s-hide" style="left:1510px">30</div>
+          <div id="md-dec2" class="s-abs mon-d bad s-hide" style="left:1350px">31</div>
+          <div id="md-jan2" class="s-abs mon-d bad s-hide" style="left:1510px">31</div>
+          <div id="md-feb" class="s-abs mon-d s-hide" style="left:1670px">28</div>
+          <div id="mc-nov" class="s-abs mon-c s-hide" style="left:1190px">from 23</div>
+          <div id="mc-dec" class="s-abs mon-c s-hide" style="left:1350px">all</div>
+          <div id="mc-jan" class="s-abs mon-c s-hide" style="left:1510px">all</div>
+          <div id="mc-feb" class="s-abs mon-c s-hide" style="left:1670px">to 28</div>
+          <div id="sum-bad" class="s-abs sum bad s-hide">7 + 30 + 30 + 28 = 95</div>
+          <div id="sum-ok" class="s-abs sum ok s-hide">7 + 31 + 31 + 28 = 97</div>
+          <div id="p-taper" class="s-abs pill warn s-hide" style="left:1190px; top:500px">Ana's taper starts 2 days late</div>
+        </div>
+
+        <!-- the shelf of free cookbooks -->
+        <div id="shelf" class="s-abs grp">
+          <div id="p-free" class="s-abs pill acc s-hide" style="left:1300px; top:196px">free with every Python</div>
+          <div id="bk-r" class="s-abs book s-ol s-hide" style="left:1206px; top:370px; height:230px; background:#e6e3ff"><span data-layout-allow-occlusion>random</span></div>
+          <div id="bk-d" class="s-abs book s-ol s-hide" style="left:1322px; top:320px; height:280px; background:#ddefe6"><span data-layout-allow-occlusion>datetime</span></div>
+          <div id="bk-c" class="s-abs book s-ol s-hide" style="left:1438px; top:280px; height:320px; background:#fbebd2"><span data-layout-allow-occlusion>collections</span></div>
+          <div id="bk-m" class="s-abs book s-ol s-hide" style="left:1554px; top:400px; height:200px; background:#fbe0ea"><span data-layout-allow-occlusion>math</span></div>
+          <div id="bk-s" class="s-abs book s-ol s-hide" style="left:1670px; top:300px; height:300px; background:#e3eefb"><span data-layout-allow-occlusion>statistics</span></div>
+          <div id="plank" class="s-abs s-hide"></div>
+        </div>
+        <div id="p-batt" class="s-abs pill ok s-hide" style="left:1350px; top:650px">batteries included</div>
+        <div id="p-right" class="s-abs pill ok s-hide" style="left:1300px; top:650px">every month counted right</div>
+
+        <!-- the tally card -->
+        <div id="tally-g" class="s-abs grp">
+          <div id="tally" class="s-abs s-ol s-hide"></div>
+          <div class="s-abs t-f tg s-hide" style="top:712px">oats</div>
+          <div class="s-abs t-f tg s-hide" style="top:800px">rice</div>
+          <div class="s-abs t-f tg s-hide" style="top:888px">tofu</div>
+          <div id="tb1" class="s-abs t-bar s-hide" style="left:1400px; top:718px"></div>
+          <div id="tb2" class="s-abs t-bar s-hide" style="left:1426px; top:718px"></div>
+          <div id="tb3" class="s-abs t-bar s-hide" style="left:1452px; top:718px"></div>
+          <div id="tb4" class="s-abs t-bar s-hide" style="left:1400px; top:806px"></div>
+          <div id="tb5" class="s-abs t-bar s-hide" style="left:1426px; top:806px"></div>
+          <div id="tb6" class="s-abs t-bar s-hide" style="left:1400px; top:894px"></div>
+          <div id="tn1" class="s-abs t-n s-hide" style="top:712px">3</div>
+          <div id="tn2" class="s-abs t-n s-hide" style="top:800px">2</div>
+          <div id="tn3" class="s-abs t-n s-hide" style="top:888px">1</div>
+        </div>
+
+        <!-- the docs -->
+        <div id="docs-g" class="s-abs grp s-hide">
+          <div id="docs" class="s-abs s-ol"></div>
+          <div id="docs-bar" class="s-abs"></div>
+          <div id="docs-url" class="s-abs">docs.python.org/3/library</div>
+          <div id="docs-q" class="s-abs"></div>
+          <div id="docs-ql" class="s-abs">Search:</div>
+          <div id="docs-qt" class="s-abs s-hide">date</div>
+          <div id="docs-r" class="s-abs s-hide"><b>datetime</b>: dates and times</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-30a" style="stroke:#ff6b8b" />
+          <path id="r-30b" style="stroke:#ff6b8b" />
+          <path id="r-95" style="stroke:#ff6b8b" />
+          <path id="r-dec" style="stroke:#b8235a" />
+          <path id="r-jan" style="stroke:#b8235a" />
+          <path id="r-bkd" style="stroke:#1f7a5c" />
+          <path id="r-minus" style="stroke:#ffc24b" />
+          <path id="r-bkc" style="stroke:#b9741a" />
+          <path id="r-oats" style="stroke:#b9741a" />
+          <path id="r-bkr" style="stroke:#3b37e6" />
+          <path id="r-help" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.453, 0.789, 1.068, 1.196, 1.533, 2.113, 2.995, 3.216, 3.286, 3.541, 3.704, 4.54, 4.841, 4.969, 5.294, 5.503, 5.944, 6.711, 7.024, 7.256, 7.593, 8.568, 9.009, 9.207, 9.439, 9.59, 9.764, 10.217, 10.437, 10.728, 10.925, 11.9, 12.283, 12.469, 13.293, 13.665, 14.06, 14.222, 14.35, 15.209, 15.337, 16.358, 16.834, 16.997, 17.113, 18.053, 18.251, 19.296, 19.54, 19.899, 20.259, 20.526, 20.828, 21.049, 21.513, 22.245, 22.454, 22.755, 24.079, 24.3, 24.938, 25.205, 25.832, 26.134, 27.074, 27.899, 28.084, 28.34, 28.769, 29.036, 30.453, 30.813, 30.999, 31.335, 31.475, 31.916, 32.253, 32.624, 33.483, 34.017, 34.389, 34.563, 34.656, 35.027, 35.19, 35.515, 36.397, 37.059, 37.407, 37.802, 38.696, 39.23, 40.449, 40.797, 41.053, 41.192, 41.75, 42.667, 42.957, 43.282, 43.7, 44.222, 44.815, 45.151, 45.604, 46.068, 47.195, 47.984, 48.588, 48.971, 49.307, 49.783, 50.77, 51.212, 51.676, 51.792, 52.117, 52.5, 52.756, 53.069, 53.731, 54.3, 54.625, 55.565, 55.774, 56.192, 56.529, 56.854, 57.376, 58.294, 58.468, 58.758, 58.863, 59.397, 59.768, 59.907, 60.372, 60.999, 61.243, 61.591, 62.589, 62.914, 63.042, 63.379, 63.774, 64.087, 64.25, 64.551, 65.596, 66.2, 66.781, 67.024];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const setPath = (id, d) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      const ring = (id, cx, cy, rx, ry) => setPath(id, ringD(cx, cy, rx, ry));
+      const CW = 18, OW = 16.8;
+      const ry = (r) => 209 + (r - 1) * 50;
+      // ring around `tok` in the plain text of a code row
+      const ringTok = (id, text, tok, r, from) => {
+        const c0 = text.indexOf(tok, from || 0), c1 = c0 + tok.length - 1;
+        ring(id, 136 + ((c0 + c1 + 1) / 2) * CW, ry(r), ((c1 - c0 + 1) * CW) / 2 + 16, 28);
+      };
+      const H2 = "    start = y1 * 360 + m1 * 30 + d1";
+      const H3 = "    end = y2 * 360 + m2 * 30 + d2";
+      const D5 = "print((race - today).days)";
+      const F2 = ">>> help(math.ceil)";
+      ringTok("r-30a", H2, "30", 2, 24);
+      ringTok("r-30b", H3, "30", 3, 22);
+      ringTok("r-minus", D5, "race - today", 5);
+      ringTok("r-help", F2, "help(math.ceil)", 2);
+      const OY = (n) => 96 + 702 + 21 + (n - 1) * 42; // centre of output line n
+      ring("r-95", 136 + OW, OY(1), 40, 30);
+      ring("r-dec", 1420, 258, 62, 44);
+      ring("r-jan", 1580, 258, 62, 44);
+      ring("r-bkd", 1372, 460, 72, 166);
+      ring("r-bkc", 1488, 440, 72, 186);
+      ring("r-bkr", 1256, 485, 72, 140);
+      ring("r-oats", 1340, 742, 150, 44);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swapT = (a, b, at) => { out(a, at, 0.15); show(b, at + 0.12, 0.2); };
+      const lift = (sel, at) => tl.to(sel, { y: -30, duration: 0.35, ease: "back.out(2)" }, at);
+      const drop = (sel, at) => tl.to(sel, { y: 0, duration: 0.3, ease: "power2.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 900, y: 600 }, 0);
+      tl.set("#todo-g", { x: -560 }, 0);
+
+      /* ---- 1. Kitchen Coach needs a few everyday tools ---- */
+      bump("#todo-h", t(5));
+      pop("#td1", t(7), { from: 0.8 });
+      pop("#td2", t(12), { from: 0.8 });
+      pop("#td3", t(18), { from: 0.8 });
+      // so you write them yourself
+      tl.to("#todo-g", { x: 0, duration: 0.6, ease: "power3.inOut" }, t(22) - 0.2);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(22));
+      show("#tt-hand", t(22), 0.2);
+      type("#H1", t(24), 41, 0.6);
+      type("#H2", t(27), 35, 0.6);
+      type("#H3", t(28) + 0.3, 33, 0.55);
+      type("#H4", t(30), 22, 0.45);
+      bump("#td2", t(32));
+
+      /* ---- 2. The race: the hand-made counter treats every month as 30 days ---- */
+      out("#todo-g", t(34), 0.3);
+      type("#H6", t(34) + 0.2, 46, 0.7);
+      show("#cal-h", t(39) - 0.1, 0.25);
+      pop(["#m-feb", "#mn-feb"], t(39), { from: 0.8 });
+      show(["#md-feb", "#mc-feb"], t(39) + 0.25, 0.25);
+      pop(["#m-nov", "#mn-nov"], t(45), { from: 0.8 });
+      show(["#md-nov", "#mc-nov"], t(45) + 0.25, 0.25);
+      pop(["#m-dec", "#mn-dec", "#m-jan", "#mn-jan"], t(52), { from: 0.8 });
+      show(["#mc-dec", "#mc-jan"], t(52) + 0.2, 0.25);
+      pop(["#md-dec", "#md-jan"], t(54), { from: 0.6 });
+      draw("r-30a", t(54), 0.35);
+      draw("r-30b", t(54) + 0.15, 0.35);
+      pop("#n-30", t(55), { from: 0.7 });
+      show("#sum-bad", t(57), 0.25);
+      show("#ol-out", t(57), 0.2);
+      pop("#o-95", t(58), { from: 0.7 });
+
+      /* ---- 3. December and January have 31 days. The real answer is 97 ---- */
+      out(["#r-30a", "#r-30b", "#n-30"], t(59), 0.2);
+      tl.set("#s-cursor", { x: 1500, y: 560 }, t(59) - 0.3);
+      cursorIn(t(59) - 0.3);
+      cursorTo(1426, 268, t(59) - 0.2, 0.45);
+      swapT("#md-dec", "#md-dec2", t(60));
+      tl.to("#m-dec", { backgroundColor: "#fbe0ea", duration: 0.2 }, t(60));
+      draw("r-dec", t(60) + 0.1, 0.35);
+      cursorTo(1586, 268, t(61), 0.4);
+      swapT("#md-jan", "#md-jan2", t(62));
+      tl.to("#m-jan", { backgroundColor: "#fbe0ea", duration: 0.2 }, t(62));
+      draw("r-jan", t(62) + 0.1, 0.35);
+      cursorOut(t(64));
+      bump(["#md-dec2", "#md-jan2"], t(64));
+      swapT("#sum-bad", "#sum-ok", t(70));
+      draw("r-95", t(70), 0.35);
+      pop("#n-wrong", t(70) + 0.3, { from: 0.7 });
+      pop("#p-taper", t(75), { from: 0.7 });
+
+      /* ---- 4. A shelf of free cookbooks. Batteries included ---- */
+      out(["#cal", "#r-dec", "#r-jan"], t(79) - 0.2, 0.3);
+      tl.to([".ph", "#o-95", "#n-wrong", "#r-95"], { opacity: 0.18, duration: 0.3 }, t(79));
+      show("#plank", t(83) - 0.1, 0.25);
+      pop("#p-free", t(85), { from: 0.7 });
+      tl.fromTo("#bk-r", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(87));
+      tl.fromTo("#bk-d", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(88));
+      tl.fromTo("#bk-c", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(90));
+      tl.fromTo("#bk-m", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(91));
+      tl.fromTo("#bk-s", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, t(92));
+      pop("#p-batt", t(96), { from: 0.7 });
+
+      /* ---- 5. from datetime import date. Race day minus today: 97 ---- */
+      out([".ph", "#o-95", "#n-wrong", "#r-95", "#tt-hand", "#p-batt"], t(98) - 0.15, 0.2);
+      show("#tt-race", t(98), 0.2);
+      type("#D1", t(98), 25, 0.6);
+      lift("#bk-d", t(99));
+      draw("r-bkd", t(99), 0.45);
+      type("#D3", t(103) - 0.6, 24, 0.45);
+      type("#D4", t(103) - 0.15, 26, 0.45);
+      type("#D5", t(103) + 0.3, 26, 0.5);
+      draw("r-minus", t(105), 0.4);
+      pop("#o-97", t(107), { from: 0.7 });
+      pop("#p-right", t(109), { from: 0.7 });
+
+      /* ---- 6. Counter tallies the meals. random.choice picks Friday ---- */
+      out([".pd", "#o-97", "#tt-race", "#r-minus", "#r-bkd", "#p-right"], t(113) - 0.15, 0.2);
+      drop("#bk-d", t(113) - 0.15);
+      show("#tt-tools", t(113), 0.2);
+      type("#C2", t(113), 31, 0.5);
+      lift("#bk-c", t(113));
+      draw("r-bkc", t(113) + 0.1, 0.45);
+      type("#C4", t(114), 55, 0.7);
+      pop("#tally", t(117), { from: 0.85 });
+      show(".tg", t(117) + 0.15, 0.25);
+      type("#C5", t(119) - 0.3, 20, 0.4);
+      ["#tb1", "#tb4", "#tb2", "#tb6", "#tb3", "#tb5"].forEach((s, i) => pop(s, t(119) + i * 0.1, { from: 0.3, d: 0.25 }));
+      show(["#tn1", "#tn2", "#tn3"], t(120), 0.25);
+      pop("#o-cnt", t(120), { from: 0.9 });
+      draw("r-oats", t(121), 0.45);
+      bump("#tn1", t(122));
+      out(["#r-bkc"], t(124), 0.2);
+      drop("#bk-c", t(124));
+      type("#C1", t(125), 13, 0.3);
+      lift("#bk-r", t(125));
+      draw("r-bkr", t(125) + 0.1, 0.4);
+      type("#C6", t(126), 49, 0.6);
+      pop("#o-fri", t(128), { from: 0.7 });
+
+      /* ---- 7. To find a tool: the docs, or help ---- */
+      out([".pc", "#o-cnt", "#o-fri", "#tt-tools", "#ol-out", "#r-bkr", "#r-oats", "#tally-g"], t(130) - 0.1, 0.25);
+      drop("#bk-r", t(130) - 0.1);
+      pop("#docs-g", t(133) - 0.1, { from: 0.85 });
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, t(133));
+      cursorIn(t(133));
+      cursorTo(1560, 812, t(133) + 0.05, 0.4);
+      type("#docs-qt", t(134) + 0.3, 4, 0.35);
+      pop("#docs-r", t(137), { from: 0.8 });
+      bump("#bk-d", t(137) + 0.2);
+      cursorOut(t(138));
+      show("#tt-py", t(131), 0.2);
+      type("#F1", t(139) - 0.2, 15, 0.3);
+      type("#F2", t(139) + 0.15, 19, 0.35);
+      draw("r-help", t(140), 0.35);
+      show(["#F3", "#F4", "#F5"], t(140) + 0.05, 0.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 62.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

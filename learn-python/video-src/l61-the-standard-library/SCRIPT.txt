@@ -1,0 +1,15 @@
+Kitchen Coach needs a few everyday tools. Pick a dinner for Friday. Count the days to Ana's race. Count this week's meals. So you roll up your sleeves and write them yourself.
+
+Take the race. Ana runs on the twenty-eighth of February. Today is the twenty-third of November. Your counter treats every month as thirty days. It says ninety-five.
+
+But December and January have thirty-one days. The real answer is ninety-seven. Ana would start her taper two days late.
+
+Python comes with a shelf of free cookbooks. Random. Date time. Collections. Math. Statistics. People call it batteries included.
+
+From date time, import date. Race day minus today. Ninety-seven days, every month counted right.
+
+Counter tallies the week's meals in one line. Oats, three times. And random choice picks Friday's dinner.
+
+To find a tool, search the Python docs, or ask help.
+
+Before you write it, check the free cookbooks. Python probably has it.

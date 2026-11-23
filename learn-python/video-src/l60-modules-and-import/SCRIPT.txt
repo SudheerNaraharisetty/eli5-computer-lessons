@@ -1,0 +1,15 @@
+Kitchen Coach has grown to three hundred lines. Its protein and calorie cards are copy-pasted into Ana's planner too.
+
+You fix a typo in one copy. The other copy still says a bowl of rice is nineteen hundred and fifty calories.
+
+So move the cards into their own file, kitchen dot py. That file is a module. A cookbook on the shelf.
+
+Import kitchen takes the book off the shelf. kitchen dot protein in opens it at the right page. The dot means, from that book, the page called.
+
+Coach and planner both import it. Fix a card once, and it is fixed everywhere.
+
+But the cookbook's own test lines print inside Coach too. So tuck them under, if name equals main. A bookmark: only when you read this book on its own.
+
+One trap. Save your own notes as Jason dot py, and Python grabs your notebook, not the real Jason book.
+
+A module is a cookbook. Write the cards once, import them anywhere.

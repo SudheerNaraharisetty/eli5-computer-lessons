@@ -1,0 +1,48 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 100px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h1 { top: 110px; font-size: 92px; }
+    #t-h2 { top: 250px; font-size: 92px; }
+    .t-card { padding: 0 34px; height: 104px; line-height: 104px; background: #fff; border-radius: 26px; font-size: 44px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card b { font: 700 40px/104px "JetBrains Mono", monospace; color: #3b37e6; }
+    .t-card i { font-style: normal; color: #1f7a5c; margin-left: 24px; }
+    .t-card i.d { color: #7a4708; }
+    #t-c1 { left: 110px; top: 460px; }
+    #t-c2 { left: 110px; top: 610px; }
+    #t-next { left: 110px; top: 820px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.4" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">A method is what an object <span class="a">can do</span>.</div>
+      <div id="t-h2" class="t-abs t-head">Python hands it the object as <span class="a">self</span>.</div>
+      <div id="t-c1" class="t-abs t-card"><b>oven.preheat(180)</b><i>what you write</i></div>
+      <div id="t-c2" class="t-abs t-card"><b>Oven.preheat(oven, 180)</b><i class="d">what Python runs</i></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 69: Attributes</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 64.3;
+      const g = { every: 64.536, it: 67.299, does: 68.483, dot: 69.4 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.every - S - 0.1));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.it - S - 0.1);
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.it - S + 0.4);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.does - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 6.0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

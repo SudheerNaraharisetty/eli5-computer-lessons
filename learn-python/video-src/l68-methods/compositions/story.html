@@ -1,0 +1,324 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 330px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+
+    /* Chloe's recipe card, right, top */
+    #rc { left: 1190px; top: 96px; width: 640px; height: 170px; }
+    #rc > .bg { position: absolute; inset: 0; border-radius: 24px; background: #fff; }
+    #rc > .strip { position: absolute; left: 0; top: 0; width: 20px; height: 170px; border-radius: 24px 0 0 24px; background: #b8235a; }
+    #rc > .nm { position: absolute; left: 44px; top: 16px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    #rc-gf { left: 44px; top: 92px; background: #ddefe6; color: #1f7a5c; }
+    #rc-t { left: 270px; top: 92px; background: #fbebd2; color: #7a4708; }
+
+    /* the oven, right */
+    #ov { left: 1190px; top: 330px; width: 640px; height: 620px; }
+    #ov > .bg { position: absolute; inset: 0; border-radius: 28px; background: #fff; }
+    #ov-name { left: 30px; top: 24px; background: #e6e3ff; color: #3b37e6; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #ov-self { left: 176px; top: 24px; background: #fbebd2; color: #7a4708; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #dial { position: absolute; left: 34px; top: 100px; width: 150px; height: 150px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 6px #0e0c1d; }
+    #dial-n { position: absolute; left: 0; top: 30px; width: 150px; height: 56px; }
+    #dial-n > span { position: absolute; left: 0; top: 0; width: 150px; text-align: center; font: 700 48px/56px "JetBrains Mono", monospace; }
+    #dial-n > .d1 { color: #b8235a; }
+    #dial-u { position: absolute; left: 0; top: 88px; width: 150px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #4a4760; }
+    #lamp { position: absolute; left: 222px; top: 118px; width: 72px; height: 72px; border-radius: 50%; background: #d9d5e2; box-shadow: 0 0 0 5px #0e0c1d; }
+    #lamp-on { position: absolute; inset: 0; border-radius: 50%; background: #2fb37f; opacity: 0; }
+    #lamp-l { position: absolute; left: 206px; top: 204px; width: 104px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #4a4760; }
+    .btn { position: absolute; left: 330px; width: 280px; height: 64px; border-radius: 999px; background: #15132b; color: #fff; text-align: center; font: 700 30px/64px "JetBrains Mono", monospace; }
+    #b-pre { top: 104px; }
+    #b-rdy { top: 186px; }
+    #win { position: absolute; left: 40px; top: 290px; width: 560px; height: 290px; border-radius: 20px; background: #2a2745; overflow: hidden; }
+    #heat { position: absolute; inset: 0; background: #f2a65a; opacity: 0; }
+    #win > .rack { position: absolute; left: 30px; width: 500px; height: 6px; border-radius: 3px; background: #8c88b0; }
+    #loaf { position: absolute; left: 170px; top: 150px; width: 220px; height: 84px; border-radius: 40px 40px 14px 14px; background: #c98a3c; box-shadow: 0 0 0 5px #0e0c1d; }
+    #stamp { left: 1260px; top: 640px; width: 500px; height: 110px; border-radius: 18px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 56px/110px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-6deg); }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char, 28 px = 16.8 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a6c8; }
+    .sw { display: inline-block; position: relative; vertical-align: top; height: 50px; width: 216px; }
+    .sw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+    .ot { position: absolute; left: 40px; font: 500 28px/50px "JetBrains Mono", monospace; color: #ff8fab; white-space: pre; opacity: 0; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="64.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Chloe wants<br /><span class="a">banana bread</span>.</div>
+
+        <!-- Chloe's recipe card -->
+        <div id="rc" class="s-abs">
+          <div class="bg s-ol"></div><div class="strip"></div>
+          <div class="nm">Chloe's banana bread</div>
+          <div class="pill s-hide" id="rc-gf">gluten-free</div>
+          <div class="pill s-hide" id="rc-t">bakes at 180 °C</div>
+        </div>
+
+        <!-- the oven -->
+        <div id="ov" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="pill s-hide" id="ov-name">oven</div>
+          <div class="pill s-hide" id="ov-self">= self</div>
+          <div id="dial"><div id="dial-n"><span class="d0">0</span><span class="d1 s-hide">180</span></div><div id="dial-u">°C</div></div>
+          <div id="lamp"><div id="lamp-on"></div></div>
+          <div id="lamp-l">ready</div>
+          <div id="b-pre" class="btn s-hide">preheat</div>
+          <div id="b-rdy" class="btn s-hide">is_ready</div>
+          <div id="win"><div id="heat"></div><div class="rack" style="top:120px"></div><div class="rack" style="top:240px"></div><div id="loaf"></div></div>
+        </div>
+        <div id="stamp" class="s-abs s-hide">TypeError</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">oven.py</span></div>
+          <div class="ln" id="L1" style="top:88px"><span class="k">class</span> <span class="f">Oven</span>:</div>
+          <div class="ln" id="L2" style="top:138px">    <span class="k">def</span> <span class="f">__init__</span>(self):</div>
+          <div class="ln" id="L3" style="top:188px">        self.temp = <span class="m">0</span></div>
+          <div class="ln" id="L5" style="top:288px">    <span class="k">def</span> <span class="f">preheat</span>(<span class="sw"><span id="sw-a">self, temp):</span><span id="sw-b" class="s-hide" style="color:#ff8fab">temp):</span></span></div>
+          <div class="ln" id="L6" style="top:338px">        self.temp = temp</div>
+          <div class="ln" id="L8" style="top:438px">    <span class="k">def</span> <span class="f">is_ready</span>(self, recipe_temp):</div>
+          <div class="ln" id="L9" style="top:488px">        <span class="k">return</span> self.temp &gt;= recipe_temp</div>
+          <div class="ln" id="L11" style="top:588px">oven = <span class="f">Oven</span>()</div>
+          <div class="ln" id="L12" style="top:638px">oven.<span class="f">preheat</span>(<span class="m">180</span>)</div>
+          <div class="ln" id="L13" style="top:688px">oven.<span class="f">is_ready</span>(<span class="m">180</span>)</div>
+          <div class="ln" id="L14" style="top:738px"><span class="c"># really:</span> <span class="f">Oven</span>.<span class="f">preheat</span>(oven, <span class="m">180</span>)</div>
+          <div class="ot" id="E1" style="top:738px">TypeError: Oven.preheat() takes 1 positional</div>
+          <div class="ot" id="E2" style="top:788px">argument but 2 were given</div>
+
+          <div class="s-note" id="n-meth" style="left:430px; top:200px">method: a function inside the class</div>
+          <div class="s-note warn" id="n-jars" style="left:580px; top:288px">2 jars</div>
+          <div class="s-note warn" id="n-val" style="left:380px; top:638px">1 value</div>
+          <div class="s-note bad" id="n-where" style="left:580px; top:288px">self = ?</div>
+          <div class="s-note ok" id="n-dot" style="left:380px; top:638px">in front of the dot: self</div>
+          <div class="s-note ok" id="n-true" style="left:400px; top:688px">True</div>
+          <div class="s-note bad" id="n-nojar" style="left:500px; top:838px">no jar for the oven</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-zero" style="stroke:#7cf0b5" />
+          <path id="r-dial0" style="stroke:#3b37e6" />
+          <path id="r-self" style="stroke:#ffc24b" />
+          <path id="r-temp" style="stroke:#7cf0b5" />
+          <path id="r-180" style="stroke:#7cf0b5" />
+          <path id="r-selfq" class="dash" style="stroke:#ff8fab" />
+          <path id="a-self" style="stroke:#ffc24b" />
+          <path id="a-temp" style="stroke:#7cf0b5" />
+          <path id="r-oven" style="stroke:#ffc24b" />
+          <path id="r-xoven" style="stroke:#ffc24b" />
+          <path id="r-x180" style="stroke:#7cf0b5" />
+          <path id="r-stemp" style="stroke:#ffc24b" />
+          <path id="r-dial" style="stroke:#3b37e6" />
+          <path id="r-lamp" style="stroke:#1f7a5c" />
+          <path id="r-gone" class="dash" style="stroke:#ff8fab" />
+          <path id="r-e1" style="stroke:#ffc24b" />
+          <path id="r-e2" style="stroke:#ffc24b" />
+          <path id="a-bad" style="stroke:#ff8fab" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.789, 1.556, 1.974, 2.67, 2.914, 3.286, 3.448, 3.692, 4.029, 4.168, 4.493, 5.41, 5.642, 6.014, 6.339, 6.594, 6.757, 7.512, 7.814, 7.988, 8.115, 9.102, 9.543, 10.461, 10.844, 11.076, 11.413, 11.819, 12.423, 12.736, 13.526, 13.793, 13.978, 14.141, 15.163, 15.337, 15.662, 15.79, 15.894, 16.428, 17.032, 17.148, 17.856, 18.274, 19.145, 19.691, 20.085, 20.782, 21.177, 21.862, 22.268, 22.535, 23.325, 23.638, 24.346, 24.938, 25.484, 25.728, 26.018, 26.483, 26.703, 26.854, 27.179, 27.516, 28.375, 28.758, 29.013, 29.629, 30.128, 30.43, 30.592, 31.231, 31.591, 31.858, 32.671, 32.972, 33.565, 33.82, 34.145, 34.528, 34.795, 35.608, 36.176, 36.49, 37.465, 37.639, 38.115, 38.243, 38.475, 38.58, 38.707, 38.986, 39.659, 40.832, 41.169, 41.413, 41.935, 42.214, 42.492, 43.003, 43.375, 44.257, 44.698, 45.174, 45.395, 45.743, 45.871, 46.672, 46.823, 47.171, 47.461, 47.833, 48.692, 48.959, 49.4, 49.632, 50.294, 51.258, 51.444, 51.745, 52.175, 53.034, 53.417, 53.835, 54.265, 54.474, 54.601, 55.228, 55.646, 56.505, 56.97, 57.33, 57.632, 58.235, 58.827, 59.106, 59.489, 59.687, 60.522, 60.731, 61.103, 61.428, 61.776, 62.02, 62.31, 62.601, 62.937, 63.193, 63.936, 64.145, 64.551, 64.725, 64.969, 65.12, 65.677, 65.909, 66.699, 67.256, 67.581, 67.709, 67.883, 68.51, 68.812];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, cw, from, pad) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * cw, 96 + top + 25, (sub.length * cw) / 2 + (pad || 14), 28);
+      };
+      const L5 = "    def preheat(self, temp):", L12 = "oven.preheat(180)", L14 = "# really: Oven.preheat(oven, 180)";
+      tok("r-zero", "        self.temp = 0", "0", 188, 18);
+      tok("r-self", L5, "self", 288, 18);
+      tok("r-temp", L5, "temp", 288, 18);
+      tok("r-180", L12, "180", 638, 18);
+      tok("r-selfq", L5, "self", 288, 18);
+      tok("r-oven", L12, "oven", 638, 18);
+      tok("r-xoven", L14, "oven", 738, 18, 12);
+      tok("r-x180", L14, "180", 738, 18);
+      tok("r-stemp", "        self.temp = temp", "self.temp", 338, 18);
+      tok("r-e1", "TypeError: Oven.preheat() takes 1 positional", "1", 738, 16.8);
+      tok("r-e2", "argument but 2 were given", "2", 788, 16.8);
+      tok("r-gone", "    def preheat(temp):", "(", 288, 18);
+      // the oven: page left 1190, top 330. dial centre (1190+109, 330+175), lamp centre (1190+258, 330+154)
+      ring("r-dial0", 1299, 505, 98, 98);
+      ring("r-dial", 1299, 505, 98, 98);
+      ring("r-lamp", 1448, 484, 60, 60);
+      // hidden arrows: from the call (row top 638 -> page y 734) up to the jars in the def (row 288 -> bottom y 430)
+      const xOf = (col) => 136 + col * 18;
+      path("a-self", `M${xOf(2)} 736 C${xOf(2) - 40} 610 ${xOf(18) - 60} 560 ${xOf(18)} 438 M${xOf(18) - 16} 460 L${xOf(18)} 438 L${xOf(18) + 18} 458`);
+      path("a-temp", `M${xOf(14.5)} 736 C${xOf(14.5) + 30} 620 ${xOf(24) + 10} 560 ${xOf(24)} 438 M${xOf(24) - 17} 459 L${xOf(24)} 438 L${xOf(24) + 17} 460`);
+      path("a-bad", `M${xOf(2)} 736 C${xOf(2) - 40} 610 ${xOf(15.5) - 60} 560 ${xOf(15.5)} 438 M${xOf(15.5) - 16} 460 L${xOf(15.5)} 438 L${xOf(15.5) + 18} 458`);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const tap = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 0.92, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Chloe's gluten-free banana bread, 180 C. Kitchen Coach gets an oven ---- */
+      pop("#rc-gf", t(2), { from: 0.7 });
+      pop("#rc-t", t(8), { from: 0.7 });
+      bump("#rc-t", t(11), 1.08);
+      pop("#ov", t(18) - 0.1, { from: 0.85 });
+
+      /* ---- 2. The template: class Oven, starts cold at zero ---- */
+      out("#intro", t(19) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(19) + 0.1);
+      type("#L1", t(23), 11, 0.35);
+      type("#L2", t(25), 23, 0.45);
+      type("#L3", t(25) + 0.5, 21, 0.4);
+      type("#L11", t(27) - 0.1, 13, 0.35);
+      pop("#ov-name", t(27) + 0.2, { from: 0.6 });
+      draw("r-zero", t(31) - 0.1, 0.35);
+      draw("r-dial0", t(31) + 0.1, 0.45);
+
+      /* ---- 3. A button: a method is a function inside the class ---- */
+      out(["#r-zero", "#r-dial0"], t(32) - 0.1, 0.2);
+      pop("#b-pre", t(35) - 0.1, { from: 0.6 });
+      pop("#n-meth", t(37), { from: 0.7 });
+      type("#L5", t(44) - 0.1, 28, 0.5);
+      out("#n-meth", t(44) - 0.2, 0.2);
+      draw("r-self", t(46), 0.4);
+      draw("r-temp", t(48), 0.4);
+      type("#L6", t(48) + 0.35, 24, 0.45);
+
+      /* ---- 4. Press it: oven.preheat(180) ---- */
+      out(["#r-self", "#r-temp"], t(49) - 0.1, 0.2);
+      cursorIn(t(49));
+      cursorTo(1640, 450, t(49), 0.5);
+      type("#L12", t(51), 17, 0.45);
+      tap("#b-pre", t(53));
+
+      /* ---- 5. Wait: two jars, one value. Where is self? ---- */
+      cursorOut(t(56));
+      draw("r-self", t(58), 0.35);
+      draw("r-temp", t(58) + 0.25, 0.35);
+      pop("#n-jars", t(59), { from: 0.7 });
+      draw("r-180", t(64), 0.4);
+      pop("#n-val", t(64) + 0.2, { from: 0.7 });
+      out(["#r-self", "#r-temp", "#n-jars"], t(66) - 0.1, 0.2);
+      draw("r-selfq", t(68) - 0.15, 0.3);
+      pop("#n-where", t(68), { from: 0.7 });
+
+      /* ---- 6. Python fills it in: the hidden arrow. really Oven.preheat(oven, 180) ---- */
+      out(["#r-selfq", "#n-where", "#n-val", "#r-180"], t(69), 0.2);
+      tl.to(["#L6", "#L11"], { opacity: 0.3, duration: 0.3 }, t(69));
+      draw("r-oven", t(70), 0.35);
+      draw("a-self", t(70) + 0.25, 0.6);
+      draw("r-self", t(71) + 0.2, 0.35);
+      draw("a-temp", t(76), 0.5);
+      type("#L14", t(79), 33, 0.6);
+      draw("r-xoven", t(83), 0.4);
+      draw("r-x180", t(84), 0.35);
+      pop("#n-dot", t(88), { from: 0.7 });
+      bump("#L12", t(92), 1.03);
+      pop("#ov-self", t(94) - 0.1, { from: 0.6 });
+
+      /* ---- 7. self.temp is this oven's own dial: 0 becomes 180 ---- */
+      out(["#a-self", "#a-temp", "#r-oven", "#r-self", "#r-xoven", "#r-x180", "#n-dot"], t(95) - 0.15, 0.2);
+      tl.to(["#L6", "#L11"], { opacity: 1, duration: 0.3 }, t(95) - 0.15);
+      draw("r-stemp", t(95), 0.4);
+      draw("r-dial", t(101), 0.45);
+      tl.to("#dial-n .d0", { opacity: 0, scale: 0.5, duration: 0.2 }, t(105) - 0.1);
+      pop("#dial-n .d1", t(105), { from: 0.5 });
+      tl.fromTo("#heat", { opacity: 0 }, { opacity: 0.85, duration: 0.8, ease: "power1.out", immediateRender: false }, t(105));
+
+      /* ---- 8. A method can answer: is_ready(180) -> True, lamp green ---- */
+      out(["#r-stemp", "#r-dial"], t(109) - 0.1, 0.2);
+      type("#L8", t(110), 36, 0.55);
+      type("#L9", t(110) + 0.6, 39, 0.6);
+      pop("#b-rdy", t(112), { from: 0.6 });
+      tl.set("#s-cursor", { x: 1700, y: 650 }, t(114) - 0.4);
+      cursorIn(t(114) - 0.4);
+      cursorTo(1650, 530, t(114) - 0.35, 0.35);
+      type("#L13", t(114), 18, 0.45);
+      tap("#b-rdy", t(116));
+      pop("#n-true", t(118), { from: 0.7 });
+      cursorOut(t(119));
+      tl.to("#lamp-on", { opacity: 1, duration: 0.3 }, t(121));
+      draw("r-lamp", t(121) + 0.1, 0.4);
+
+      /* ---- 9. Forget self: TypeError ---- */
+      out(["#r-lamp", "#n-true", "#L14"], t(123) - 0.1, 0.2);
+      tl.to(["#L8", "#L9", "#L13"], { opacity: 0.25, duration: 0.3 }, t(123));
+      tl.to("#lamp-on", { opacity: 0, duration: 0.3 }, t(123));
+      tl.to("#heat", { opacity: 0, duration: 0.3 }, t(123));
+      tl.to("#dial-n .d1", { opacity: 0, duration: 0.2 }, t(123));
+      tl.to("#dial-n .d0", { opacity: 1, scale: 1, duration: 0.2 }, t(123));
+      tl.to("#ov-self", { opacity: 0, duration: 0.2 }, t(123));
+      draw("r-selfq", t(125) - 0.1, 0.3);
+      out("#sw-a", t(126), 0.25);
+      pop("#sw-b", t(126) + 0.2, { from: 0.8 });
+      out("#r-selfq", t(128), 0.2);
+      tl.to("#s-code", { x: -8, duration: 0.06, yoyo: true, repeat: 5, ease: "sine.inOut" }, t(129));
+      show("#E1", t(129), 0.25);
+      show("#E2", t(129) + 0.15, 0.25);
+      pop("#stamp", t(129) + 0.1, { from: 1.6, ease: "power3.out", d: 0.3 });
+      draw("r-e1", t(133), 0.4);
+      draw("r-e2", t(137), 0.4);
+      tl.to(["#L6", "#L11"], { opacity: 0.3, duration: 0.3 }, t(141) - 0.2);
+      draw("r-oven", t(141) - 0.1, 0.35);
+      draw("a-bad", t(141) + 0.15, 0.5);
+      draw("r-gone", t(142), 0.3);
+      pop("#n-nojar", t(143), { from: 0.7 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 64.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

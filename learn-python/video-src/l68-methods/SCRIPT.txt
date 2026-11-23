@@ -1,0 +1,19 @@
+Chloe wants gluten-free banana bread. It bakes at one hundred and eighty degrees. So Kitchen Coach gets an oven.
+
+Here is the template. Class Oven. Every new oven starts cold, at zero.
+
+Give it a button. A method is a function inside the class. Def preheat. Self, then temp.
+
+Press it. Oven dot preheat, one eighty.
+
+Wait. Preheat has two jars, and you gave one value. Where is self?
+
+Python fills it in. Oven dot preheat, one eighty, is really Oven dot preheat, oven, one eighty. The object in front of the dot becomes self.
+
+Self dot temp is this oven's own dial. Zero becomes one hundred and eighty.
+
+A method can answer, too. Is ready, one eighty? True. The lamp turns green.
+
+Now forget self in the def. Type error. Preheat takes one positional argument, but two were given. The oven still comes in, with no jar for it.
+
+A method is what an object can do. Python hands it the object as self.

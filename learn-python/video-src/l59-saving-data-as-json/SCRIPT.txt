@@ -1,0 +1,11 @@
+Kitchen Coach keeps the pantry in jars. Rice, nine hundred grams. Oats, four hundred. But when the program ends, the lights go off, and the jars are empty.
+
+In lesson fifty-five, you saved it as lines of text, and split and converted every number back by hand. And Ben's guest card, a list inside a dict, does not fit on a line at all.
+
+So, import Jason. Jason dot dump packs the whole dict into a freezer box, as text. Quotes, braces, the same shape.
+
+Lights off. Next morning, Jason dot load unpacks it. The jars refill, and nine hundred is a real number again, not text.
+
+Two surprises. A set bounces off the box. Type error. Object of type set is not Jason serializable. Save a sorted list instead. And the number key one comes back as text, in quotes.
+
+Jason dot dump to save. Jason dot load to bring it back. Dicts and lists, ready for tomorrow.

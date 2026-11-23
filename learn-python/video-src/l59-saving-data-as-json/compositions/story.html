@@ -1,0 +1,379 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .grp { left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* the jars: Kitchen Coach's memory. Left 1190 + i * 225, 190 wide, 150 to 370 high */
+    #mem { left: 1190px; top: 84px; height: 46px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; }
+    .jar { top: 160px; width: 190px; height: 210px; border-radius: 22px 22px 30px 30px; background: #fff; }
+    .lid { top: 140px; width: 150px; height: 30px; border-radius: 8px; background: #0e0c1d; }
+    .jv { top: 200px; width: 190px; text-align: center; font: 700 48px/70px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .jl { top: 300px; width: 190px; text-align: center; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; }
+    #night { left: 1150px; top: 60px; width: 730px; height: 960px; border-radius: 28px; background: #0e0c1d; }
+    #night > b { position: absolute; left: 0; top: 380px; width: 730px; text-align: center; color: #fff; font: 700 56px/80px "Fraunces", serif; }
+    #night > i { position: absolute; left: 0; top: 470px; width: 730px; text-align: center; color: #c9c6ff; font: 800 32px/48px "Manrope", sans-serif; font-style: normal; }
+    #moon { left: 1450px; top: 250px; width: 130px; height: 130px; }
+    #sun { left: 1600px; top: 76px; height: 54px; padding: 0 24px; border-radius: 999px; background: #fbebd2; color: #b9741a; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* lesson 55: the notebook of lines, and Ben's guest card */
+    .card { top: 470px; width: 300px; height: 330px; border-radius: 22px; background: #fff; }
+    .card-h { top: 486px; font: 700 30px/44px "JetBrains Mono", monospace; white-space: nowrap; color: #3b37e6; }
+    .cl { font: 700 30px/48px "JetBrains Mono", monospace; white-space: nowrap; }
+    #nofit { left: 1360px; top: 836px; width: 470px; height: 64px; border-radius: 14px; background: #fbe0ea; color: #b8235a; text-align: center; font: 800 32px/64px "Manrope", sans-serif; white-space: nowrap; transform: rotate(-4deg); }
+
+    /* the freezer box: the JSON file on disk */
+    #box { left: 1190px; top: 500px; width: 640px; height: 440px; border-radius: 22px; background: #e3eefb; }
+    #lid { left: 1190px; top: 500px; width: 640px; height: 70px; border-radius: 22px 22px 0 0; background: #0e0c1d; }
+    .bl { left: 1226px; top: 509px; font: 700 32px/52px "JetBrains Mono", monospace; color: #fff; white-space: nowrap; }
+    #frost { left: 1660px; top: 514px; height: 42px; padding: 0 16px; border-radius: 999px; background: #c9e0f7; color: #0e0c1d; font: 800 28px/42px "Manrope", sans-serif; }
+    .bt { left: 1226px; font: 700 32px/50px "JetBrains Mono", monospace; white-space: pre; color: #0e0c1d; }
+    .bt .q { color: #1f7a5c; }
+    .chip { height: 60px; padding: 0 22px; border-radius: 999px; font: 700 32px/60px "JetBrains Mono", monospace; white-space: nowrap; background: #fff; }
+    .tag { height: 50px; padding: 0 20px; border-radius: 999px; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; }
+    .tag.ok { background: #ddefe6; color: #1f7a5c; }
+    .tag.bad { background: #fbe0ea; color: #b8235a; }
+    .tag.warn { background: #fbebd2; color: #b9741a; }
+    .tag.acc { background: #e6e3ff; color: #3b37e6; }
+
+    /* code panel: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    #s-div { position: absolute; left: 40px; top: 790px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; right: 40px; top: 744px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 46px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.6" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>pantry.py</span></div>
+          <!-- A: the pantry in memory -->
+          <div class="s-ln pa" id="A1" style="top:88px">pantry = {<span class="s">"rice"</span>: <span class="n">900</span>, <span class="s">"oats"</span>: <span class="n">400</span>,</div>
+          <div class="s-ln pa" id="A2" style="top:138px">          <span class="s">"lentils"</span>: <span class="n">250</span>}</div>
+          <!-- B: lesson 55, by hand -->
+          <div class="s-ln pb" id="B1" style="top:88px"><span class="k">for</span> line <span class="k">in</span> f:</div>
+          <div class="s-ln pb" id="B2" style="top:138px">    name, grams = line.<span class="f">strip</span>().<span class="f">split</span>(<span class="s">","</span>)</div>
+          <div class="s-ln pb" id="B3" style="top:188px">    pantry[name] = <span class="f">int</span>(grams)</div>
+          <div class="s-ln pb" id="B5" style="top:288px">guests = {<span class="s">"Ben"</span>: {<span class="s">"likes"</span>: [<span class="s">"tofu"</span>, <span class="s">"lentils"</span>]}}</div>
+          <div class="s-note pb" id="n-hand" style="left:660px; top:186px">by hand, every line</div>
+          <!-- C: import json, dump -->
+          <div class="s-ln" id="C1" style="top:88px"><span class="k">import</span> json</div>
+          <div class="s-ln pc" id="C2" style="top:188px"><span class="k">with</span> <span class="f">open</span>(<span class="s">"pantry.json"</span>, <span class="s">"w"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pc" id="C3" style="top:238px">    json.<span class="f">dump</span>(pantry, f, indent=<span class="n">2</span>)</div>
+          <div class="s-note ok pc" id="n-save" style="left:680px; top:236px">save</div>
+          <!-- D: load -->
+          <div class="s-ln pd" id="D2" style="top:188px"><span class="k">with</span> <span class="f">open</span>(<span class="s">"pantry.json"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pd" id="D3" style="top:238px">    pantry = json.<span class="f">load</span>(f)</div>
+          <div class="s-ln pd" id="D5" style="top:338px"><span class="f">print</span>(pantry[<span class="s">"rice"</span>] - <span class="n">150</span>)</div>
+          <div class="s-note ok pd" id="n-load" style="left:560px; top:236px">bring it back</div>
+          <!-- E: a set will not go in -->
+          <div class="s-ln pe" id="E3" style="top:188px">likes = {<span class="s">"tofu"</span>, <span class="s">"lentils"</span>}</div>
+          <div class="s-ln pe" id="E4" style="top:238px"><span class="k">with</span> <span class="f">open</span>(<span class="s">"likes.json"</span>, <span class="s">"w"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pe" id="E5" style="top:288px">    json.<span class="f">dump</span>(likes, f)</div>
+          <div class="s-ln pe" id="E5b" style="top:288px">    json.<span class="f">dump</span>(<span class="f">sorted</span>(likes), f)</div>
+          <!-- F: a number key -->
+          <div class="s-ln pf" id="F3" style="top:188px">text = json.<span class="f">dumps</span>({<span class="n">1</span>: <span class="s">"Mon"</span>})</div>
+          <div class="s-ln pf" id="F4" style="top:238px"><span class="f">print</span>(json.<span class="f">loads</span>(text))</div>
+
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="o-750" style="top:800px">750</div>
+          <div class="s-out err" id="o-err" style="top:800px">TypeError: Object of type set is not JSON serializable</div>
+          <div class="s-out" id="o-mon" style="top:800px">{'1': 'Mon'}</div>
+        </div>
+
+        <!-- the jars -->
+        <div id="jars" class="s-abs grp">
+          <div id="mem" class="s-abs">in memory</div>
+          <div class="s-abs lid" style="left:1210px"></div>
+          <div class="s-abs lid" style="left:1435px"></div>
+          <div class="s-abs lid" style="left:1660px"></div>
+          <div id="j1" class="s-abs jar s-ol" style="left:1190px"></div>
+          <div id="j2" class="s-abs jar s-ol" style="left:1415px"></div>
+          <div id="j3" class="s-abs jar s-ol" style="left:1640px"></div>
+          <div id="v1" class="s-abs jv s-hide" style="left:1190px">900</div>
+          <div id="v2" class="s-abs jv s-hide" style="left:1415px">400</div>
+          <div id="v3" class="s-abs jv s-hide" style="left:1640px">250</div>
+          <div class="s-abs jl" style="left:1190px">rice</div>
+          <div class="s-abs jl" style="left:1415px">oats</div>
+          <div class="s-abs jl" style="left:1640px">lentils</div>
+          <div id="tag-int" class="s-abs tag ok s-hide" style="left:1190px; top:400px">900 is a number</div>
+          <div id="tag-not" class="s-abs tag bad s-hide" style="left:1500px; top:400px">not "900"</div>
+        </div>
+
+        <!-- lesson 55: lines in a notebook, and Ben's card -->
+        <div id="l55" class="s-abs grp s-hide">
+          <div class="s-abs card s-ol" style="left:1190px"></div>
+          <div class="s-abs card-h" style="left:1214px">pantry.txt</div>
+          <div class="s-abs cl" style="left:1214px; top:552px">rice,900</div>
+          <div class="s-abs cl" style="left:1214px; top:610px">oats,400</div>
+          <div class="s-abs cl" style="left:1214px; top:668px">lentils,250</div>
+          <div id="ben" class="s-abs grp s-hide">
+            <div class="s-abs card s-ol" style="left:1530px; background:#ddefe6"></div>
+            <div class="s-abs card-h" style="left:1554px; color:#1f7a5c">Ben</div>
+            <div class="s-abs cl" style="left:1554px; top:552px">likes:</div>
+            <div class="s-abs cl" style="left:1554px; top:610px">["tofu",</div>
+            <div class="s-abs cl" style="left:1572px; top:668px">"lentils"]</div>
+          </div>
+          <div id="nofit" class="s-abs s-ol s-hide">does not fit on a line</div>
+        </div>
+
+        <!-- the freezer box -->
+        <div id="fbox" class="s-abs grp s-hide">
+          <div id="box" class="s-abs s-ol"></div>
+          <div id="lid" class="s-abs"></div>
+          <div id="bl1" class="s-abs bl">pantry.json</div>
+          <div id="bl2" class="s-abs bl s-hide">likes.json</div>
+          <div id="bl3" class="s-abs bl s-hide">days.json</div>
+          <div id="frost" class="s-abs">on disk</div>
+          <div id="b1" class="s-abs bt s-hide" style="top:600px">{</div>
+          <div id="b2" class="s-abs bt s-hide" style="top:650px">  <span class="q">"rice"</span>: 900,</div>
+          <div id="b3" class="s-abs bt s-hide" style="top:700px">  <span class="q">"oats"</span>: 400,</div>
+          <div id="b4" class="s-abs bt s-hide" style="top:750px">  <span class="q">"lentils"</span>: 250</div>
+          <div id="b5" class="s-abs bt s-hide" style="top:800px">}</div>
+          <div id="be" class="s-abs bt s-hide" style="top:600px">[<span class="q">"lentils"</span>, <span class="q">"tofu"</span>]</div>
+          <div id="bf" class="s-abs bt s-hide" style="top:600px">{<span class="q">"1"</span>: <span class="q">"Mon"</span>}</div>
+          <div id="tag-same" class="s-abs tag acc s-hide" style="left:1226px; top:866px">the same shape, as text</div>
+          <div id="tag-list" class="s-abs tag ok s-hide" style="left:1226px; top:866px">a sorted list goes in</div>
+          <div id="tag-one" class="s-abs tag warn s-hide" style="left:1226px; top:866px">surprise: 1 is now "1"</div>
+        </div>
+
+        <!-- things that try to go in -->
+        <div id="setc" data-layout-allow-overlap class="s-abs chip s-ol s-hide" style="left:1300px; top:410px; color:#b8235a">{"tofu", "lentils"}</div>
+        <div id="tag-type" data-layout-allow-overlap data-layout-allow-occlusion class="s-abs tag bad s-hide" style="left:1600px; top:442px">TypeError</div>
+        <div id="lstc" data-layout-allow-overlap class="s-abs chip s-ol s-hide" style="left:1300px; top:410px; color:#1f7a5c">["lentils", "tofu"]</div>
+        <div id="keyc" data-layout-allow-overlap class="s-abs chip s-ol s-hide" style="left:1400px; top:410px; color:#b9741a">{1: "Mon"}</div>
+
+        <!-- lights off -->
+        <div id="night" class="s-abs s-hide"><b>Lights off.</b><i>The program has ended.</i></div>
+        <svg id="moon" class="s-abs s-hide" viewBox="0 0 100 100"><path d="M64 10 A42 42 0 1 0 90 66 A34 34 0 1 1 64 10 Z" fill="#ffc24b" /></svg>
+        <div id="sun" class="s-abs s-ol s-hide">next morning</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-split" style="stroke:#ffc24b" />
+          <path id="r-int" style="stroke:#ffc24b" />
+          <path id="r-list" style="stroke:#ff6b8b" />
+          <path id="r-imp" style="stroke:#ffc24b" />
+          <path id="r-dump" style="stroke:#4bd69b" />
+          <path id="r-q" style="stroke:#3b37e6" />
+          <path id="r-b1" style="stroke:#3b37e6" />
+          <path id="r-b2" style="stroke:#3b37e6" />
+          <path id="r-load" style="stroke:#4bd69b" />
+          <path id="r-set" style="stroke:#ff6b8b" />
+          <path id="r-err" style="stroke:#ff6b8b" />
+          <path id="r-sorted" style="stroke:#4bd69b" />
+          <path id="r-one" style="stroke:#b9741a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.778, 1.08, 1.207, 1.637, 1.788, 2.972, 3.355, 3.564, 3.855, 4.621, 5.178, 5.422, 6.374, 6.56, 6.722, 6.838, 7.384, 8.115, 8.278, 8.615, 8.835, 9.125, 9.311, 9.462, 9.892, 10.136, 11.308, 11.505, 11.9, 13.015, 13.189, 13.56, 13.711, 14.025, 14.373, 14.524, 15.406, 15.639, 16.045, 16.184, 16.741, 17.159, 17.554, 17.856, 18.146, 19.005, 19.319, 19.678, 19.969, 20.433, 20.631, 20.944, 21.327, 21.432, 21.989, 22.314, 22.569, 22.906, 23.069, 23.196, 23.556, 23.87, 24.822, 25.263, 25.739, 26.703, 27.225, 27.527, 27.945, 28.305, 28.456, 28.769, 29.152, 29.408, 29.524, 29.93, 30.394, 30.731, 31.614, 32.159, 32.856, 33.03, 33.332, 33.982, 34.4, 35.294, 35.619, 36.095, 36.618, 36.908, 37.361, 38.057, 38.684, 38.847, 39.23, 39.81, 40.101, 40.426, 40.902, 41.076, 41.25, 41.587, 41.923, 42.504, 42.771, 43.793, 44.071, 44.884, 45.093, 45.406, 45.917, 46.184, 46.289, 46.916, 47.299, 48.216, 48.715, 48.831, 49.145, 49.493, 49.783, 50.097, 50.619, 51.85, 52.221, 52.395, 52.906, 53.278, 54.299, 54.485, 54.589, 54.891, 55.135, 55.379, 55.739, 56.134, 56.377, 57.004, 57.271, 58.165, 58.665, 58.966, 59.28, 59.419, 60.116, 60.58, 60.87, 61.335, 61.497, 61.73, 61.857, 62.461, 62.856, 63.018, 63.668, 63.97, 64.121];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      const CW = 18, OW = 16.8;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      const OY = 96 + 800 + 21; // centre of output line 1
+      ring("r-split", cx(31, 40), ry(2), rw(31, 40), 28);   // split(",")
+      ring("r-int", cx(19, 28), ry(3), rw(19, 28), 28);     // int(grams)
+      ring("r-list", cx(27, 45), ry(5), rw(27, 45), 28);    // ["tofu", "lentils"]
+      ring("r-imp", cx(0, 10), ry(1), rw(0, 10), 28);       // import json
+      ring("r-dump", cx(4, 12), ry(4), rw(4, 12), 28);      // json.dump
+      ring("r-load", cx(13, 21), ry(4), rw(13, 21), 28);    // json.load
+      ring("r-set", cx(8, 26), ry(3), rw(8, 26), 28);       // {"tofu", "lentils"}
+      ring("r-err", 136 + 27.5 * OW, OY, 3 * OW / 2 + 16, 26); // the word set in the error
+      ring("r-sorted", cx(14, 26), ry(5), rw(14, 26), 28);  // sorted(likes)
+      // Box text: 32px mono = 19.2 px per char, starts at x 1226. Line n centre y = 600 + 25 + (n - 1) * 50.
+      const BW = 19.2, bx = (c0, c1) => 1226 + ((c0 + c1 + 1) / 2) * BW, bw = (c0, c1) => ((c1 - c0 + 1) * BW) / 2 + 14, by = (n) => 625 + (n - 1) * 50;
+      ring("r-q", bx(2, 7), by(2), bw(2, 7), 28);           // "rice"
+      ring("r-b1", bx(0, 0), by(1), 26, 30);                // {
+      ring("r-b2", bx(0, 0), by(5), 26, 30);                // }
+      ring("r-one", bx(1, 3), by(1), bw(1, 3), 30);         // "1"
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // lights off and on: the night panel covers the kitchen side
+      const lightsOff = (at) => { tl.fromTo("#night", { opacity: 0 }, { opacity: 0.94, duration: 0.35, ease: "power2.in", immediateRender: false }, at); show("#moon", at + 0.2, 0.3); };
+      const lightsOn = (at) => { out(["#night", "#moon"], at, 0.4); };
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 600, y: 600 }, 0);
+
+      /* ---- 1. Kitchen Coach keeps the pantry in jars. The program ends: lights off, jars empty ---- */
+      bump(["#j1", "#j2", "#j3"], t(6));
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(4));
+      type("#A1", t(5), 36, 0.6);
+      type("#A2", t(5) + 0.7, 25, 0.4);
+      pop("#v1", t(7), { from: 0.4 });
+      pop("#v2", t(11), { from: 0.4 });
+      pop("#v3", t(12) + 0.3, { from: 0.4 });
+      lightsOff(t(20) - 0.1);
+      out(["#v1", "#v2", "#v3"], t(25), 0.4);
+      lightsOn(t(27) + 0.3);
+
+      /* ---- 2. Lesson 55: lines of text, split and int by hand. Ben's card does not fit ---- */
+      out(".pa", t(28) - 0.2, 0.25);
+      show("#l55", t(29), 0.3);
+      tl.fromTo("#l55", { y: 30 }, { y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(29));
+      type("#B1", t(31), 14, 0.3);
+      type("#B2", t(31) + 0.4, 41, 0.6);
+      type("#B3", t(31) + 1.1, 29, 0.45);
+      draw("r-split", t(39), 0.4);
+      draw("r-int", t(41), 0.4);
+      pop("#v1", t(42), { from: 0.4 });
+      pop("#v2", t(43), { from: 0.4 });
+      pop("#v3", t(44), { from: 0.4 });
+      pop("#n-hand", t(45), { from: 0.6 });
+      out(["#r-split", "#r-int"], t(47), 0.2);
+      type("#B5", t(48), 48, 0.7);
+      show("#ben", t(49), 0.3);
+      draw("r-list", t(52), 0.45);
+      pop("#nofit", t(57), { from: 0.5 });
+
+      /* ---- 3. import json. json.dump packs the dict into the freezer box, as text ---- */
+      out([".pb", "#r-list", "#l55"], t(64) - 0.1, 0.25);
+      type("#C1", t(65), 11, 0.3);
+      draw("r-imp", t(66), 0.4);
+      type("#C2", t(67), 35, 0.45);
+      type("#C3", t(67) + 0.5, 34, 0.45);
+      draw("r-dump", t(69), 0.4);
+      out("#r-imp", t(69), 0.2);
+      bump(["#v1", "#v2", "#v3"], t(70));
+      show("#fbox", t(76) - 0.1, 0.25);
+      tl.fromTo("#fbox", { y: 40 }, { y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(76) - 0.1);
+      // the values drop into the box and go out of the jars
+      tl.to(["#v1", "#v2", "#v3"], { y: 420, opacity: 0, duration: 0.5, ease: "power2.in", stagger: 0.12 }, t(77));
+      pop("#n-save", t(77), { from: 0.6 });
+      show("#b1", t(78), 0.15);
+      type("#b2", t(78) + 0.15, 14, 0.3);
+      type("#b3", t(78) + 0.45, 14, 0.3);
+      type("#b4", t(78) + 0.75, 16, 0.3);
+      show("#b5", t(78) + 1.05, 0.15);
+      draw("r-q", t(80), 0.4);
+      draw("r-b1", t(81), 0.3);
+      draw("r-b2", t(81) + 0.15, 0.3);
+      pop("#tag-same", t(82), { from: 0.6 });
+
+      /* ---- 4. Lights off. Next morning, json.load unpacks it: the jars refill with real numbers ---- */
+      out(["#r-q", "#r-b1", "#r-b2", "#r-dump", "#n-save"], t(85) - 0.1, 0.2);
+      lightsOff(t(85) - 0.1);
+      out(["#tag-same", ".pc"], t(86), 0.2);
+      lightsOn(t(87) - 0.1);
+      pop("#sun", t(87), { from: 0.6 });
+      type("#D2", t(89) - 0.2, 30, 0.4);
+      type("#D3", t(89) + 0.25, 25, 0.35);
+      draw("r-load", t(91), 0.4);
+      pop("#n-load", t(92), { from: 0.6 });
+      tl.fromTo(["#v1", "#v2", "#v3"], { y: 420, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out", stagger: 0.15, immediateRender: false }, t(92) + 0.2);
+      bump(["#j1", "#j2", "#j3"], t(96));
+      pop("#tag-int", t(102), { from: 0.6 });
+      type("#D5", t(102), 27, 0.4);
+      show("#o-750", t(103) + 0.2, 0.2);
+      pop("#tag-not", t(105), { from: 0.6 });
+
+      /* ---- 5. A set bounces off the box: TypeError. Save a sorted list instead ---- */
+      out(["#r-load", "#n-load", ".pd", "#o-750", "#sun"], t(107) - 0.1, 0.25);
+      out(["#tag-int", "#tag-not"], t(108), 0.25);
+      tl.to("#jars", { opacity: 0.25, duration: 0.3 }, t(108));
+      out(["#b1", "#b2", "#b3", "#b4", "#b5", "#bl1"], t(109), 0.25);
+      show("#bl2", t(109) + 0.25, 0.2);
+      type("#E3", t(109), 27, 0.4);
+      type("#E4", t(109) + 0.45, 34, 0.4);
+      type("#E5", t(109) + 0.9, 23, 0.3);
+      draw("r-set", t(110), 0.4);
+      pop("#setc", t(110), { from: 0.6 });
+      // fly at the box and bounce back
+      tl.to("#setc", { y: 110, duration: 0.3, ease: "power2.in" }, t(111));
+      tl.to("#setc", { y: -40, x: 60, rotation: 8, duration: 0.45, ease: "power2.out" }, t(111) + 0.3);
+      tl.fromTo("#fbox", { x: 0 }, { x: 10, duration: 0.06, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(111) + 0.3);
+      pop("#tag-type", t(115), { from: 0.6 });
+      type("#o-err", t(116), 55, 1.0);
+      draw("r-err", t(120), 0.4);
+      // the fix: sorted(likes)
+      tl.set("#s-cursor", { x: 700, y: 520 }, t(124));
+      cursorIn(t(124));
+      cursorTo(136 + 14 * CW, ry(5) - 8, t(124), 0.4);
+      out(["#E5", "#o-err", "#r-err", "#r-set", "#tag-type"], t(127) - 0.1, 0.2);
+      type("#E5b", t(127), 31, 0.45);
+      cursorOut(t(128) + 0.2);
+      draw("r-sorted", t(128), 0.4);
+      out("#setc", t(127), 0.3);
+      pop("#lstc", t(128), { from: 0.6 });
+      tl.to("#lstc", { y: 150, opacity: 0, duration: 0.4, ease: "power2.in" }, t(128) + 0.6);
+      type("#be", t(129), 19, 0.4);
+      pop("#tag-list", t(128) + 0.2, { from: 0.6 });
+
+      /* ---- 6. The number key 1 comes back as text, "1" ---- */
+      out([".pe", "#r-sorted"], t(130) - 0.1, 0.25);
+      out(["#be", "#tag-list", "#bl2"], t(132) - 0.1, 0.25);
+      show("#bl3", t(132) + 0.15, 0.2);
+      type("#F3", t(131), 30, 0.45);
+      type("#F4", t(131) + 0.5, 24, 0.35);
+      pop("#keyc", t(132) + 0.1, { from: 0.6 });
+      tl.to("#keyc", { y: 150, opacity: 0, duration: 0.4, ease: "power2.in" }, t(134) + 0.1);
+      type("#bf", t(135), 12, 0.35);
+      show("#o-mon", t(136) + 0.1, 0.2);
+      draw("r-one", t(138), 0.4);
+      pop("#tag-one", t(136), { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 58.43);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

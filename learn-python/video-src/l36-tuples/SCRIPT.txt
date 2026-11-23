@@ -1,0 +1,15 @@
+This is grandma's pancake card. Two hundred grams of flour, three hundred millilitres of milk, two eggs. The ratio never changes.
+
+Keep it on a scrap of paper, as a list in square brackets, and anyone can scribble on it. One line doubles the flour for Ben. And every batch after that is wrong.
+
+So laminate the card. Round brackets make a tuple. A tuple is a list you cannot change.
+
+You can still read it. Index zero is the flour. A slice gives flour and milk.
+
+But try to write on it. Pancake, zero, equals four hundred. Python refuses. Type error. A tuple does not support item assignment. Grandma's ratio is safe.
+
+Need a double batch? Unpack the card into three jars: flour, milk and eggs. Then make new values. The card stays the same.
+
+One trap. Egg in round brackets is just text. Add a comma, and now it is a tuple.
+
+Use a tuple for things that must not change.

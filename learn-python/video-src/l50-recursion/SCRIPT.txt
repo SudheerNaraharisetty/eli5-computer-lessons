@@ -1,0 +1,11 @@
+Chloe wants a trifle. The trifle recipe says: make custard, and make a sponge. The sponge recipe says: make the flour mix. Recipes inside recipes.
+
+How long does it all take? Write one card, total minutes. It takes the recipe's own minutes, then calls itself, for each recipe inside.
+
+Every call gets its own pan, and a plate on the pile. Custard uses nothing, so it stops, and hands back twenty. Trifle is at thirty five. Sponge calls flour mix: five. Sponge hands back thirty. The plates come off. Sixty five minutes in all.
+
+That stop is the base case: a recipe that uses nothing. Now say sponge lists sponge, by mistake. Sponge calls sponge, again and again. The pile grows, and at about a thousand plates, Python stops. Recursion error. Every call must move toward the stop.
+
+For simple counting, a plain loop is often clearer. Recursion shines when things sit inside things.
+
+A recipe can use itself, if it knows when to stop.

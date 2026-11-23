@@ -1,0 +1,423 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* Chloe's message and the opening caption */
+    .msg { left: 96px; top: 300px; width: 1000px; height: 150px; border-radius: 30px; background: #fff; }
+    .msg .av { position: absolute; left: 30px; top: 33px; width: 84px; height: 84px; border-radius: 50%; background: #b8235a; color: #fff; text-align: center; font: 800 44px/84px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .msg .who { position: absolute; left: 146px; top: 18px; font: 800 30px/42px "Manrope", sans-serif; color: #b8235a; }
+    .msg .say { position: absolute; left: 146px; top: 64px; font: 800 44px/60px "Manrope", sans-serif; white-space: nowrap; }
+    #cap { left: 110px; top: 560px; font: 700 84px/1.1 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #cap .a { color: #3b37e6; }
+
+    /* recipe cards */
+    .rc { height: 150px; border-radius: 22px; background: #fff; }
+    .rc .nm { position: absolute; left: 24px; top: 14px; font: 700 38px/50px "JetBrains Mono", monospace; white-space: nowrap; }
+    .rc .mn { position: absolute; left: 24px; top: 66px; font: 800 30px/38px "Manrope", sans-serif; color: #b9741a; white-space: nowrap; }
+    .rc .us { position: absolute; left: 24px; top: 104px; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .rc .us b { color: #b8235a; }
+    .rc.stop { box-shadow: 0 0 0 5px #1f7a5c, 0 10px 0 5px #1f7a5c; }
+    .rc.stop .us { color: #1f7a5c; }
+
+    /* the pile of calls */
+    #slab { left: 1180px; top: 900px; width: 660px; height: 34px; border-radius: 10px; background: #0e0c1d; }
+    #pile-h { left: 1210px; top: 104px; font: 800 34px/46px "Manrope", sans-serif; }
+    #pile-s { left: 1210px; top: 152px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    .pl { left: 1210px; width: 600px; height: 112px; border-radius: 20px; background: #fff; }
+    .pl .pc { position: absolute; left: 24px; top: 0; font: 700 32px/112px "JetBrains Mono", monospace; white-space: nowrap; }
+    .pl .pv { position: absolute; right: 24px; top: 0; width: 110px; text-align: right; font: 700 48px/112px "JetBrains Mono", monospace; color: #b9741a; }
+    .pl .pv.ok { color: #1f7a5c; }
+    #pan { left: 1210px; top: 548px; height: 60px; padding: 0 24px; border-radius: 999px; background: #fbebd2; font: 700 30px/60px "JetBrains Mono", monospace; white-space: nowrap; box-shadow: 0 0 0 4px #b9741a; }
+
+    /* a card that calls itself by mistake, and the pile to the ceiling */
+    .tp { left: 1210px; width: 600px; height: 32px; border-radius: 10px; background: #fff; text-align: center; font: 700 28px/32px "JetBrains Mono", monospace; box-shadow: 0 0 0 3px #0e0c1d; }
+    .tp.first { background: #fbebd2; }
+    #ceil { left: 1180px; top: 80px; width: 660px; height: 0; border-top: 5px dashed #b8235a; }
+    .tag { height: 64px; padding: 0 26px; border-radius: 999px; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; }
+    .tag.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    .tag.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #stamp { left: 1250px; top: 450px; width: 520px; height: 110px; border-radius: 18px; background: #fbe0ea; color: #b8235a; text-align: center; font: 800 52px/110px "Manrope", sans-serif; box-shadow: 0 0 0 7px #b8235a; }
+
+    /* every call moves toward the stop */
+    .ch { left: 1320px; width: 360px; height: 76px; border-radius: 18px; background: #fff; text-align: center; font: 700 36px/76px "JetBrains Mono", monospace; }
+    #ch-stop { left: 1250px; width: 500px; background: #ddefe6; color: #1f7a5c; font: 800 36px/76px "Manrope", sans-serif; box-shadow: 0 0 0 5px #1f7a5c, 0 10px 0 5px #1f7a5c; }
+
+    /* loop or recursion */
+    .bx { left: 1180px; width: 640px; border-radius: 24px; background: #fff; }
+    .bx .bt { position: absolute; left: 28px; top: 18px; font: 800 34px/46px "Manrope", sans-serif; white-space: nowrap; }
+    .bx .bt i { font-style: normal; color: #1f7a5c; }
+    .bx .bt u { text-decoration: none; color: #3b37e6; }
+    .lc { position: absolute; left: 28px; font: 700 32px/46px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .lc .k { color: #3b37e6; }
+    .lc .n { color: #b9741a; }
+    .nest { border-radius: 18px; border: 4px solid #0e0c1d; }
+    .nest > span { position: absolute; left: 14px; top: 4px; font: 700 28px/36px "JetBrains Mono", monospace; white-space: nowrap; }
+
+    .chip { left: 0; top: 0; width: 130px; height: 84px; border-radius: 16px; background: #3b37e6; color: #fff; text-align: center; font: 700 50px/84px "JetBrains Mono", monospace; box-shadow: 0 0 0 4px #0e0c1d; }
+    .chip.ok { background: #1f7a5c; }
+
+    /* code panel on the left: 34px mono = 20.4 px per char, text at page x 136, row r centre at page y 212 + (r - 1) * 56 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 34px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .s { color: #7cf0b5; }
+    #s-div { position: absolute; left: 40px; top: 676px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 684px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 34px/48px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; font-size: 30px; }
+    .s-note { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="68" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- Chloe, on screen from the first frame -->
+        <div id="m-chloe" class="s-abs msg s-ol"><div class="av">C</div><div class="who">Chloe</div><div class="say">Trifle for dessert tonight?</div></div>
+        <div id="cap" class="s-abs s-hide">Recipes <span class="a">inside</span> recipes.</div>
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>dessert.py</span></div>
+          <div class="s-ln" id="L1" style="top:88px"><span class="k">def</span> <span class="f">total_minutes</span>(name):</div>
+          <div class="s-ln" id="L2" style="top:144px">    recipe = recipes[name]</div>
+          <div class="s-ln" id="L3" style="top:200px">    <span class="k">if</span> recipe[<span class="s">"uses"</span>] == []:</div>
+          <div class="s-ln" id="L4" style="top:256px">        <span class="k">return</span> recipe[<span class="s">"minutes"</span>]</div>
+          <div class="s-ln" id="L5" style="top:312px">    total = recipe[<span class="s">"minutes"</span>]</div>
+          <div class="s-ln" id="L6" style="top:368px">    <span class="k">for</span> sub <span class="k">in</span> recipe[<span class="s">"uses"</span>]:</div>
+          <div class="s-ln" id="L7" style="top:424px">        total += <span class="f">total_minutes</span>(sub)</div>
+          <div class="s-ln" id="L8" style="top:480px">    <span class="k">return</span> total</div>
+          <div class="s-ln" id="L10" style="top:592px"><span class="f">print</span>(<span class="f">total_minutes</span>(<span class="s">"trifle"</span>))</div>
+          <div class="s-note" id="n-base" style="left:760px; top:200px">base case</div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out" id="o-65" style="top:728px">65</div>
+          <div class="s-out err" id="o-e1" style="top:728px">RecursionError: maximum recursion</div>
+          <div class="s-out err" id="o-e2" style="top:776px">depth exceeded</div>
+        </div>
+
+        <!-- the recipe book: recipes inside recipes -->
+        <div id="c-tri" class="s-abs rc s-ol s-hide" style="left:1300px; top:110px; width:400px"><div class="nm">trifle</div><div id="mn-tri" class="mn s-hide">15 min</div><div class="us">uses: custard, sponge</div></div>
+        <div id="c-cus" class="s-abs rc s-ol s-hide" style="left:1180px; top:350px; width:320px"><div class="nm">custard</div><div id="mn-cus" class="mn s-hide">20 min</div><div class="us">uses: nothing</div></div>
+        <div id="c-spo" class="s-abs rc s-ol s-hide" style="left:1500px; top:350px; width:320px"><div class="nm">sponge</div><div id="mn-spo" class="mn s-hide">25 min</div><div class="us">uses: flour mix</div></div>
+        <div id="c-flo" class="s-abs rc s-ol s-hide" style="left:1500px; top:590px; width:320px"><div class="nm">flour mix</div><div id="mn-flo" class="mn s-hide">5 min</div><div class="us">uses: nothing</div></div>
+
+        <!-- the pile of calls -->
+        <div id="pile-h" class="s-abs s-hide">the pile of calls</div>
+        <div id="pile-s" class="s-abs s-hide">the newest call sits on top</div>
+        <div id="slab" class="s-abs s-hide"></div>
+        <div id="p-tri" class="s-abs pl s-ol s-hide" style="top:772px"><div class="pc">total_minutes("trifle")</div><div id="v-t15" class="pv">15</div><div id="v-t35" class="pv s-hide">35</div><div id="v-t65" class="pv ok s-hide">65</div></div>
+        <div id="p-cus" class="s-abs pl s-ol s-hide" style="top:646px"><div class="pc">total_minutes("custard")</div><div class="pv ok">20</div></div>
+        <div id="p-spo" class="s-abs pl s-ol s-hide" style="top:646px"><div class="pc">total_minutes("sponge")</div><div id="v-s25" class="pv">25</div><div id="v-s30" class="pv ok s-hide">30</div></div>
+        <div id="p-flo" class="s-abs pl s-ol s-hide" style="top:520px"><div class="pc">total_minutes("flour mix")</div><div class="pv ok">5</div></div>
+        <div id="pan" class="s-abs s-hide">its own pan: name = "custard"</div>
+
+        <!-- the stop: recipes that use nothing -->
+        <div id="d-cus" class="s-abs rc stop s-hide" style="left:1180px; top:330px; width:320px"><div class="nm">custard</div><div class="mn">20 min</div><div class="us">uses: nothing</div></div>
+        <div id="d-flo" class="s-abs rc stop s-hide" style="left:1500px; top:330px; width:320px"><div class="nm">flour mix</div><div class="mn">5 min</div><div class="us">uses: nothing</div></div>
+        <div id="t-stop1" class="s-abs tag ok s-hide" style="left:1272px; top:530px">stop</div>
+        <div id="t-stop2" class="s-abs tag ok s-hide" style="left:1592px; top:530px">stop</div>
+
+        <!-- sponge lists sponge, by mistake -->
+        <div id="c-mis" class="s-abs rc s-ol s-hide" style="left:1300px; top:330px; width:400px"><div class="nm">sponge</div><div class="mn">25 min</div><div class="us">uses: <b>sponge</b></div></div>
+        <div id="t-oops" class="s-abs tag bad s-hide" style="left:1380px; top:530px">by mistake</div>
+        <div id="ceil" class="s-abs s-hide"></div>
+        <div id="tp0" class="s-abs tp first s-hide" style="top:860px">total_minutes("trifle")</div>
+        <div id="tp1" class="s-abs tp s-hide" style="top:820px">total_minutes("sponge")</div>
+        <div id="tp2" class="s-abs tp s-hide" style="top:780px">total_minutes("sponge")</div>
+        <div id="tp3" class="s-abs tp s-hide" style="top:740px">total_minutes("sponge")</div>
+        <div id="tp4" class="s-abs tp s-hide" style="top:700px">total_minutes("sponge")</div>
+        <div id="tp5" class="s-abs tp s-hide" style="top:660px">total_minutes("sponge")</div>
+        <div id="tp6" class="s-abs tp s-hide" style="top:620px">total_minutes("sponge")</div>
+        <div id="tp7" class="s-abs tp s-hide" style="top:580px">total_minutes("sponge")</div>
+        <div id="tp8" class="s-abs tp s-hide" style="top:540px">total_minutes("sponge")</div>
+        <div id="tp9" class="s-abs tp s-hide" style="top:500px">total_minutes("sponge")</div>
+        <div id="tp10" class="s-abs tp s-hide" style="top:460px">total_minutes("sponge")</div>
+        <div id="tp11" class="s-abs tp s-hide" style="top:420px">total_minutes("sponge")</div>
+        <div id="tp12" class="s-abs tp s-hide" style="top:380px">total_minutes("sponge")</div>
+        <div id="tp13" class="s-abs tp s-hide" style="top:340px">total_minutes("sponge")</div>
+        <div id="tp14" class="s-abs tp s-hide" style="top:300px">total_minutes("sponge")</div>
+        <div id="tp15" class="s-abs tp s-hide" style="top:260px">total_minutes("sponge")</div>
+        <div id="tp16" class="s-abs tp s-hide" style="top:220px">total_minutes("sponge")</div>
+        <div id="tp17" class="s-abs tp s-hide" style="top:180px">total_minutes("sponge")</div>
+        <div id="tp18" class="s-abs tp s-hide" style="top:140px">total_minutes("sponge")</div>
+        <div id="tp19" class="s-abs tp s-hide" style="top:100px">total_minutes("sponge")</div>
+        <div id="t-1000" data-layout-allow-overlap class="s-abs tag bad s-hide" style="left:1345px; top:300px">about 1000 plates</div>
+        <div id="stamp" data-layout-allow-overlap class="s-abs s-hide">RecursionError</div>
+
+        <!-- every call must move toward the stop -->
+        <div id="ch-tri" class="s-abs ch s-ol s-hide" style="top:150px">trifle</div>
+        <div id="ch-spo" class="s-abs ch s-ol s-hide" style="top:320px">sponge</div>
+        <div id="ch-flo" class="s-abs ch s-ol s-hide" style="top:490px">flour mix</div>
+        <div id="ch-stop" class="s-abs ch s-hide" style="top:670px">stop: uses nothing</div>
+
+        <!-- a loop for counting, recursion for things inside things -->
+        <div id="b-loop" class="s-abs bx s-ol s-hide" style="top:110px; height:320px">
+          <div class="bt">simple counting? <i>a loop</i></div>
+          <div class="lc" id="lc1" style="top:94px">layers = <span class="n">1</span></div>
+          <div class="lc" id="lc2" style="top:140px"><span class="k">for</span> fold <span class="k">in</span> range(<span class="n">3</span>):</div>
+          <div class="lc" id="lc3" style="top:186px">    layers = layers * <span class="n">2</span></div>
+          <div class="lc" id="lc4" style="top:244px">print(layers)  <span class="n"># 8</span></div>
+        </div>
+        <div id="b-nest" class="s-abs bx s-ol s-hide" style="top:500px; height:420px">
+          <div class="bt">things inside things? <u>recursion</u></div>
+        </div>
+        <div id="nz-tri" class="s-abs nest s-hide" style="left:1210px; top:580px; width:580px; height:310px"><span>trifle</span></div>
+        <div id="nz-cus" class="s-abs nest s-hide" style="left:1236px; top:632px; width:190px; height:230px; background:#fbebd2"><span>custard</span></div>
+        <div id="nz-spo" class="s-abs nest s-hide" style="left:1446px; top:632px; width:318px; height:230px; background:#e6e3ff"><span>sponge</span></div>
+        <div id="nz-flo" class="s-abs nest s-hide" style="left:1472px; top:700px; width:266px; height:136px; background:#fff"><span>flour mix</span></div>
+
+        <!-- flying values -->
+        <div id="ch20" class="s-abs chip ok s-hide">20</div>
+        <div id="ch5" class="s-abs chip ok s-hide">5</div>
+        <div id="ch30" class="s-abs chip ok s-hide">30</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="a-tc" style="stroke:#0e0c1d" />
+          <path id="a-ts" style="stroke:#0e0c1d" />
+          <path id="a-sf" style="stroke:#0e0c1d" />
+          <path id="r-own" style="stroke:#ffc24b" />
+          <path id="r-call" style="stroke:#ffc24b" />
+          <path id="a-self" style="stroke:#ffc24b" />
+          <path id="r-base" style="stroke:#ffc24b" />
+          <path id="r-out" style="stroke:#4bd69b" />
+          <path id="r-base2" style="stroke:#4bd69b" />
+          <path id="r-mis" style="stroke:#b8235a" />
+          <path id="r-call2" style="stroke:#ff6b8b" />
+          <path id="r-err" style="stroke:#ff6b8b" />
+          <path id="a-c1" style="stroke:#0e0c1d" />
+          <path id="a-c2" style="stroke:#0e0c1d" />
+          <path id="a-c3" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.801, 0.906, 1.939, 2.113, 2.589, 3.042, 3.669, 3.936, 4.54, 4.783, 5.05, 5.19, 6.211, 6.374, 6.722, 7.152, 7.674, 7.999, 8.197, 8.661, 9.462, 10.112, 10.797, 11.842, 12.074, 12.283, 12.458, 12.562, 12.736, 13.468, 13.839, 14.164, 14.756, 15.267, 16.266, 16.451, 16.765, 16.893, 17.426, 17.751, 18.32, 18.622, 18.982, 19.655, 19.864, 20.166, 20.723, 21.989, 22.349, 22.639, 22.918, 23.103, 23.324, 23.835, 24.055, 24.148, 24.497, 24.601, 24.717, 25.518, 25.994, 26.435, 26.958, 27.178, 27.306, 27.922, 28.13, 28.409, 28.665, 29.675, 30.174, 30.336, 30.476, 30.894, 31.706, 32.148, 32.577, 32.949, 33.518, 34.389, 34.841, 35.201, 35.492, 36.42, 36.571, 36.989, 37.245, 37.767, 38.197, 38.499, 38.835, 38.963, 39.625, 39.903, 40.263, 40.461, 40.635, 41.018, 41.645, 41.796, 42.249, 42.446, 43.027, 44.025, 44.292, 44.629, 45.081, 45.36, 45.964, 46.266, 47.287, 47.705, 48.03, 48.623, 49.203, 49.424, 50.376, 50.527, 50.886, 51.746, 51.955, 52.059, 52.338, 52.489, 53.011, 53.673, 54.3, 55.717, 56.436, 57.388, 57.783, 58.062, 58.306, 58.573, 58.921, 59.049, 59.943, 60.128, 60.5, 61.15, 61.347, 61.719, 62.044, 62.253, 62.601, 63.646, 64.25, 64.796, 65.016, 65.573, 65.887, 66.456, 67.582, 67.802, 68.325, 68.534, 68.778, 69.73, 69.997, 70.136, 70.484, 70.809, 70.96];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const prep = (p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.len = L; };
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d); prep(p);
+      };
+      const arrowPath = (id, x1, y1, qx, qy, x2, y2) => {
+        const a = Math.atan2(y2 - qy, x2 - qx), b = 24, s = 0.5;
+        const h1 = [x2 - b * Math.cos(a - s), y2 - b * Math.sin(a - s)], h2 = [x2 - b * Math.cos(a + s), y2 - b * Math.sin(a + s)];
+        const p = document.getElementById(id);
+        p.setAttribute("d", `M${x1} ${y1} Q${qx} ${qy} ${x2} ${y2} M${h1[0]} ${h1[1]} L${x2} ${y2} L${h2[0]} ${h2[1]}`);
+        prep(p);
+      };
+      const CW = 20.4;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 16;
+      const ry = (r) => 212 + (r - 1) * 56;
+
+      // the recipe book
+      arrowPath("a-tc", 1410, 278, 1380, 300, 1345, 336);
+      arrowPath("a-ts", 1590, 278, 1620, 300, 1655, 336);
+      arrowPath("a-sf", 1660, 522, 1662, 550, 1660, 578);
+      // the code
+      ring("r-own", cx(12, 28), ry(5), rw(12, 28), 30);      // recipe["minutes"] on line 5
+      ring("r-call", cx(17, 34), ry(7), rw(17, 34), 30);     // total_minutes(sub) on line 7
+      ring("r-call2", cx(17, 34), ry(7), rw(17, 34), 30);
+      arrowPath("a-self", cx(17, 34) + 120, ry(7) - 30, 1100, 330, 660, ry(1) + 4);  // calls itself: back to the def line
+      ring("r-base", 136 + 18 * CW, (ry(3) + ry(4)) / 2, 15 * CW + 20, 66);         // lines 3 and 4
+      ring("r-base2", 136 + 18 * CW, (ry(3) + ry(4)) / 2, 15 * CW + 20, 66);
+      ring("r-out", 136 + 20, 96 + 728 + 24, 50, 32);        // 65 in the output
+      ring("r-err", 136 + 7 * 18, 96 + 728 + 24, 7 * 18 + 20, 32);  // RecursionError
+      ring("r-mis", 1458, 452, 70, 30);                      // uses: sponge
+      // the way to the stop
+      arrowPath("a-c1", 1500, 240, 1502, 270, 1500, 304);
+      arrowPath("a-c2", 1500, 410, 1502, 440, 1500, 474);
+      arrowPath("a-c3", 1500, 580, 1502, 615, 1500, 652);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const swap = (a, b, at) => { tl.to(a, { opacity: 0, duration: 0.15 }, at); tl.fromTo(b, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false }, at + 0.1); };
+      const drop = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -70 }, { opacity: 1, y: 0, duration: 0.45, ease: "bounce.out", immediateRender: false }, at);
+      const leave = (sel, at) => tl.to(sel, { opacity: 0, x: 120, duration: 0.4, ease: "power2.in" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // A chip flies from (x0, y0) to (x1, y1), centre points, with a little hop to the left.
+      const CHW = 130, CHH = 84;
+      const fly = (sel, x0, y0, x1, y1, at, d) => {
+        d = d || 0.8;
+        tl.set(sel, { x: x0 - CHW / 2, y: y0 - CHH / 2, scale: 0.5 }, at - 0.01);
+        tl.to(sel, { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }, at);
+        tl.to(sel, { x: x1 - CHW / 2 - 40, duration: d * 0.5, ease: "power2.out" }, at + 0.15);
+        tl.to(sel, { x: x1 - CHW / 2, duration: d * 0.5, ease: "power2.in" }, at + 0.15 + d * 0.5);
+        tl.to(sel, { y: y1 - CHH / 2, duration: d, ease: "power2.inOut" }, at + 0.15);
+        tl.to(sel, { opacity: 0, scale: 0.6, duration: 0.2, ease: "power2.in" }, at + 0.15 + d);
+      };
+      // centre of the value on a plate at each level
+      const VX = 1745, V0 = 828, V1 = 702, V2 = 576;
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 760, y: 760 }, 0);
+
+      /* ---- 1. Chloe wants a trifle. Trifle uses custard and sponge, sponge uses flour mix ---- */
+      bump("#m-chloe", t(3));
+      pop("#c-tri", t(5), { from: 0.6 });
+      draw("a-tc", t(9) - 0.15, 0.35);
+      pop("#c-cus", t(9), { from: 0.6 });
+      draw("a-ts", t(13) - 0.15, 0.35);
+      pop("#c-spo", t(13), { from: 0.6 });
+      draw("a-sf", t(20) - 0.15, 0.35);
+      pop("#c-flo", t(20), { from: 0.6 });
+      tl.fromTo("#cap", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(22) - 0.1);
+      bump(["#c-cus", "#c-spo"], t(23));
+      bump("#c-flo", t(24));
+
+      /* ---- 2. How long does it all take? ---- */
+      pop("#mn-tri", t(26), { from: 0.4 });
+      pop("#mn-cus", t(26) + 0.25, { from: 0.4 });
+      pop("#mn-spo", t(26) + 0.5, { from: 0.4 });
+      pop("#mn-flo", t(26) + 0.75, { from: 0.4 });
+
+      /* ---- 3. One card, total minutes: own minutes, then it calls itself ---- */
+      out(["#m-chloe", "#cap"], t(31) - 0.4, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(31) - 0.2);
+      type("#L1", t(31) + 0.2, 24, 0.45);
+      type("#L2", t(33), 26, 0.4);
+      type("#L3", t(33) + 0.4, 28, 0.4);
+      type("#L4", t(33) + 0.8, 32, 0.4);
+      type("#L5", t(34), 29, 0.4);
+      type("#L6", t(34) + 0.4, 30, 0.4);
+      type("#L7", t(34) + 0.8, 35, 0.4);
+      type("#L8", t(35) + 0.2, 16, 0.3);
+      type("#L10", t(35) + 0.5, 30, 0.4);
+      tl.set("#s-cursor", { x: 820, y: 760 }, t(38) - 0.7);
+      cursorIn(t(38) - 0.7);
+      cursorTo(cx(12, 28) + 40, ry(5) + 12, t(38) - 0.6, 0.55);
+      draw("r-own", t(40), 0.4);
+      bump("#mn-tri", t(40));
+      cursorTo(cx(17, 34) + 60, ry(7) + 12, t(42), 0.45);
+      draw("r-call", t(43), 0.4);
+      cursorOut(t(44) + 0.1);
+      draw("a-self", t(44), 0.6);
+      bump(["#c-cus", "#c-spo"], t(46));
+      bump("#c-flo", t(48));
+
+      /* ---- 4. Every call gets its own pan, and a plate on the pile ---- */
+      out(["#c-tri", "#c-cus", "#c-spo", "#c-flo", "#a-tc", "#a-ts", "#a-sf", "#r-own", "#a-self"], t(49) - 0.35, 0.3);
+      show(["#slab", "#pile-h", "#pile-s"], t(49), 0.3);
+      drop("#p-tri", t(49) + 0.1);
+      drop("#p-cus", t(50) + 0.1);
+      pop("#pan", t(54), { from: 0.6 });
+      bump(["#p-tri", "#p-cus"], t(57));
+      out("#r-call", t(57), 0.2);
+
+      /* ---- 5. Custard uses nothing: it stops and hands back 20. Trifle is at 35 ---- */
+      out("#pan", t(61) - 0.2, 0.2);
+      draw("r-base", t(61), 0.45);
+      bump("#p-cus", t(66));
+      fly("#ch20", VX, V1, VX, V0, t(68), 0.9);
+      leave("#p-cus", t(69));
+      swap("#v-t15", "#v-t35", t(74) - 0.1);
+      out("#r-base", t(75), 0.2);
+
+      /* ---- 6. Sponge calls flour mix: 5. Sponge hands back 30. The plates come off: 65 ---- */
+      drop("#p-spo", t(76));
+      drop("#p-flo", t(78));
+      fly("#ch5", VX, V2, VX, V1, t(80) - 0.2, 0.8);
+      leave("#p-flo", t(80) + 0.1);
+      swap("#v-s25", "#v-s30", t(81) - 0.15);
+      fly("#ch30", VX, V1, VX, V0, t(82), 0.9);
+      leave("#p-spo", t(83));
+      swap("#v-t35", "#v-t65", t(88));
+      show("#o-65", t(89), 0.3);
+      draw("r-out", t(89) + 0.1, 0.4);
+      bump("#p-tri", t(91));
+
+      /* ---- 7. That stop is the base case: a recipe that uses nothing ---- */
+      out(["#p-tri", "#slab", "#pile-h", "#pile-s", "#r-out"], t(94) - 0.1, 0.3);
+      draw("r-base2", t(95), 0.45);
+      pop("#n-base", t(98), { from: 0.6 });
+      pop(["#d-cus", "#d-flo"], t(101), { from: 0.6 });
+      pop(["#t-stop1", "#t-stop2"], t(104), { from: 0.6 });
+
+      /* ---- 8. Sponge lists sponge, by mistake. The pile grows. RecursionError ---- */
+      out(["#d-cus", "#d-flo", "#t-stop1", "#t-stop2", "#r-base2", "#n-base", "#o-65"], t(105), 0.25);
+      pop("#c-mis", t(107), { from: 0.6 });
+      draw("r-mis", t(109), 0.4);
+      pop("#t-oops", t(110), { from: 0.6 });
+      out(["#c-mis", "#t-oops", "#r-mis"], t(112) - 0.3, 0.25);
+      show("#tp0", t(112), 0.2);
+      draw("r-call2", t(113), 0.4);
+      for (let j = 1; j < 20; j++) {
+        tl.fromTo(`#tp${j}`, { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out", immediateRender: false }, t(113) + (j - 1) * 0.17);
+      }
+      show("#ceil", t(119), 0.3);
+      pop("#t-1000", t(125), { from: 0.6 });
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.8, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(128) - 0.25);
+      show(["#o-e1", "#o-e2"], t(129), 0.3);
+      draw("r-err", t(129) + 0.1, 0.45);
+
+      /* ---- 9. Every call must move toward the stop ---- */
+      const tower = []; for (let j = 0; j < 20; j++) tower.push(`#tp${j}`);
+      out(tower.concat(["#ceil", "#t-1000", "#stamp", "#r-call2"]), t(131) - 0.2, 0.3);
+      out(["#o-e1", "#o-e2", "#r-err"], t(131), 0.25);
+      pop("#ch-tri", t(131), { from: 0.6 });
+      draw("a-c1", t(132), 0.3);
+      pop("#ch-spo", t(132) + 0.25, { from: 0.6 });
+      draw("a-c2", t(134), 0.3);
+      pop("#ch-flo", t(134) + 0.25, { from: 0.6 });
+      draw("a-c3", t(136), 0.3);
+      pop("#ch-stop", t(137), { from: 0.6 });
+
+      /* ---- 10. A plain loop for counting. Recursion for things inside things ---- */
+      out(["#ch-tri", "#ch-spo", "#ch-flo", "#ch-stop", "#a-c1", "#a-c2", "#a-c3"], t(138), 0.25);
+      tl.to("#s-code", { opacity: 0.35, duration: 0.4 }, t(138));
+      pop("#b-loop", t(139), { from: 0.7 });
+      type("#lc1", t(143) - 0.2, 10, 0.25);
+      type("#lc2", t(143) + 0.1, 21, 0.35);
+      type("#lc3", t(143) + 0.5, 23, 0.35);
+      type("#lc4", t(144), 17, 0.3);
+      bump("#b-loop", t(146));
+      pop("#b-nest", t(147), { from: 0.7 });
+      pop("#nz-tri", t(150), { from: 0.7 });
+      pop(["#nz-cus", "#nz-spo"], t(152), { from: 0.6 });
+      pop("#nz-flo", t(152) + 0.35, { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 67.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

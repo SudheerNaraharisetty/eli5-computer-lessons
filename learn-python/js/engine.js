@@ -145,7 +145,7 @@
         try { await boot(m.url); }
         catch (e) { py = null; postMessage({ id: job, t: 'fatal', msg: String(e && e.message || e) }); return; }
       }
-      try { await py.loadPackagesFromImports(m.src); } catch (e) { /* a bad import shows up as a normal error below */ }
+      try { await py.loadPackagesFromImports(m.src, { messageCallback: () => { }, errorCallback: () => { } }); } catch (e) { /* a bad import shows up as a normal error below */ }
       chunks = []; pend = []; size = 0; cut = false; need = null; answers = m.answers || []; ai = 0; last = Date.now();
       // Every run starts in a fresh, empty kitchen folder, with the box's ready-made files (o.files) in it.
       // Modules imported from that folder by an earlier run are forgotten, so a seeded kitchen.py is always read fresh.

@@ -1,0 +1,341 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* "3 weeks later" tag and Ben's message */
+    #tag { left: 1190px; top: 112px; height: 72px; padding: 0 34px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 800 36px/72px "Manrope", sans-serif; white-space: nowrap; }
+    .msg { left: 1190px; top: 72px; width: 640px; height: 120px; border-radius: 28px; background: #fff; }
+    .msg .av { position: absolute; left: 24px; top: 24px; width: 72px; height: 72px; border-radius: 50%; color: #fff; text-align: center; font: 800 38px/72px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .msg .who { position: absolute; left: 122px; top: 12px; font: 800 28px/40px "Manrope", sans-serif; }
+    .msg .say { position: absolute; left: 122px; top: 54px; font: 800 36px/50px "Manrope", sans-serif; color: #0e0c1d; white-space: nowrap; }
+
+    /* the recipe card */
+    #card { left: 1190px; top: 236px; width: 640px; height: 330px; border-radius: 26px; background: #fff; }
+    #card-t { left: 1190px; top: 252px; width: 640px; text-align: center; font: 700 44px/60px "JetBrains Mono", monospace; }
+    #card-line { left: 1230px; top: 322px; width: 560px; height: 4px; background: #ece7df; }
+    .crow { left: 1240px; font: 700 48px/64px "JetBrains Mono", monospace; white-space: pre; }
+    .q { left: 1360px; font: 700 56px/64px "JetBrains Mono", monospace; color: #b8235a; }
+    .pill { height: 56px; padding: 0 22px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* the sticky note: the docstring */
+    #sticky { left: 1212px; top: 334px; width: 596px; height: 216px; border-radius: 10px; background: #fbebd2; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    #sticky .tape { position: absolute; left: 238px; top: -20px; width: 120px; height: 34px; background: rgba(185, 116, 26, 0.45); border-radius: 4px; }
+    #sticky .l { position: absolute; left: 30px; white-space: nowrap; }
+    #st1 { top: 22px; font: 800 34px/48px "Manrope", sans-serif; color: #0e0c1d; }
+    #st2 { top: 88px; font: 700 30px/44px "JetBrains Mono", monospace; color: #3e3b52; }
+    #st3 { top: 142px; font: 700 30px/44px "JetBrains Mono", monospace; color: #3e3b52; }
+    #st2 b, #st3 b { color: #b9741a; }
+
+    /* Ben's chili: what the card said */
+    #res { left: 1190px; top: 640px; width: 640px; height: 270px; border-radius: 24px; background: #fff; }
+    #res-h { left: 1222px; top: 656px; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; }
+    .rk { left: 1222px; font: 800 36px/64px "Manrope", sans-serif; }
+    .rv { left: 1560px; font: 700 52px/64px "JetBrains Mono", monospace; white-space: nowrap; }
+    #stamp { left: 1590px; top: 606px; width: 236px; height: 92px; border-radius: 14px; border: 7px solid #b8235a; color: #b8235a; text-align: center; font: 800 54px/78px "Manrope", sans-serif; letter-spacing: 0.06em; background: rgba(251, 248, 244, 0.92); }
+
+    /* what help(adjust) prints */
+    #helpp { left: 1190px; top: 620px; width: 640px; height: 320px; border-radius: 22px; background: #15132b; overflow: hidden; }
+    #helpp .hb { position: absolute; left: 0; top: 0; width: 640px; height: 56px; background: #211e40; }
+    #helpp .hb span { position: absolute; left: 24px; top: 8px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #helpp .hl { position: absolute; left: 24px; font: 500 28px/40px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; }
+
+    /* the VS Code hover box */
+    #hover { left: 300px; top: 712px; width: 760px; height: 212px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; }
+    #hover .h1 { position: absolute; left: 24px; top: 14px; font: 700 30px/44px "JetBrains Mono", monospace; color: #3b37e6; white-space: pre; }
+    #hover .hr { position: absolute; left: 0; top: 70px; width: 760px; height: 3px; background: #ece7df; }
+    #hover .h2 { position: absolute; left: 24px; top: 84px; font: 800 30px/44px "Manrope", sans-serif; color: #0e0c1d; white-space: nowrap; }
+    #hover .h3 { position: absolute; left: 24px; top: 140px; font: 600 28px/44px "JetBrains Mono", monospace; color: #3e3b52; white-space: pre; }
+    #hover .tagv { position: absolute; right: 18px; top: 18px; height: 38px; padding: 0 14px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/38px "Manrope", sans-serif; }
+
+    #doc-none { left: 1230px; top: 600px; width: 560px; height: 64px; border-radius: 14px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 36px/64px "JetBrains Mono", monospace; white-space: nowrap; }
+
+    /* code panel on the left: 34px mono = 20.4 px per char, text at page x 136, row r centre at page y 212 + (r - 1) * 56 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #band { position: absolute; left: 16px; top: 144px; width: 1008px; height: 56px; border-radius: 10px; background: rgba(124, 240, 181, 0.16); opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 34px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .n { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    #s-div { position: absolute; left: 40px; top: 600px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; left: 40px; top: 608px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; top: 656px; font: 500 40px/56px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.bad { color: #ff8fab; }
+    .s-note { position: absolute; height: 56px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>kitchen_coach.py</span></div>
+          <div id="band"></div>
+          <div class="s-ln" id="A1" style="top:88px"><span class="k">def</span> <span class="f">adjust</span>(g, n):</div>
+          <div class="s-ln" id="A2" style="top:144px">    <span class="k">return</span> g / <span class="n">4</span> * n</div>
+          <div class="s-ln" id="A4" style="top:256px"><span class="k">print</span>(<span class="f">adjust</span>(<span class="n">150</span>, <span class="n">3</span>))</div>
+          <div class="s-ln" id="B2" style="top:144px">    <span class="s">"""Return grams for n people.</span></div>
+          <div class="s-ln" id="B4" style="top:256px"><span class="s">    g: grams on the card (feeds 4)</span></div>
+          <div class="s-ln" id="B5" style="top:312px"><span class="s">    n: how many people will eat</span></div>
+          <div class="s-ln" id="B6" style="top:368px">    <span class="s">"""</span></div>
+          <div class="s-ln" id="B9" style="top:536px"><span class="k">help</span>(<span class="f">adjust</span>)</div>
+          <div class="s-ln" id="C2" style="top:144px">    total = g / <span class="n">4</span> * n</div>
+          <div class="s-ln" id="C3" style="top:200px">    <span class="s">"""Return grams for n people."""</span></div>
+          <div class="s-ln" id="C4" style="top:256px">    <span class="k">return</span> total</div>
+          <div class="s-ln" id="C6" style="top:368px"><span class="k">print</span>(<span class="f">adjust</span>.__doc__)</div>
+          <div class="s-note bad" id="n-lost" style="left:800px; top:172px">lost string</div>
+          <div class="s-note ok" id="n-doc" style="left:40px; top:700px">docstring: a note in triple quotes</div>
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out bad" id="o-112">112.5</div>
+          <div class="s-out bad" id="o-none">None</div>
+        </div>
+
+        <!-- 3 weeks later, then Ben -->
+        <div id="tag" class="s-abs s-ol">3 weeks later</div>
+        <div id="m-ben" class="s-abs msg s-ol s-hide"><div class="av" style="background:#1f7a5c">B</div><div class="who" style="color:#1f7a5c">Ben</div><div class="say" id="ben1">can I borrow adjust?</div><div class="say" id="ben2" style="opacity:0">g = grams per person?</div></div>
+
+        <!-- the recipe card -->
+        <div id="cardg" class="s-abs" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="card" class="s-abs s-ol"></div>
+          <div id="card-t" class="s-abs">adjust(g, n)</div>
+          <div id="card-line" class="s-abs"></div>
+          <div id="row-g" class="s-abs crow" style="top:352px">g =</div>
+          <div id="row-n" class="s-abs crow" style="top:448px">n =</div>
+        </div>
+        <div id="q-g" class="s-abs q s-hide" style="top:352px">?</div>
+        <div id="q-n" class="s-abs q s-hide" style="top:448px">?</div>
+        <div id="p-gw" class="s-abs pill s-hide" style="left:1430px; top:356px">grams of what?</div>
+        <div id="p-pe" class="s-abs pill s-hide" style="left:1430px; top:452px">people?</div>
+        <div id="p-sv" class="s-abs pill s-hide" style="left:1610px; top:452px">servings?</div>
+        <div id="doc-none" class="s-abs s-hide">adjust.__doc__ is None</div>
+
+        <!-- the note on top of the card -->
+        <div id="sticky" class="s-abs s-hide">
+          <div class="tape"></div>
+          <div class="l" id="st1">Return grams for n people.</div>
+          <div class="l" id="st2">g: <b>grams</b> on the card (feeds 4)</div>
+          <div class="l" id="st3">n: how many <b>people</b> will eat</div>
+        </div>
+
+        <!-- Ben's chili -->
+        <div id="resg" class="s-abs s-hide" style="left:0;top:0;width:1920px;height:1080px">
+          <div id="res" class="s-abs s-ol"></div>
+          <div id="res-h" class="s-abs">Ben's chili, 3 people</div>
+          <div class="s-abs rk" style="top:730px">the card says</div>
+          <div class="s-abs rk" style="top:820px">he needed</div>
+        </div>
+        <div id="rv-1" data-layout-allow-overlap class="s-abs rv s-hide" style="top:730px; color:#b8235a">112.5 g</div>
+        <div id="rv-2" class="s-abs rv s-hide" style="top:820px; color:#1f7a5c">450 g</div>
+        <div id="stamp" class="s-abs s-hide" data-layout-allow-overlap>WRONG</div>
+
+        <!-- help(adjust) -->
+        <div id="helpp" class="s-abs s-ol s-hide">
+          <div class="hb"><span>help(adjust) prints</span></div>
+          <div class="hl" style="top:72px">adjust(g, n)</div>
+          <div class="hl" style="top:112px">    Return grams for n people.</div>
+          <div class="hl" style="top:192px">    g: grams on the card (feeds 4)</div>
+          <div class="hl" style="top:232px">    n: how many people will eat</div>
+        </div>
+
+        <!-- the editor hover -->
+        <div id="hover" class="s-abs s-hide">
+          <div class="h1">def adjust(g, n)</div>
+          <div class="tagv">VS Code</div>
+          <div class="hr"></div>
+          <div class="h2">Return grams for n people.</div>
+          <div class="h3">g: grams on the card (feeds 4)</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-adj" style="stroke:#ffc24b" />
+          <path id="r-g" style="stroke:#ffc24b" />
+          <path id="r-n" style="stroke:#ffc24b" />
+          <path id="r-150" style="stroke:#ffc24b" />
+          <path id="r-3" style="stroke:#ffc24b" />
+          <path id="r-q1" style="stroke:#ffc24b" />
+          <path id="r-q2" style="stroke:#ffc24b" />
+          <path id="r-first" style="stroke:#4bd69b" />
+          <path id="r-units" style="stroke:#4bd69b" />
+          <path id="r-help" style="stroke:#ffc24b" />
+          <path id="r-lost" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.313, 0.58, 1.057, 1.3, 1.695, 2.148, 2.566, 2.868, 3.274, 3.529, 4.447, 5.12, 5.538, 5.805, 6.072, 6.246, 6.548, 6.943, 7.082, 7.964, 8.324, 8.707, 8.986, 9.601, 9.88, 11.204, 11.517, 11.923, 12.051, 12.202, 12.388, 13.177, 13.34, 13.746, 14.036, 14.501, 15.035, 15.29, 16.382, 16.625, 16.962, 17.113, 17.508, 18.193, 18.553, 19.528, 19.679, 19.981, 20.352, 20.596, 20.945, 21.084, 21.455, 21.757, 22.593, 22.779, 23.139, 23.429, 23.777, 23.952, 25.066, 25.24, 25.623, 25.786, 25.948, 26.297, 26.401, 26.529, 26.819, 26.935, 27.051, 27.655, 28.027, 28.224, 29.582, 30.012, 30.395, 30.941, 31.115, 31.277, 31.672, 32.09, 32.45, 33.042, 33.17, 34.296, 34.83, 35.097, 35.237, 35.597, 35.806, 36.049, 36.386, 37.28, 37.686, 38.0, 38.836, 39.091, 39.37, 40.473, 40.856, 41.251, 41.622, 41.796, 42.632, 42.888, 43.283, 43.445, 44.246, 44.502, 44.873, 45.198, 45.337, 45.755, 45.964, 46.115, 46.382, 46.475, 46.603, 47.404, 47.625, 47.845, 47.985, 48.286, 48.716, 48.797, 49.041, 49.18, 49.865, 50.098, 50.237, 50.585, 50.748, 50.876, 51.99, 52.199, 52.373, 52.663, 52.826, 53.174, 53.964, 54.161, 54.289, 54.637, 54.916, 55.879, 56.135, 56.286, 56.553, 56.646, 56.773, 57.087, 57.307, 57.842, 58.677, 58.944, 59.084, 59.548, 59.815, 60.129, 60.454, 60.732, 61.092];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 20.4 px per char. Row r centre y = 212 + (r - 1) * 56.
+      const ring = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.style.strokeDasharray) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const CW = 20.4;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 16;
+      const ry = (r) => 212 + (r - 1) * 56;
+      ring("r-adj", cx(4, 9), ry(1), rw(4, 9), 30);       // adjust on the def line
+      ring("r-g", cx(11, 11), ry(1), rw(11, 11) + 4, 30); // g
+      ring("r-n", cx(14, 14), ry(1), rw(14, 14) + 4, 30); // n
+      ring("r-150", cx(13, 15), ry(4), rw(13, 15), 30);   // 150 in print(adjust(150, 3))
+      ring("r-3", cx(18, 18), ry(4), rw(18, 18) + 4, 30); // 3
+      ring("r-q1", cx(4, 6), ry(2), rw(4, 6), 30);        // opening """
+      ring("r-q2", cx(4, 6), ry(6), rw(4, 6), 30);        // closing """
+      ring("r-first", cx(7, 32), ry(2), rw(7, 32), 32);   // Return grams for n people.
+      ring("r-units", cx(4, 33), ry(4) + 28, rw(4, 33) + 24, 82); // the two ingredient lines
+      ring("r-help", cx(0, 11), ry(9), rw(0, 11), 30);    // help(adjust)
+      ring("r-lost", cx(4, 35), ry(3), rw(4, 35), 34);    // the lost string
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 600, y: 700 }, 0);
+      tl.set("#stamp", { rotation: -8 }, 0);
+      tl.set("#sticky", { rotation: -2 }, 0);
+
+      /* ---- 1. Three weeks later you find this card: adjust, g, n. What is g? n? ---- */
+      tl.fromTo("#cardg", { y: 0 }, { y: -10, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(4));
+      type("#A1", t(8), 17, 0.6);
+      type("#A2", t(9) + 0.2, 20, 0.6);
+      draw("r-adj", t(11), 0.4);
+      bump("#card-t", t(11));
+      draw("r-g", t(12), 0.3);
+      pop("#q-g", t(12), { from: 0.3 });
+      draw("r-n", t(13), 0.3);
+      pop("#q-n", t(13), { from: 0.3 });
+      bump("#q-g", t(16));
+      pop("#p-gw", t(17), { from: 0.6 });
+      out("#r-adj", t(20), 0.2);
+      bump("#q-n", t(22));
+      pop("#p-pe", t(23), { from: 0.6 });
+      pop("#p-sv", t(25), { from: 0.6 });
+
+      /* ---- 2. Ben borrows it and guesses g is grams per person: 112.5, he needed 450 ---- */
+      out(["#tag", "#r-g", "#r-n"], t(26) - 0.2, 0.2);
+      pop("#m-ben", t(26), { from: 0.7 });
+      tl.to("#ben1", { opacity: 0, duration: 0.2 }, t(33) - 0.1);
+      show("#ben2", t(33), 0.25);
+      bump("#p-gw", t(36));
+      tl.set("#s-cursor", { x: 300, y: 420 }, t(39) - 0.5);
+      cursorIn(t(39) - 0.5);
+      cursorTo(136, 374, t(39) - 0.35, 0.3);
+      type("#A4", t(39), 21, 0.8);
+      cursorTo(136 + 21 * CW, 374, t(39), 0.8);
+      cursorOut(t(39) + 0.95);
+      draw("r-150", t(42), 0.35);
+      draw("r-3", t(44), 0.35);
+      show("#resg", t(46), 0.35);
+      show("#o-112", t(49), 0.25);
+      pop("#rv-1", t(49), { from: 0.4 });
+      out(["#r-150", "#r-3"], t(52), 0.2);
+      pop("#rv-2", t(57), { from: 0.4 });
+      tl.fromTo("#stamp", { opacity: 0, scale: 2.2, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(60));
+
+      /* ---- 3. The fix: a note at the top of the card, a docstring ---- */
+      out(["#stamp", "#resg", "#rv-1", "#rv-2", "#o-112", "#m-ben"], t(61), 0.3);
+      // make room: the return line and the call slide down 5 rows
+      tl.to(["#A2", "#A4"], { y: 280, duration: 0.5, ease: "power2.inOut" }, t(63));
+      type("#B2", t(65), 33, 0.6);
+      type("#B4", t(65) + 0.6, 34, 0.5);
+      type("#B5", t(65) + 1.0, 31, 0.5);
+      type("#B6", t(65) + 1.4, 7, 0.2);
+      out(["#p-gw", "#p-pe", "#p-sv"], t(66), 0.2);
+      tl.fromTo("#sticky", { opacity: 0, y: -260, rotation: -9 }, { opacity: 1, y: 0, rotation: -2, duration: 0.7, ease: "back.out(1.3)", immediateRender: false }, t(68));
+      tl.to(["#row-g", "#row-n", "#q-g", "#q-n"], { opacity: 0, duration: 0.15 }, t(68) + 0.3);
+      pop("#n-doc", t(74), { from: 0.6 });
+      draw("r-q1", t(75), 0.35);
+      draw("r-q2", t(76), 0.35);
+      show("#band", t(81), 0.3);
+      out(["#r-q1", "#r-q2"], t(85), 0.2);
+      draw("r-first", t(86), 0.45);
+      bump("#st1", t(87));
+      out("#r-first", t(94) - 0.2, 0.2);
+      tl.to("#band", { opacity: 0, duration: 0.2 }, t(94) - 0.2);
+      draw("r-units", t(95), 0.5);
+      bump("#st2", t(96));
+      bump("#st3", t(97));
+
+      /* ---- 4. help(adjust) prints the note. The editor shows it on hover ---- */
+      out(["#r-units", "#n-doc"], t(100) - 0.2, 0.2);
+      tl.set("#s-cursor", { x: 400, y: 760 }, t(100));
+      cursorIn(t(100));
+      cursorTo(136, 682, t(100) + 0.05, 0.35);
+      tl.to("#A4", { opacity: 0, duration: 0.15 }, t(101));
+      type("#B9", t(101) + 0.1, 12, 0.45);
+      cursorTo(136 + 12 * CW, 682, t(101) + 0.1, 0.45);
+      draw("r-help", t(102), 0.35);
+      cursorOut(t(102) + 0.4);
+      pop("#helpp", t(106), { from: 0.8 });
+      out("#r-help", t(109), 0.2);
+      tl.set("#s-cursor", { x: 520, y: 760 }, t(112));
+      cursorIn(t(112));
+      cursorTo(cx(5, 10) - 6, ry(9) - 4, t(112) + 0.05, 0.5);
+      pop("#hover", t(114), { from: 0.85, d: 0.35 });
+
+      /* ---- 5. A note after a line of code falls off the card: __doc__ is None ---- */
+      out("#helpp", t(120), 0.25);
+      out(["#hover", "#s-cursor"], t(123), 0.25);
+      out(["#B2", "#B4", "#B5", "#B6", "#B9", "#A2"], t(121), 0.3);
+      type("#C2", t(124), 21, 0.5);
+      type("#C3", t(128), 36, 0.6);
+      type("#C4", t(128) + 0.6, 16, 0.35);
+      type("#C6", t(128) + 1.0, 21, 0.45);
+      tl.to("#sticky", { y: 560, rotation: 24, x: 60, duration: 0.9, ease: "power2.in" }, t(131));
+      tl.to("#sticky", { opacity: 0, duration: 0.3 }, t(131) + 0.6);
+      tl.to(["#row-g", "#row-n"], { opacity: 1, duration: 0.3 }, t(131) + 0.3);
+      pop(["#q-g", "#q-n"], t(134), { from: 0.5 });
+      draw("r-lost", t(139), 0.5);
+      pop("#n-lost", t(139) + 0.3, { from: 0.6 });
+      show("#o-none", t(141), 0.25);
+      pop("#doc-none", t(141), { from: 0.5 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 56.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,11 @@
+Three weeks later, you open Kitchen Coach and find this card. Adjust, g, n. What is g? Grams of what? And is n people, or servings?
+
+Ben borrows it for his chili. He guesses g means grams per person. One hundred and fifty grams, three people. The card says one hundred and twelve point five. He needed four hundred and fifty.
+
+The fix is a note at the top of the card, called a docstring. Three quote marks, on the very first line inside the card. First, what it does and what comes back. Then each ingredient, with its unit.
+
+Now call help on adjust. It prints the note. Your editor shows it too, when you point at the name.
+
+But put the note after a line of code, and it falls off the card. It is just a lost string, and the doc is None.
+
+Put a note at the top of every card. What it does, what goes in, what comes out.

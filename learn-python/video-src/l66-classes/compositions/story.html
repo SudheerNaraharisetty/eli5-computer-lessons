@@ -1,0 +1,367 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title */
+    #intro { left: 110px; top: 360px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+
+    /* loose slips (dicts) on the right */
+    .slip { left: 1200px; width: 620px; height: 200px; border-radius: 18px; background: #fff; }
+    .slip > .hd { position: absolute; left: 30px; top: 18px; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; }
+    .slip > .cl { position: absolute; left: 30px; font: 500 30px/50px "JetBrains Mono", monospace; white-space: pre; }
+    .slip .bad { color: #b8235a; }
+
+    /* the template card on the wall */
+    #card { left: 1190px; top: 96px; width: 640px; height: 200px; border-radius: 24px; background: #e6e3ff; }
+    #card > .pin { position: absolute; left: 304px; top: -14px; width: 32px; height: 32px; border-radius: 50%; background: #b8235a; box-shadow: 0 0 0 4px #0e0c1d; }
+    #card > .nm { position: absolute; left: 36px; top: 22px; font: 700 64px/76px "Fraunces", serif; color: #3b37e6; }
+    #card > .ch { position: absolute; left: 470px; top: 30px; width: 140px; height: 52px; border-radius: 999px; background: #fff; color: #3b37e6; text-align: center; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #card > .sub { position: absolute; left: 36px; top: 104px; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; }
+    #card-empty { position: absolute; left: 310px; top: 100px; width: 300px; height: 76px; border-radius: 16px; border: 4px dashed #8a86c8; color: #4a4690; text-align: center; font: 800 28px/68px "Manrope", sans-serif; }
+    .cslot { position: absolute; top: 138px; height: 48px; border-radius: 12px; border: 4px dashed #3b37e6; background: #fff; color: #3b37e6; text-align: center; font: 700 28px/40px "JetBrains Mono", monospace; }
+
+    /* plates made from the card */
+    .plate { left: 1190px; width: 640px; height: 180px; border-radius: 24px; background: #fff; }
+    .plate > .dsh { position: absolute; left: 30px; top: 28px; width: 124px; height: 124px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 5px #0e0c1d; }
+    .plate > .dsh > i { position: absolute; left: 30px; top: 30px; width: 64px; height: 64px; border-radius: 50%; }
+    .plate > .vn { position: absolute; left: 180px; top: 16px; font: 700 34px/48px "JetBrains Mono", monospace; }
+    .plate > .ty { position: absolute; left: 492px; top: 18px; width: 128px; height: 46px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; text-align: center; font: 700 28px/46px "JetBrains Mono", monospace; }
+    .plate > .no { position: absolute; left: 420px; top: 18px; width: 56px; height: 46px; border-radius: 999px; background: #0e0c1d; color: #fff; text-align: center; font: 800 28px/46px "Manrope", sans-serif; }
+    .pk { position: absolute; top: 76px; height: 88px; border-radius: 16px; background: #ddefe6; }
+    .pk.e { background: #fff; border: 4px dashed #a9a6c8; }
+    .pk.nm { left: 180px; width: 276px; }
+    .pk.pr { left: 466px; width: 158px; }
+    .pk > b { position: absolute; left: 14px; top: 4px; font: 800 28px/36px "Manrope", sans-serif; color: #1f7a5c; }
+    .pk.e > b { left: 10px; top: 0; color: #6f6b80; }
+    .pk > span { position: absolute; left: 14px; top: 42px; font: 700 28px/40px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; }
+    #missed { left: 1676px; top: 962px; height: 50px; padding: 0 20px; border-radius: 999px; background: #b8235a; color: #fff; font: 800 28px/50px "Manrope", sans-serif; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char, 28 px = 16.8 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ff9bd0; }
+    .ln .f { color: #8fd3ff; }
+    .ln .s { color: #7cf0b5; }
+    .ln .n { color: #ffc24b; }
+    .ln .c { color: #c9c6ff; }
+    .ot { position: absolute; left: 40px; font: 500 28px/50px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .ot.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #rail path { stroke: #3b37e6; stroke-width: 6; fill: none; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Kitchen Coach<br />writes down <span class="a">dishes</span>.</div>
+
+        <!-- A: loose slips (dicts) -->
+        <div id="slip1" class="s-abs slip s-ol s-hide" style="top:150px">
+          <div class="hd">soup, as a dict</div>
+          <div class="cl" style="top:64px">{"name": "lentil soup",</div>
+          <div class="cl" style="top:114px"> "protein": 18}</div>
+        </div>
+        <div id="slip2" class="s-abs slip s-ol s-hide" style="top:460px">
+          <div class="hd">Ben's chili, as a dict</div>
+          <div class="cl" style="top:64px">{"name": "bean chili",</div>
+          <div class="cl" style="top:114px"> <span class="bad">"protien"</span>: 15}</div>
+        </div>
+
+        <!-- B: the template card -->
+        <div id="card" class="s-abs s-ol s-hide">
+          <div class="pin"></div>
+          <div class="nm">Dish</div>
+          <div class="ch">class</div>
+          <div class="sub" id="card-sub">the template card</div>
+          <div id="card-empty" class="s-hide">nothing on it yet</div>
+          <div class="cslot s-hide" id="cs1" style="left:310px; width:138px">name</div>
+          <div class="cslot s-hide" id="cs2" style="left:458px; width:152px">protein</div>
+        </div>
+
+        <!-- plates -->
+        <div id="p1" class="s-abs plate s-ol s-hide" style="top:340px">
+          <div class="dsh"><i style="background:#c98a3a"></i></div>
+          <div class="vn">soup</div>
+          <div class="no s-hide" id="no1">1</div>
+          <div class="ty s-hide">Dish</div>
+          <div class="pk nm e s-hide" id="e1n"><b>name</b></div>
+          <div class="pk pr e s-hide" id="e1p"><b>protein</b></div>
+          <div class="pk nm s-hide" id="v1n"><b>name</b><span>'lentil soup'</span></div>
+          <div class="pk pr s-hide" id="v1p"><b>protein</b><span>18</span></div>
+        </div>
+        <div id="p2" class="s-abs plate s-ol s-hide" style="top:552px">
+          <div class="dsh"><i style="background:#5fae6e"></i></div>
+          <div class="vn">salad</div>
+          <div class="no s-hide" id="no2">2</div>
+          <div class="ty s-hide">Dish</div>
+          <div class="pk nm e s-hide" id="e2n"><b>name</b></div>
+          <div class="pk pr e s-hide" id="e2p"><b>protein</b></div>
+          <div class="pk nm s-hide" id="v2n"><b>name</b><span>'green salad'</span></div>
+          <div class="pk pr s-hide" id="v2p"><b>protein</b><span>12</span></div>
+        </div>
+        <div id="p3" class="s-abs plate s-ol s-hide" style="top:764px">
+          <div class="dsh"><i style="background:#f1e3c0"></i></div>
+          <div class="vn">pudding</div>
+          <div class="no s-hide" id="no3">3</div>
+          <div class="ty s-hide">Dish</div>
+          <div class="pk nm e s-hide" id="e3n"><b>name</b></div>
+          <div class="pk pr e s-hide" id="e3p"><b>protein</b></div>
+          <div class="pk nm s-hide" id="v3n"><b>name</b><span>'rice pudding'</span></div>
+        </div>
+        <div id="missed" class="s-abs s-hide">missed</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">dishes.py</span></div>
+
+          <!-- A: dicts -->
+          <div class="ln pa" id="A1" style="top:88px">soup = {<span class="s">"name"</span>: <span class="s">"lentil soup"</span>, <span class="s">"protein"</span>: <span class="n">18</span>}</div>
+          <div class="ln pa" id="A2" style="top:138px">chili = {<span class="s">"name"</span>: <span class="s">"bean chili"</span>, <span class="s">"protien"</span>: <span class="n">15</span>}</div>
+          <div class="s-note ok pa" id="n-quiet" style="left:40px; top:200px">no error, no warning</div>
+          <div class="ln pa" id="A4" style="top:288px"><span class="f">print</span>(chili[<span class="s">"protein"</span>])</div>
+          <div class="ot err pa" id="A5" style="top:338px">KeyError: 'protein'</div>
+          <div class="s-note bad" id="n-later" style="left:40px; top:420px">the typo shows up later</div>
+
+          <!-- B: the class -->
+          <div class="ln pb" id="B1" style="top:88px"><span class="k">class</span> Dish:</div>
+          <div class="ln pb" id="B2" style="top:138px">    <span class="k">pass</span></div>
+          <div class="s-note pb" id="n-pass" style="left:300px; top:138px">pass: nothing here yet</div>
+          <div class="ln pb" id="B4" style="top:238px">soup = Dish()</div>
+          <div class="ln pb" id="B5" style="top:288px">salad = Dish()</div>
+          <div class="ln pb" id="B6" style="top:338px">pudding = Dish()</div>
+          <div class="s-note warn pb" id="n-call" style="left:500px; top:238px">( ) call it: a new dish</div>
+          <div class="ln pb7" id="B7" style="top:388px"><span class="f">print</span>(<span class="f">type</span>(soup))</div>
+          <div class="ot pb7" id="B8" style="top:438px">&lt;class '__main__.Dish'&gt;</div>
+
+          <!-- C: labels by hand -->
+          <div class="ln pc" id="C1" style="top:388px">soup.name = <span class="s">"lentil soup"</span></div>
+          <div class="ln pc" id="C2" style="top:438px">soup.protein = <span class="n">18</span></div>
+          <div class="ln pc" id="C3" style="top:488px">salad.name = <span class="s">"green salad"</span></div>
+          <div class="ln pc" id="C4" style="top:538px">salad.protein = <span class="n">12</span></div>
+          <div class="ln pc" id="C5" style="top:588px">pudding.name = <span class="s">"rice pudding"</span></div>
+          <div class="ln pc" id="C6" style="top:638px"><span class="f">print</span>(pudding.protein)</div>
+          <div class="ot err pc" id="C7" style="top:688px">AttributeError: 'Dish' object has no attribute 'protein'</div>
+          <div class="s-note bad pc" id="n-hand" style="left:40px; top:780px">by hand: two lines per dish</div>
+
+          <!-- D: next -->
+          <div class="s-note pd" id="n-next" style="left:40px; top:780px">Next: lesson 67, __init__ and self</div>
+        </div>
+
+        <svg id="rail" class="s-abs s-hide" style="left:0; top:0; width:1920px; height:1080px" viewBox="0 0 1920 1080">
+          <path d="M1170 200 H1150 V856 H1180" />
+          <path d="M1150 430 H1180" /><path d="M1150 642 H1180" />
+          <path d="M1166 416 L1184 430 L1166 444 Z" fill="#3b37e6" />
+          <path d="M1166 628 L1184 642 L1166 656 Z" fill="#3b37e6" />
+          <path d="M1166 842 L1184 856 L1166 870 Z" fill="#3b37e6" />
+        </svg>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-sname" style="stroke:#1f7a5c" />
+          <path id="r-sprot" style="stroke:#1f7a5c" />
+          <path id="r-typo" style="stroke:#b8235a" />
+          <path id="r-typo2" class="dash" style="stroke:#b8235a" />
+          <path id="r-capd" style="stroke:#ffc24b" />
+          <path id="r-paren" style="stroke:#ffc24b" />
+          <path id="r-dish" style="stroke:#7cf0b5" />
+          <path id="r-miss" class="dash" style="stroke:#b8235a" />
+          <path id="r-edish" style="stroke:#ffc24b" />
+          <path id="r-eprot" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.232, 0.488, 0.952, 1.335, 1.521, 1.823, 2.589, 2.763, 3.17, 3.367, 3.471, 4.365, 4.609, 4.946, 5.457, 6.397, 6.827, 7.175, 7.976, 8.475, 8.905, 9.276, 9.776, 9.95, 10.797, 11.18, 11.831, 12.074, 12.156, 12.725, 13.468, 13.688, 14.408, 14.838, 15.453, 15.639, 15.732, 16.289, 16.846, 17.229, 17.6, 17.984, 18.111, 18.251, 19.133, 19.319, 19.446, 19.586, 19.946, 20.038, 20.189, 20.991, 21.234, 21.35, 21.803, 22.047, 22.755, 22.941, 23.045, 23.312, 23.463, 23.719, 24.741, 25.426, 26.052, 27.051, 27.364, 27.713, 28.049, 28.27, 28.7, 29.176, 29.965, 30.348, 31.172, 31.486, 31.846, 32.101, 32.252, 33.239, 33.483, 33.843, 34.121, 34.458, 34.678, 35.34, 35.735, 36.013, 36.617, 37.116, 37.801, 38.138, 38.347, 39.137, 40.367, 40.518, 40.89, 41.168, 41.366, 41.667, 42.422, 42.643, 42.898, 43.316, 43.513, 43.676, 44.013, 44.14, 44.535, 45.22, 45.696, 46.091, 46.311, 46.416, 46.857, 47.147, 47.438, 48.703, 49.435, 50.352, 50.572, 50.909, 51.501, 51.815, 52.151, 52.813, 54.102, 54.415, 54.868, 55.042, 55.623, 55.959, 56.203, 56.633, 56.83, 57.097, 57.283, 57.898, 58.165, 58.572, 58.862, 60.034, 60.197, 60.603, 60.801, 60.905, 62.055, 62.356, 62.473, 62.589, 62.856, 63.053, 63.355];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => {
+        const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry));
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.classList.contains("dash")) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, cw, from) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * cw, 96 + top + 25, (sub.length * cw) / 2 + 16, 28);
+      };
+      // slip rows: text starts at x 1230, row centre y = slip top + row top + 25
+      const stok = (id, text, sub, y, rowTop) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 1230 + ((c0 + c1) / 2) * 18, y + rowTop + 25, (sub.length * 18) / 2 + 16, 30);
+      };
+
+      stok("r-sname", '{"name": "lentil soup",', '"name"', 150, 64);
+      stok("r-sprot", ' "protein": 18}', '"protein"', 150, 114);
+      stok("r-typo", ' "protien": 15}', '"protien"', 460, 114);
+      stok("r-typo2", ' "protien": 15}', '"protien"', 460, 114);
+      tok("r-capd", "class Dish:", "D", 88, 18);
+      tok("r-paren", "soup = Dish()", "()", 238, 18);
+      tok("r-dish", "<class '__main__.Dish'>", "Dish", 438, 16.8);
+      tok("r-edish", "AttributeError: 'Dish' object has no attribute 'protein'", "'Dish'", 688, 16.8);
+      tok("r-eprot", "AttributeError: 'Dish' object has no attribute 'protein'", "'protein'", 688, 16.8);
+      ring("r-miss", 1190 + 466 + 79, 764 + 76 + 44, 100, 58);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // a plate comes out of the template card
+      const stamp = (sel, top, at) => tl.fromTo(sel, { opacity: 0, y: 96 - top, scale: 0.55 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.3)", immediateRender: false }, at);
+
+      tl.set("#s-cursor", { x: 1500, y: 1000 }, 0);
+
+      /* ---- 1. Loose dictionaries ---- */
+      bump("#intro", t(3) - 0.1, 1.03);
+      pop("#slip1", t(5), { from: 0.85 });
+      tl.fromTo("#slip1", { rotation: 0 }, { rotation: -2.5, duration: 0.5, ease: "power2.out", immediateRender: false }, t(5) + 0.2);
+      out("#intro", t(6) - 0.3, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(6) - 0.1);
+      type("#A1", t(6) + 0.3, 45, 0.7);
+      draw("r-sname", t(8), 0.35);
+      draw("r-sprot", t(11), 0.35);
+      out(["#r-sname", "#r-sprot"], t(12) - 0.1, 0.2);
+      pop("#slip2", t(13), { from: 0.85 });
+      tl.fromTo("#slip2", { rotation: 0 }, { rotation: 1.5, duration: 0.5, ease: "power2.out", immediateRender: false }, t(13) + 0.2);
+      type("#A2", t(13) + 0.2, 45, 0.7);
+      draw("r-typo", t(15), 0.4);
+      pop("#n-quiet", t(16) + 0.1, { from: 0.7 });
+      type("#A4", t(20), 23, 0.5);
+      pop("#A5", t(25), { from: 0.9 });
+      tl.to("#slip2", { x: -10, duration: 0.07, ease: "sine.inOut", yoyo: true, repeat: 5 }, t(25));
+      out("#r-typo", t(25) + 0.1, 0.2);
+      draw("r-typo2", t(25) + 0.1, 0.25);
+      pop("#n-later", t(25) + 0.15, { from: 0.7 });
+
+      /* ---- 2. A template: class Dish, pass ---- */
+      out([".pa", "#slip1", "#slip2", "#r-typo2"], t(29) - 0.35, 0.3);
+      pop("#card", t(29) - 0.05, { from: 0.7 });
+      out("#n-later", t(32), 0.25);
+      type("#B1", t(33), 11, 0.3);
+      draw("r-capd", t(37), 0.35);
+      type("#B2", t(39), 8, 0.25);
+      pop("#card-empty", t(41), { from: 0.7 });
+      pop("#n-pass", t(41) + 0.1, { from: 0.7 });
+      out("#r-capd", t(45), 0.2);
+      tl.fromTo("#card", { rotation: 0 }, { rotation: -1.5, duration: 0.18, ease: "sine.inOut", yoyo: true, repeat: 3, immediateRender: false }, t(48));
+
+      /* ---- 3. Call the class: three new plates ---- */
+      out("#n-pass", t(52) - 0.2, 0.2);
+      type("#B4", t(52), 13, 0.35);
+      draw("r-paren", t(56), 0.35);
+      pop("#n-call", t(59), { from: 0.7 });
+      stamp("#p1", 340, t(62) - 0.1);
+      type("#B5", t(64) - 0.35, 14, 0.3);
+      stamp("#p2", 552, t(64));
+      type("#B6", t(65) - 0.35, 16, 0.3);
+      stamp("#p3", 764, t(65));
+      out(["#r-paren", "#n-call"], t(66) - 0.1, 0.2);
+      pop("#no1", t(66), { from: 0.4 });
+      pop("#no2", t(67), { from: 0.4 });
+      pop("#no3", t(68), { from: 0.4 });
+      bump("#p1", t(71), 1.03);
+      bump("#p2", t(71) + 0.15, 1.03);
+      bump("#p3", t(71) + 0.3, 1.03);
+      type("#B7", t(73), 17, 0.35);
+      pop("#B8", t(74) + 0.2, { from: 0.9 });
+      draw("r-dish", t(79) - 0.1, 0.35);
+      pop(".plate > .ty", t(79), { from: 0.5 });
+
+      /* ---- 4. Label each plate by hand ---- */
+      out([".pb7", "#r-dish", ".plate > .no"], t(80) - 0.1, 0.2);
+      pop(["#e1n", "#e1p", "#e2n", "#e2p", "#e3n", "#e3p"], t(81), { from: 0.8 });
+      tl.set("#s-cursor", { x: 1180, y: 1000 }, t(86) - 0.5);
+      cursorIn(t(86) - 0.5);
+      cursorTo(1500, 480, t(86) - 0.45, 0.45);
+      type("#C1", t(86), 25, 0.5);
+      pop("#v1n", t(89), { from: 0.7 });
+      out("#e1n", t(89), 0.15);
+      cursorTo(1760, 480, t(91) - 0.3, 0.35);
+      type("#C2", t(91), 17, 0.35);
+      pop("#v1p", t(94), { from: 0.7 });
+      out("#e1p", t(94), 0.15);
+      cursorTo(1500, 700, t(95), 0.35);
+      type("#C3", t(96), 26, 0.45);
+      pop("#v2n", t(97) + 0.2, { from: 0.7 });
+      out("#e2n", t(97) + 0.2, 0.15);
+      cursorTo(1760, 700, t(98), 0.3);
+      type("#C4", t(98) + 0.1, 18, 0.35);
+      pop("#v2p", t(100), { from: 0.7 });
+      out("#e2p", t(100), 0.15);
+      cursorOut(t(100) + 0.4);
+
+      /* ---- 5. Easy to forget one ---- */
+      pop("#n-hand", t(101), { from: 0.7 });
+      tl.set("#s-cursor", { x: 1200, y: 1040 }, t(110) - 0.5);
+      cursorIn(t(110) - 0.5);
+      cursorTo(1500, 910, t(110) - 0.45, 0.45);
+      type("#C5", t(110), 28, 0.55);
+      pop("#v3n", t(114), { from: 0.7 });
+      out("#e3n", t(114), 0.15);
+      cursorTo(1770, 920, t(116) - 0.3, 0.35);
+      draw("r-miss", t(116), 0.3);
+      pop("#missed", t(117), { from: 0.5 });
+      cursorOut(t(117) + 0.3);
+      out("#n-hand", t(117), 0.2);
+      type("#C6", t(117) + 0.1, 22, 0.4);
+      pop("#C7", t(118), { from: 0.95 });
+      draw("r-edish", t(121), 0.35);
+      draw("r-eprot", t(126), 0.35);
+
+      /* ---- 6. Next lesson: the template sets up every dish ---- */
+      out(["#r-edish", "#r-eprot"], t(127) - 0.1, 0.2);
+      pop("#n-next", t(127), { from: 0.7 });
+      out("#card-empty", t(130) - 0.1, 0.2);
+      pop("#cs1", t(131), { from: 0.6 });
+      pop("#cs2", t(131) + 0.15, { from: 0.6 });
+      show("#rail", t(133), 0.3);
+      bump(["#p1", "#p2", "#p3"], t(133) + 0.2, 1.03);
+      out(["#missed", "#r-miss"], t(134), 0.2);
+      bump("#n-next", t(139), 1.08);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 60.1);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

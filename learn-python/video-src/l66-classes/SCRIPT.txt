@@ -1,0 +1,13 @@
+You keep writing dishes as loose dictionaries. A name, and the protein. But Ben typed protien. Nothing warned him. Later, Kitchen Coach asks for protein. Key error.
+
+Make a template instead. A class. Class Dish, with a capital D. Pass means nothing on it yet. It is the card on the wall.
+
+Call the class, with brackets, and it makes a new dish. Soup. Salad. Pudding. Each call makes a new, separate plate. Ask type: each one is a Dish.
+
+Now label each plate by hand. Soup dot name, lentil soup. Soup dot protein, eighteen. The salad gets its own labels.
+
+But by hand, it is easy to forget one. Chloe's pudding got a name, but no protein. Attribute error. A Dish object has no attribute protein.
+
+Next lesson, the template sets up every new dish for you, with init and self.
+
+A class is a template. Call it to make a new object.

@@ -1,0 +1,15 @@
+Kitchen Coach has grown. It imports seven cookbooks at the top. One of them, the big cookbook, takes a second to open.
+
+A normal import opens every book at the import line. On every run. Even when you only want the shopping list.
+
+So Coach is ready in one second. Six days out of seven, you wait for a book you never read.
+
+Python three point fifteen adds one word. Lazy. Lazy import big cookbook puts a sticky note on the book. Later.
+
+Now Coach is ready in a hundredth of a second. The big book stays on the shelf.
+
+On plan day, the code says big cookbook dot plan. That first use brings the book down, right then.
+
+The catch. Misspell its name, and nothing fails at the top. The error waits for the next plan day, far from the import line. So run every mode once.
+
+Lazy import waits until you actually use the cookbook. Faster starts, but errors show up later.

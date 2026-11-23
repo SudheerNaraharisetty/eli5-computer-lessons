@@ -1,0 +1,294 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* shelf (plank at y 420) and counter (plank at y 860): a book moves down by 440 px */
+    .plank { left: 1180px; width: 670px; height: 16px; border-radius: 4px; background: #0e0c1d; }
+    #plank-s { top: 420px; }
+    #plank-c { top: 860px; }
+    .plbl { left: 1190px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .book { border-radius: 10px 10px 4px 4px; }
+    .book > span { position: absolute; left: 0; bottom: 16px; width: 100%; writing-mode: vertical-rl; transform: rotate(180deg); display: flex; align-items: center; justify-content: flex-end; font: 800 28px/1 "Manrope", sans-serif; white-space: nowrap; }
+    #bk-k > span, #bk-b > span { color: #fff; }
+    #bk-b > span { font-size: 30px; }
+    #sticky { left: 1768px; top: 132px; width: 104px; height: 52px; background: #ffe58a; border-radius: 6px; font: 800 28px/52px "Manrope", sans-serif; text-align: center; }
+
+    /* the start clock */
+    #clock { left: 1190px; top: 100px; width: 60px; height: 60px; }
+    .ck { left: 1266px; top: 104px; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .ck.bad { background: #fbe0ea; color: #b8235a; }
+    .ck.ok { background: #ddefe6; color: #1f7a5c; }
+
+    .pill { top: 480px; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.warn { background: #fbebd2; color: #b9741a; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #new { position: absolute; left: 760px; top: 9px; height: 46px; padding: 0 20px; border-radius: 999px; background: #3b37e6; color: #fff; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .lz { color: #ffc24b; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .e { color: #ff8fab; }
+    #s-div { position: absolute; left: 40px; top: 690px; width: 960px; height: 3px; background: #2e2a58; }
+    .olbl { position: absolute; right: 40px; top: 640px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; white-space: nowrap; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.ld { color: #ffc24b; }
+    .s-out.err { color: #ff8fab; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.8" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="ttl">coach.py</span>
+            <span id="new">NEW in 3.15</span>
+          </div>
+          <div class="s-ln im" id="R1" style="top:88px"><span class="k">import</span> time</div>
+          <div class="s-ln im" id="R2" style="top:138px"><span class="k">import</span> json</div>
+          <div class="s-ln im" id="R3" style="top:188px"><span class="k">import</span> math</div>
+          <div class="s-ln im" id="R4" style="top:238px"><span class="k">import</span> random</div>
+          <div class="s-ln im" id="R5" style="top:288px"><span class="k">import</span> pathlib</div>
+          <div class="s-ln im" id="R6" style="top:338px"><span class="k">import</span> kitchen</div>
+          <div class="s-ln" id="R7a" style="top:388px"><span class="k">import</span> big_cookbook</div>
+          <div class="s-ln" id="R7b" style="top:388px"><span class="lz">lazy</span> <span class="k">import</span> big_cookbook</div>
+          <div class="s-ln" id="R7c" style="top:388px"><span class="lz">lazy</span> <span class="k">import</span> big_cook<span class="e">bok</span></div>
+          <div class="s-ln" id="R9" style="top:488px"><span class="k">if</span> mode == <span class="s">"plan"</span>:</div>
+          <div class="s-ln" id="R10a" style="top:538px">    <span class="f">print</span>(big_cookbook.<span class="f">plan</span>(<span class="s">"Ana"</span>))</div>
+          <div class="s-ln" id="R10b" style="top:538px">    <span class="f">print</span>(big_cook<span class="e">bok</span>.<span class="f">plan</span>(<span class="s">"Ana"</span>))</div>
+          <div class="s-ln" id="R11" style="top:588px"><span class="k">else</span>:</div>
+          <div class="s-ln" id="R12" style="top:638px">    <span class="f">print</span>(<span class="s">"Shopping list"</span>)</div>
+
+          <div id="s-div"></div>
+          <div class="olbl">output</div>
+          <div class="s-out ld" id="oa1" style="top:702px">loading big cookbook...</div>
+          <div class="s-out" id="oa2" style="top:744px">Shopping list: oats, rice, tofu</div>
+          <div class="s-out" id="ob1" style="top:702px">Shopping list: oats, rice, tofu</div>
+          <div class="s-out ld" id="oc1" style="top:702px">loading big cookbook...</div>
+          <div class="s-out" id="oc2" style="top:744px">Meal plan for Ana: 7 days, 21 meals</div>
+          <div class="s-out" id="od1" style="top:702px">Shopping list: oats, rice, tofu</div>
+          <div class="s-out err" id="od2" style="top:702px">ModuleNotFoundError: No module named</div>
+          <div class="s-out err" id="od3" style="top:744px">  'big_cookbok'</div>
+        </div>
+
+        <!-- the clock: how long Kitchen Coach takes to start -->
+        <svg id="clock" class="s-abs" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="#fff" stroke="#0e0c1d" stroke-width="5" /><path id="ck-hand" d="M30 30 V12" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" /><circle cx="30" cy="30" r="4" fill="#0e0c1d" /></svg>
+        <div id="ck-q" class="s-abs ck" style="background:#ece7df; color:#3e3b52">Ready in ...</div>
+        <div id="ck-slow" class="s-abs ck bad s-hide">Ready in 1.02 s</div>
+        <div id="ck-fast" class="s-abs ck ok s-hide">Ready in 0.01 s</div>
+
+        <!-- the shelf and the counter -->
+        <div id="plank-s" class="s-abs plank"></div>
+        <div id="plank-c" class="s-abs plank"></div>
+        <div class="s-abs plbl" style="top:432px">shelf</div>
+        <div class="s-abs plbl" style="top:886px">counter</div>
+        <div id="bk-t" class="s-abs book s-ol" style="left:1205px; top:250px; width:64px; height:170px; background:#ddefe6"><span data-layout-allow-occlusion>time</span></div>
+        <div id="bk-j" class="s-abs book s-ol" style="left:1279px; top:220px; width:64px; height:200px; background:#e6e3ff"><span data-layout-allow-occlusion>json</span></div>
+        <div id="bk-m" class="s-abs book s-ol" style="left:1353px; top:260px; width:64px; height:160px; background:#fbebd2"><span data-layout-allow-occlusion>math</span></div>
+        <div id="bk-r" class="s-abs book s-ol" style="left:1427px; top:230px; width:64px; height:190px; background:#fbe0ea"><span data-layout-allow-occlusion>random</span></div>
+        <div id="bk-p" class="s-abs book s-ol" style="left:1501px; top:240px; width:64px; height:180px; background:#ddefe6"><span data-layout-allow-occlusion>pathlib</span></div>
+        <div id="bk-k" class="s-abs book s-ol" style="left:1575px; top:210px; width:72px; height:210px; background:#3b37e6"><span data-layout-allow-occlusion>kitchen</span></div>
+        <div id="bk-b" class="s-abs book s-ol" style="left:1661px; top:180px; width:130px; height:240px; background:#b9741a"><span data-layout-allow-occlusion>big_cookbook</span></div>
+        <div id="sticky" class="s-abs s-ol s-hide" data-layout-allow-overlap>later</div>
+
+        <div id="p-open" class="s-abs pill warn s-hide" style="left:1460px">1 s to open</div>
+        <div id="p-every" class="s-abs pill bad s-hide" style="left:1420px">on every run</div>
+        <div id="p-six" class="s-abs pill bad s-hide" style="left:1196px">6 days of 7: shopping only</div>
+        <div id="p-stays" class="s-abs pill ok s-hide" style="left:1196px">stays on the shelf</div>
+        <div id="p-plan" class="s-abs pill acc s-hide" style="left:1196px">plan day</div>
+        <div id="p-nofail" class="s-abs pill warn s-hide" style="left:1196px">no error at the top</div>
+        <div id="p-plan2" class="s-abs pill bad s-hide" style="left:1196px">next plan day: error</div>
+        <div id="p-modes" class="s-abs pill ok s-hide" style="left:1196px">run every mode once</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-big" style="stroke:#b9741a" />
+          <path id="r-imp" style="stroke:#ffc24b" />
+          <path id="r-plan" style="stroke:#ffc24b; stroke-dasharray: 14 12" />
+          <path id="r-never" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="r-lazy" style="stroke:#ffc24b" />
+          <path id="r-stays" style="stroke:#1f7a5c" />
+          <path id="r-use" style="stroke:#4bd69b" />
+          <path id="r-typo" style="stroke:#ff6b8b" />
+          <path id="r-typo2" style="stroke:#ff6b8b" />
+          <path id="a-far" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.778, 0.964, 1.741, 1.939, 2.403, 2.844, 3.39, 3.495, 3.622, 4.644, 4.865, 4.981, 5.387, 5.561, 5.77, 6.56, 6.896, 6.989, 7.361, 7.546, 8.51, 8.673, 9.021, 9.532, 10.008, 10.461, 10.716, 10.809, 10.937, 11.355, 12.063, 12.272, 12.608, 13.549, 13.897, 14.06, 14.234, 14.478, 14.675, 14.803, 15.209, 15.906, 16.196, 16.544, 16.707, 17.125, 17.392, 17.717, 18.936, 19.296, 19.563, 19.76, 19.899, 20.41, 20.584, 20.793, 20.956, 21.049, 21.316, 21.536, 21.838, 22.674, 23.22, 23.556, 23.847, 24.636, 25.101, 25.414, 26.169, 27.016, 27.515, 27.98, 28.212, 28.758, 29.06, 29.176, 29.582, 29.826, 29.93, 30.046, 30.72, 31.974, 32.31, 32.635, 32.763, 33.088, 33.228, 33.379, 33.855, 33.971, 34.064, 35.062, 35.248, 35.503, 35.84, 36.212, 36.316, 36.444, 37.535, 37.779, 38.069, 38.394, 38.557, 38.87, 39.416, 39.834, 40.484, 40.797, 41.761, 42.051, 42.423, 42.678, 42.957, 43.073, 43.305, 43.863, 44.141, 45.024, 45.209, 46.231, 46.742, 46.939, 47.531, 47.798, 48.239, 48.681, 48.855, 48.994, 49.993, 50.213, 50.527, 50.852, 50.991, 51.142, 51.56, 51.908, 52.466, 52.802, 52.976, 53.093, 53.487, 54.242, 54.486, 54.753, 55.078, 55.38, 56.343, 56.808, 57.237, 57.62, 57.911, 58.085, 58.642, 58.967, 59.083, 60.36, 60.848, 61.428, 61.672, 62.044, 62.299, 62.473];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const setPath = (id, d, dashed) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (dashed) p.dataset.fade = "1"; else { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+      };
+      const ring = (id, cx, cy, rx, ry, dashed) => setPath(id, ringD(cx, cy, rx, ry), dashed);
+      const CW = 18;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      ring("r-big", 1726, 300, 88, 140);                 // the big cookbook on the shelf
+      ring("r-imp", cx(0, 18), ry(7), rw(0, 18), 28);    // import big_cookbook
+      ring("r-plan", cx(4, 34), ry(10), rw(4, 34), 30, true); // the plan line, not used in shopping mode
+      ring("r-never", 1726, 740, 88, 140, true);         // the big cookbook on the counter, never read
+      ring("r-lazy", cx(0, 3), ry(7), rw(0, 3) + 4, 28); // lazy
+      ring("r-stays", 1726, 300, 88, 140);               // it stays on the shelf
+      ring("r-use", cx(10, 26), ry(10), rw(10, 26), 28); // big_cookbook.plan
+      ring("r-typo", cx(12, 22), ry(7), rw(12, 22), 28); // big_cookbok on the import line
+      ring("r-typo2", cx(10, 25), ry(10), rw(10, 25), 28); // big_cookbok where it is first used
+      setPath("a-far", "M760 640 C900 610 900 520 600 512", true); // from the first use back up to the import line
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        if (p.dataset.fade) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at); return; }
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swapT = (a, b, at) => { out(a, at, 0.15); show(b, at + 0.12, 0.2); };
+      const down = (sel, at, d) => tl.to(sel, { y: 440, duration: d || 0.5, ease: "power2.in" }, at);
+      const up = (sel, at, d) => tl.to(sel, { y: 0, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const spin = (at, turns, d) => tl.fromTo("#ck-hand", { rotation: 0, transformOrigin: "50% 100%" }, { rotation: 360 * turns, duration: d, ease: "none", immediateRender: false }, at);
+      const SMALL = ["#bk-t", "#bk-j", "#bk-m", "#bk-r", "#bk-p", "#bk-k"];
+      const ALL = SMALL.concat(["#bk-b"]);
+
+      tl.set("#s-cursor", { x: 700, y: 640 }, 0);
+
+      /* ---- 1. Kitchen Coach imports seven cookbooks. The big one takes a second to open ---- */
+      ["#R1", "#R2", "#R3", "#R4", "#R5", "#R6"].forEach((r, i) => type(r, t(5) + i * 0.14, 14, 0.25));
+      type("#R7a", t(5) + 6 * 0.14, 19, 0.35);
+      ALL.forEach((b, i) => bump(b, t(6) + i * 0.12));
+      draw("r-big", t(15), 0.45);
+      spin(t(17), 1, 1.0);
+      pop("#p-open", t(17), { from: 0.7 });
+
+      /* ---- 2. A normal import opens every book at the import line, on every run ---- */
+      out(["#r-big", "#p-open"], t(22), 0.2);
+      tl.set("#s-cursor", { x: 700, y: 640 }, t(22));
+      cursorIn(t(23));
+      cursorTo(136 + 3 * CW, ry(7) + 6, t(23), 0.45);
+      draw("r-imp", t(24), 0.4);
+      ALL.forEach((b, i) => down(b, t(25) + i * 0.16, 0.45));
+      cursorOut(t(28));
+      show("#oa1", t(30), 0.2);
+      bump("#bk-b", t(30));
+      pop("#p-every", t(33), { from: 0.7 });
+      out("#r-imp", t(34), 0.2);
+
+      /* ---- 3. Even for the shopping list. Ready in one second ---- */
+      out("#p-every", t(35), 0.2);
+      type("#R9", t(35), 18, 0.3);
+      type("#R10a", t(35) + 0.3, 35, 0.45);
+      type("#R11", t(35) + 0.75, 5, 0.15);
+      type("#R12", t(35) + 0.9, 26, 0.35);
+      show("#oa2", t(41), 0.2);
+      draw("r-plan", t(41) + 0.2);
+      spin(t(43), 1, 1.0);
+      swapT("#ck-q", "#ck-slow", t(48));
+      bump("#ck-slow", t(49) + 0.3);
+      pop("#p-six", t(50), { from: 0.7 });
+      draw("r-never", t(59));
+
+      /* ---- 4. Python 3.15 adds one word: lazy. A sticky note: later ---- */
+      out(["#p-six", "#r-never", "#r-plan", "#oa1", "#oa2"], t(63) - 0.1, 0.25);
+      ALL.forEach((b, i) => up(b, t(63) + i * 0.06, 0.45));
+      swapT("#ck-slow", "#ck-q", t(63));
+      pop("#new", t(64), { from: 0.6 });
+      swapT("#R7a", "#R7b", t(70));
+      draw("r-lazy", t(70) + 0.2, 0.35);
+      tl.set("#s-cursor", { x: 600, y: 300 }, t(75));
+      cursorIn(t(75));
+      cursorTo(1836, 178, t(75), 0.45);
+      tl.fromTo("#sticky", { opacity: 0, scale: 0.4, rotation: -20 }, { opacity: 1, scale: 1, rotation: 6, duration: 0.45, ease: "back.out(1.8)", immediateRender: false }, t(77));
+      cursorOut(t(80));
+      bump("#sticky", t(82));
+
+      /* ---- 5. Ready in a hundredth of a second. The big book stays on the shelf ---- */
+      out("#r-lazy", t(83), 0.2);
+      SMALL.forEach((b, i) => down(b, t(83) + i * 0.1, 0.4));
+      show("#ob1", t(85), 0.2);
+      swapT("#ck-q", "#ck-fast", t(89));
+      bump("#ck-fast", t(90) + 0.2);
+      draw("r-stays", t(96), 0.45);
+      pop("#p-stays", t(96) + 0.1, { from: 0.7 });
+
+      /* ---- 6. Plan day: the first use of big_cookbook.plan brings that one book down ---- */
+      out(["#r-stays", "#p-stays", "#ob1"], t(100) - 0.1, 0.2);
+      pop("#p-plan", t(101), { from: 0.7 });
+      tl.set("#s-cursor", { x: 700, y: 760 }, t(103));
+      cursorIn(t(103));
+      cursorTo(136 + 11 * CW, ry(10) + 6, t(103), 0.45);
+      draw("r-use", t(106), 0.45);
+      cursorOut(t(110));
+      tl.to("#sticky", { opacity: 0, y: -30, duration: 0.3 }, t(112));
+      down("#bk-b", t(113), 0.55);
+      show("#oc1", t(113) + 0.5, 0.2);
+      show("#oc2", t(113) + 0.8, 0.2);
+
+      /* ---- 7. The catch: a misspelled name fails later, far from the import line ---- */
+      out(["#r-use", "#p-plan"], t(119) - 0.1, 0.2);
+      out(["#oc1", "#oc2"], t(121) - 0.15, 0.15);
+      up("#bk-b", t(119), 0.45);
+      tl.set("#sticky", { y: 0 }, t(119));
+      tl.to("#sticky", { opacity: 1, duration: 0.25 }, t(119) + 0.4);
+      swapT("#R7b", "#R7c", t(121));
+      swapT("#R10a", "#R10b", t(121) + 0.2);
+      draw("r-typo", t(122), 0.4);
+      pop("#p-nofail", t(125), { from: 0.7 });
+      show("#od1", t(126), 0.2);
+      out(["#p-nofail", "#od1"], t(130), 0.2);
+      pop("#p-plan2", t(135), { from: 0.7 });
+      draw("r-typo2", t(136), 0.4);
+      show(["#od2", "#od3"], t(136) + 0.3, 0.2);
+      draw("a-far", t(138));
+      out("#p-plan2", t(143) - 0.1, 0.2);
+      pop("#p-modes", t(144), { from: 0.7 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 56.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,11 @@
+Kitchen Coach works on your laptop. Then Ben runs it on his Mac, and it crashes. File not found. C, Users, you, kitchen. That address only exists on your laptop.
+
+Picture the computer as a kitchen. Folders are shelves. A file is a notebook on a shelf. A path is the way to that notebook.
+
+From pathlib, import Path. Path, recipes, then a slash, then soup dot T X T. The slash draws the arrow, and Python writes it the right way on every computer. The path knows its name, its stem, and its suffix.
+
+Now a second trap. Ben runs the script from the hallway. It asks for pantry dot T X T. Nothing here. A short name starts from where you stand, the current working directory.
+
+So put a pin where the script lives. Path of dunder file, dot parent. Then slash, pantry dot T X T. Found, from anywhere.
+
+Build paths with Path and slash. Start from where your script lives.

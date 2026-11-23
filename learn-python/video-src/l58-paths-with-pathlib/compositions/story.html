@@ -1,0 +1,371 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .grp { left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* code panel on the left: 30px mono = 18 px per char, text at page x 136, row r centre at page y 209 + (r - 1) * 50 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    #s-bar > span { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .s-ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .s-ln .k { color: #c9c6ff; }
+    .s-ln .s { color: #7cf0b5; }
+    .s-ln .f { color: #8fd3ff; }
+    .s-ln .o { color: #ffc24b; }
+    #s-div { position: absolute; left: 40px; top: 640px; width: 960px; height: 3px; background: #2e2a58; }
+    #s-outlbl { position: absolute; right: 40px; top: 594px; font: 800 28px/42px "Manrope", sans-serif; color: #c9c6ff; }
+    .s-out { position: absolute; left: 40px; font: 500 28px/42px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .s-out.err { color: #ff8fab; }
+
+    /* scene A: two laptops */
+    .lap { left: 1190px; width: 660px; height: 300px; border-radius: 24px; background: #fff; }
+    .lap-h { left: 1226px; font: 800 40px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .lap-os { height: 48px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; }
+    .lap-p { left: 1226px; font: 700 32px/52px "JetBrains Mono", monospace; white-space: nowrap; color: #3e3b52; }
+    .pill { height: 56px; padding: 0 26px; border-radius: 999px; font: 800 30px/56px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ink { background: #0e0c1d; color: #fff; }
+    .pill.mono { white-space: pre; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 28px; }
+    .pill.dash { background: #fff; color: #b8235a; box-shadow: inset 0 0 0 4px #b8235a; }
+    #stamp { left: 1606px; top: 596px; width: 230px; height: 84px; border-radius: 14px; border: 6px solid #b8235a; color: #b8235a; text-align: center; font: 800 44px/72px "Manrope", sans-serif; background: #fff; transform: rotate(-8deg); }
+
+    /* the kitchen map */
+    .cup { border-radius: 22px; }
+    #cup-k { left: 1190px; top: 170px; width: 660px; height: 500px; background: #fff; }
+    #tab-k { left: 1214px; top: 116px; height: 54px; padding: 0 22px; border-radius: 14px 14px 0 0; background: #fff; font: 700 30px/54px "JetBrains Mono", monospace; box-shadow: 0 0 0 5px #0e0c1d; }
+    #cup-r { left: 1225px; top: 390px; width: 590px; height: 240px; background: #e6e3ff; }
+    #tab-r { left: 1249px; top: 340px; height: 50px; padding: 0 20px; border-radius: 12px 12px 0 0; background: #e6e3ff; font: 700 30px/50px "JetBrains Mono", monospace; box-shadow: 0 0 0 5px #0e0c1d; }
+    .plank { height: 10px; border-radius: 5px; background: #0e0c1d; }
+    .nb { height: 64px; padding: 0 20px 0 40px; border-radius: 10px; background: #fbf8f4; font: 700 30px/64px "JetBrains Mono", monospace; white-space: nowrap; box-shadow: 0 0 0 4px #0e0c1d; }
+    .nb > i { position: absolute; left: 0; top: 0; width: 18px; height: 64px; border-radius: 10px 0 0 10px; background: #b9741a; }
+    .nb.py > i { background: #1f7a5c; }
+    .nb.rc > i { background: #3b37e6; }
+    .shelf-lbl { font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #addr { left: 1190px; top: 800px; width: 660px; text-align: center; font: 700 38px/56px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    #addr2 { left: 1290px; top: 720px; font: 700 40px/56px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; }
+    #addr2 b { color: #3b37e6; }
+    .bar { top: 782px; height: 8px; border-radius: 4px; }
+    .bar-l { top: 796px; font: 700 28px/40px "JetBrains Mono", monospace; white-space: nowrap; }
+
+    /* the hallway */
+    #hall { left: 1190px; top: 720px; width: 660px; height: 236px; border-radius: 22px; background: #fbf8f4; box-shadow: inset 0 0 0 4px #6f6b80; }
+    #hall-l { left: 1214px; top: 732px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #me { left: 1210px; top: 790px; width: 90px; height: 150px; }
+    #halo { left: 1196px; top: 778px; width: 118px; height: 170px; }
+    #pin { left: 1700px; top: 150px; width: 64px; height: 84px; }
+    #s-arrows { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-arrows path { fill: none; stroke-linecap: round; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 52px; height: 52px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span>coach.py</span></div>
+          <!-- A: a typed-in Windows path -->
+          <div class="s-ln pa" id="A1" style="top:88px"><span class="k">with</span> <span class="f">open</span>(<span class="s">"C:\\Users\\you\\kitchen\\pantry.txt"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pa" id="A2" style="top:138px">    <span class="f">print</span>(f.<span class="f">read</span>())</div>
+          <!-- C: Path and / -->
+          <div class="s-ln" id="C1" style="top:88px"><span class="k">from</span> pathlib <span class="k">import</span> Path</div>
+          <div class="s-ln pc" id="C3" style="top:188px">recipe = <span class="f">Path</span>(<span class="s">"recipes"</span>) <span class="o">/</span> <span class="s">"soup.txt"</span></div>
+          <div class="s-ln pc" id="C4" style="top:238px"><span class="f">print</span>(recipe.name)</div>
+          <div class="s-ln pc" id="C5" style="top:288px"><span class="f">print</span>(recipe.stem)</div>
+          <div class="s-ln pc" id="C6" style="top:338px"><span class="f">print</span>(recipe.suffix)</div>
+          <!-- D: a short name -->
+          <div class="s-ln pd" id="D3" style="top:188px"><span class="k">with</span> <span class="f">open</span>(<span class="s">"pantry.txt"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pd" id="D4" style="top:238px">    <span class="f">print</span>(f.<span class="f">read</span>())</div>
+          <!-- E: start where the script lives -->
+          <div class="s-ln pe" id="E3" style="top:188px">HERE = <span class="f">Path</span>(__file__).parent</div>
+          <div class="s-ln pe" id="E4" style="top:238px"><span class="k">with</span> <span class="f">open</span>(HERE <span class="o">/</span> <span class="s">"pantry.txt"</span>) <span class="k">as</span> f:</div>
+          <div class="s-ln pe" id="E5" style="top:288px">    <span class="f">print</span>(f.<span class="f">read</span>())</div>
+
+          <div id="s-div"></div>
+          <div id="s-outlbl">output</div>
+          <div class="s-out err pa" id="oA1" style="top:660px">FileNotFoundError: [Errno 2] No such file</div>
+          <div class="s-out err pa" id="oA2" style="top:704px">or directory: 'C:\\Users\\you\\kitchen\\pantry.txt'</div>
+          <div class="s-out pc" id="oC1" style="top:660px">soup.txt</div>
+          <div class="s-out pc" id="oC2" style="top:704px">soup</div>
+          <div class="s-out pc" id="oC3" style="top:748px">.txt</div>
+          <div class="s-out err pd" id="oD1" style="top:660px">FileNotFoundError: [Errno 2] No such file</div>
+          <div class="s-out err pd" id="oD2" style="top:704px">or directory: 'pantry.txt'</div>
+          <div class="s-out pe" id="oE1" style="top:660px">rice,900</div>
+          <div class="s-out pe" id="oE2" style="top:704px">oats,400</div>
+        </div>
+
+        <!-- scene A: your laptop and Ben's Mac -->
+        <div id="ga" class="s-abs grp">
+          <div id="lap1" class="s-abs lap s-ol" style="top:150px"></div>
+          <div class="s-abs lap-h" style="top:178px">Your laptop</div>
+          <div class="s-abs lap-os" style="left:1530px; top:182px">Windows</div>
+          <div id="lp1" class="s-abs lap-p" style="top:262px">C:\Users\you\kitchen</div>
+          <div id="ok1" class="s-abs pill ok s-hide" style="left:1226px; top:352px">works</div>
+          <div id="lap2" class="s-abs lap s-ol s-hide" style="top:520px"></div>
+          <div id="lh2" class="s-abs lap-h s-hide" style="top:548px">Ben's Mac</div>
+          <div id="lo2" class="s-abs lap-os s-hide" style="left:1484px; top:552px">macOS</div>
+          <div id="lp2" class="s-abs lap-p s-hide" style="top:632px">/Users/ben/kitchen</div>
+          <div id="nope" class="s-abs pill dash mono s-hide" style="left:1226px; top:722px">no C:\Users\you here</div>
+          <div id="stamp" class="s-abs s-hide">CRASH</div>
+        </div>
+
+        <!-- the kitchen map -->
+        <div id="gm" class="s-abs grp s-hide">
+          <div id="cup-k" class="s-abs cup s-ol"></div>
+          <div id="tab-k" class="s-abs">kitchen</div>
+          <div id="pl1" class="s-abs plank" style="left:1215px; top:300px; width:610px"></div>
+          <div id="nb-pan" class="s-abs nb s-hide" style="left:1230px; top:228px"><i></i>pantry.txt</div>
+          <div id="nb-coach" class="s-abs nb py s-hide" style="left:1560px; top:228px"><i></i>coach.py</div>
+          <div id="cup-r" class="s-abs cup s-ol"></div>
+          <div id="tab-r" class="s-abs">recipes</div>
+          <div class="s-abs plank" style="left:1245px; top:550px; width:550px"></div>
+          <div id="nb-soup" class="s-abs nb rc s-hide" style="left:1260px; top:478px"><i></i>soup.txt</div>
+          <div id="nb-chili" class="s-abs nb rc s-hide" style="left:1540px; top:478px"><i></i>chili.txt</div>
+          <div id="lbl-shelf" class="s-abs pill acc s-hide" style="left:1500px; top:118px">folders = shelves</div>
+          <div id="lbl-nb" class="s-abs pill acc s-hide" style="left:1340px; top:696px">a file = a notebook</div>
+          <div id="addr" class="s-abs s-hide">kitchen / recipes / soup.txt</div>
+          <!-- the path in code, with its parts -->
+          <div id="addr2" class="s-abs s-hide">recipes <b>/</b> soup.txt</div>
+          <div id="win" class="s-abs pill ok mono s-hide" style="left:1190px; top:830px">Windows: recipes\soup.txt  ✓</div>
+          <div id="mac" class="s-abs pill ok mono s-hide" style="left:1190px; top:902px">Mac:     recipes/soup.txt  ✓</div>
+          <div id="bar-name" class="s-abs bar s-hide" style="left:1530px; width:192px; background:#3b37e6"></div>
+          <div id="bar-stem" class="s-abs bar s-hide" style="left:1530px; width:96px; background:#1f7a5c; top:800px"></div>
+          <div id="bar-suf" class="s-abs bar s-hide" style="left:1626px; width:96px; background:#b8235a; top:800px"></div>
+          <div id="bl-name" class="s-abs bar-l s-hide" style="left:1745px; top:766px; color:#3b37e6">.name</div>
+          <div id="bl-stem" class="s-abs bar-l s-hide" style="left:1460px; top:820px; color:#1f7a5c">.stem</div>
+          <div id="bl-suf" class="s-abs bar-l s-hide" style="left:1630px; top:820px; color:#b8235a">.suffix</div>
+
+          <!-- the hallway -->
+          <div id="gh" class="s-abs grp s-hide">
+            <div id="hall" class="s-abs"></div>
+            <div id="hall-l" class="s-abs">hallway</div>
+            <div id="cmd" class="s-abs pill ink mono" style="left:1350px; top:732px">$ python3 kitchen/coach.py</div>
+            <svg id="halo" class="s-abs s-hide" viewBox="0 0 118 170"><ellipse cx="59" cy="85" rx="54" ry="80" fill="none" stroke="#3b37e6" stroke-width="6" stroke-dasharray="14 10" /></svg>
+            <svg id="me" class="s-abs" viewBox="0 0 90 150"><circle cx="45" cy="26" r="20" fill="#fbebd2" stroke="#0e0c1d" stroke-width="5" /><path d="M45 46 v52 M17 68 h56 M45 98 l-22 42 M45 98 l22 42" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" fill="none" /></svg>
+            <div id="ask" class="s-abs pill mono s-hide" style="left:1330px; top:808px; background:#fff; color:#0e0c1d; box-shadow: 0 0 0 4px #0e0c1d">pantry.txt?</div>
+            <div id="nothing" class="s-abs pill bad s-hide" style="left:1600px; top:808px">nothing here</div>
+            <div id="cwd" class="s-abs pill acc mono s-hide" style="left:1330px; top:882px">cwd: where you stand</div>
+            <div id="anyw" class="s-abs pill ok s-hide" style="left:1600px; top:808px">found ✓</div>
+          </div>
+          <svg id="pin" class="s-abs s-hide" viewBox="0 0 64 84"><path d="M32 80 C14 56 6 44 6 30 a26 26 0 0 1 52 0 c0 14 -8 26 -26 50 z" fill="#b8235a" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /><circle cx="32" cy="30" r="10" fill="#fff" /></svg>
+          <div id="pin-l" class="s-abs pill mono s-hide" style="left:1430px; top:118px; background:#b8235a; color:#fff">Path(__file__).parent</div>
+          <div id="found" class="s-abs pill ok s-hide" style="left:1440px; top:318px">found</div>
+        </div>
+
+        <svg id="s-arrows" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="a-way" style="stroke:#3b37e6; stroke-width:6; stroke-dasharray: 16 12" />
+          <path id="a-slash" style="stroke:#3b37e6; stroke-width:7" />
+          <path id="a-slash-h" style="stroke:#3b37e6; stroke-width:7" />
+          <path id="a-pin" style="stroke:#1f7a5c; stroke-width:7" />
+          <path id="a-pin-h" style="stroke:#1f7a5c; stroke-width:7" />
+        </svg>
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-c" style="stroke:#ffc24b" />
+          <path id="r-users" style="stroke:#ffc24b" />
+          <path id="r-you" style="stroke:#ffc24b" />
+          <path id="r-kit" style="stroke:#ffc24b" />
+          <path id="r-lp1" style="stroke:#1f7a5c" />
+          <path id="r-slash" style="stroke:#ffc24b" />
+          <path id="r-pan" style="stroke:#ff6b8b" />
+          <path id="r-file" style="stroke:#ffc24b" />
+          <path id="r-parent" style="stroke:#4bd69b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.441, 0.743, 1.033, 1.149, 1.312, 2.159, 2.415, 2.659, 2.926, 3.042, 3.158, 3.344, 3.692, 3.866, 3.982, 5.375, 5.735, 5.944, 6.629, 7.175, 7.988, 8.464, 9.601, 9.857, 10.286, 10.577, 11.064, 11.18, 11.355, 12.504, 12.875, 12.98, 13.584, 13.758, 13.874, 14.652, 15.163, 15.348, 16.393, 16.556, 16.951, 17.102, 17.218, 17.706, 17.88, 17.961, 19.006, 19.18, 19.691, 19.946, 20.086, 20.318, 20.48, 20.736, 21.653, 21.897, 22.651, 23.209, 23.894, 24.428, 25.299, 25.508, 25.589, 26.309, 26.599, 26.936, 27.214, 27.539, 27.876, 28.677, 28.84, 29.211, 29.536, 29.71, 30.337, 30.546, 30.953, 31.278, 31.394, 31.533, 31.812, 32.137, 32.357, 32.741, 33.902, 34.064, 34.389, 34.68, 34.923, 35.457, 35.736, 36.212, 36.491, 36.676, 37.988, 38.395, 38.627, 39.184, 40.171, 40.438, 40.705, 40.821, 41.123, 41.286, 41.39, 42.214, 42.4, 42.725, 42.888, 43.329, 43.596, 43.886, 44.165, 44.803, 45.187, 46.057, 46.208, 46.487, 46.754, 47.114, 47.288, 47.462, 47.601, 48.147, 48.298, 48.67, 49.087, 50.423, 50.806, 51.015, 51.084, 51.305, 51.468, 51.572, 51.921, 52.536, 52.873, 53.012, 53.383, 53.813, 54.103, 54.997, 55.311, 55.764, 56.356, 56.657, 57.006, 57.354, 58.167, 58.678, 58.956, 59.85, 60.187, 60.582, 60.779, 61.139, 61.325, 62.044, 62.381, 62.544, 62.764, 62.973, 63.333];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Rings in page pixels. Code text starts at x 136, 18 px per char. Row r centre y = 209 + (r - 1) * 50.
+      const ringPath = (id, cx, cy, rx, ry) => {
+        const d = `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      const CW = 18;
+      const cx = (c0, c1) => 136 + ((c0 + c1 + 1) / 2) * CW;
+      const rw = (c0, c1) => ((c1 - c0 + 1) * CW) / 2 + 14;
+      const ry = (r) => 209 + (r - 1) * 50;
+      ringPath("r-c", cx(11, 12), ry(1), rw(11, 12), 28);      // C:
+      ringPath("r-users", cx(15, 19), ry(1), rw(15, 19), 28);  // Users
+      ringPath("r-you", cx(22, 24), ry(1), rw(22, 24), 28);    // you
+      ringPath("r-kit", cx(27, 33), ry(1), rw(27, 33), 28);    // kitchen
+      ringPath("r-slash", cx(25, 25), ry(3), 24, 28);          // the / in Path("recipes") / "soup.txt"
+      ringPath("r-pan", cx(10, 21), ry(3), rw(10, 21), 28);    // "pantry.txt"
+      ringPath("r-file", cx(12, 19), ry(3), rw(12, 19), 28);   // __file__
+      ringPath("r-parent", cx(21, 27), ry(3), rw(21, 27), 28); // .parent
+      ringPath("r-lp1", 1236 + 10 * 19.2, 288, 10 * 19.2 + 30, 36); // C:\Users\you\kitchen on the laptop card
+
+      // Arrows on the map. Each is a path with a separate arrowhead.
+      const line = (id, d) => {
+        const p = document.getElementById(id); p.setAttribute("d", d);
+        const L = p.getTotalLength(); p.dataset.len = L;
+        if (!p.style.strokeDasharray) { p.style.strokeDasharray = L; }
+        p.style.strokeDashoffset = L;
+      };
+      // the way: kitchen tab, down into recipes, on to soup.txt (dashed, faded in)
+      document.getElementById("a-way").setAttribute("d", "M1330 196 C 1520 200, 1535 290, 1505 345 C 1480 400, 1420 430, 1385 474");
+      // Path("recipes") / "soup.txt": from the recipes tab to soup.txt
+      line("a-slash", "M1400 365 C 1470 380, 1450 440, 1400 472");
+      line("a-slash-h", "M1384 452 L1400 472 L1416 450");
+      // the pin on coach.py's folder, over to pantry.txt
+      line("a-pin", "M1720 222 C 1640 150, 1460 150, 1390 222");
+      line("a-pin-h", "M1374 202 L1390 224 L1410 206");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      /* ---- set up ---- */
+      tl.set("#s-cursor", { x: 700, y: 520 }, 0);
+
+      /* ---- 1. Works on your laptop. Crashes on Ben's Mac ---- */
+      type("#A1", 0.2, 54, 1.1);
+      type("#A2", 1.35, 19, 0.35);
+      pop("#ok1", t(2), { from: 0.6 });
+      tl.fromTo("#lap2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(7));
+      show(["#lh2", "#lo2", "#lp2"], t(7) + 0.15, 0.3);
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.in", immediateRender: false }, t(15));
+      tl.fromTo("#lap2", { x: 0 }, { x: 10, duration: 0.06, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(15) + 0.3);
+      type("#oA1", t(16), 41, 0.6);
+      type("#oA2", t(16) + 0.6, 51, 0.6);
+      // C, Users, you, kitchen: the cursor walks along the path
+      tl.set("#s-cursor", { x: 360, y: 300 }, t(19) - 0.5);
+      cursorIn(t(19) - 0.5);
+      cursorTo(cx(11, 12) - 6, ry(1) + 14, t(19) - 0.45, 0.4);
+      draw("r-c", t(19), 0.35);
+      cursorTo(cx(15, 19) - 6, ry(1) + 14, t(20) - 0.2, 0.25);
+      draw("r-users", t(20), 0.35);
+      cursorTo(cx(22, 24) - 6, ry(1) + 14, t(21) - 0.2, 0.25);
+      draw("r-you", t(21), 0.35);
+      cursorTo(cx(27, 33) - 6, ry(1) + 14, t(22) - 0.2, 0.25);
+      draw("r-kit", t(22), 0.35);
+      cursorOut(t(23));
+      // only exists on your laptop
+      pop("#nope", t(25), { from: 0.6 });
+      draw("r-lp1", t(28), 0.45);
+
+      /* ---- 2. A map of the kitchen: shelves and notebooks ---- */
+      out(["#ga", ".pa", "#r-c", "#r-users", "#r-you", "#r-kit", "#r-lp1"], t(30) - 0.3, 0.3);
+      tl.fromTo("#gm", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(30));
+      pop("#lbl-shelf", t(36), { from: 0.6 });
+      bump("#cup-r", t(36) + 0.1);
+      bump("#tab-r", t(36) + 0.1);
+      pop("#nb-pan", t(40), { from: 0.5 });
+      pop("#nb-soup", t(43), { from: 0.5 });
+      pop("#nb-chili", t(43) + 0.15, { from: 0.5 });
+      pop("#lbl-nb", t(43) + 0.3, { from: 0.6 });
+      tl.fromTo("#a-way", { opacity: 0 }, { opacity: 1, duration: 0.4, immediateRender: false }, t(48));
+      tl.fromTo("#a-way", { strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 2.0, ease: "none", immediateRender: false }, t(48));
+      pop("#addr", t(51), { from: 0.8 });
+      bump("#nb-soup", t(54));
+
+      /* ---- 3. from pathlib import Path. Path("recipes") / "soup.txt" ---- */
+      out(["#lbl-shelf", "#lbl-nb", "#a-way", "#addr"], t(55) - 0.2, 0.25);
+      type("#C1", t(55), 24, 1.2);
+      type("#C3", t(59), 37, 2.2);
+      draw("r-slash", t(63), 0.35);
+      show("#addr2", t(64), 0.3);
+      draw("a-slash", t(71), 0.5);
+      tl.set("#a-slash", { opacity: 1 }, t(71));
+      draw("a-slash-h", t(71) + 0.45, 0.15);
+      bump("#nb-soup", t(74));
+      out("#r-slash", t(76), 0.2);
+      pop("#win", t(80), { from: 0.7 });
+      pop("#mac", t(82), { from: 0.7 });
+      // name, stem, suffix
+      out(["#win", "#mac"], t(85) - 0.1, 0.25);
+      type("#C4", t(86), 18, 0.35);
+      type("#C5", t(86) + 0.35, 18, 0.35);
+      type("#C6", t(86) + 0.7, 20, 0.35);
+      show("#oC1", t(89), 0.2);
+      tl.fromTo("#bar-name", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, immediateRender: false }, t(89));
+      show("#bl-name", t(89) + 0.1, 0.2);
+      show("#oC2", t(91), 0.2);
+      tl.fromTo("#bar-stem", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, immediateRender: false }, t(91));
+      show("#bl-stem", t(91) + 0.1, 0.2);
+      show("#oC3", t(94), 0.2);
+      tl.fromTo("#bar-suf", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, immediateRender: false }, t(94));
+      show("#bl-suf", t(94) + 0.1, 0.2);
+
+      /* ---- 4. The second trap: run from the hallway ---- */
+      out([".pc", "#addr2", "#bar-name", "#bar-stem", "#bar-suf", "#bl-name", "#bl-stem", "#bl-suf", "#a-slash", "#a-slash-h"], t(95), 0.3);
+      pop("#nb-coach", t(101), { from: 0.5 });
+      tl.fromTo("#gh", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(104));
+      type("#D3", t(106), 29, 0.6);
+      type("#D4", t(106) + 0.6, 19, 0.35);
+      draw("r-pan", t(109), 0.4);
+      pop("#ask", t(109), { from: 0.6 });
+      pop("#nothing", t(114), { from: 0.6 });
+      tl.fromTo("#gh", { x: 0 }, { x: 10, duration: 0.06, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, t(114) + 0.3);
+      type("#oD1", t(114) + 0.2, 41, 0.6);
+      type("#oD2", t(114) + 0.8, 26, 0.4);
+      show("#halo", t(120), 0.3);
+      tl.fromTo("#halo", { rotation: -20, transformOrigin: "50% 50%" }, { rotation: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, t(120));
+      pop("#cwd", t(125), { from: 0.6 });
+
+      /* ---- 5. A pin where the script lives: Path(__file__).parent ---- */
+      out([".pd", "#r-pan", "#ask", "#nothing", "#halo"], t(128), 0.3);
+      tl.fromTo("#pin", { opacity: 0, y: -120 }, { opacity: 1, y: 0, duration: 0.5, ease: "bounce.out", immediateRender: false }, t(131));
+      tl.set("#s-cursor", { x: 500, y: 330 }, t(136) - 0.5);
+      cursorIn(t(136) - 0.5);
+      cursorTo(136 + 7 * CW, ry(3) + 14, t(136) - 0.45, 0.4);
+      type("#E3", t(136), 28, 1.4);
+      cursorOut(t(137) + 0.3);
+      draw("r-file", t(138), 0.4);
+      draw("r-parent", t(141), 0.4);
+      pop("#pin-l", t(141), { from: 0.6 });
+      type("#E4", t(142), 36, 1.0);
+      type("#E5", t(142) + 1.0, 19, 0.35);
+      out(["#r-file", "#r-parent"], t(143), 0.2);
+      tl.set("#a-pin", { opacity: 1 }, t(143));
+      draw("a-pin", t(143), 0.7);
+      draw("a-pin-h", t(143) + 0.65, 0.15);
+      tl.to("#nb-pan", { boxShadow: "0 0 0 6px #1f7a5c", duration: 0.2 }, t(149));
+      pop("#found", t(149), { from: 0.6 });
+      show("#oE1", t(149) + 0.1, 0.2);
+      show("#oE2", t(149) + 0.25, 0.2);
+      pop("#anyw", t(150), { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.25, ease: "power2.in" }, 59.9);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

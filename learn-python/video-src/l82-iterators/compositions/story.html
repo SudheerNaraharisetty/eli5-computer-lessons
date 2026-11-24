@@ -1,0 +1,344 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* ---- code panel, left: 34 px mono = 20.4 px per char, rows of 60 px, text at page x 136 ---- */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .cd { position: absolute; font: 500 34px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .cd .s { color: #ffc24b; }
+    .cd .k { color: #8fd3ff; }
+    .cm { position: absolute; font: 500 34px/60px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .cm.err { color: #ff8fb1; }
+    #out-rule { position: absolute; left: 40px; top: 522px; width: 974px; height: 3px; background: #3a3666; }
+    #out-lab { position: absolute; left: 40px; top: 474px; font: 700 28px/40px "JetBrains Mono", monospace; color: #a9a6d9; }
+    .tm { position: absolute; left: 40px; font: 500 28px/44px "JetBrains Mono", monospace; color: #c9c6ff; white-space: pre; opacity: 0; }
+    .tm.err { color: #ff8fb1; }
+    .tm.ok { color: #7cf0b5; }
+    .cpill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .cpill.bad { background: #fbe0ea; color: #b8235a; }
+    .cpill.good { background: #ddefe6; color: #1f7a5c; }
+    .cpill.info { background: #e4e3ff; color: #3b37e6; }
+    .cpill.mono { font: 700 28px/52px "JetBrains Mono", monospace; }
+    #strip { position: absolute; left: 40px; top: 560px; width: 980px; height: 60px; display: flex; gap: 16px; }
+    #strip > .cpill { position: relative; flex: none; }
+
+    /* ---- right: the kitchen side ---- */
+    #side { left: 1190px; top: 96px; width: 634px; height: 888px; border-radius: 26px; background: #fff; }
+    #side-t { left: 1222px; top: 112px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    #pass { left: 1222px; top: 400px; width: 570px; height: 26px; border-radius: 8px; background: #e2c99c; box-shadow: 0 0 0 5px #0e0c1d; }
+    /* plates: 150 x 160, circle 110 */
+    .pl { position: absolute; width: 150px; height: 160px; z-index: 3; }
+    .pl > .c { position: absolute; left: 20px; top: 0; width: 110px; height: 110px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .pl > .c > i { position: absolute; left: 26px; top: 26px; width: 58px; height: 58px; border-radius: 50%; box-shadow: 0 0 0 3px #0e0c1d; }
+    .pl > .lb { position: absolute; left: -10px; top: 120px; width: 170px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; white-space: nowrap; }
+    #p1 { left: 1215px; top: 230px; } #p2 { left: 1365px; top: 230px; } #p3 { left: 1515px; top: 230px; }
+    #p1 > .c > i { background: #f2c14e; } #p2 > .c > i { background: #c0492b; } #p3 > .c > i { background: #d9a066; }
+    /* the waiter pointer */
+    #ptr { left: 1228px; top: 170px; width: 124px; height: 46px; border-radius: 999px; background: #3b37e6; color: #fff; text-align: center; font: 800 28px/46px "Manrope", sans-serif; opacity: 0; z-index: 4; }
+    #ptr > i { position: absolute; left: 50px; top: 44px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 14px solid #3b37e6; }
+    /* the counter */
+    #cnt { left: 1222px; top: 450px; width: 286px; height: 52px; border-radius: 999px; background: #0e0c1d; color: #fff; opacity: 0; }
+    #cnt > span { position: absolute; left: 22px; top: 0; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    #cnt > b { position: absolute; left: 230px; top: 0; width: 40px; text-align: center; font: 700 32px/52px "JetBrains Mono", monospace; color: #ffc24b; opacity: 0; }
+    #left { left: 1580px; top: 450px; }
+    #used { left: 1222px; top: 450px; }
+    #again { left: 1222px; top: 450px; }
+    #stamp { left: 1262px; top: 520px; width: 490px; height: 96px; border-radius: 16px; border: 7px solid #b8235a; color: #b8235a; background: rgba(255,255,255,0.94); text-align: center; font: 700 50px/82px "Fraunces", serif; transform: rotate(-6deg); opacity: 0; z-index: 6; }
+    /* guests */
+    .gs { position: absolute; top: 830px; width: 150px; height: 70px; border-radius: 16px; background: #f6f1eb; box-shadow: 0 0 0 4px #0e0c1d; font: 800 30px/70px "Manrope", sans-serif; text-align: center; }
+    .gs > i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; margin-right: 10px; vertical-align: 1px; box-shadow: 0 0 0 2px #0e0c1d; }
+    #g1 { left: 1215px; } #g2 { left: 1365px; } #g3 { left: 1515px; }
+    #g1 > i { background: #3b37e6; } #g2 > i { background: #1f7a5c; } #g3 > i { background: #b8235a; }
+    #guests-t { left: 1222px; top: 920px; font: 600 28px/40px "Manrope", sans-serif; color: #4a4660; white-space: nowrap; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 5; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.0" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">waiter.py</span></div>
+          <!-- rows: top 100, 160, 220, 280, 340, 400 -->
+          <div class="cd" id="r1" style="left:40px; top:100px">plates = [<span class="s">"pasta"</span>, <span class="s">"bean chili"</span>, <span class="s">"pancakes"</span>]</div>
+          <div class="cpill info" id="p-iterable" style="left:40px; top:176px">a list is iterable</div>
+          <div class="cpill info" id="p-often" style="left:40px; top:244px">loop over it as often as you like</div>
+
+          <div class="cd" id="r2" style="left:40px; top:160px">waiter = <span class="k">iter</span>(plates)</div>
+          <div class="cd" id="r3" style="left:40px; top:220px"><span class="k">next</span>(waiter)</div>
+          <div class="cd" id="r4" style="left:40px; top:280px"><span class="k">next</span>(waiter)</div>
+          <div class="cd" id="r5" style="left:40px; top:340px"><span class="k">next</span>(waiter)</div>
+          <div class="cd" id="r6" style="left:40px; top:400px"><span class="k">next</span>(waiter)</div>
+          <div class="cm" id="c3" style="left:325.6px; top:220px"># 'pasta'</div>
+          <div class="cm" id="c4" style="left:325.6px; top:280px"># 'bean chili'</div>
+          <div class="cm" id="c5" style="left:325.6px; top:340px"># 'pancakes'</div>
+          <div class="cm err" id="c6" style="left:325.6px; top:400px"># StopIteration</div>
+
+          <!-- phase 2: the for loop -->
+          <div class="cd" id="f2" style="left:40px; top:160px"><span class="k">for</span> plate <span class="k">in</span> plates:</div>
+          <div class="cd" id="f3" style="left:40px; top:220px">    serve(plate)</div>
+
+          <!-- phase 3: the map object -->
+          <div class="cd" id="m2" style="left:40px; top:160px">cards = <span class="k">map</span>(<span class="k">lambda</span> p: p.title(), plates)</div>
+          <div class="cd" id="m2b" style="left:40px; top:160px">cards = <span class="k">list</span>(<span class="k">map</span>(<span class="k">lambda</span> p: p.title(), plates))</div>
+          <div class="cpill info mono" id="p-filter" style="left:40px; top:236px">filter(...)</div>
+          <div class="cpill info mono" id="p-zip" style="left:290px; top:236px">zip(...)</div>
+          <div class="cpill info" id="p-too" style="left:500px; top:236px">waiters too</div>
+          <div class="cd" id="m3" style="left:40px; top:220px"><span class="k">print</span>(<span class="k">list</span>(cards))</div>
+          <div class="cd" id="m4" style="left:40px; top:280px"><span class="k">print</span>(<span class="k">list</span>(cards))</div>
+
+          <div id="out-lab">output</div>
+          <div id="out-rule"></div>
+          <div class="tm" id="o0" style="top:548px">$ python3 waiter.py</div>
+          <div class="tm" id="o1" style="top:592px">Traceback (most recent call last):</div>
+          <div class="tm" id="o2" style="top:636px">  File "/Users/you/kitchen/waiter.py", line 6, in &lt;module&gt;</div>
+          <div class="tm" id="o3" style="top:680px">    next(waiter)</div>
+          <div class="tm" id="o4" style="top:724px">    ~~~~^^^^^^^^</div>
+          <div class="tm err" id="o5" style="top:768px">StopIteration</div>
+
+          <div id="strip">
+            <div class="cpill info mono" id="sx0">iter() once</div>
+            <div class="cpill info mono" id="sx1">next</div>
+            <div class="cpill info mono" id="sx2">next</div>
+            <div class="cpill info mono" id="sx3">next</div>
+            <div class="cpill bad mono" id="sx4">StopIteration</div>
+          </div>
+          <div class="cpill good" id="p-quiet" style="left:40px; top:648px">the loop ends quietly, no error</div>
+
+          <div class="tm" id="q0" style="top:548px">$ python3 cards.py</div>
+          <div class="tm ok" id="q1" style="top:592px">['Pasta', 'Bean Chili', 'Pancakes']</div>
+          <div class="tm err" id="q2" style="top:636px">[]</div>
+          <div class="tm ok" id="q2b" style="top:636px">['Pasta', 'Bean Chili', 'Pancakes']</div>
+          <div class="cpill bad" id="p-noerr" style="left:40px; top:712px">no error, just an empty list</div>
+                  </div>
+
+        <!-- the kitchen side -->
+        <div id="side" class="s-abs s-ol"></div>
+        <div id="side-t" class="s-abs">The pass</div>
+        <div id="pass" class="s-abs"></div>
+        <div id="ptr" class="s-abs">waiter<i></i></div>
+        <div id="cnt" class="s-abs"><span>next() calls:</span><b id="n0">0</b><b id="n1">1</b><b id="n2">2</b><b id="n3">3</b><b id="n4">4</b></div>
+        <div id="left" class="s-abs cpill bad">nothing left</div>
+        <div id="used" class="s-abs cpill bad">used up: the tray is empty</div>
+        <div id="again" class="s-abs cpill good">a list: all 3 plates again</div>
+
+        <div class="pl" id="p1"><div class="c"><i></i></div><div class="lb">pasta</div></div>
+        <div class="pl" id="p2"><div class="c"><i></i></div><div class="lb">bean chili</div></div>
+        <div class="pl" id="p3"><div class="c"><i></i></div><div class="lb">pancakes</div></div>
+
+        <div class="gs" id="g1"><i></i>Ana</div>
+        <div class="gs" id="g2"><i></i>Ben</div>
+        <div class="gs" id="g3"><i></i>Chloe</div>
+        <div id="guests-t" class="s-abs">the guests</div>
+        <div id="stamp" class="s-abs">StopIteration</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="rplates" style="stroke:#ffc24b" />
+          <path id="riter" style="stroke:#8fd3ff" />
+          <path id="rptr" style="stroke:#3b37e6" />
+          <path id="rempty" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="rstop" style="stroke:#ff8fb1" />
+          <path id="rmap" style="stroke:#8fd3ff" />
+          <path id="rtray" style="stroke:#b8235a; stroke-dasharray: 16 14" />
+          <path id="rq2" style="stroke:#ff8fb1" />
+          <path id="rlist" style="stroke:#7cf0b5" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.383, 0.557, 1.625, 1.881, 2.241, 2.519, 2.635, 2.752, 3.448, 4.063, 4.377, 4.76, 5.016, 6.153, 6.327, 6.653, 6.954, 7.999, 8.162, 8.324, 8.568, 8.835, 8.986, 9.242, 9.52, 9.636, 9.799, 10.507, 10.693, 11.006, 11.494, 11.993, 12.399, 12.585, 13.677, 14.141, 14.327, 15.012, 15.174, 15.511, 15.94, 16.196, 16.533, 16.649, 16.753, 17.404, 17.601, 18.065, 18.332, 18.507, 19.61, 20.376, 20.817, 21.003, 21.711, 22.291, 22.628, 22.988, 23.151, 23.824, 24.416, 25.043, 25.206, 26.041, 26.367, 26.506, 26.773, 26.935, 27.272, 27.69, 27.876, 27.992, 28.329, 28.514, 29.71, 30.163, 30.627, 31.092, 32.113, 32.357, 32.531, 32.798, 33.031, 33.634, 34.203, 34.389, 34.737, 35.086, 35.759, 36.038, 36.607, 37.141, 37.802, 38.22, 38.708, 40.066, 40.496, 40.74, 41.401, 42.261, 42.69, 42.864, 43.619, 43.99, 44.397, 44.536, 44.85, 44.966, 45.407, 46.173, 46.324, 46.579, 46.812, 46.951, 47.16, 47.288, 47.624, 47.857, 48.356, 48.82, 49.726, 50.016, 50.121, 50.631, 50.829, 50.945, 51.316, 51.525, 52.35, 52.652, 53.174, 53.499, 53.65, 54.126, 54.66, 54.904, 55.008, 55.345, 56.181, 56.413, 56.483, 56.773, 57.505, 57.725, 58.317, 58.608, 58.851, 59.176, 59.525, 59.641, 59.734, 60.372, 60.686, 61.138];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; if (!p.style.strokeDasharray) p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: page x 136 + col * 20.4; row k (top 100 + 60k in the panel) has centre y 96 + top + 30
+      const CW = 20.4;
+      const code = (id, c0, len, cy, pad) => path(id, ringD(136 + (c0 + len / 2) * CW, cy, (len * CW) / 2 + (pad || 12), 28));
+      code("rplates", 0, 6, 226);
+      code("riter", 9, 12, 286);
+      code("rmap", 8, 3, 286);
+      // terminal lines: 16.8 px per char, page x 136
+      const TW = 16.8;
+      path("rstop", `M${136 + 2} ${96 + 768 + 40} H${136 + 13 * TW - 2}`);
+      path("rq2", ringD(136 + TW, 96 + 636 + 22, 34, 26));
+      path("rlist", ringD(136 + 17.5 * TW, 96 + 636 + 22, 17.5 * TW + 30, 30));
+      path("rptr", ringD(1290, 194, 80, 30));
+      path("rempty", ringD(1730, 286, 56, 62));
+      path("rtray", ringD(1500, 300, 284, 100));
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const fadeRing = (id, at) => tl.fromTo("#" + id, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at);
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // a plate goes from the pass down to its guest (420 px lower)
+      const serve = (sel, at, d) => tl.to(sel, { y: 420, duration: d || 0.7, ease: "power3.inOut" }, at);
+      const home = (sels, at) => tl.to(sels, { x: 0, y: 0, duration: 0.6, ease: "power3.inOut" }, at);
+      // the waiter pointer stands above slot k (0, 1, 2 = plates, 3 = the empty end)
+      const SLOT = [0, 150, 300, 440];
+      const ptrTo = (k, at) => tl.to("#ptr", { x: SLOT[k], duration: 0.45, ease: "power2.inOut" }, at);
+      // counter digit swap
+      let shown = null;
+      const count = (n, at) => {
+        if (shown !== null) tl.to("#n" + shown, { opacity: 0, y: -14, duration: 0.15 }, at);
+        tl.fromTo("#n" + n, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.2, immediateRender: false }, at + 0.05);
+        shown = n;
+      };
+      const countOff = (at) => { if (shown !== null) tl.to("#n" + shown, { opacity: 0, duration: 0.2 }, at); shown = null; };
+
+      /* ---- 1. Dinner is ready: 3 plates on the pass ---- */
+      type("#r1", t(3) - 0.1, 44, 1.0);
+      bump("#p1", t(9), 1.1);
+      bump("#p2", t(10), 1.1);
+      bump("#p3", t(13), 1.1);
+      draw("rplates", t(15), 0.4);
+      pop("#p-iterable", t(17), { from: 0.7 });
+      pop("#p-often", t(20), { from: 0.7 });
+      bump("#p1, #p2, #p3", t(24), 1.05);
+
+      /* ---- 2. Python sends a waiter: iter(plates) ---- */
+      out(["#p-iterable", "#p-often", "#rplates"], t(31), 0.25);
+      pop("#ptr", t(34), { from: 0.5 });
+      type("#r2", t(35) - 0.1, 21, 0.5);
+      draw("riter", t(35) + 0.3, 0.4);
+      bump("#ptr", t(41), 1.12);
+      bump("#p1", t(42), 1.08);
+      // remembers where it is: the ring sits on the pointer (offset back to slot 0)
+      draw("rptr", t(47), 0.45);
+      pop("#cnt", t(48), { from: 0.7 });
+      count(0, t(48));
+
+      /* ---- 3. next, next, next ---- */
+      out(["#riter", "#rptr"], t(51) - 0.2, 0.2);
+      show("#r3", t(51) - 0.05, 0.2);
+      count(1, t(51));
+      serve("#p1", t(51) + 0.15, 0.75);
+      show("#c3", t(52), 0.25);
+      ptrTo(1, t(53));
+      bump("#g1", t(54), 1.08);
+
+      show("#r4", t(55) - 0.05, 0.2);
+      count(2, t(55));
+      serve("#p2", t(55) + 0.15, 0.75);
+      show("#c4", t(56), 0.25);
+      ptrTo(2, t(58));
+      bump("#g2", t(59), 1.08);
+
+      show("#r5", t(60) - 0.05, 0.2);
+      count(3, t(60));
+      serve("#p3", t(60) + 0.15, 0.75);
+      show("#c5", t(61), 0.25);
+      ptrTo(3, t(62));
+      bump("#g3", t(63), 1.08);
+
+      /* ---- 4. A fourth next: the pass is empty, StopIteration ---- */
+      show("#r6", t(66) - 0.05, 0.2);
+      count(4, t(68));
+      bump("#ptr", t(70), 1.12);
+      fadeRing("rempty", t(72));
+      pop("#left", t(74), { from: 0.7 });
+      [0, 1, 2, 3, 4].forEach((i) => show(`#o${i}`, t(75) + i * 0.08, 0.2));
+      show("#o5", t(77) - 0.05, 0.25);
+      show("#c6", t(77), 0.25);
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)", immediateRender: false }, t(77));
+      draw("rstop", t(78), 0.45);
+
+      /* ---- 5. A for loop does exactly this ---- */
+      const p1out = ["#r2", "#r3", "#r4", "#r5", "#r6", "#c3", "#c4", "#c5", "#c6", "#o0", "#o1", "#o2", "#o3", "#o4", "#o5", "#rstop", "#stamp", "#rempty", "#left", "#ptr"];
+      out(p1out.concat(["#cnt"]), t(79) - 0.2, 0.25);
+      home(["#p1", "#p2", "#p3"], t(80));
+      tl.set("#ptr", { x: 0 }, t(80));
+      countOff(t(80));
+      type("#f2", t(80) - 0.05, 20, 0.45);
+      type("#f3", t(81) + 0.1, 16, 0.4);
+      bump("#f2, #f3", t(84), 1.03);
+      // it calls iter once
+      pop("#sx0", t(87), { from: 0.6 });
+      pop("#ptr", t(87), { from: 0.5 });
+      pop("#cnt", t(87), { from: 0.7 });
+      count(0, t(87));
+      // then next, next, next
+      pop("#sx1", t(90), { from: 0.6 }); count(1, t(90)); serve("#p1", t(90) + 0.05, 0.5); ptrTo(1, t(90) + 0.3);
+      pop("#sx2", t(91), { from: 0.6 }); count(2, t(91)); serve("#p2", t(91) + 0.05, 0.5); ptrTo(2, t(91) + 0.3);
+      pop("#sx3", t(92), { from: 0.6 }); count(3, t(92)); serve("#p3", t(92) + 0.05, 0.5); ptrTo(3, t(92) + 0.3);
+      // until StopIteration
+      pop("#sx4", t(94), { from: 0.6 });
+      fadeRing("rempty", t(94));
+      // then it stops, quietly
+      pop("#p-quiet", t(98), { from: 0.7 });
+      bump("#g1, #g2, #g3", t(99), 1.06);
+
+      /* ---- 6. The catch: map is a waiter too ---- */
+      out(["#f2", "#f3", "#sx0", "#sx1", "#sx2", "#sx3", "#sx4", "#p-quiet", "#rempty", "#ptr", "#cnt"], t(100), 0.25);
+      countOff(t(100));
+      home(["#p1", "#p2", "#p3"], t(100) + 0.1);
+      tl.set("#ptr", { x: 0 }, t(101));
+      type("#m2", t(103) - 0.1, 39, 0.7);
+      draw("rmap", t(103) + 0.25, 0.35);
+      pop("#ptr", t(103) + 0.3, { from: 0.5 });
+      pop("#p-filter", t(104), { from: 0.6 });
+      pop("#p-zip", t(106), { from: 0.6 });
+      pop("#p-too", t(108), { from: 0.6 });
+      // the first time you list the map, it serves every plate
+      out(["#p-filter", "#p-zip", "#p-too", "#rmap"], t(111), 0.2);
+      type("#m3", t(114) - 0.1, 18, 0.35);
+      serve("#p1", t(118), 0.55); ptrTo(1, t(118) + 0.25);
+      serve("#p2", t(118) + 0.25, 0.55); ptrTo(2, t(118) + 0.5);
+      serve("#p3", t(118) + 0.5, 0.55); ptrTo(3, t(118) + 0.75);
+      show("#q0", t(119), 0.2);
+      show("#q1", t(120), 0.25);
+      // list it again: the tray is empty
+      type("#m4", t(121) - 0.1, 18, 0.35);
+      bump("#ptr", t(124), 1.12);
+      out("#ptr", t(126) - 0.2, 0.2);
+      fadeRing("rtray", t(126));
+      pop("#used", t(128), { from: 0.7 });
+      show("#q2", t(128), 0.25);
+      pop("#p-noerr", t(129), { from: 0.7 });
+      draw("rq2", t(133), 0.4);
+
+      /* ---- 7. Need the plates twice? Make a list once ---- */
+      out(["#q2", "#rq2", "#p-noerr", "#rtray", "#used"], t(135), 0.2);
+      out("#m2", t(137) - 0.15, 0.15);
+      type("#m2b", t(137) - 0.05, 45, 0.6);
+      home(["#p1", "#p2", "#p3"], t(138));
+      show("#q2b", t(139), 0.3);
+      draw("rlist", t(139) + 0.2, 0.45);
+      pop("#again", t(140), { from: 0.7 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 57.83);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

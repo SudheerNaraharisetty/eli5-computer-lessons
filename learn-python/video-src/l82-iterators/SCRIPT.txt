@@ -1,0 +1,13 @@
+Dinner is ready. 3 plates wait on the pass: pasta, bean chili and pancakes. The list is iterable. You can loop over it as often as you like.
+
+To serve them, Python sends a waiter. Iter of plates. The waiter carries one plate at a time, and remembers where it is. Next. Pasta for Ana. Next. Bean chili for Ben. Next. Pancakes for Chloe.
+
+Ask for next a fourth time, and the pass is empty. Python raises Stop Iteration.
+
+A for loop does exactly this. It calls iter once. Then next, next, next, until Stop Iteration. Then it stops, quietly.
+
+Now the catch. Map, filter and zip are waiters too. The first time you list the map, it serves every plate. List it again, and the tray is empty. No error. Just an empty list.
+
+Need the plates twice? Make a list once.
+
+An iterator hands out one item at a time, and only once.

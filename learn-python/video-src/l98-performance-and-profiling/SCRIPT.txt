@@ -1,0 +1,13 @@
+Every morning, Kitchen Coach checks twenty thousand orders against the pantry. Four stations. Read the orders, check the pantry, cook, plate.
+
+The stopwatch says two seconds. But which station is slow? Do not guess. Measure.
+
+Run it under the profiler. It puts a stopwatch on every function. Read orders, almost nothing. Cook and plate, almost nothing. Check pantry, ninety nine percent of the time.
+
+Zoom in. The pantry is a list, one long shelf. To answer "is it here?", the clerk walks the shelf, item by item. For twenty thousand orders, that is four hundred fifty seven million looks.
+
+A set is a wall of labelled drawers. Python goes straight to the right drawer and opens it. One look.
+
+Change one line. The pantry becomes a set. Profile again. The bar shrinks to nothing, and the stopwatch drops from two seconds to one hundredth of a second.
+
+Measure first. The profiler shows the slow step. Fix that one.

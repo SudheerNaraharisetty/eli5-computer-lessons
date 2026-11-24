@@ -1,0 +1,50 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-no { left: 110px; width: 96px; height: 96px; border-radius: 50%; background: #3b37e6; color: #fff; font: 800 52px/96px "Manrope", sans-serif; text-align: center; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    .t-no.ok { background: #1f7a5c; }
+    .t-head { left: 250px; font: 700 76px/96px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    .t-head .g { color: #1f7a5c; }
+    #t-n1, #t-h1 { top: 200px; }
+    #t-n2, #t-h2 { top: 370px; }
+    #t-n3, #t-h3 { top: 540px; }
+    #t-next { left: 110px; top: 820px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.4" data-track-index="1">
+      <div id="t-n1" class="t-abs t-no">1</div>
+      <div id="t-h1" class="t-abs t-head"><span class="a">Measure</span> first.</div>
+      <div id="t-n2" class="t-abs t-no">2</div>
+      <div id="t-h2" class="t-abs t-head">The <span class="a">profiler</span> shows the slow step.</div>
+      <div id="t-n3" class="t-abs t-no ok">3</div>
+      <div id="t-h3" class="t-abs t-head"><span class="g">Fix that one.</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 99: Concurrency</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 59.5;
+      const g = { measure: 59.683, the: 60.89, fix: 63.375, end: 64.5 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-n1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 0);
+      tl.fromTo("#t-h1", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.measure - S - 0.05));
+      tl.fromTo("#t-n2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, g.the - S - 0.1);
+      tl.fromTo("#t-h2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.the - S - 0.05);
+      tl.fromTo("#t-n3", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, g.fix - S - 0.1);
+      tl.fromTo("#t-h3", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, g.fix - S - 0.05);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.fix - S + 0.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

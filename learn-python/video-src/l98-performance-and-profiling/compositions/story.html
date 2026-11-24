@@ -1,0 +1,398 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* coach.py: code rows of 44 px from page y 172, code text at page x 176 (16.8 px per char) */
+    #p-code { position: absolute; left: 96px; top: 96px; width: 840px; height: 392px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar { position: absolute; left: 0; top: 0; width: 840px; height: 60px; background: #211e40; }
+    .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .hl { position: absolute; left: 14px; top: 76px; width: 812px; height: 44px; border-radius: 10px; opacity: 0; }
+    #hl-hot { top: 296px; background: rgba(255, 107, 139, 0.22); box-shadow: inset 6px 0 0 #ff6b8b; }
+    #hl-fix { top: 252px; background: rgba(75, 214, 155, 0.22); box-shadow: inset 6px 0 0 #4bd69b; }
+    .num { position: absolute; left: 30px; width: 30px; text-align: right; font: 500 28px/44px "JetBrains Mono", monospace; color: #9a96b8; }
+    .ln { position: absolute; left: 80px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .g { color: #7cf0b5; }
+
+    /* the terminal under the code: rows of 44 px */
+    #p-term { position: absolute; left: 96px; top: 536px; width: 840px; height: 448px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .tl { position: absolute; left: 36px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #9a96b8; }
+    .tl.g { color: #7cf0b5; }
+    .tl.r { color: #ff6b8b; }
+    .tl.dim { color: #b3afd6; }
+
+    /* right column: the stopwatch over the whole kitchen line */
+    #watch { opacity: 0; left: 1030px; top: 96px; width: 810px; height: 110px; border-radius: 18px; background: #fbebd2; }
+    #watch > svg { position: absolute; left: 24px; top: 15px; width: 80px; height: 80px; }
+    #watch-lbl { position: absolute; left: 124px; top: 33px; font: 800 32px/44px "Manrope", sans-serif; color: #3e3b52; }
+    #watch-val { position: absolute; right: 30px; top: 14px; width: 250px; height: 82px; }
+    #watch-val > span { position: absolute; right: 0; top: 0; font: 700 64px/82px "Fraunces", serif; white-space: nowrap; }
+    #wv-old { color: #b8235a; opacity: 0; }
+    #wv-new { color: #1f7a5c; opacity: 0; }
+
+    /* the four stations */
+    .stn { top: 250px; width: 180px; height: 120px; border-radius: 16px; background: #fff; font: 800 30px/38px "Manrope", sans-serif; text-align: center; padding-top: 22px; opacity: 0; }
+    .stn.hot { box-shadow: 0 0 0 5px #b8235a, 0 10px 0 5px #0e0c1d; }
+    .chev { top: 294px; width: 22px; height: 32px; opacity: 0; }
+    .mini { width: 50px; height: 50px; opacity: 0; }
+    .qm { top: 420px; width: 180px; text-align: center; font: 700 96px/110px "Fraunces", serif; color: #6f6b80; opacity: 0; }
+
+    .pill { height: 66px; padding: 0 28px; border-radius: 999px; font: 800 32px/66px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill code { font: 600 30px/66px "JetBrains Mono", monospace; }
+    .blue { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .warn { background: #fbebd2; color: #8a5410; box-shadow: 0 0 0 4px #b9741a; }
+    .bad { background: #fbe0ea; color: #a01d4c; box-shadow: 0 0 0 4px #b8235a; }
+    .good { background: #ddefe6; color: #17604a; box-shadow: 0 0 0 4px #1f7a5c; }
+    .strike { left: 1050px; top: 620px; width: 330px; height: 6px; background: #b8235a; border-radius: 3px; opacity: 0; }
+
+    /* the profiler's bars: baseline at y 900, at most 400 px tall */
+    #base { left: 1030px; top: 900px; width: 810px; height: 5px; background: #0e0c1d; opacity: 0; }
+    #base-lbl { left: 1030px; top: 918px; width: 810px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; opacity: 0; }
+    .bar-s { top: 500px; width: 120px; height: 400px; border-radius: 10px 10px 0 0; background: #3e3b52; transform-origin: 50% 100%; opacity: 0; }
+    .bar-s.hot { background: #b8235a; }
+    .bar-v { width: 180px; text-align: center; font: 600 28px/40px "JetBrains Mono", monospace; color: #3e3b52; opacity: 0; }
+    #bv-hot { color: #fff; }
+    #pct { left: 1160px; top: 520px; width: 160px; height: 76px; border-radius: 999px; background: #fff; color: #b8235a; box-shadow: 0 0 0 5px #b8235a; font: 700 48px/76px "Fraunces", serif; text-align: center; opacity: 0; }
+
+    /* the shelf (a list) */
+    #sh-ttl, #dr-ttl { left: 1030px; top: 250px; font: 700 48px/64px "Fraunces", serif; white-space: nowrap; opacity: 0; }
+    .item { top: 380px; height: 80px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; font: 600 28px/80px "JetBrains Mono", monospace; text-align: center; opacity: 0; }
+    .item.far { background: #fbebd2; box-shadow: 0 0 0 4px #b9741a, 0 8px 0 4px #0e0c1d; }
+    #dots { left: 1522px; top: 380px; width: 96px; font: 800 44px/80px "Manrope", sans-serif; text-align: center; opacity: 0; }
+    #clerk { left: 1065px; top: 500px; width: 80px; height: 120px; opacity: 0; }
+    #looks { left: 1030px; top: 660px; width: 420px; height: 70px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    #looks > b { position: absolute; left: 28px; top: 0; font: 800 32px/70px "Manrope", sans-serif; color: #3e3b52; }
+    #looks > span { position: absolute; left: 150px; top: 0; font: 600 34px/70px "JetBrains Mono", monospace; color: #b8235a; opacity: 0; }
+
+    /* the drawers (a set) */
+    .drw { width: 186px; height: 90px; border-radius: 10px; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .drw > span { position: absolute; left: 0; right: 0; top: 10px; text-align: center; font: 600 28px/36px "JetBrains Mono", monospace; color: #3e3b52; }
+    .drw > i { position: absolute; left: 68px; top: 60px; width: 50px; height: 12px; border-radius: 6px; background: #0e0c1d; }
+    #tray { left: 1238px; top: 444px; width: 186px; height: 90px; border-radius: 10px; background: #ddefe6; box-shadow: 0 0 0 5px #1f7a5c; opacity: 0; }
+    #tray > span { position: absolute; left: 0; right: 0; top: 10px; text-align: center; font: 600 28px/36px "JetBrains Mono", monospace; color: #17604a; }
+    #tray > i { position: absolute; left: 68px; top: 60px; width: 50px; height: 12px; border-radius: 6px; background: #1f7a5c; }
+
+    #cursor { left: 1500px; top: 760px; width: 54px; height: 66px; opacity: 0; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.5" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="p-code" class="s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">coach.py</span></div>
+          <div class="hl" id="hl-hot"></div>
+          <div class="hl" id="hl-fix"></div>
+          <div class="num" style="top:76px">1</div>
+          <div class="num" style="top:120px">2</div>
+          <div class="num" style="top:164px">3</div>
+          <div class="num" style="top:208px">4</div>
+          <div class="num" style="top:252px">5</div>
+          <div class="num" style="top:296px">6</div>
+          <div class="num" style="top:340px">7</div>
+          <div id="lines"></div>
+        </div>
+
+        <div id="p-term" class="s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">terminal</span></div>
+          <div class="tl" id="a0" style="top:84px"><span class="p">$ </span>python3 coach.py</div>
+          <div class="tl" id="a1" style="top:128px">20000 orders, 2857 missing</div>
+          <div class="tl r" id="a2" style="top:172px">Morning check: 2.02 s</div>
+          <div class="tl" id="b0" style="top:84px"><span class="p">$ </span>python3 -m cProfile -s cumulative coach.py</div>
+          <div class="tl dim" id="b1" style="top:128px">ncalls  cumtime  function</div>
+          <div class="tl dim" id="b2" style="top:172px">     1    0.001  read_orders</div>
+          <div class="tl dim" id="b3" style="top:216px">     1    0.000  cook</div>
+          <div class="tl dim" id="b4" style="top:260px">     1    0.000  plate</div>
+          <div class="tl r" id="b5" style="top:304px">     1    2.020  check_pantry</div>
+          <div class="tl r" id="b6" style="top:348px"> 20000    2.018  in_pantry</div>
+          <div class="tl" id="d0" style="top:84px"><span class="p">$ </span>python3 -m cProfile -s cumulative coach.py</div>
+          <div class="tl g" id="d1" style="top:128px">Morning check: 0.01 s</div>
+          <div class="tl dim" id="d2" style="top:172px">ncalls  cumtime  function</div>
+          <div class="tl g" id="d3" style="top:216px">     1    0.002  check_pantry</div>
+          <div class="tl g" id="d4" style="top:260px"> 20000    0.001  in_pantry</div>
+        </div>
+
+        <div id="watch" class="s-abs s-ol">
+          <svg viewBox="0 0 80 80"><rect x="33" y="2" width="14" height="9" rx="2" fill="#0e0c1d"/><circle cx="40" cy="45" r="30" fill="#fff" stroke="#0e0c1d" stroke-width="5"/><path id="hand" d="M40 45 L40 24" stroke="#b8235a" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="45" r="4" fill="#0e0c1d"/></svg>
+          <div id="watch-lbl">the whole morning</div>
+          <div id="watch-val"><span id="wv-old">2.02 s</span><span id="wv-new">0.01 s</span></div>
+        </div>
+
+        <div class="s-abs stn s-ol" id="st1" style="left:1030px">read<br>orders</div>
+        <div class="s-abs stn s-ol" id="st2" style="left:1240px">check<br>pantry</div>
+        <div class="s-abs stn s-ol" id="st3" style="left:1450px">cook</div>
+        <div class="s-abs stn s-ol" id="st4" style="left:1660px">plate</div>
+        <svg class="s-abs chev" id="ch1" style="left:1214px" viewBox="0 0 22 32"><path d="M4 4 L18 16 L4 28" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="s-abs chev" id="ch2" style="left:1424px" viewBox="0 0 22 32"><path d="M4 4 L18 16 L4 28" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="s-abs chev" id="ch3" style="left:1634px" viewBox="0 0 22 32"><path d="M4 4 L18 16 L4 28" fill="none" stroke="#0e0c1d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <div class="s-abs qm" id="q1" style="left:1030px">?</div>
+        <div class="s-abs qm" id="q2" style="left:1240px">?</div>
+        <div class="s-abs qm" id="q3" style="left:1450px">?</div>
+        <div class="s-abs qm" id="q4" style="left:1660px">?</div>
+        <div id="n-guess" class="s-abs pill warn" style="left:1030px;top:590px">Guess?</div>
+        <div id="guess-x" class="s-abs strike" style="left:1020px;top:620px;width:190px"></div>
+        <div id="n-measure" class="s-abs pill blue" style="left:1260px;top:590px">Measure.</div>
+
+        <div id="base" class="s-abs"></div>
+        <div id="base-lbl" class="s-abs">seconds in each station</div>
+        <div class="s-abs bar-s" id="bar1" style="left:1060px"></div>
+        <div class="s-abs bar-s hot" id="bar2" style="left:1270px"></div>
+        <div class="s-abs bar-s" id="bar3" style="left:1480px"></div>
+        <div class="s-abs bar-s" id="bar4" style="left:1690px"></div>
+        <div class="s-abs bar-v" id="bv1" style="left:1030px;top:848px">0.001</div>
+        <div class="s-abs bar-v" id="bv-hot" style="left:1240px;top:840px">2.020</div>
+        <div class="s-abs bar-v" id="bv-new" style="left:1240px;top:848px">0.002</div>
+        <div class="s-abs bar-v" id="bv3" style="left:1450px;top:848px">0.000</div>
+        <div class="s-abs bar-v" id="bv4" style="left:1660px;top:848px">0.000</div>
+        <div id="pct" class="s-abs">99%</div>
+
+        <div id="sh-ttl" class="s-abs">A list: one long shelf</div>
+        <div class="s-abs item" id="i0" style="left:1030px;width:150px">item-0</div>
+        <div class="s-abs item" id="i1" style="left:1194px;width:150px">item-1</div>
+        <div class="s-abs item" id="i2" style="left:1358px;width:150px">item-2</div>
+        <div id="dots" class="s-abs">...</div>
+        <div class="s-abs item far" id="i3" style="left:1630px;width:210px">item-39999</div>
+        <svg id="clerk" class="s-abs" viewBox="0 0 80 120"><circle cx="40" cy="22" r="18" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4"/><rect x="14" y="44" width="52" height="58" rx="18" fill="#3b37e6" stroke="#0e0c1d" stroke-width="4"/><rect x="20" y="100" width="12" height="18" rx="5" fill="#0e0c1d"/><rect x="48" y="100" width="12" height="18" rx="5" fill="#0e0c1d"/><rect x="50" y="56" width="26" height="32" rx="4" fill="#fff" stroke="#0e0c1d" stroke-width="3"/></svg>
+        <div id="looks" class="s-abs"><b>looks:</b><span id="lk1">1</span><span id="lk2">2</span><span id="lk3">3</span><span id="lk4">40,000</span></div>
+        <div id="n-orders" class="s-abs pill warn" style="left:1030px;top:780px">× 20,000 orders</div>
+        <div id="n-million" class="s-abs pill bad" style="left:1030px;top:880px">= 457,162,856 looks</div>
+
+        <div id="dr-ttl" class="s-abs">A set: labelled drawers</div>
+        <div class="s-abs drw" style="left:1030px;top:330px"><span>item-12</span><i></i></div>
+        <div class="s-abs drw" style="left:1238px;top:330px"><span>item-907</span><i></i></div>
+        <div class="s-abs drw" style="left:1446px;top:330px"><span>item-3141</span><i></i></div>
+        <div class="s-abs drw" style="left:1654px;top:330px"><span>item-77</span><i></i></div>
+        <div class="s-abs drw" style="left:1030px;top:444px"><span>item-2024</span><i></i></div>
+        <div class="s-abs drw" id="target" data-layout-allow-overlap style="left:1238px;top:444px"><span>item-39999</span><i></i></div>
+        <div class="s-abs drw" style="left:1446px;top:444px"><span>item-58</span><i></i></div>
+        <div class="s-abs drw" style="left:1654px;top:444px"><span>item-610</span><i></i></div>
+        <div class="s-abs drw" style="left:1030px;top:558px"><span>item-4401</span><i></i></div>
+        <div class="s-abs drw" style="left:1238px;top:558px"><span>item-9</span><i></i></div>
+        <div class="s-abs drw" style="left:1446px;top:558px"><span>item-27182</span><i></i></div>
+        <div class="s-abs drw" style="left:1654px;top:558px"><span>item-350</span><i></i></div>
+        <div id="tray" class="s-abs" data-layout-allow-overlap><span>item-39999</span><i></i></div>
+        <div id="n-query" class="s-abs pill blue" style="left:1030px;top:760px"><code>"item-39999" in drawer</code></div>
+        <div id="n-one" class="s-abs pill good" style="left:1560px;top:760px">1 look</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080"></svg>
+        <svg id="cursor" class="s-abs" viewBox="0 0 54 66"><path d="M4 4 L4 54 L17 42 L27 62 L36 58 L26 38 L44 38 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.43, 0.94, 1.382, 1.73, 2.101, 2.566, 3.03, 3.448, 3.82, 3.936, 4.923, 5.224, 6.13, 6.397, 6.536, 7.094, 7.407, 7.523, 8.208, 8.673, 9.485, 9.648, 10.194, 10.519, 10.832, 11.807, 12.016, 12.26, 12.701, 12.817, 13.642, 13.897, 14.129, 14.779, 15.523, 15.755, 15.929, 16.196, 16.312, 17.38, 17.578, 17.856, 17.938, 18.518, 18.692, 19.087, 19.981, 20.283, 20.77, 21.246, 21.955, 22.245, 22.407, 22.883, 23.417, 24.172, 24.532, 25.263, 25.647, 25.844, 26.215, 26.32, 26.448, 27.167, 27.678, 28.445, 28.607, 29.106, 29.292, 29.466, 30.047, 30.372, 30.697, 31.579, 31.788, 32.229, 32.52, 32.694, 33.286, 33.437, 33.808, 34.157, 34.273, 34.876, 35.329, 35.643, 36.641, 36.804, 37.233, 37.709, 38.081, 38.325, 38.51, 38.777, 39.126, 39.52, 40.008, 40.496, 41.366, 41.541, 41.819, 41.935, 42.051, 42.376, 42.527, 43.015, 44.013, 44.466, 44.687, 45.012, 45.116, 45.244, 45.5, 45.79, 45.999, 46.44, 47.009, 47.275, 47.914, 48.332, 48.576, 49.307, 49.47, 49.923, 50.41, 50.596, 51.292, 51.896, 52.581, 52.755, 53.046, 53.429, 53.626, 54.381, 54.567, 54.683, 55.251, 55.611, 55.844, 56.122, 56.621, 56.854, 57.109, 57.632, 57.748, 57.841, 59.083, 59.524, 60.29, 60.441, 61.045, 61.416, 61.579, 61.962, 62.775, 63.146, 63.39];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const CODE = [
+        'def in_pantry(item, pantry):',
+        '    return item in pantry',
+        '',
+        'orders = read_orders()',
+        'pantry = load_pantry()',
+        'missing = check_pantry(orders, pantry)',
+        'report = plate(cook(orders))'
+      ];
+      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const paint = (src) => esc(src)
+        .replace(/\b(def|return|in)\b/g, '<span class="k">$1</span>')
+        .replace(/\b(in_pantry|read_orders|load_pantry|check_pantry|plate|cook)\(/g, '<span class="f">$1</span>(')
+        .replace(/\bset\(/g, '<span class="g">set</span>(');
+      const holder = document.getElementById("lines");
+      const addLine = (id, text, row, hidden) => {
+        const d = document.createElement("div");
+        d.className = "ln";
+        d.id = id;
+        if (row === 4) d.setAttribute("data-layout-allow-overlap", "");
+        d.style.top = 76 + row * 44 + "px";
+        if (hidden) d.style.opacity = "0";
+        d.innerHTML = paint(text);
+        holder.appendChild(d);
+      };
+      CODE.forEach((s, i) => { if (s) addLine("c" + i, s, i, false); });
+      addLine("c4s", "pantry = set(load_pantry())", 4, true);
+
+      // hand-drawn rings around a token in the code (page x 176 + col * 16.8, row centre 194 + row * 44)
+      const marks = document.getElementById("s-marks");
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, row, col, n, color) => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.id = id;
+        p.style.stroke = color;
+        p.setAttribute("d", ringD(176 + (col + n / 2) * 16.8, 194 + row * 44, (n * 16.8) / 2 + 16, 27));
+        marks.appendChild(p);
+        const L = p.getTotalLength();
+        p.dataset.len = L;
+        p.style.strokeDasharray = L;
+        p.style.strokeDashoffset = L;
+        return p;
+      };
+      const Y = "#ffc24b", R = "#ff6b8b", G = "#4bd69b";
+      ring("r-inp", 0, 4, 9, R);       // in_pantry
+      ring("r-list", 4, 9, 13, Y);     // load_pantry()
+      ring("r-in", 1, 11, 14, Y);      // item in pantry
+      ring("r-set", 4, 9, 4, G);       // set(
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const back = (sel, at, d) => tl.to(sel, { opacity: 1, duration: d || 0.3, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const grow = (sel, at, h, d) => tl.fromTo(sel, { opacity: 1, scaleY: 0 }, { opacity: 1, scaleY: h, duration: d || 0.5, ease: "power3.out", immediateRender: false }, at);
+
+      const STN = ["#st1", "#st2", "#st3", "#st4"], CHV = ["#ch1", "#ch2", "#ch3"];
+      const BARS = ["#bar1", "#bar2", "#bar3", "#bar4"], VALS = ["#bv1", "#bv-hot", "#bv3", "#bv4"];
+
+      /* ---- 1. Every morning: four stations ---- */
+      type("#a0", t(4), 18, 0.5);
+      bump("#c3", t(7), 1.05);
+      bump("#c4", t(10), 1.05);
+      bump("#c5", t(12), 1.04);
+      pop("#st1", t(13), { from: 0.7 });
+      show("#ch1", t(15), 0.2);
+      pop("#st2", t(16), { from: 0.7 });
+      show("#ch2", t(18), 0.2);
+      pop("#st3", t(19), { from: 0.7 });
+      show("#ch3", t(20) - 0.15, 0.2);
+      pop("#st4", t(20), { from: 0.7 });
+      show("#a1", t(20) + 0.4, 0.2);
+
+      /* ---- 2. The stopwatch: 2 seconds, but where? ---- */
+      pop("#watch", t(22), { from: 0.8 });
+      tl.fromTo("#hand", { rotation: 0, svgOrigin: "40 45" }, { rotation: 720, svgOrigin: "40 45", duration: 1.4, ease: "power2.inOut", immediateRender: false }, t(22) + 0.1);
+      pop("#wv-old", t(24), { from: 0.6 });
+      show("#a2", t(24), 0.2);
+      bump("#a2", t(25), 1.06);
+      pop(["#q1", "#q2", "#q3", "#q4"], t(27), { from: 0.4 });
+      pop("#n-guess", t(31), { from: 0.7 });
+      tl.fromTo("#guess-x", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, t(33));
+      pop("#n-measure", t(34), { from: 0.7 });
+
+      /* ---- 3. The profiler: a stopwatch on every function ---- */
+      out(["#q1", "#q2", "#q3", "#q4", "#n-guess", "#guess-x", "#n-measure"], t(35), 0.3);
+      out(["#a0", "#a1", "#a2"], t(35), 0.25);
+      type("#b0", t(35) + 0.3, 44, 0.9);
+      show(["#base", "#base-lbl"], t(41), 0.3);
+      pop("#b1", t(43), { from: 0.9 });
+      // read orders: almost nothing
+      grow("#bar1", t(47), 0.015);
+      show("#bv1", t(47) + 0.2, 0.2);
+      show("#b2", t(47) + 0.2, 0.2);
+      // cook and plate: almost nothing
+      grow("#bar3", t(51), 0.015);
+      show("#bv3", t(51) + 0.2, 0.2);
+      show("#b3", t(51) + 0.2, 0.2);
+      grow("#bar4", t(53), 0.015);
+      show("#bv4", t(53) + 0.2, 0.2);
+      show("#b4", t(53) + 0.2, 0.2);
+      // check pantry: the whole bar
+      tl.to("#st2", { boxShadow: "0 0 0 5px #b8235a, 0 10px 0 5px #0e0c1d", duration: 0.2 }, t(56));
+      grow("#bar2", t(56), 1, 0.9);
+      show("#bv-hot", t(56) + 0.7, 0.2);
+      show(["#b5", "#b6"], t(56) + 0.3, 0.2);
+      pop("#pct", t(58), { from: 0.5 });
+      draw("r-inp", t(58), 0.5);
+      show("#hl-hot", t(56), 0.3);
+
+      /* ---- 4. Zoom in: the list is one long shelf ---- */
+      const SCENE1 = ["#st1", "#st2", "#st3", "#st4", "#ch1", "#ch2", "#ch3", "#base", "#base-lbl", "#bar1", "#bar2", "#bar3", "#bar4", "#bv1", "#bv-hot", "#bv3", "#bv4", "#pct"];
+      out(SCENE1, t(64), 0.35);
+      out(["#r-inp", "#hl-hot"], t(64), 0.3);
+      draw("r-list", t(70), 0.5);
+      show("#sh-ttl", t(70), 0.3);
+      pop("#i0", t(71), { from: 0.7 });
+      pop("#i1", t(71) + 0.12, { from: 0.7 });
+      pop("#i2", t(71) + 0.24, { from: 0.7 });
+      show("#dots", t(72), 0.2);
+      pop("#i3", t(73), { from: 0.7 });
+      draw("r-in", t(76), 0.5);
+      pop("#clerk", t(80), { from: 0.6 });
+      show("#looks", t(80) + 0.2, 0.25);
+      // the clerk walks: item-0, item-1, item-2 ... item-39999
+      show("#lk1", t(81), 0.1);
+      bump("#i0", t(81), 1.08);
+      tl.to("#clerk", { x: 164, duration: 0.4, ease: "power1.inOut" }, t(84) - 0.3);
+      out("#lk1", t(84) + 0.1, 0.08); show("#lk2", t(84) + 0.12, 0.1);
+      bump("#i1", t(84) + 0.1, 1.08);
+      tl.to("#clerk", { x: 328, duration: 0.4, ease: "power1.inOut" }, t(85) - 0.1);
+      out("#lk2", t(85) + 0.3, 0.08); show("#lk3", t(85) + 0.32, 0.1);
+      bump("#i2", t(85) + 0.3, 1.08);
+      tl.to("#clerk", { x: 670, duration: 0.8, ease: "power1.inOut" }, t(86));
+      out("#lk3", t(86) + 0.8, 0.08); show("#lk4", t(86) + 0.82, 0.1);
+      bump("#i3", t(86) + 0.8, 1.08);
+      pop("#n-orders", t(88), { from: 0.7 });
+      pop("#n-million", t(93), { from: 0.6 });
+      bump("#n-million", t(97), 1.06);
+
+      /* ---- 5. A set: labelled drawers, one look ---- */
+      out(["#sh-ttl", "#i0", "#i1", "#i2", "#i3", "#dots", "#clerk", "#looks", "#lk4", "#n-orders", "#n-million", "#r-list", "#r-in"], t(99) - 0.2, 0.3);
+      show("#dr-ttl", t(100), 0.3);
+      tl.fromTo(".drw", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.04, immediateRender: false }, t(103));
+      pop("#n-query", t(107), { from: 0.7 });
+      tl.set("#cursor", { x: 0, y: 0 }, t(107));
+      show("#cursor", t(107) + 0.1, 0.2);
+      tl.to("#cursor", { x: -96, y: -250, duration: 0.6, ease: "power3.inOut" }, t(109));
+      tl.to("#target", { boxShadow: "0 0 0 5px #1f7a5c", duration: 0.2 }, t(112));
+      // the drawer opens
+      tl.fromTo("#tray", { opacity: 1, scale: 1 }, { opacity: 1, scale: 1.12, duration: 0.4, ease: "back.out(1.8)", immediateRender: false }, t(115));
+      pop("#n-one", t(117), { from: 0.6 });
+      bump("#n-one", t(118), 1.08);
+
+      /* ---- 6. Change one line, profile again ---- */
+      out(["#dr-ttl", ".drw", "#tray", "#n-query", "#n-one"], t(119) - 0.2, 0.3);
+      tl.to("#cursor", { x: -1175, y: -390, duration: 0.9, ease: "power3.inOut" }, t(119));
+      show("#hl-fix", t(121), 0.25);
+      out("#c4", t(124), 0.15);
+      show("#c4s", t(124) + 0.1, 0.2);
+      draw("r-set", t(126), 0.4);
+      out("#cursor", t(126) + 0.2, 0.2);
+      // back on the kitchen line, the old bars still standing
+      back(SCENE1.filter((s) => s !== "#pct"), t(127), 0.3);
+      out(["#b0", "#b1", "#b2", "#b3", "#b4", "#b5", "#b6"], t(127), 0.2);
+      type("#d0", t(127) + 0.2, 44, 0.8);
+      // the bar shrinks to nothing
+      tl.to("#bar2", { scaleY: 0.015, duration: 0.9, ease: "power3.inOut" }, t(131));
+      out("#bv-hot", t(131), 0.2);
+      show("#bv-new", t(133), 0.25);
+      tl.to("#st2", { boxShadow: "0 0 0 5px #1f7a5c, 0 10px 0 5px #0e0c1d", duration: 0.3 }, t(133));
+      show(["#d2", "#d3", "#d4"], t(133), 0.25);
+      // the stopwatch drops from 2 seconds to 1 hundredth of a second
+      bump("#watch", t(136), 1.04);
+      out("#wv-old", t(142), 0.15);
+      pop("#wv-new", t(142) + 0.1, { from: 0.5 });
+      show("#d1", t(143), 0.2);
+      bump("#d1", t(144), 1.06);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 59.28);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,299 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panels on the left: rows of 48 px, text at page x 136; 28 px mono = 16.8 px per char */
+    .panel { position: absolute; left: 96px; width: 1040px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #p-coach { top: 96px; height: 184px; }
+    #p-test { top: 320px; height: 560px; }
+    .bar { position: absolute; left: 0; top: 0; width: 1040px; height: 60px; background: #211e40; }
+    .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .hl { position: absolute; left: 14px; width: 1012px; height: 48px; border-radius: 10px; opacity: 0; }
+    .hl.y { background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; }
+    .hl.r { background: rgba(255, 107, 139, 0.24); box-shadow: inset 6px 0 0 #ff6b8b; }
+    .ln { position: absolute; left: 40px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .ln.s-hide { opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .sw { display: inline-block; position: relative; width: 84px; height: 48px; vertical-align: top; }
+    .sw > span { position: absolute; left: 0; top: 0; }
+
+    /* right side: the taste-test station */
+    #head { left: 1200px; top: 96px; font: 700 52px/64px "Fraunces", serif; white-space: nowrap; }
+    #ask { left: 1200px; top: 230px; height: 64px; padding: 0 28px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; box-shadow: 0 0 0 4px #3b37e6; }
+    .handle { top: 196px; width: 18px; height: 132px; border-radius: 9px; background: #ece7df; box-shadow: 0 0 0 4px #0e0c1d; }
+    .bowl { top: 316px; width: 128px; height: 80px; border-radius: 50%; }
+    .bowl.base { background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 8px 0 5px #0e0c1d; }
+    .bowl.ok { background: #ddefe6; opacity: 0; }
+    .bowl.bad { background: #fbe0ea; opacity: 0; }
+    .tick { top: 330px; width: 52px; height: 52px; opacity: 0; }
+    .eff { top: 322px; width: 128px; font: 800 44px/68px "Manrope", sans-serif; color: #b8235a; text-align: center; opacity: 0; }
+    .lab { top: 430px; width: 204px; height: 52px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; font: 600 28px/52px "JetBrains Mono", monospace; text-align: center; color: #3e3b52; }
+    .val { top: 498px; width: 204px; font: 800 30px/40px "Manrope", sans-serif; text-align: center; color: #3e3b52; opacity: 0; }
+
+    /* terminal, bottom right: rows of 44 px, text at page x 1232; 28 px mono = 16.8 px per char */
+    #term { left: 1200px; top: 580px; width: 640px; height: 404px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #term .bar { width: 640px; height: 52px; }
+    #term .bar > i { top: 17px; }
+    #term .ttl { top: 6px; }
+    .tl { position: absolute; left: 32px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #9a96b8; }
+    .tl .g { color: #7cf0b5; }
+    .tl .r { color: #ff6b8b; }
+    .tl .ch { opacity: 0; }
+
+    .pill { height: 50px; padding: 0 22px; border-radius: 999px; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.bad { background: #ff6b8b; color: #15132b; }
+    .pill.ok { background: #7cf0b5; color: #15132b; }
+    .note { left: 96px; top: 916px; height: 60px; padding: 0 28px; border-radius: 999px; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #n-ben { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    #n-none { background: #fbe0ea; color: #a01d4c; box-shadow: 0 0 0 4px #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.6" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- coach.py -->
+        <div id="p-coach" class="panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">coach.py</span></div>
+          <div class="hl y" id="hl-c" style="top:76px"></div>
+          <div class="ln s-hide" id="C1" style="top:76px"><span class="k">def</span> <span class="f">daily_kcal</span>(meals, shake=<span class="sw"><span id="v0"><span class="m">0</span>):</span><span id="v250" class="s-hide"><span style="color:#ff6b8b">250</span>):</span><span id="v0b" class="s-hide"><span class="m">0</span>):</span></span></div>
+          <div class="ln s-hide" id="C2" style="top:124px">    <span class="k">return</span> <span class="f">sum</span>(meals) + shake</div>
+        </div>
+
+        <!-- test_coach.py -->
+        <div id="p-test" class="panel s-ol s-hide">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">test_coach.py</span></div>
+          <div class="hl r" id="hl-bad" style="top:124px"></div>
+          <div class="ln s-hide" id="T1" style="top:76px"><span class="k">def</span> <span class="f">test_ana</span>():</div>
+          <div class="ln s-hide" id="T2" style="top:124px">    <span class="k">assert</span> <span class="f">daily_kcal</span>([650, 850, 300, 800]) == <span class="m">2600</span></div>
+          <div class="ln s-hide" id="T4" style="top:220px"><span class="k">def</span> <span class="f">test_ben</span>():</div>
+          <div class="ln s-hide" id="T5" style="top:268px">    <span class="k">assert</span> <span class="f">daily_kcal</span>([500, 700, 650], shake=250) == <span class="m">2100</span></div>
+          <div class="ln s-hide" id="T7" style="top:364px"><span class="k">def</span> <span class="f">test_chloe</span>():</div>
+          <div class="ln s-hide" id="T8" style="top:412px">    <span class="k">assert</span> <span class="f">protein_left</span>(90, 65) == <span class="m">25</span></div>
+        </div>
+
+        <!-- the taste-test station -->
+        <div id="head" class="s-abs">Kitchen Coach</div>
+        <div id="ask" class="s-abs s-hide">Still right tomorrow?</div>
+
+        <div id="sp0" class="s-abs s-hide" style="transform-origin:1300px 400px; left:0; top:0; width:1920px; height:1080px">
+          <div class="s-abs handle" style="left:1291px"></div>
+          <div class="s-abs bowl base" style="left:1236px"></div>
+          <div class="s-abs bowl ok" id="ok0" style="left:1236px"></div>
+          <div class="s-abs bowl bad" id="bad0" style="left:1236px"></div>
+          <svg class="s-abs tick" id="tk0" style="left:1274px" viewBox="0 0 52 52"><path d="M10 27 L21 38 L42 14" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="s-abs eff" id="f0" style="left:1236px">F</div>
+          <div class="s-abs lab" id="lb0" style="left:1198px">test_ana</div>
+          <div class="s-abs val" id="va0" style="left:1198px">2600 kcal</div>
+        </div>
+        <div id="sp1" class="s-abs s-hide" style="transform-origin:1520px 400px; left:0; top:0; width:1920px; height:1080px">
+          <div class="s-abs handle" style="left:1511px"></div>
+          <div class="s-abs bowl base" style="left:1456px"></div>
+          <div class="s-abs bowl ok" id="ok1" style="left:1456px"></div>
+          <svg class="s-abs tick" id="tk1" style="left:1494px" viewBox="0 0 52 52"><path d="M10 27 L21 38 L42 14" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="s-abs lab" id="lb1" style="left:1418px">test_ben</div>
+          <div class="s-abs val" id="va1" style="left:1418px">2100 kcal</div>
+        </div>
+        <div id="sp2" class="s-abs s-hide" style="transform-origin:1740px 400px; left:0; top:0; width:1920px; height:1080px">
+          <div class="s-abs handle" style="left:1731px"></div>
+          <div class="s-abs bowl base" style="left:1676px"></div>
+          <div class="s-abs bowl ok" id="ok2" style="left:1676px"></div>
+          <svg class="s-abs tick" id="tk2" style="left:1714px" viewBox="0 0 52 52"><path d="M10 27 L21 38 L42 14" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="s-abs lab" id="lb2" style="left:1638px">test_chloe</div>
+          <div class="s-abs val" id="va2" style="left:1638px">25 g left</div>
+        </div>
+
+        <!-- the terminal -->
+        <div id="term" class="s-abs s-ol s-hide">
+          <div class="bar"><i style="left:24px"></i><i style="left:52px"></i><i style="left:80px"></i><span class="ttl">terminal</span></div>
+          <div class="tl" id="tc" style="top:72px"><span class="p">$ </span>python3 -m pytest</div>
+          <div class="tl" id="tdA" style="top:116px">test_coach.py <span class="g ch" id="dA0">.</span><span class="g ch" id="dA1">.</span><span class="g ch" id="dA2">.</span></div>
+          <div class="tl g" id="tsA" style="top:160px">3 passed in 0.01s</div>
+          <div class="tl" id="tdB" style="top:116px">test_coach.py <span class="r ch" id="dB0">F</span><span class="g ch" id="dB1">.</span><span class="g ch" id="dB2">.</span></div>
+          <div class="tl r" id="tsB" style="top:160px">1 failed, 2 passed in 0.01s</div>
+          <div class="tl r" id="tE" style="top:216px">E  assert 2850 == 2600</div>
+          <div class="tl" id="tdC" style="top:116px">test_coach.py <span class="g ch" id="dC0">.</span><span class="g ch" id="dC1">.</span><span class="g ch" id="dC2">.</span></div>
+          <div class="tl g" id="tsC" style="top:160px">3 passed in 0.01s</div>
+          <div class="s-abs pill bad" id="pl-gave" style="left:32px; top:272px">2850: what the code gave</div>
+          <div class="s-abs pill ok" id="pl-need" style="left:32px; top:334px">2600: what Ana needs</div>
+        </div>
+
+        <div id="n-ben" class="s-abs note">Ben: "Add my 250 kcal shake by default"</div>
+        <div id="n-none" class="s-abs note">No test? No error. Just a wrong meal plan.</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-daily" style="stroke:#ffc24b" />
+          <path id="r-test" style="stroke:#ffc24b" />
+          <path id="r-call" style="stroke:#8fd3ff" />
+          <path id="r-assert" style="stroke:#ffc24b" />
+          <path id="r-2600" style="stroke:#7cf0b5" />
+          <path id="r-val" style="stroke:#ff6b8b" />
+          <path id="r-zero" style="stroke:#7cf0b5" />
+          <path id="r-2850t" style="stroke:#ff6b8b" />
+          <path id="r-2600t" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.824, 1.103, 1.486, 1.765, 2.647, 3.065, 3.379, 3.808, 4.156, 4.319, 4.435, 4.702, 4.899, 6.095, 6.316, 6.42, 6.525, 6.699, 6.815, 7.082, 7.407, 8.336, 8.766, 9.462, 9.613, 10.008, 10.182, 10.263, 10.577, 11.413, 11.633, 11.831, 12.109, 12.574, 12.806, 13.804, 14.013, 14.315, 14.524, 15.174, 15.406, 15.848, 16.208, 16.381, 17.624, 18.053, 18.297, 18.518, 18.703, 19.818, 20.572, 20.932, 21.246, 21.455, 21.617, 22.151, 23.37, 23.754, 23.974, 24.566, 24.903, 25.019, 25.495, 26.203, 26.494, 26.97, 27.399, 27.84, 28.235, 29.338, 29.651, 30.011, 30.255, 30.348, 30.673, 31.381, 31.637, 32.078, 32.24, 32.345, 32.775, 32.879, 32.96, 33.773, 34.028, 34.307, 34.655, 34.806, 34.876, 35.712, 36.002, 36.176, 36.989, 37.326, 37.651, 37.86, 38.614, 38.8, 38.916, 39.206, 40.008, 40.344, 40.716, 41.169, 41.993, 42.527, 42.817, 42.956, 43.34, 43.607, 43.978, 44.895, 45.847, 45.975, 46.172, 46.323, 46.683, 47.519, 48.552, 48.703, 48.959, 49.319, 50.271, 50.619, 50.735, 51.304, 51.71, 52.221, 52.57, 52.755, 52.999, 53.336, 53.545, 54.381, 54.59, 54.706, 55.194, 55.449, 55.588, 56.355, 56.598, 57.748, 58.061, 58.711, 58.874, 59.176, 59.304, 59.42, 59.768, 60.105, 60.244, 60.395, 60.639, 60.987, 61.73, 62.311, 62.578, 62.763, 63.088, 63.239, 63.344];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // a code token: c0 = first column, n = number of chars, rowTop = page y of the row (48 px rows, text at x 136)
+      const tok = (id, c0, n, rowTop, pad) => ring(id, 136 + (c0 + n / 2) * 16.8, rowTop + 24, (n * 16.8) / 2 + (pad || 14), 27);
+      // a terminal token: rows of 44 px, text at x 1232
+      const ttok = (id, c0, n, rowTop, pad) => ring(id, 1232 + (c0 + n / 2) * 16.8, rowTop + 22, (n * 16.8) / 2 + (pad || 12), 26);
+      tok("r-daily", 4, 10, 172);
+      tok("r-test", 4, 5, 396, 10);
+      tok("r-call", 11, 32, 444, 10);
+      tok("r-assert", 4, 6, 444, 10);
+      tok("r-2600", 47, 4, 444, 12);
+      tok("r-val", 28, 3, 172, 14);
+      tok("r-zero", 28, 1, 172, 18);
+      ttok("r-2850t", 10, 4, 796, 12);
+      ttok("r-2600t", 18, 4, 796, 12);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // spoon i turns green (with its dot in the terminal) or red
+      const green = (i, at) => { show("#ok" + i, at, 0.2); pop("#tk" + i, at, { from: 0.3, d: 0.35 }); };
+      const red = (at) => { show("#bad0", at, 0.2); pop("#f0", at, { from: 0.3, d: 0.35 }); bump("#lb0", at + 0.1, 1.08); tl.to("#lb0", { color: "#b8235a", duration: 0.2 }, at); };
+      const plain = (at) => { out(["#ok0", "#ok1", "#ok2", "#tk0", "#tk1", "#tk2", "#bad0", "#f0"], at, 0.2); tl.to("#lb0", { color: "#3e3b52", duration: 0.2 }, at); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. coach.py, and the question ---- */
+      type("#C1", 0.3, 32, 0.6);
+      type("#C2", t(9), 29, 0.5);
+      show("#hl-c", t(6) - 0.1, 0.2);
+      draw("r-daily", t(6), 0.45);
+      out("#r-daily", t(15) - 0.2, 0.2);
+      tl.to("#hl-c", { y: 48, duration: 0.25, ease: "power2.inOut" }, t(9));
+      out("#hl-c", t(15), 0.2);
+      pop("#ask", t(15), { from: 0.7 });
+      bump("#ask", t(21), 1.06);
+
+      /* ---- 2. Taste tests: the spoons, then the test file ---- */
+      out("#ask", t(23) - 0.25, 0.2);
+      pop("#sp0", t(23), { from: 0.7 });
+      pop("#sp1", t(23) + 0.15, { from: 0.7 });
+      pop("#sp2", t(23) + 0.3, { from: 0.7 });
+      show("#p-test", t(25), 0.3);
+      type("#T1", t(29), 15, 0.3);
+      draw("r-test", t(34), 0.4);
+      type("#T2", t(37), 51, 0.5);
+      out("#r-test", t(38), 0.2);
+      draw("r-call", t(38) + 0.1, 0.5);
+      out("#r-call", t(41), 0.2);
+      draw("r-assert", t(42), 0.4);
+      out("#r-assert", t(46) - 0.2, 0.2);
+      draw("r-2600", t(50), 0.45);
+      pop("#va0", t(50), { from: 0.6 });
+      out("#r-2600", t(52), 0.2);
+      type("#T4", t(52), 15, 0.3);
+      type("#T5", t(54), 57, 0.55);
+      pop("#va1", t(57), { from: 0.6 });
+      type("#T7", t(58), 17, 0.3);
+      type("#T8", t(59) + 0.1, 37, 0.45);
+      pop("#va2", t(60), { from: 0.6 });
+
+      /* ---- 3. python3 -m pytest: a green dot per spoon, 3 passed ---- */
+      show("#term", t(65) - 0.2, 0.3);
+      type("#tc", t(66), 19, 0.6);
+      show("#tdA", t(71), 0.15);
+      show("#dA0", t(73), 0.1); green(0, t(73));
+      show("#dA1", t(75), 0.1); green(1, t(75));
+      show("#dA2", t(76), 0.1); green(2, t(76));
+      show("#tsA", t(77), 0.25);
+      bump("#tsA", t(81), 1.06);
+
+      /* ---- 4. Ben's change: shake=0 becomes shake=250 ---- */
+      pop("#n-ben", t(86), { from: 0.7 });
+      cursorIn(t(91) - 0.3);
+      cursorTo(136 + 28 * 16.8 + 14, 172 + 40, t(91) - 0.3, 0.5);
+      out("#v0", t(93), 0.15);
+      pop("#v250", t(93) + 0.05, { from: 0.6, d: 0.3 });
+      draw("r-val", t(94), 0.4);
+      cursorTo(1700, 1000, t(97), 0.5);
+      cursorOut(t(98));
+
+      /* ---- 5. Run again: Ana's spoon turns red, and pytest shows both numbers ---- */
+      out(["#tdA", "#tsA"], t(98), 0.15);
+      plain(t(98));
+      show("#tdB", t(100), 0.15);
+      show("#dB0", t(102), 0.1);
+      red(t(104));
+      show("#dB1", t(105), 0.1); green(1, t(105));
+      show("#dB2", t(105) + 0.2, 0.1); green(2, t(105) + 0.2);
+      show("#tsB", t(106), 0.25);
+      out("#n-ben", t(106), 0.2);
+      show("#hl-bad", t(109) - 0.1, 0.2);
+      type("#tE", t(111), 22, 0.4);
+      draw("r-2850t", t(113), 0.45);
+      pop("#pl-gave", t(114), { from: 0.7 });
+      draw("r-2600t", t(119), 0.45);
+      draw("r-2600", t(119), 0.45);
+      pop("#pl-need", t(120), { from: 0.7 });
+      pop("#n-none", t(124), { from: 0.7 });
+      bump("#n-none", t(131), 1.05);
+
+      /* ---- 6. Put the default back to zero, run again: 3 passed ---- */
+      out("#n-none", t(135) - 0.1, 0.2);
+      cursorIn(t(135) - 0.2);
+      cursorTo(136 + 28 * 16.8 + 14, 172 + 40, t(135) - 0.2, 0.5);
+      out(["#v250", "#r-val"], t(140), 0.15);
+      pop("#v0b", t(140) + 0.05, { from: 0.6, d: 0.3 });
+      draw("r-zero", t(140) + 0.1, 0.35);
+      cursorTo(1700, 1000, t(141), 0.4);
+      cursorOut(t(141) + 0.3);
+      out(["#tdB", "#tsB", "#tE", "#r-2850t", "#r-2600t", "#r-2600", "#pl-gave", "#pl-need", "#hl-bad"], t(141), 0.2);
+      plain(t(141));
+      show("#tdC", t(142) - 0.1, 0.15);
+      show("#dC0", t(142) + 0.1, 0.1); green(0, t(142) + 0.1);
+      show("#dC1", t(142) + 0.3, 0.1); green(1, t(142) + 0.3);
+      show("#dC2", t(142) + 0.5, 0.1); green(2, t(142) + 0.5);
+      out("#r-zero", t(143), 0.2);
+      show("#tsC", t(142) + 0.7, 0.25);
+      bump("#tsC", t(144), 1.08);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 59.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

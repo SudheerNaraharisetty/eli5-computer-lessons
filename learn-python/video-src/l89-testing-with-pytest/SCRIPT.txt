@@ -1,0 +1,11 @@
+Kitchen Coach has coach dot py. Daily K cal adds up a day of meals. How do you know it still works tomorrow? Taste tests.
+
+A test is a small function, and its name starts with test. It calls your code, and assert checks the answer. Ana's day should be 2600 calories. Ben's day, with his shake, 2100. Chloe has 25 grams of protein left.
+
+Type python 3, dash m, pytest. Every spoon gets a green dot. 3 passed, in a hundredth of a second.
+
+Then Ben asks for a change. Add my 250 calorie shake by default. Run the tests again. Ana's spoon turns red. pytest shows the line, and both numbers. 2850 is what the code gave. 2600 is what Ana needs. Without the test, nobody notices until her meal plan is wrong.
+
+Put the default back to zero. Run again. 3 passed.
+
+A test is a taste test you can run any time. pytest runs them all in a second.

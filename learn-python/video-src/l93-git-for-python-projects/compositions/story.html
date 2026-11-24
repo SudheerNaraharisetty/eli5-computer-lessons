@@ -1,0 +1,354 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+
+    /* the recipe notebook: a timeline of save points */
+    #nb { left: 1196px; top: 96px; width: 648px; height: 300px; background: #fbebd2; border-radius: 22px; opacity: 0; }
+    #nb > .nt { position: absolute; left: 28px; top: 16px; font: 800 30px/40px "Manrope", sans-serif; color: #7a4708; }
+    #nb > .line { position: absolute; left: 40px; top: 166px; width: 568px; height: 8px; border-radius: 4px; background: #0e0c1d; }
+    .slot { position: absolute; top: 134px; width: 72px; height: 72px; border-radius: 50%; background: #fbf8f4; box-shadow: inset 0 0 0 4px #6f6b80; opacity: 0; }
+    .slot.dash { background: #fbf8f4; box-shadow: none; border: 4px dashed #6f6b80; }
+    .stm { position: absolute; top: 134px; width: 72px; height: 72px; border-radius: 50%; background: #3b37e6; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .stm > svg { position: absolute; left: 14px; top: 16px; width: 44px; height: 40px; }
+    .day { position: absolute; top: 80px; width: 160px; text-align: center; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; opacity: 0; }
+    .hash { position: absolute; top: 216px; width: 180px; text-align: center; font: 500 28px/44px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+    #h3 { color: #6f6b80; font: 800 28px/44px "Manrope", sans-serif; }
+
+    /* the folder, then the .gitignore card, in the same place */
+    #fold { left: 1196px; top: 440px; width: 648px; height: 300px; background: #fff; border-radius: 22px; }
+    #fold > .ft, #gi > .ft { position: absolute; left: 24px; top: 14px; font: 800 30px/44px "Manrope", sans-serif; }
+    #gi { left: 1196px; top: 440px; width: 648px; height: 300px; background: #e6e3ff; border-radius: 22px; opacity: 0; }
+    #gi > .ft { font: 500 34px/44px "JetBrains Mono", monospace; color: #3b37e6; }
+    .gr { position: absolute; left: 40px; font: 500 30px/48px "JetBrains Mono", monospace; color: #0e0c1d; opacity: 0; }
+    .gr small { font: 800 28px/48px "Manrope", sans-serif; color: #3e3b52; }
+
+    /* things in the folder and on the tray */
+    .pg { position: absolute; top: 506px; height: 56px; padding: 0 12px; border-radius: 10px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; font: 500 28px/56px "JetBrains Mono", monospace; white-space: nowrap; }
+    #crate { left: 1216px; top: 590px; width: 300px; height: 120px; border-radius: 12px; background: #fbebd2; box-shadow: 0 0 0 5px #b9741a; }
+    #crate > .slats { position: absolute; inset: 0; border-radius: 12px; background: repeating-linear-gradient(90deg, transparent 0 58px, rgba(185, 116, 26, 0.35) 58px 64px); }
+    #crate > .a { position: absolute; left: 0; top: 14px; width: 300px; text-align: center; font: 500 34px/48px "JetBrains Mono", monospace; color: #7a4708; }
+    #crate > .b { position: absolute; left: 0; top: 62px; width: 300px; text-align: center; font: 800 30px/44px "Manrope", sans-serif; color: #b8235a; opacity: 0; }
+    #key { left: 1540px; top: 590px; width: 280px; height: 120px; border-radius: 14px; background: #fbe0ea; box-shadow: 0 0 0 5px #b8235a; }
+    #key > svg { position: absolute; left: 22px; top: 30px; width: 110px; height: 60px; }
+    #key > .a { position: absolute; left: 140px; top: 34px; font: 500 36px/52px "JetBrains Mono", monospace; color: #b8235a; }
+    #lock { left: 1800px; top: 770px; width: 84px; height: 96px; opacity: 0; }
+
+    #tray { left: 1196px; top: 990px; width: 648px; height: 16px; border-radius: 6px; background: #0e0c1d; opacity: 0; }
+    #traylab { left: 1196px; top: 1014px; font: 800 30px/44px "Manrope", sans-serif; color: #3b37e6; white-space: nowrap; opacity: 0; }
+    #stampt { left: 1690px; top: 770px; width: 130px; height: 140px; opacity: 0; }
+    #msg { left: 1196px; top: 820px; height: 60px; padding: 0 20px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 4px #3b37e6; font: 500 28px/60px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; opacity: 0; }
+    #addpill { left: 1196px; top: 806px; }
+
+    /* Friday: Ana's plan */
+    #ana { left: 1196px; top: 440px; width: 648px; height: 420px; background: #fff; border-radius: 22px; opacity: 0; }
+    #ana > .av { position: absolute; left: 32px; top: 32px; width: 84px; height: 84px; border-radius: 50%; background: #3b37e6; box-shadow: 0 0 0 4px #0e0c1d; color: #fff; text-align: center; font: 700 44px/84px "Fraunces", serif; }
+    #ana > .nm { position: absolute; left: 140px; top: 28px; font: 700 48px/60px "Fraunces", serif; }
+    #ana > .ds { position: absolute; left: 140px; top: 86px; font: 600 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #ana > .lb { position: absolute; left: 32px; top: 160px; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; }
+    .val { position: absolute; left: 32px; top: 206px; height: 140px; font: 700 128px/140px "Fraunces", serif; white-space: nowrap; }
+    .val small { font: 800 40px/140px "Manrope", sans-serif; color: #3e3b52; }
+    #vA { color: #1f7a5c; }
+    #vB { color: #b8235a; opacity: 0; }
+    #vC { color: #1f7a5c; opacity: 0; }
+    .pill { position: absolute; height: 64px; padding: 0 26px; border-radius: 14px; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 5px #b8235a; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 5px #1f7a5c; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; font: 500 30px/64px "JetBrains Mono", monospace; }
+    #wrong { left: 1660px; top: 456px; }
+    #right { left: 1586px; top: 456px; }
+    #away { left: 1216px; top: 800px; }
+    #rew { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+
+    /* the terminal on the left: rows of 48 px, text at page x 136; 28 px mono = 16.8 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .tl { position: absolute; left: 40px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #a9a5d6; }
+    .tl .bad { color: #ff8fab; }
+    .tl .ok { color: #7cf0b5; }
+    .tl .y { color: #ffc24b; }
+    #caret { position: absolute; left: 40px; top: 88px; font: 500 28px/48px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .s-note { position: absolute; height: 54px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the recipe notebook -->
+        <div id="nb" class="s-abs s-ol" data-layout-allow-overlap>
+          <div class="nt">recipe notebook</div>
+          <div class="line"></div>
+          <div class="slot" id="sl1" style="left:94px"></div>
+          <div class="slot" id="sl2" style="left:288px"></div>
+          <div class="slot dash" id="sl3" style="left:482px"></div>
+          <div class="stm" id="st1" style="left:94px"><svg viewBox="0 0 44 40"><path d="M6 20 L17 31 L38 8" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="stm" id="st2" style="left:288px"><svg viewBox="0 0 44 40"><path d="M6 20 L17 31 L38 8" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="day" id="d1" style="left:50px">Wed</div>
+          <div class="day" id="d2" style="left:244px">Thu</div>
+          <div class="day" id="d3" style="left:438px">Fri</div>
+          <div class="hash" id="h1" style="left:40px">276bfac</div>
+          <div class="hash" id="h2" style="left:234px">a5e5ef3</div>
+          <div class="hash" id="h3" style="left:428px">unsaved</div>
+        </div>
+        <svg id="rew" class="s-abs" viewBox="0 0 1920 1080"><path id="rewp" stroke-dasharray="100" stroke-dashoffset="100" d="M1670 266 L1572 266" fill="none" stroke="#b8235a" stroke-width="10" stroke-linecap="round" /><path id="rewh" d="M1588 248 L1566 266 L1588 284" fill="none" stroke="#b8235a" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0" /></svg>
+
+        <!-- the folder, then the .gitignore in its place -->
+        <div id="fold" class="s-abs s-ol"><div class="ft">kitchen-coach/</div></div>
+        <div id="gi" class="s-abs s-ol" data-layout-allow-overlap>
+          <div class="ft">.gitignore</div>
+          <div class="gr" id="g1" style="top:76px">.venv/        <small>rebuild it</small></div>
+          <div class="gr" id="g2" style="top:132px">__pycache__/  <small>Python's scraps</small></div>
+          <div class="gr" id="g3" style="top:188px">.env          <small>secret</small></div>
+        </div>
+
+        <div class="pg" id="pA" style="left:1216px">coach.py</div>
+        <div class="pg" id="pB" style="left:1388px">tests/</div>
+        <div class="pg" id="pC" style="left:1527px">requirements.txt</div>
+        <div id="crate" class="s-abs" data-layout-allow-overlap><div class="slats"></div><div class="a">.venv/</div><div class="b" id="c897">897 files</div></div>
+        <div id="key" class="s-abs" data-layout-allow-overlap>
+          <svg viewBox="0 0 110 60"><circle cx="24" cy="30" r="17" fill="none" stroke="#b8235a" stroke-width="8" /><path d="M41 30 H104 M88 30 V48 M70 30 V44" fill="none" stroke="#b8235a" stroke-width="8" stroke-linecap="round" /></svg>
+          <div class="a">.env</div>
+        </div>
+        <svg id="lock" class="s-abs" viewBox="0 0 84 96"><path d="M20 44 V30 a22 22 0 0 1 44 0 V44" fill="none" stroke="#0e0c1d" stroke-width="9" /><rect x="6" y="42" width="72" height="50" rx="10" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" /><circle cx="42" cy="64" r="7" fill="#0e0c1d" /></svg>
+
+        <div id="tray" class="s-abs"></div>
+        <div id="traylab" class="s-abs">the tray (staging area)</div>
+        <div id="msg" class="s-abs">-m "Start Kitchen Coach"</div>
+        <svg id="stampt" class="s-abs" viewBox="0 0 130 140"><rect x="44" y="6" width="42" height="56" rx="18" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" /><rect x="22" y="60" width="86" height="26" rx="6" fill="#3b37e6" stroke="#0e0c1d" stroke-width="5" /><rect x="10" y="86" width="110" height="40" rx="8" fill="#e6e3ff" stroke="#0e0c1d" stroke-width="5" /></svg>
+        <div class="pill acc" id="addpill">git add .</div>
+        <div class="pill bad" id="away">turned away</div>
+
+        <!-- Friday: Ana's plan -->
+        <div id="ana" class="s-abs s-ol" data-layout-allow-overlap>
+          <div class="av">A</div><div class="nm">Ana</div><div class="ds">training for a half-marathon</div>
+          <div class="lb">Kitchen Coach plans</div>
+          <div class="val" id="vA">2600 <small>kcal a day</small></div>
+          <div class="val" id="vB">260 <small>kcal a day</small></div>
+          <div class="val" id="vC">2600 <small>kcal a day</small></div>
+        </div>
+        <div class="pill bad" id="wrong">WRONG</div>
+        <div class="pill ok" id="right">back again</div>
+
+        <!-- the terminal -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">terminal: kitchen-coach</span></div>
+          <div id="caret">$</div>
+          <!-- page 1: init and what git sees -->
+          <div class="tl" id="a0" style="top:88px"><span class="p">$</span> git init</div>
+          <div class="tl" id="a1" style="top:136px">Initialized empty Git repository in</div>
+          <div class="tl" id="a2" style="top:184px">/Users/you/kitchen-coach/.git/</div>
+          <div class="tl" id="a3" style="top:280px"><span class="p">$</span> git status --short</div>
+          <div class="tl" id="a4" style="top:328px"><span class="bad">?? .env</span></div>
+          <div class="tl" id="a5" style="top:376px"><span class="bad">?? .venv/</span></div>
+          <div class="tl" id="a6" style="top:424px"><span class="bad">?? README.md</span></div>
+          <div class="tl" id="a7" style="top:472px"><span class="bad">?? __pycache__/</span></div>
+          <div class="tl" id="a8" style="top:520px"><span class="bad">?? coach.py</span></div>
+          <div class="tl" id="a9" style="top:568px"><span class="bad">?? meal_planner.py</span></div>
+          <div class="tl" id="a10" style="top:616px"><span class="bad">?? requirements.txt</span></div>
+          <div class="tl" id="a11" style="top:664px"><span class="bad">?? tests/</span></div>
+          <!-- page 1b: after the .gitignore -->
+          <div class="tl" id="b0" style="top:280px"><span class="p">$</span> git add .</div>
+          <div class="tl" id="b1" style="top:328px"><span class="p">$</span> git commit -m <span class="ok">"Start Kitchen Coach"</span></div>
+          <div class="tl" id="b2" style="top:376px">[main (root-commit) <span class="y">276bfac</span>] Start Kitchen Coach</div>
+          <div class="tl" id="b3" style="top:424px"> 6 files changed, 39 insertions(+)</div>
+          <div class="tl" id="b4" style="top:520px"><span class="p">$</span> git log --oneline</div>
+          <div class="tl" id="b5" style="top:568px"><span class="y">a5e5ef3</span> Add a taste test for Ben</div>
+          <div class="tl" id="b6" style="top:616px"><span class="y">276bfac</span> Start Kitchen Coach</div>
+          <!-- page 2: Friday -->
+          <div class="tl" id="c0" style="top:88px"><span class="p">$</span> python3 coach.py</div>
+          <div class="tl" id="c1" style="top:136px">Ana <span class="bad">260</span> kcal in 4 meals, <span class="bad">65</span> kcal each</div>
+          <div class="tl" id="c2" style="top:232px"><span class="p">$</span> git diff</div>
+          <div class="tl" id="c3" style="top:280px">--- a/meal_planner.py</div>
+          <div class="tl" id="c4" style="top:328px">+++ b/meal_planner.py</div>
+          <div class="tl" id="c5" style="top:376px"><span class="bad">-DAILY_KCAL = {"Ana": 2600, "Ben": 2800, "Chloe": 2000}</span></div>
+          <div class="tl" id="c6" style="top:424px"><span class="ok">+DAILY_KCAL = {"Ana": 260, "Ben": 2800, "Chloe": 2000}</span></div>
+          <div class="s-note bad" id="n-zero" style="left:560px; top:478px">one lost zero</div>
+          <div class="tl" id="c7" style="top:568px"><span class="p">$</span> git restore meal_planner.py</div>
+          <div class="tl" id="c8" style="top:616px"><span class="p">$</span> python3 coach.py</div>
+          <div class="tl" id="c9" style="top:664px">Ana <span class="ok">2600</span> kcal in 4 meals, <span class="ok">650</span> kcal each</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-venv" style="stroke:#ffc24b" />
+          <path id="r-env" style="stroke:#ffc24b" />
+          <path id="r-crate" style="stroke:#b8235a" />
+          <path id="r-key" style="stroke:#b8235a" />
+          <path id="r-2600" style="stroke:#ffc24b" />
+          <path id="r-260" style="stroke:#ffc24b" />
+          <path id="r-thu" style="stroke:#b8235a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.453, 0.766, 1.01, 1.115, 1.207, 2.113, 2.426, 2.74, 3.065, 3.367, 3.611, 4.005, 4.284, 4.737, 4.841, 4.934, 5.352, 6.455, 6.792, 7.129, 7.407, 7.593, 8.034, 8.208, 8.313, 9.218, 9.543, 9.938, 10.333, 10.553, 10.855, 11.146, 11.505, 12.063, 12.283, 12.388, 12.678, 13.781, 13.99, 14.245, 14.536, 14.838, 15.418, 16.591, 16.777, 17.102, 17.671, 18.356, 18.82, 19.134, 19.482, 20.109, 20.446, 20.666, 20.922, 22.059, 22.384, 22.768, 23.441, 23.685, 23.917, 24.393, 25.043, 25.252, 25.542, 25.635, 25.949, 26.227, 26.622, 27.028, 27.934, 28.097, 28.561, 28.77, 29.107, 29.571, 29.745, 29.861, 30.128, 30.581, 30.964, 31.788, 32.044, 32.612, 33.112, 33.286, 33.936, 34.215, 34.342, 35.236, 35.631, 35.91, 36.734, 37.094, 37.349, 37.663, 37.883, 38.185, 38.557, 39.01, 40.101, 40.449, 40.798, 41.134, 41.355, 41.959, 42.249, 42.388, 42.644, 42.969, 43.746, 44.025, 44.489, 44.768, 45.221, 45.5, 46.452, 46.73, 47.16, 47.427, 47.764, 48.808, 49.11, 49.378, 50.48, 50.806, 51.34, 51.967, 52.094, 52.396, 52.535, 53.081, 53.395, 53.975, 54.23, 54.474, 54.637, 54.892, 55.055, 55.333, 55.879, 56.297, 57.481, 57.922, 58.398, 58.735, 59.536, 59.989, 60.186, 60.361, 60.523, 61.162, 61.417, 61.649, 61.998];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      // a token in a terminal row: text starts at page x 96 + 40 = 136, row centre y = 96 + top + 24
+      const ttok = (id, text, sub, top) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 136 + ((c0 + c1) / 2) * 16.8, 96 + top + 24, (sub.length * 16.8) / 2 + 16, 28); };
+      ttok("r-env", "?? .env", ".env", 328);
+      ttok("r-venv", "?? .venv/", ".venv/", 376);
+      ttok("r-2600", '-DAILY_KCAL = {"Ana": 2600, "Ben": 2800, "Chloe": 2000}', "2600", 376);
+      ttok("r-260", '+DAILY_KCAL = {"Ana": 260, "Ben": 2800, "Chloe": 2000}', "260", 424);
+      // the crate and the key once they sit on the tray (crate 1216..1516 x 790..910, key 1540..1820 x 790..910)
+      ring("r-crate", 1366, 850, 176, 80);
+      ring("r-key", 1680, 850, 162, 80);
+      // Thursday's stamp in the notebook: centre (1196 + 288 + 36, 96 + 134 + 36)
+      ring("r-thu", 1520, 266, 62, 58);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const move = (sel, at, x, y, d) => tl.to(sel, { x: x, y: y, duration: d || 0.6, ease: "power3.inOut" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 1500, y: 1000 }, 0);
+      tl.set("#wrong", { rotation: -4 }, 0);
+      
+
+      /* ---- 1. A folder. Git keeps save points, like stamps in a recipe notebook ---- */
+      bump("#fold", t(5), 1.03);
+      tl.to("#caret", { opacity: 0, duration: 0.1 }, t(6));
+      type("#a0", t(6), 10, 0.35);
+      show("#a1", t(7) + 0.1, 0.2);
+      show("#a2", t(7) + 0.25, 0.2);
+      pop("#nb", t(8), { from: 0.85, d: 0.45 });
+      show(["#sl1", "#sl2", "#sl3"], t(13), 0.3);
+      bump(["#sl1", "#sl2", "#sl3"], t(13) + 0.3, 1.12);
+      show(["#d1", "#d2", "#d3"], t(16), 0.3);
+
+      /* ---- 2. git add puts pages on the tray; git commit stamps them ---- */
+      show(["#tray", "#traylab"], t(19), 0.3);
+      move("#pA", t(22), 0, 414, 0.55);
+      move("#pB", t(22) + 0.1, 0, 414, 0.55);
+      move("#pC", t(22) + 0.2, 0, 414, 0.55);
+      bump("#traylab", t(25), 1.08);
+      pop("#stampt", t(27), { from: 0.5 });
+      tl.fromTo("#stampt", { y: 0 }, { y: 40, duration: 0.18, ease: "power2.in", yoyo: true, repeat: 1, immediateRender: false }, t(28));
+      bump("#nb", t(31), 1.03);
+      pop("#msg", t(34), { from: 0.6 });
+
+      /* ---- 3. But git add . grabs everything: the venv crate and the .env key ---- */
+      out(["#stampt", "#msg"], t(38), 0.25);
+      pop("#addpill", t(39), { from: 0.6, d: 0.35 });
+      type("#a3", t(39), 20, 0.4);
+      [4, 5, 6, 7, 8, 9, 10, 11].forEach((r, i) => show("#a" + r, t(42) + i * 0.08, 0.15));
+      move("#crate", t(43), 0, 200, 0.6);
+      move("#key", t(43) + 0.1, 0, 200, 0.6);
+      out("#addpill", t(43) - 0.1, 0.15);
+      tl.to("#fold", { opacity: 0.35, duration: 0.3 }, t(44));
+      draw("r-crate", t(46), 0.45);
+      draw("r-venv", t(46) + 0.1, 0.4);
+      pop("#c897", t(49), { from: 0.5 });
+      bump("#crate", t(54), 1.05);
+      out(["#r-crate", "#r-venv"], t(56), 0.2);
+      draw("r-key", t(57), 0.45);
+      draw("r-env", t(57) + 0.1, 0.4);
+      bump("#key", t(61), 1.08);
+
+      /* ---- 4. Write a .gitignore first: the venv is turned away, the key locked out ---- */
+      out(["#r-key", "#r-env"], t(63), 0.2);
+      out("#fold", t(66), 0.25);
+      pop("#gi", t(66), { from: 0.85, d: 0.4 });
+      show("#g1", t(68) + 0.1, 0.2);
+      show("#g2", t(68) + 0.25, 0.2);
+      show("#g3", t(68) + 0.4, 0.2);
+      out(["#a3", "#a4", "#a5", "#a6", "#a7", "#a8", "#a9", "#a10", "#a11"], t(70), 0.25);
+      bump("#g1", t(72), 1.08);
+      tl.to("#crate", { x: 360, rotation: 10, opacity: 0, duration: 0.7, ease: "power2.in" }, t(74));
+      pop("#away", t(75), { from: 0.6, d: 0.3 });
+      bump("#g3", t(78), 1.08);
+      pop("#lock", t(78) + 0.1, { from: 0.4 });
+      tl.to(["#key", "#lock"], { x: 300, opacity: 0, duration: 0.7, ease: "power2.in" }, t(80) + 0.2);
+      out("#away", t(81), 0.2);
+      type("#b0", t(82), 11, 0.3);
+      type("#b1", t(84), 37, 0.6);
+      pop("#stampt", t(84) + 0.2, { from: 0.5 });
+      tl.fromTo("#stampt", { y: 0 }, { y: 60, duration: 0.16, ease: "power2.in", yoyo: true, repeat: 1, immediateRender: false }, t(89) - 0.15);
+      show("#b2", t(89), 0.2);
+      show("#b3", t(89) + 0.15, 0.2);
+      tl.to(["#pA", "#pB", "#pC"], { x: (i) => [31, -124, -347][i], y: -268, scale: 0.3, opacity: 0, duration: 0.55, ease: "power2.in" }, t(89) + 0.25);
+      out("#stampt", t(89) + 0.4, 0.2);
+      pop("#st1", t(89) + 0.6, { from: 1.5, ease: "power3.out", d: 0.3 });
+      show("#h1", t(89) + 0.7, 0.2);
+
+      /* ---- Then, Thursday's save point; on Friday Ana's plan drops to 260 ---- */
+      type("#b4", t(90), 19, 0.35);
+      show("#b5", t(90) + 0.4, 0.2);
+      show("#b6", t(90) + 0.5, 0.2);
+      pop("#st2", t(90) + 0.4, { from: 1.5, ease: "power3.out", d: 0.3 });
+      show("#h2", t(90) + 0.5, 0.2);
+      bump(["#sl3", "#d3"], t(92), 1.12);
+      show("#h3", t(92), 0.25);
+      out(["#a0", "#a1", "#a2", "#b0", "#b1", "#b2", "#b3", "#b4", "#b5", "#b6"], t(94) - 0.25, 0.2);
+      out(["#gi", "#tray", "#traylab"], t(92) - 0.25, 0.25);
+      pop("#ana", t(92), { from: 0.85, d: 0.4 });
+      type("#c0", t(94) + 0.05, 18, 0.3);
+      show("#c1", t(95) + 0.2, 0.2);
+      tl.to("#vA", { opacity: 0, duration: 0.15 }, t(97));
+      pop("#vB", t(97) + 0.1, { from: 0.7, d: 0.3 });
+      pop("#wrong", t(100), { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- git diff: red was the save point, green is now. One lost zero ---- */
+      type("#c2", t(101), 10, 0.3);
+      show("#c3", t(103), 0.2);
+      show("#c4", t(103) + 0.1, 0.2);
+      show("#c5", t(103) + 0.2, 0.2);
+      show("#c6", t(103) + 0.3, 0.2);
+      bump(["#st2", "#h2"], t(108), 1.12);
+      draw("r-2600", t(112), 0.4);
+      draw("r-260", t(118), 0.4);
+      pop("#n-zero", t(122), { from: 0.6, d: 0.35 });
+
+      /* ---- git restore rewinds the file to Thursday's save point ---- */
+      out(["#r-2600", "#r-260"], t(125) - 0.1, 0.2);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(125) - 0.4);
+      cursorTo(136 + 2 * 16.8, 96 + 568 + 34, t(125) - 0.4, 0.4);
+      type("#c7", t(125), 30, 0.5);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(126) + 0.2);
+      tl.to("#rewp", { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, t(127));
+      show("#rewh", t(127) + 0.55, 0.15);
+      draw("r-thu", t(131), 0.4);
+      out(["#wrong", "#vB"], t(133), 0.2);
+      type("#c8", t(134), 18, 0.3);
+      show("#c9", t(139), 0.2);
+      pop("#vC", t(139), { from: 0.7, d: 0.3 });
+      pop("#right", t(141), { from: 1.4, ease: "power3.out", d: 0.3 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 57.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Kitchen Coach lives in a folder. Git keeps save points for it, like stamps in a recipe notebook.
+
+Git add puts your pages on a tray. Git commit stamps them as one save point, with a short message.
+
+But git add dot grabs everything. The dot venv kitchen, almost nine hundred files, built for one computer. And dot env, with your secret key.
+
+So write a dot git ignore file first. The venv is turned away, and the key stays locked out. Your code, tests and requirements get the stamp.
+
+Then, on Friday, Ana's plan drops to two hundred sixty calories. Git diff shows what changed since the last save point. In red, two thousand six hundred. In green, two hundred sixty. One lost zero.
+
+Git restore rewinds the file to Thursday's save point, and Ana is back to two thousand six hundred.
+
+Commit small save points. Ignore what can be rebuilt, or must stay secret.

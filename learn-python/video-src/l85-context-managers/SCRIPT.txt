@@ -1,0 +1,11 @@
+Kitchen Coach bakes Chloe's chocolate cake. Switch the oven on, 180 degrees. Bake. Then switch it off.
+
+But tonight, the cake burns. bake raises an error, and Python stops right there. The last line never runs. The oven is still on.
+
+The fix is a with block. With oven on, 180. The block sits inside, held like a clamp.
+
+When the block starts, Python calls enter. The oven goes on. Then your block runs. The cake burns again. But on the way out, Python calls exit, whatever happened. The oven goes off.
+
+Making your own is easy. Put contextmanager on a generator. Switch the oven on, then yield. The with block runs while the generator waits there. Put switch off under finally, so it runs even after an error.
+
+With sets up, runs your block, and always cleans up.

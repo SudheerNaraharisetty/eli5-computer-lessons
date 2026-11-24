@@ -1,0 +1,264 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* right side: the oven */
+    #head { left: 1200px; top: 96px; font: 700 52px/64px "Fraunces", serif; white-space: nowrap; }
+    #ov { left: 1200px; top: 200px; width: 640px; height: 520px; border-radius: 26px; background: #fff; }
+    #strip { left: 1200px; top: 290px; width: 640px; height: 5px; background: #0e0c1d; }
+    .knob { width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #lt-off, #lt-on { left: 1754px; top: 219px; width: 52px; height: 52px; border-radius: 50%; box-shadow: 0 0 0 5px #0e0c1d; }
+    #lt-off { background: #ece7df; }
+    #lt-on { background: #e0284f; opacity: 0; }
+    #ltlab { left: 1610px; top: 222px; font: 800 28px/46px "Manrope", sans-serif; color: #3e3b52; }
+    #win, #win-on { left: 1250px; top: 335px; width: 540px; height: 335px; border-radius: 20px; }
+    #win { background: #ece7df; box-shadow: 0 0 0 5px #0e0c1d; }
+    #win-on { background: #f6c27a; opacity: 0; }
+    #tray { left: 1300px; top: 618px; width: 440px; height: 10px; border-radius: 5px; background: #6f6b80; }
+    #cake, #cake-b { left: 1400px; top: 508px; width: 240px; height: 110px; border-radius: 26px 26px 8px 8px; }
+    #cake { background: #8b4a2b; box-shadow: 0 0 0 5px #0e0c1d; }
+    #cake-b { background: #2a1712; opacity: 0; }
+    #icing { left: 1400px; top: 508px; width: 240px; height: 30px; border-radius: 26px 26px 0 0; background: #5c2b18; }
+    .smoke { width: 64px; height: 64px; border-radius: 50%; background: #9a96a8; box-shadow: 0 0 0 4px #6f6b80; }
+    .stat { top: 770px; height: 70px; padding: 0 30px; border-radius: 999px; font: 800 34px/70px "Manrope", sans-serif; white-space: nowrap; }
+    #st-off { left: 1200px; background: #ece7df; color: #3e3b52; box-shadow: 0 0 0 4px #0e0c1d; }
+    #st-on { left: 1200px; background: #fbe0ea; color: #a01d4c; box-shadow: 0 0 0 4px #b8235a; }
+    #still { left: 1560px; background: #b8235a; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #offok { left: 1520px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; padding-left: 74px; }
+    #offok > svg { position: absolute; left: 22px; top: 15px; width: 40px; height: 40px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #hl { position: absolute; left: 14px; top: 88px; width: 1012px; height: 50px; border-radius: 10px; background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; opacity: 0; }
+    #hl-bad { position: absolute; left: 14px; top: 138px; width: 1012px; height: 50px; border-radius: 10px; background: rgba(255, 107, 139, 0.22); box-shadow: inset 6px 0 0 #ff6b8b; opacity: 0; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .d { color: #ff9ec0; }
+    .s-note { position: absolute; height: 44px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #ff6b8b; color: #15132b; }
+    .s-note.warn { background: #ffc24b; color: #15132b; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path, #s-marks circle { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="53.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right side: Chloe's cake in the oven -->
+        <div id="head" class="s-abs">Chloe's chocolate cake</div>
+        <div id="ov" class="s-abs s-ol"></div>
+        <div id="strip" class="s-abs"></div>
+        <div class="s-abs knob" style="left:1232px; top:225px"></div>
+        <div class="s-abs knob" style="left:1300px; top:225px"></div>
+        <div id="ltlab" class="s-abs">power</div>
+        <div id="lt-off" class="s-abs"></div>
+        <div id="lt-on" class="s-abs"></div>
+        <div id="win" class="s-abs"></div>
+        <div id="win-on" class="s-abs"></div>
+        <div id="tray" class="s-abs"></div>
+        <div id="cake" class="s-abs"></div>
+        <div id="cake-b" class="s-abs"></div>
+        <div id="icing" class="s-abs"></div>
+        <div id="sm1" class="s-abs smoke s-hide" style="left:1430px; top:420px"></div>
+        <div id="sm2" class="s-abs smoke s-hide" style="left:1500px; top:380px"></div>
+        <div id="sm3" class="s-abs smoke s-hide" style="left:1570px; top:425px"></div>
+        <div id="st-off" class="s-abs stat">oven: OFF</div>
+        <div id="st-on" class="s-abs stat s-hide">oven: ON at 180</div>
+        <div id="still" class="s-abs stat s-hide">still on!</div>
+        <div id="offok" class="s-abs stat s-hide"><svg viewBox="0 0 40 40"><path d="M7 21 L16 30 L33 10" fill="none" stroke="#1f7a5c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>off, every time</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">bake.py</span></div>
+          <div id="hl"></div>
+          <div id="hl-bad"></div>
+          <!-- phase 1: by hand -->
+          <div class="ln" id="A1" style="top:88px"><span class="f">switch_on</span>(180)</div>
+          <div class="ln" id="A2" style="top:138px"><span class="f">bake</span>(<span class="m">"chocolate cake"</span>)</div>
+          <div class="ln" id="A3" style="top:188px"><span class="f">switch_off</span>()</div>
+          <div class="s-note bad" id="n-err" style="left:520px; top:141px">ValueError: the cake burnt</div>
+          <div class="s-note bad" id="n-never" style="left:330px; top:191px">never runs</div>
+          <!-- phase 2: with -->
+          <div class="ln" id="B1" style="top:138px"><span class="k">with</span> <span class="f">oven_on</span>(180):</div>
+          <div class="ln" id="B2" style="top:188px">    <span class="f">bake</span>(<span class="m">"chocolate cake"</span>)</div>
+          <div class="s-note" id="n-enter" style="left:400px; top:141px">1  __enter__: oven on</div>
+          <div class="s-note bad" id="n-err2" style="left:560px; top:191px">ValueError!</div>
+          <div class="s-note ok" id="n-exit" style="left:40px; top:256px">2  __exit__: oven off, whatever happened</div>
+          <!-- phase 3: make your own -->
+          <div class="ln" id="C1" style="top:338px"><span class="k">@contextmanager</span></div>
+          <div class="ln" id="C2" style="top:388px"><span class="k">def</span> <span class="f">oven_on</span>(temp):</div>
+          <div class="ln" id="C3" style="top:438px">    <span class="f">switch_on</span>(temp)</div>
+          <div class="ln" id="C4" style="top:488px">    <span class="k">try</span>:</div>
+          <div class="ln" id="C5" style="top:538px">        <span class="k">yield</span></div>
+          <div class="ln" id="C6" style="top:588px">    <span class="k">finally</span>:</div>
+          <div class="ln" id="C7" style="top:638px">        <span class="f">switch_off</span>()</div>
+          <div class="s-note" id="n-like-en" style="left:420px; top:441px">like __enter__</div>
+          <div class="s-note warn" id="n-wait" style="left:300px; top:541px">waits here while the block runs</div>
+          <div class="s-note ok" id="n-like-ex" style="left:300px; top:591px">like __exit__: even after an error</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-off" style="stroke:#ff6b8b; stroke-dasharray: 14 12" />
+          <circle id="r-light" cx="1780" cy="245" r="50" style="stroke:#b8235a; stroke-dasharray: 14 10" />
+          <path id="clamp" style="stroke:#7cf0b5; stroke-width: 7" d="M168 228 H122 V342 H168" />
+          <path id="r-cm" style="stroke:#ffc24b" />
+          <path id="r-yield" style="stroke:#ffc24b" />
+          <path id="r-fin" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.789, 1.115, 1.567, 2.009, 2.763, 3.088, 3.204, 3.448, 3.831, 4.644, 5.805, 6.502, 6.78, 7.105, 7.256, 8.208, 8.429, 9.114, 9.3, 9.683, 10.937, 11.285, 11.749, 11.912, 12.632, 12.841, 13.259, 13.816, 14.118, 14.884, 15.058, 15.36, 15.697, 16.045, 16.742, 16.904, 17.194, 17.357, 17.694, 18.472, 18.623, 18.913, 19.075, 19.215, 19.516, 20.039, 20.283, 20.643, 21.003, 22.407, 22.547, 22.86, 23.162, 23.917, 24.242, 24.462, 24.578, 25.6, 25.809, 25.914, 26.192, 26.784, 27.284, 27.643, 28.386, 28.537, 28.793, 29.083, 29.617, 29.873, 30.035, 30.325, 30.917, 31.092, 31.452, 31.835, 32.729, 33.089, 33.263, 33.39, 33.611, 34.017, 34.517, 34.923, 35.515, 35.991, 36.85, 37.059, 37.419, 37.721, 38.197, 38.58, 38.789, 39.126, 39.428, 40.438, 40.693, 41.68, 41.854, 41.982, 43.096, 43.456, 43.607, 43.944, 44.246, 44.571, 45.569, 45.743, 45.952, 46.277, 46.73, 46.951, 47.079, 47.682, 48.007, 48.878, 49.157, 49.528, 49.9, 50.294, 50.956, 51.165, 51.258, 51.595, 51.943, 52.396, 52.547, 53.487, 53.766, 54.195, 54.578, 54.869, 55.054, 55.368, 55.53, 55.96, 56.494];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; if (!p.style.strokeDasharray) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; } };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // a token in a code row: text starts at page x 136, centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28); };
+      tok("r-off", "switch_off()", "switch_off()", 188, 16);
+      tok("r-cm", "@contextmanager", "@contextmanager", 338, 16);
+      tok("r-yield", "        yield", "yield", 538, 14);
+      tok("r-fin", "    finally:", "finally:", 588, 14);
+      prep(document.getElementById("clamp"));
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      // dashed rings: fade + grow instead of a stroke draw (their dash pattern is the look)
+      const dash = (id, at) => tl.fromTo("#" + id, { opacity: 0, scale: 0.8, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)", immediateRender: false }, at);
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at, d) => tl.to("#hl", { y: row - 88, duration: d || 0.25, ease: "power2.inOut" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // the oven
+      const ovenOn = (at) => { show(["#lt-on", "#win-on"], at, 0.25); out("#st-off", at, 0.15); pop("#st-on", at + 0.05, { from: 0.8, d: 0.3 }); bump("#lt-on", at + 0.1, 1.2); };
+      const ovenOff = (at) => { out(["#lt-on", "#win-on", "#st-on"], at, 0.25); show("#st-off", at + 0.1, 0.2); };
+      const burn = (at) => { show("#cake-b", at, 0.5); pop("#sm1", at + 0.1, { from: 0.3 }); pop("#sm2", at + 0.3, { from: 0.3 }); pop("#sm3", at + 0.5, { from: 0.3 }); tl.to(["#sm1", "#sm2", "#sm3"], { y: -18, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, at + 0.6); };
+      const unburn = (at) => { out(["#cake-b", "#sm1", "#sm2", "#sm3"], at, 0.3); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. By hand: switch on, bake, switch off ---- */
+      type("#A1", 0.3, 14, 0.3);
+      type("#A2", 0.7, 22, 0.35);
+      type("#A3", 1.15, 12, 0.3);
+      tl.set("#hl", { y: 0 }, t(6) - 0.1);
+      show("#hl", t(6), 0.2);
+      ovenOn(t(9));
+      hlTo(138, t(12), 0.2);
+      bump("#cake", t(12) + 0.1, 1.05);
+      hlTo(188, t(14), 0.2);
+      ovenOff(t(16));
+
+      /* ---- 2. Tonight the cake burns: the last line never runs, the oven stays on ---- */
+      hlTo(88, t(17), 0.2);
+      ovenOn(t(18) + 0.2);
+      hlTo(138, t(20) - 0.2, 0.2);
+      burn(t(21));
+      tl.set("#hl-bad", { y: 0 }, 0);
+      show("#hl-bad", t(23), 0.15);
+      out("#hl", t(23), 0.15);
+      pop("#n-err", t(23) + 0.1, { from: 0.6 });
+      bump("#hl-bad", t(28), 1.03);
+      bump("#n-err", t(28) + 0.1, 1.08);
+      cursorIn(t(31));
+      cursorTo(136 + 12 * 18 + 10, 96 + 188 + 36, t(31), 0.5);
+      tl.to("#A3", { opacity: 0.35, duration: 0.25 }, t(34));
+      dash("r-off", t(34));
+      pop("#n-never", t(35), { from: 0.7 });
+      cursorTo(1810, 290, t(36) - 0.2, 0.55);
+      dash("r-light", t(38));
+      pop("#still", t(39), { from: 0.6 });
+      cursorOut(t(40) + 0.3);
+
+      /* ---- 3. The fix: a with block, held like a clamp ---- */
+      out(["#A1", "#A2", "#A3", "#n-err", "#n-never", "#r-off", "#hl-bad", "#r-light", "#still"], t(41), 0.3);
+      ovenOff(t(41));
+      unburn(t(41));
+      type("#B1", t(47), 18, 0.5);
+      type("#B2", t(51), 26, 0.45);
+      draw("clamp", t(55), 0.6);
+      bump("#clamp", t(58), 1.04);
+
+      /* ---- 4. enter: oven on. Your block runs, the cake burns. exit anyway: oven off ---- */
+      tl.set("#hl", { y: 138 - 88 }, t(62) - 0.1);
+      show("#hl", t(62), 0.2);
+      pop("#n-enter", t(65), { from: 0.6 });
+      ovenOn(t(69));
+      hlTo(188, t(72), 0.2);
+      burn(t(76));
+      tl.set("#hl-bad", { y: 188 - 138 }, t(76) - 0.05);
+      show("#hl-bad", t(76), 0.15);
+      out("#hl", t(76), 0.15);
+      pop("#n-err2", t(76) + 0.1, { from: 0.6 });
+      cursorIn(t(79) - 0.2);
+      cursorTo(96 + 40 + 120, 96 + 256 + 40, t(79) - 0.2, 0.55);
+      pop("#n-exit", t(85), { from: 0.6 });
+      bump("#clamp", t(85) + 0.1, 1.04);
+      bump("#n-exit", t(86) + 0.1, 1.06);
+      ovenOff(t(90));
+      unburn(t(91) + 0.4);
+      pop("#offok", t(91), { from: 0.6 });
+      cursorOut(t(91) + 0.3);
+
+      /* ---- 5. Make your own: contextmanager on a generator ---- */
+      out(["#hl-bad", "#n-err2"], t(92), 0.25);
+      type("#C1", t(97) + 0.1, 15, 0.4);
+      draw("r-cm", t(98) + 0.2, 0.45);
+      type("#C2", t(101), 18, 0.35);
+      out("#r-cm", t(102) - 0.1, 0.2);
+      type("#C3", t(102), 19, 0.4);
+      pop("#n-like-en", t(105) - 0.2, { from: 0.7 });
+      type("#C4", t(106), 8, 0.2);
+      type("#C5", t(107), 13, 0.25);
+      draw("r-yield", t(107) + 0.25, 0.4);
+      // the with block runs while the generator waits there
+      tl.set("#hl", { y: 188 - 88 }, t(109) - 0.1);
+      show("#hl", t(109), 0.2);
+      bump("#clamp", t(111), 1.04);
+      pop("#n-wait", t(115), { from: 0.7 });
+      // switch off under finally, so it runs even after an error
+      out(["#hl", "#r-yield"], t(117) - 0.1, 0.2);
+      type("#C6", t(117), 12, 0.25);
+      type("#C7", t(118), 20, 0.35);
+      draw("r-fin", t(121), 0.45);
+      pop("#n-like-ex", t(124), { from: 0.7 });
+      bump("#offok", t(126), 1.06);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 53.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

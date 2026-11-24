@@ -1,0 +1,64 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-head { left: 110px; font: 700 76px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    .t-head code { font: 500 70px/1 "JetBrains Mono", monospace; color: #3b37e6; letter-spacing: 0; }
+    #t-h1 { top: 120px; }
+    #t-h2 { top: 230px; }
+    #t-h3 { top: 400px; font-size: 96px; }
+    #t-cook { left: 855px; top: 570px; width: 110px; height: 140px; opacity: 0; }
+    #t-cook > .face { position: absolute; left: 7px; top: 40px; width: 96px; height: 96px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #t-cook > .hat { position: absolute; left: 17px; top: 0; width: 76px; height: 48px; border-radius: 32px 32px 6px 6px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #t-cook .eye { position: absolute; top: 34px; width: 13px; height: 13px; border-radius: 50%; background: #0e0c1d; }
+    #t-cook .smile { position: absolute; left: 32px; top: 52px; width: 32px; height: 18px; border-bottom: 5px solid #0e0c1d; border-radius: 0 0 20px 20px; }
+    .tpot { position: absolute; top: 760px; width: 200px; height: 96px; background: #fff; border-radius: 12px 12px 30px 30px; opacity: 0; font: 500 34px/96px "JetBrains Mono", monospace; text-align: center; }
+    .tpot > i { position: absolute; left: 20px; right: 20px; top: -24px; height: 18px; border-radius: 10px 10px 3px 3px; background: #0e0c1d; }
+    #t-stove { left: 760px; top: 866px; width: 760px; height: 24px; border-radius: 8px; background: #0e0c1d; opacity: 0; }
+    #t-next { left: 110px; top: 950px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.7" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head"><code>await</code> says: I'm waiting,</div>
+      <div id="t-h2" class="t-abs t-head">go do <span class="a">something else</span>.</div>
+      <div id="t-h3" class="t-abs t-head">One cook, <span class="a">many pots</span>.</div>
+      <div id="t-cook" class="t-abs"><div class="face"><div class="eye" style="left:26px"></div><div class="eye" style="left:57px"></div><div class="smile"></div></div><div class="hat"></div></div>
+      <div class="tpot t-ol" id="tp1" style="left:810px"><i></i>rice</div>
+      <div class="tpot t-ol" id="tp2" style="left:1040px"><i></i>eggs</div>
+      <div class="tpot t-ol" id="tp3" style="left:1270px"><i></i>veg</div>
+      <div id="t-stove" class="t-abs"></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 101: The data model</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 60.2;
+      const g = { await: 60.288, im: 61.135, go: 61.983, one: 63.457, cook: 63.759, many: 64.316, pots: 64.676 };
+      const tl = gsap.timeline({ paused: true });
+      const pop = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at);
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.await - S - 0.1));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.go - S - 0.1);
+      tl.fromTo("#t-h3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.one - S - 0.1);
+      pop("#t-cook", g.cook - S);
+      tl.fromTo("#t-stove", { opacity: 0 }, { opacity: 1, duration: 0.3 }, g.many - S - 0.2);
+      pop("#tp1", g.many - S);
+      pop("#tp2", g.many - S + 0.15);
+      pop("#tp3", g.pots - S);
+      tl.to("#t-cook", { x: 230, duration: 0.35, ease: "power3.inOut" }, g.pots - S + 0.4);
+      tl.to("#t-cook", { x: 460, duration: 0.35, ease: "power3.inOut" }, g.pots - S + 0.9);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.pots - S + 0.95);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

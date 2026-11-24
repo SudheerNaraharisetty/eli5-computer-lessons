@@ -1,0 +1,368 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* the code panel: rows 54 px apart, text at page x 96 + 72 = 168; 28 px mono = 16.8 px per char */
+    #s-code { left: 96px; top: 96px; width: 820px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 820px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 18px; width: 36px; text-align: right; font: 500 28px/48px "JetBrains Mono", monospace; color: #a9a5d6; }
+    .cl { position: absolute; left: 72px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .cl .s { color: #7cf0b5; }
+    .cl .k { color: #ffc24b; }
+    .cl .b { color: #ff8fab; }
+    .hl { position: absolute; left: 0; width: 820px; height: 48px; opacity: 0; }
+    .hl.bad { background: #43183a; }
+    .hl.ok { background: #143a33; }
+
+    /* the cook */
+    #cook { left: 1075px; top: 76px; width: 110px; height: 140px; }
+    #cook > .face { position: absolute; left: 7px; top: 40px; width: 96px; height: 96px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #cook > .hat { position: absolute; left: 17px; top: 0; width: 76px; height: 48px; border-radius: 32px 32px 6px 6px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #cook .eye { position: absolute; top: 34px; width: 13px; height: 13px; border-radius: 50%; background: #0e0c1d; }
+    #cook .shut { position: absolute; top: 40px; width: 20px; height: 5px; border-radius: 3px; background: #0e0c1d; opacity: 0; }
+    #cook .smile { position: absolute; left: 32px; top: 52px; width: 32px; height: 18px; border-bottom: 5px solid #0e0c1d; border-radius: 0 0 20px 20px; }
+    #zzz { left: 1196px; top: 56px; font: 700 48px/56px "Fraunces", serif; color: #3b37e6; opacity: 0; white-space: nowrap; }
+    #bubble { left: 1214px; top: 98px; height: 70px; padding: 0 26px; background: #fff; border-radius: 20px; font: 800 30px/70px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #bubble > i { position: absolute; left: -22px; top: 22px; width: 0; height: 0; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-right: 22px solid #0e0c1d; }
+
+    /* stove and pots */
+    #stove { left: 990px; top: 398px; width: 840px; height: 26px; border-radius: 8px; background: #0e0c1d; }
+    .pot { position: absolute; top: 284px; width: 230px; height: 104px; background: #fff; border-radius: 12px 12px 34px 34px; }
+    .pot > .lid { position: absolute; left: 22px; right: 22px; top: -26px; height: 20px; border-radius: 10px 10px 3px 3px; background: #0e0c1d; }
+    .pot > .dn { position: absolute; left: 0; width: 230px; top: 8px; text-align: center; font: 500 34px/44px "JetBrains Mono", monospace; }
+    .pot > .mn { position: absolute; left: 0; width: 230px; top: 52px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; opacity: 0; }
+    .steam { position: absolute; top: 222px; width: 90px; height: 36px; overflow: visible; opacity: 0; }
+    .steam path { fill: none; stroke: #8a8698; stroke-width: 5; stroke-linecap: round; }
+
+    /* the timeline lanes: x 1100 is minute 0, 24 px per minute, minute 30 at x 1820 */
+    .lab { position: absolute; left: 976px; font: 500 30px/50px "JetBrains Mono", monospace; opacity: 0; }
+    .bar { position: absolute; left: 1100px; height: 50px; border-radius: 10px; color: #fff; font: 800 28px/50px "Manrope", sans-serif; padding-left: 14px; white-space: nowrap; overflow: hidden; clip-path: inset(0% 100% 0% 0%); }
+    #axis { left: 1100px; top: 668px; width: 724px; height: 5px; background: #0e0c1d; opacity: 0; }
+    .tk { position: absolute; top: 682px; width: 80px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #5d596e; opacity: 0; }
+    #done { left: 1097px; top: 440px; width: 6px; height: 232px; background: #0e0c1d; opacity: 0; }
+    .chk { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 30px/44px "Manrope", sans-serif; opacity: 0; }
+
+    .pill { position: absolute; height: 64px; padding: 0 26px; border-radius: 14px; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 5px #b8235a; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 5px #1f7a5c; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .guest { position: absolute; top: 770px; height: 64px; padding: 0 24px; border-radius: 32px; color: #fff; font: 800 34px/64px "Manrope", sans-serif; opacity: 0; }
+
+    #s-lines { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">dinner.py</span></div>
+          <div class="hl bad" id="hlB" style="top:354px"></div>
+          <div class="hl ok" id="hlO" style="top:354px"></div>
+          <div class="ln" style="top:84px">1</div>
+          <div class="ln" style="top:138px">2</div>
+          <div class="ln" style="top:192px">3</div>
+          <div class="ln" style="top:246px">4</div>
+          <div class="ln" style="top:300px">5</div>
+          <div class="ln" style="top:354px">6</div>
+          <div class="ln" style="top:408px">7</div>
+          <div class="ln" style="top:462px">8</div>
+          <div class="ln" style="top:516px">9</div>
+          <div class="ln" style="top:570px">10</div>
+          <div class="ln" style="top:624px">11</div>
+          <div class="ln" style="top:678px">12</div>
+          <div class="ln" style="top:732px">13</div>
+          <div class="ln" style="top:786px">14</div>
+          <div class="cl" id="c0" style="top:84px"><span class="k">import</span> asyncio</div>
+          <div class="cl" id="c1" style="top:138px"><span class="k">import</span> time</div>
+          <div class="cl" id="c2" style="top:192px">MINUTE = 0.1</div>
+          <div class="cl" id="c4" style="top:300px"><span class="k">async def</span> cook(dish, minutes):</div>
+          <div class="cl" id="c5" style="top:354px">    <span class="k">await</span> asyncio.sleep(minutes * MINUTE)</div>
+          <div class="cl" id="c5b" style="top:354px">    <span class="b">time.sleep</span>(minutes * MINUTE)</div>
+          <div class="cl" id="c5c" style="top:354px">    <span class="k">await</span> asyncio.sleep(minutes * MINUTE)</div>
+          <div class="cl" id="c6" style="top:408px">    <span class="k">return</span> dish</div>
+          <div class="cl" id="c8" style="top:516px"><span class="k">async def</span> main():</div>
+          <div class="cl" id="c9" style="top:570px">    <span class="k">await</span> asyncio.gather(</div>
+          <div class="cl" id="c10" style="top:624px">        cook(<span class="s">"rice"</span>, 15),</div>
+          <div class="cl" id="c11" style="top:678px">        cook(<span class="s">"eggs"</span>, 10),</div>
+          <div class="cl" id="c12" style="top:732px">        cook(<span class="s">"veg"</span>, 5))</div>
+          <div class="cl" id="c13" style="top:786px">asyncio.run(main())</div>
+        </div>
+
+        <!-- the cook, the stove and three pots -->
+        <div id="cook" class="s-abs">
+          <div class="face">
+            <div class="eye" style="left:26px"></div><div class="eye" style="left:57px"></div>
+            <div class="shut" style="left:22px"></div><div class="shut" style="left:54px"></div>
+            <div class="smile"></div>
+          </div>
+          <div class="hat"></div>
+        </div>
+        <div id="zzz" class="s-abs">z z Z</div>
+        <div id="bubble" class="s-abs s-ol"><i></i>I'm waiting, go do something else</div>
+
+        <svg class="steam" id="stR" style="left:1085px" viewBox="0 0 90 44"><path d="M15 42 C5 30 25 22 15 6" /><path d="M45 42 C35 30 55 22 45 6" /><path d="M75 42 C65 30 85 22 75 6" /></svg>
+        <svg class="steam" id="stE" style="left:1365px" viewBox="0 0 90 44"><path d="M15 42 C5 30 25 22 15 6" /><path d="M45 42 C35 30 55 22 45 6" /><path d="M75 42 C65 30 85 22 75 6" /></svg>
+        <svg class="steam" id="stV" style="left:1645px" viewBox="0 0 90 44"><path d="M15 42 C5 30 25 22 15 6" /><path d="M45 42 C35 30 55 22 45 6" /><path d="M75 42 C65 30 85 22 75 6" /></svg>
+        <div class="pot s-ol" id="pR" style="left:1015px"><div class="lid"></div><div class="dn">rice</div><div class="mn" id="mR">15 min</div></div>
+        <div class="pot s-ol" id="pE" style="left:1295px"><div class="lid"></div><div class="dn">eggs</div><div class="mn" id="mE">10 min</div></div>
+        <div class="pot s-ol" id="pV" style="left:1575px"><div class="lid"></div><div class="dn">veg</div><div class="mn" id="mV">5 min</div></div>
+        <div id="stove" class="s-abs"></div>
+
+        <!-- the timeline lanes -->
+        <div class="lab" id="lR" style="top:460px">rice</div>
+        <div class="lab" id="lE" style="top:530px">eggs</div>
+        <div class="lab" id="lV" style="top:600px">veg</div>
+        <div class="bar" data-layout-ignore id="bR" style="top:460px; width:360px; background:#b9741a">15 min</div>
+        <div class="bar" data-layout-ignore id="bE" style="top:530px; width:240px; background:#3b37e6">10 min</div>
+        <div class="bar" data-layout-ignore id="bV" style="top:600px; width:120px; background:#1f7a5c">5 min</div>
+        <div id="axis" class="s-abs"></div>
+        <div class="tk" id="k0" style="left:1060px">0</div>
+        <div class="tk" id="k15" style="left:1420px">15</div>
+        <div class="tk" id="k30" style="left:1780px">30</div>
+        <div id="done" class="s-abs"></div>
+        <div class="chk" id="kV" style="left:1230px; top:603px">✓</div>
+        <div class="chk" id="kE" style="left:1350px; top:533px">✓</div>
+        <div class="chk" id="kR" style="left:1470px; top:463px">✓</div>
+
+        <svg id="s-lines" class="s-abs" viewBox="0 0 1920 1080">
+          <line id="ghost" x1="1823" y1="440" x2="1823" y2="672" stroke="#b8235a" stroke-width="5" stroke-dasharray="12 10" opacity="0" />
+          <line id="strike" x1="1786" y1="712" x2="1860" y2="688" stroke="#b8235a" stroke-width="6" stroke-linecap="round" opacity="0" />
+        </svg>
+
+        <!-- guests and result pills -->
+        <div class="guest" id="gA" style="left:976px; background:#3b37e6">Ana</div>
+        <div class="guest" id="gB" style="left:1112px; background:#1f7a5c">Ben</div>
+        <div class="guest" id="gC" style="left:1248px; background:#b8235a">Chloe</div>
+        <div class="pill bad" id="pSeq" style="left:976px; top:770px">one by one: 30 min</div>
+        <div class="pill acc" id="pAsy" style="left:976px; top:770px">async: start it, move on</div>
+        <div class="pill ok" id="pTog" style="left:976px; top:770px">together: 15 min</div>
+        <div class="pill bad" id="pBad" style="left:976px; top:770px">30 min again</div>
+        <div class="pill bad" id="wrong" style="left:1290px; top:770px">WRONG</div>
+        <div class="pill ok" id="pFix" style="left:976px; top:770px">the pot waits, not the cook</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-ad" style="stroke:#ffc24b" />
+          <path id="r-aw1" style="stroke:#ffc24b" />
+          <path id="r-ga" style="stroke:#ffc24b" />
+          <path id="r-rice" style="stroke:#ffc24b" />
+          <path id="r-aw2" style="stroke:#ffc24b" />
+          <path id="r-eggs" style="stroke:#ffc24b" />
+          <path id="r-aw3" style="stroke:#ffc24b" />
+          <path id="r-veg" style="stroke:#ffc24b" />
+          <path id="r-ts" style="stroke:#ff8fab" />
+          <path id="r-aw4" style="stroke:#7cf0b5" />
+          <path id="r-cook" style="stroke:#b8235a" />
+          <path id="r-sleep" style="stroke:#b8235a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.43, 0.639, 1.068, 1.312, 1.451, 2.368, 2.67, 2.995, 3.448, 4.005, 4.342, 4.667, 5.12, 5.317, 5.445, 5.782, 6.177, 7.047, 7.326, 7.535, 7.732, 7.953, 8.348, 8.591, 8.882, 9.23, 9.625, 10.716, 10.925, 11.389, 11.564, 12.016, 12.26, 12.55, 13.433, 13.595, 13.839, 14.164, 14.547, 14.687, 15.279, 15.476, 15.697, 15.825, 16.44, 16.8, 17.624, 18.008, 18.333, 19.54, 20.051, 20.388, 20.666, 20.771, 21.224, 21.409, 21.641, 22.605, 22.837, 23.058, 23.476, 23.604, 23.882, 24.602, 24.892, 25.542, 25.856, 26.065, 26.46, 27.388, 28.143, 28.526, 28.898, 29.223, 29.757, 30.082, 30.279, 30.616, 30.72, 30.848, 31.614, 31.812, 32.102, 32.845, 33.101, 33.89, 34.041, 34.401, 34.784, 34.912, 35.062, 35.655, 36.084, 36.804, 37.059, 37.21, 37.384, 38.22, 38.383, 38.685, 38.871, 39.184, 39.834, 40.078, 40.241, 40.717, 41.076, 41.251, 42.214, 42.632, 42.888, 43.364, 43.956, 44.234, 45.001, 45.326, 46.231, 46.649, 46.939, 47.311, 47.555, 48.135, 48.484, 48.797, 48.925, 49.192, 49.331, 49.645, 49.749, 49.877, 50.817, 51.189, 51.444, 52.153, 52.582, 52.896, 53.72, 54.057, 54.44, 55.102, 55.45, 55.833, 56.17, 56.599, 57.435, 57.586, 57.83, 58.492, 58.724, 58.852, 59.688, 60.129, 60.535, 60.756, 61.383, 61.673, 61.859, 62.277, 62.857, 63.159, 63.716, 64.076];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      // a code token: text starts at page x 168, row i centre y = 96 + 84 + 54 i + 24
+      const ctok = (id, text, sub, row) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 168 + ((c0 + c1) / 2) * 16.8, 204 + row * 54, (sub.length * 16.8) / 2 + 16, 28); };
+      const L5 = "    await asyncio.sleep(minutes * MINUTE)";
+      ctok("r-ad", "async def cook(dish, minutes):", "async def", 4);
+      ctok("r-aw1", L5, "await", 5);
+      ctok("r-ga", "    await asyncio.gather(", "asyncio.gather", 9);
+      ctok("r-rice", '        cook("rice", 15),', 'cook("rice", 15)', 10);
+      ctok("r-aw2", L5, "await", 5);
+      ctok("r-eggs", '        cook("eggs", 10),', 'cook("eggs", 10)', 11);
+      ctok("r-aw3", L5, "await", 5);
+      ctok("r-veg", '        cook("veg", 5))', 'cook("veg", 5)', 12);
+      ctok("r-ts", "    time.sleep(minutes * MINUTE)", "time.sleep", 5);
+      ctok("r-aw4", L5, "await asyncio.sleep", 5);
+      ring("r-cook", 1130, 154, 92, 92);
+      ring("r-sleep", 1130, 154, 92, 92);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const grow = (sel, at, d) => tl.fromTo(sel, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "none", immediateRender: false }, at);
+      const cookTo = (pot, at, d) => tl.to("#cook", { x: pot * 280, duration: d || 0.4, ease: "power3.inOut" }, at);
+      const doneTo = (min, at, d) => tl.to("#done", { x: min * 24, duration: d || 0.5, ease: "power3.inOut" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 760, y: 900 }, 0);
+      tl.set("#wrong", { rotation: -4 }, 0);
+      tl.set("#bE", { x: 360 }, 0);
+      tl.set("#bV", { x: 600 }, 0);
+      tl.set("#done", { x: 720 }, 0);
+
+      /* ---- 1. Dinner for Ana, Ben and Chloe. Rice 15, eggs 10, veg 5 ---- */
+      pop("#gA", t(2), { d: 0.35 });
+      pop("#gB", t(3), { d: 0.35 });
+      pop("#gC", t(5), { d: 0.35 });
+      bump("#pR", t(6), 1.06);
+      pop("#mR", t(8), { d: 0.35 });
+      bump("#pE", t(10), 1.06);
+      pop("#mE", t(12), { d: 0.35 });
+      bump("#pV", t(15), 1.06);
+      pop("#mV", t(17), { d: 0.35 });
+
+      /* ---- 2. One by one: 30 minutes, staring at each pot ---- */
+      const T = t(18), s = (t(27) - t(18)) / 30;
+      out(["#gA", "#gB", "#gC"], T - 0.3, 0.25);
+      show(["#lR", "#lE", "#lV", "#axis", "#k0", "#k15", "#k30"], T - 0.2, 0.3);
+      show("#stR", T, 0.2);
+      grow("#bR", T, 15 * s);
+      out("#stR", T + 15 * s, 0.15);
+      cookTo(1, T + 15 * s - 0.1, 0.25);
+      show("#stE", T + 15 * s, 0.2);
+      grow("#bE", T + 15 * s, 10 * s);
+      out("#stE", T + 25 * s, 0.15);
+      cookTo(2, T + 25 * s - 0.1, 0.25);
+      show("#stV", T + 25 * s, 0.2);
+      grow("#bV", T + 25 * s, 5 * s);
+      out("#stV", T + 30 * s, 0.15);
+      show("#done", T + 30 * s, 0.2);
+      pop("#pSeq", t(26), { d: 0.35 });
+      tl.set("#r-cook", { x: 560 }, 0);
+      draw("r-cook", t(31), 0.5);
+
+      /* ---- 3. A good cook starts the rice and moves on. That is async ---- */
+      out(["#bR", "#bE", "#bV", "#done", "#pSeq", "#r-cook"], t(35) - 0.2, 0.25);
+      cookTo(0, t(36), 0.45);
+      show("#stR", t(40), 0.3);
+      bump("#pR", t(40), 1.05);
+      cookTo(1, t(45), 0.4);
+      pop("#pAsy", t(47), { d: 0.35 });
+
+      /* ---- 4. async def: a recipe that can pause. await: I'm waiting, go do something else ---- */
+      out("#stR", t(50) - 0.1, 0.2);
+      out("#pAsy", t(50) + 0.3, 0.2);
+      tl.set(["#bE", "#bV", "#done"], { x: 0 }, t(50));
+      tl.set(["#bR", "#bE", "#bV"], { clipPath: "inset(0% 100% 0% 0%)", opacity: 1 }, t(50));
+      type("#c0", t(50) - 0.1, 14, 0.2);
+      type("#c1", t(50), 11, 0.2);
+      type("#c2", t(50) + 0.1, 12, 0.2);
+      type("#c4", t(50) + 0.2, 30, 0.5);
+      draw("r-ad", t(51), 0.4);
+      type("#c5", t(55), 41, 0.6);
+      type("#c6", t(56), 15, 0.25);
+      out("#r-ad", t(58) - 0.2, 0.2);
+      draw("r-aw1", t(60), 0.4);
+      cookTo(0, t(58), 0.4);
+      pop("#bubble", t(64), { from: 0.7, d: 0.4 });
+      out(["#bubble", "#r-aw1"], t(70) - 0.45, 0.25);
+
+      /* ---- 5. asyncio.gather puts all three on the stove; the cook jumps at each await ---- */
+      type("#c8", t(70), 17, 0.3);
+      type("#c9", t(71), 25, 0.4);
+      type("#c10", t(72), 25, 0.35);
+      type("#c11", t(73), 25, 0.35);
+      type("#c12", t(73) + 0.35, 23, 0.35);
+      type("#c13", t(74) - 0.1, 19, 0.3);
+      draw("r-ga", t(74), 0.4);
+      bump("#pR", t(75), 1.05);
+      bump("#pE", t(77), 1.05);
+      bump("#pV", t(80), 1.05);
+      out("#r-ga", t(81) - 0.2, 0.2);
+      draw("r-rice", t(82), 0.35);
+      show("#stR", t(83), 0.3);
+      draw("r-aw2", t(85), 0.35);
+      out(["#r-rice", "#r-aw2"], t(88), 0.2);
+      cookTo(1, t(88), 0.45);
+      draw("r-eggs", t(91), 0.35);
+      show("#stE", t(91), 0.3);
+      draw("r-aw3", t(92), 0.35);
+      out(["#r-eggs", "#r-aw3"], t(94), 0.2);
+      cookTo(2, t(94) + 0.2, 0.45);
+      draw("r-veg", t(97), 0.35);
+      show("#stV", t(97), 0.3);
+
+      /* ---- 6. All three cook at once: veg, then eggs, then rice. 15 minutes ---- */
+      const T2 = t(98), r = 0.207;
+      out("#r-veg", T2, 0.2);
+      grow("#bR", T2, 15 * r);
+      grow("#bE", T2, 10 * r);
+      grow("#bV", T2, 5 * r);
+      out("#stV", T2 + 5 * r, 0.15);
+      pop("#kV", T2 + 5 * r, { d: 0.3 });
+      out("#stE", T2 + 10 * r, 0.15);
+      pop("#kE", T2 + 10 * r, { d: 0.3 });
+      out("#stR", T2 + 15 * r, 0.15);
+      pop("#kR", T2 + 15 * r, { d: 0.3 });
+      tl.set("#done", { x: 360 }, T2 + 15 * r);
+      show("#done", T2 + 15 * r, 0.2);
+      pop("#pTog", t(111), { d: 0.35 });
+      show("#ghost", t(113), 0.3);
+      show("#strike", t(114), 0.2);
+
+      /* ---- 7. The trap: time.sleep puts the cook to sleep at the stove ---- */
+      out(["#pTog", "#ghost", "#strike", "#kV", "#kE", "#kR"], t(115), 0.25);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(115));
+      cursorTo(168 + 9 * 16.8, 204 + 5 * 54 + 6, t(115) + 0.1, 0.5);
+      out("#c5", t(117), 0.15);
+      type("#c5b", t(117), 32, 0.45);
+      show("#hlB", t(117), 0.2);
+      draw("r-ts", t(119), 0.4);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(120));
+      cookTo(0, t(124), 0.5);
+      tl.set("#cook .eye", { opacity: 0 }, t(127));
+      tl.set("#cook .shut", { opacity: 1 }, t(127));
+      pop("#zzz", t(127), { from: 0.5, d: 0.4 });
+      show("#stR", t(127), 0.2);
+      draw("r-sleep", t(130), 0.45);
+      tl.to(["#pE", "#pV"], { opacity: 0.35, duration: 0.3 }, t(131));
+      tl.to("#bE", { x: 360, duration: 0.8, ease: "power3.inOut" }, t(131));
+      tl.to("#bV", { x: 600, duration: 0.8, ease: "power3.inOut" }, t(131) + 0.1);
+      doneTo(30, t(131) + 0.2, 0.8);
+      pop("#pBad", t(134), { d: 0.35 });
+      pop("#wrong", t(134) + 0.15, { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- 8. The fix: await asyncio.sleep. The pot waits, not the cook ---- */
+      out(["#pBad", "#wrong", "#r-ts", "#r-sleep"], t(137) - 0.1, 0.25);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(137));
+      cursorTo(168 + 6 * 16.8, 204 + 5 * 54 + 6, t(137), 0.35);
+      out(["#c5b", "#hlB"], t(138), 0.15);
+      type("#c5c", t(138), 41, 0.55);
+      show("#hlO", t(138), 0.2);
+      draw("r-aw4", t(143), 0.45);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(144));
+      out("#zzz", t(145), 0.2);
+      tl.set("#cook .shut", { opacity: 0 }, t(145) + 0.1);
+      tl.set("#cook .eye", { opacity: 1 }, t(145) + 0.1);
+      tl.to(["#pE", "#pV"], { opacity: 1, duration: 0.3 }, t(146));
+      show(["#stE", "#stV"], t(147), 0.3);
+      tl.to(["#bE", "#bV"], { x: 0, duration: 0.8, ease: "power3.inOut" }, t(146));
+      doneTo(15, t(146) + 0.1, 0.8);
+      bump("#cook", t(150), 1.1);
+      pop("#pFix", t(145), { d: 0.35 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 60.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

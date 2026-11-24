@@ -1,0 +1,17 @@
+Dinner for Ana, Ben and Chloe. Rice takes fifteen minutes, eggs take ten, and the veg takes five.
+
+Cook them one by one, and dinner takes thirty minutes. You stand and stare at each pot.
+
+A good cook starts the rice, and while it cooks, moves on. That is async.
+
+Async def makes a recipe that can pause. At each await, the cook says: I'm waiting, go do something else.
+
+Async I O dot gather puts all three on the stove. The rice starts. At await, the cook jumps to the eggs. Await again, on to the veg.
+
+The veg is ready first, then the eggs, then the rice. Dinner in fifteen minutes, not thirty.
+
+One trap. Time dot sleep in async code puts the cook to sleep at the stove. Nothing else moves. Thirty minutes again.
+
+Write await async I O dot sleep instead. The pot waits, not the cook.
+
+Await says: I'm waiting, go do something else. One cook, many pots.

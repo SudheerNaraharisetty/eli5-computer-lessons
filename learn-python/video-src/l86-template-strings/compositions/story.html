@@ -1,0 +1,279 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* the menu card: a small browser window */
+    #card { left: 1200px; top: 96px; width: 640px; height: 330px; background: #fff; border-radius: 22px; }
+    #card > .bar { position: absolute; left: 0; top: 0; width: 640px; height: 60px; border-radius: 22px 22px 0 0; background: #ece7df; border-bottom: 4px solid #0e0c1d; }
+    #card > .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; }
+    #card > .bar > span { position: absolute; left: 118px; top: 10px; font: 500 28px/40px "JetBrains Mono", monospace; color: #3e3b52; }
+    .row { position: absolute; left: 34px; white-space: nowrap; font: 600 34px/50px "Manrope", sans-serif; color: #3e3b52; }
+    .row::before { content: ""; position: absolute; left: 0; top: 21px; width: 10px; height: 10px; border-radius: 50%; background: #0e0c1d; }
+    .row { padding-left: 28px; }
+    .row.b { font-weight: 800; color: #0e0c1d; }
+    .row .tg { font: 500 32px/50px "JetBrains Mono", monospace; color: #7a4708; background: #fbebd2; border-radius: 8px; padding: 0 6px; }
+    .row .pl { font: 500 32px/50px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .row .mu { color: #6f6b80; }
+    #wrong { left: 1590px; top: 380px; height: 70px; padding: 0 28px; border-radius: 16px; background: #fbe0ea; color: #b8235a; font: 800 38px/70px "Manrope", sans-serif; box-shadow: 0 0 0 5px #b8235a; white-space: nowrap; }
+    #safe { left: 1640px; top: 380px; height: 70px; padding: 0 28px; border-radius: 16px; background: #ddefe6; color: #1f7a5c; font: 800 38px/70px "Manrope", sans-serif; box-shadow: 0 0 0 5px #1f7a5c; white-space: nowrap; }
+
+    /* Ben's note, typed by the guest */
+    #inp { left: 1200px; top: 500px; width: 640px; height: 160px; background: #fff; border-radius: 22px; }
+    #inp > .lb { position: absolute; left: 28px; top: 16px; font: 800 30px/40px "Manrope", sans-serif; }
+    #inp > .fld { position: absolute; left: 28px; top: 70px; width: 584px; height: 64px; border-radius: 12px; background: #f6f1eb; box-shadow: inset 0 0 0 3px #6f6b80; }
+    #note { position: absolute; left: 20px; top: 0; font: 500 32px/64px "JetBrains Mono", monospace; white-space: pre; }
+    #fly { left: 1248px; top: 570px; height: 56px; padding: 0 16px; border-radius: 12px; background: #fbebd2; color: #7a4708; font: 500 30px/56px "JetBrains Mono", monospace; white-space: pre; box-shadow: 0 0 0 4px #b9741a; }
+    #script { left: 1200px; top: 720px; height: 64px; padding: 0 26px; border-radius: 999px; background: #fbe0ea; color: #b8235a; font: 800 30px/64px "Manrope", sans-serif; white-space: nowrap; box-shadow: 0 0 0 4px #b8235a; }
+    #script b { font: 500 30px/64px "JetBrains Mono", monospace; }
+
+    /* the template: two trays */
+    #tp { left: 1200px; top: 486px; width: 640px; height: 364px; background: #fff; border-radius: 22px; }
+    #tp > .tt { position: absolute; left: 28px; top: 14px; font: 700 40px/52px "Fraunces", serif; color: #3b37e6; }
+    .tlb { position: absolute; left: 28px; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    .tray { position: absolute; left: 20px; width: 600px; height: 86px; border-radius: 16px; background: #f6f1eb; box-shadow: inset 0 0 0 3px #ece7df; }
+    .chip { position: absolute; top: 15px; height: 56px; padding: 0 15px; border-radius: 12px; font: 500 28px/56px "JetBrains Mono", monospace; white-space: pre; }
+    .chip.fx { background: #ece7df; color: #3e3b52; box-shadow: 0 0 0 3px #6f6b80; }
+    .chip.val { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 3px #3b37e6; }
+    #vbox { position: relative; display: inline-block; vertical-align: top; width: 353px; height: 56px; }
+    #v0, #v1 { position: absolute; left: 0; top: 0; }
+    .pill { position: absolute; top: 25px; height: 40px; padding: 0 16px; border-radius: 999px; font: 800 28px/40px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 3px #1f7a5c; }
+    .pill.acc { background: #3b37e6; color: #fff; }
+    #joined { left: 1199px; top: 884px; width: 642px; height: 64px; border-radius: 14px; background: #15132b; color: #eceaff; font: 500 28px/64px "JetBrains Mono", monospace; white-space: pre; padding-left: 18px; }
+    #joined .v { color: #7cf0b5; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #hl { position: absolute; left: 14px; top: 88px; width: 1012px; height: 50px; border-radius: 10px; background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; opacity: 0; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a5d6; }
+    #pfx { position: relative; display: inline-block; vertical-align: top; width: 18px; height: 50px; }
+    #pf, #pt { position: absolute; left: 0; top: 0; }
+    #pt { color: #ffc24b; }
+    .s-note { position: absolute; height: 54px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="59.4" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the menu card -->
+        <div id="card" class="s-abs s-ol">
+          <div class="bar"><i style="left:22px; background:#b8235a"></i><i style="left:50px; background:#b9741a"></i><i style="left:78px; background:#1f7a5c"></i><span>menu.html</span></div>
+          <div class="row" id="ra" style="top:88px">Ana: pasta</div>
+          <div class="row" id="rb0" style="top:162px"><span class="mu">Ben: ...</span></div>
+          <div class="row" id="rb1" style="top:162px; opacity:0">Ben: <span class="tg">&lt;b&gt;</span>extra cheese</div>
+          <div class="row b" id="rb2" style="top:162px; opacity:0">Ben: extra cheese</div>
+          <div class="row" id="rb3" style="top:162px; opacity:0">Ben: <span class="pl">&lt;b&gt;</span>extra cheese</div>
+          <div class="row" id="rc0" style="top:236px">Chloe: brownie</div>
+          <div class="row b" id="rc1" style="top:236px; opacity:0">Chloe: brownie</div>
+        </div>
+        <div id="wrong" class="s-abs s-hide">WRONG</div>
+        <div id="safe" class="s-abs s-hide">safe</div>
+
+        <!-- Ben types his note -->
+        <div id="inp" class="s-abs s-ol s-hide">
+          <div class="lb">Ben's note</div>
+          <div class="fld"><div id="note">&lt;b&gt;extra cheese</div></div>
+        </div>
+        <div id="fly" class="s-abs s-hide">&lt;b&gt;extra cheese</div>
+        <div id="script" class="s-abs s-hide">next time: <b>&lt;script&gt;</b> runs code</div>
+
+        <!-- the template: two trays -->
+        <div id="tp" class="s-abs s-ol s-hide">
+          <div class="tt">Template</div>
+          <div class="tlb s-hide" id="lb1" style="top:74px">fixed text</div>
+          <div class="tray s-hide" id="tr1" style="top:114px">
+            <div class="chip fx s-hide" id="c1" style="left:14px">"&lt;li&gt;Ben: "</div>
+            <div class="chip fx s-hide" id="c2" style="left:243px">"&lt;/li&gt;"</div>
+          </div>
+          <div class="pill ok s-hide" id="asis" style="left:448px; top:138px">as is</div>
+          <div class="tlb s-hide" id="lb2" style="top:214px">values</div>
+          <div class="tray s-hide" id="tr2" style="top:254px">
+            <div class="chip val s-hide" id="c3" style="left:14px"><span id="vbox" data-layout-allow-overlap><span id="v0">&lt;b&gt;extra cheese</span><span id="v1" class="s-hide">&amp;lt;b&amp;gt;extra cheese</span></span></div>
+          </div>
+          <div class="pill acc s-hide" id="esc" style="left:446px; top:278px">escaped</div>
+        </div>
+        <div id="joined" class="s-abs s-hide">&lt;li&gt;Ben: <span class="v">&amp;lt;b&amp;gt;extra cheese</span>&lt;/li&gt;</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">menu_card.py</span></div>
+          <div id="hl"></div>
+          <div class="ln" id="L0" style="top:88px">note = <span class="m">"&lt;b&gt;extra cheese"</span>   <span class="c"># Ben typed it</span></div>
+          <div class="ln" id="L2" style="top:188px">line = <span id="pfx" data-layout-allow-overlap><span id="pf" class="m">f</span><span id="pt" class="s-hide">t</span></span><span class="m">"&lt;li&gt;Ben: </span>{note}<span class="m">&lt;/li&gt;"</span></div>
+          <div class="ln" id="L4" style="top:288px"><span class="k">def</span> <span class="f">safe_html</span>(template):</div>
+          <div class="ln" id="L5" style="top:338px">    pieces = []</div>
+          <div class="ln" id="L6" style="top:388px">    <span class="k">for</span> part <span class="k">in</span> template:</div>
+          <div class="ln" id="L7" style="top:438px">        <span class="k">if</span> <span class="f">isinstance</span>(part, Interpolation):</div>
+          <div class="ln" id="L8" style="top:488px">            part = <span class="f">escape</span>(<span class="f">str</span>(part.value))</div>
+          <div class="ln" id="L9" style="top:538px">        pieces.<span class="f">append</span>(part)</div>
+          <div class="ln" id="L10" style="top:588px">    <span class="k">return</span> <span class="m">""</span>.<span class="f">join</span>(pieces)</div>
+          <div class="ln" id="L12" style="top:688px">page = <span class="f">safe_html</span>(line)</div>
+          <div class="s-note bad" id="n-glue" style="left:360px; top:250px">glued in right away</div>
+          <div class="s-note" id="n-tpl" style="left:600px; top:250px">a Template</div>
+          <div class="s-note ok" id="n-kept" style="left:500px; top:536px">fixed text: as is</div>
+          <div class="s-note warn" id="n-val" style="left:740px; top:486px">values</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-note" style="stroke:#ffc24b" />
+          <path id="r-f" style="stroke:#ff8fab" />
+          <path id="r-safe" style="stroke:#7cf0b5" />
+          <path id="r-tag" style="stroke:#b8235a" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.488, 0.813, 1.138, 1.579, 1.974, 2.171, 2.276, 2.624, 2.868, 3.727, 4.238, 4.563, 4.818, 5.074, 6.142, 6.455, 6.769, 7.779, 8.104, 8.533, 8.707, 9.079, 9.868, 10.054, 10.484, 10.937, 11.993, 12.144, 12.434, 12.829, 13.154, 13.41, 13.572, 13.735, 14.745, 14.93, 15.279, 15.406, 15.639, 16.057, 16.254, 16.37, 17.066, 17.252, 17.368, 17.844, 18.192, 18.564, 18.935, 19.133, 19.249, 20.491, 21.083, 21.478, 21.617, 22.105, 22.813, 22.976, 23.312, 23.452, 24.357, 24.578, 24.671, 25.24, 25.658, 25.878, 26.192, 26.308, 26.401, 27.364, 27.829, 28.142, 28.943, 29.21, 29.442, 30.081, 30.255, 31.184, 31.567, 31.718, 31.857, 31.939, 32.589, 32.833, 33.692, 33.912, 34.237, 34.516, 34.864, 35.468, 35.653, 36.025, 36.42, 36.803, 37.023, 37.325, 38.08, 38.242, 38.556, 39.009, 39.206, 39.299, 39.438, 40.321, 40.495, 40.843, 41.621, 42.027, 43.153, 43.502, 43.804, 43.92, 45.023, 45.208, 45.487, 45.626, 45.963, 46.358, 47.17, 47.832, 48.157, 48.877, 49.063, 49.179, 49.504, 49.876, 50.154, 50.641, 51.501, 51.826, 52.232, 52.348, 53.509, 53.799, 53.916, 54.275, 54.635, 55.042, 55.425, 55.785, 56.203, 57.213, 57.596, 58.002, 58.943, 59.186, 59.779, 60.115, 60.731, 61.497, 61.659, 62.263, 62.6, 62.716, 63.122, 63.854, 64.074, 64.167, 64.655, 64.875, 65.108, 65.317];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      // a token in a code row: text starts at page x 136, centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28); };
+      const L2 = 'line = f"<li>Ben: {note}</li>"';
+      tok("r-note", L2, "{note}", 188, 14);
+      tok("r-f", L2, "f", 188, 16);
+      tok("r-safe", "def safe_html(template):", "safe_html", 288, 16);
+      // Ben's raw tag inside the card row: row x 1200 + 34 + 28 + "Ben: " width
+      ring("r-tag", 1388, 283, 52, 34);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at, d) => tl.to("#hl", { y: row - 88, duration: d || 0.25, ease: "power2.inOut" }, at);
+      const swap = (a, b, at) => { out(a, at, 0.15); pop(b, at + 0.1, { from: 0.7, d: 0.3 }); };
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 1000, y: 1000 }, 0);
+
+      /* ---- 1. The menu card; guests type notes; Ana wants pasta; Ben types a bold tag ---- */
+      bump("#card", t(4), 1.03);
+      pop("#inp", t(10), { from: 0.8 });
+      bump("#ra", t(17), 1.08);
+      // Ben types "<b>" (3 of 15 characters), then "extra cheese"
+      tl.set("#note", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.to("#note", { clipPath: "inset(0% 80% 0% 0%)", duration: 0.35, ease: "steps(3)" }, t(21));
+      tl.to("#note", { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "steps(12)" }, t(25));
+      type("#L0", t(19), 40, 0.9);
+
+      /* ---- 2. The f-string glues the note straight into the page ---- */
+      type("#L2", t(28), 30, 0.6);
+      show("#hl", t(28) + 0.2, 0.2);
+      tl.set("#hl", { y: 188 - 88 }, t(28));
+      draw("r-note", t(37), 0.4);
+      pop("#n-glue", t(39), { from: 0.7, d: 0.3 });
+      // the note flies from the input into Ben's row
+      tl.set("#fly", { opacity: 1 }, t(38));
+      tl.fromTo("#fly", { x: 0, y: 0 }, { x: 98, y: -315, duration: 0.65, ease: "power3.inOut", immediateRender: false }, t(38));
+      out("#fly", t(42) - 0.05, 0.1);
+      swap("#rb0", "#rb1", t(42) - 0.1);
+      // the browser reads the tag as an instruction
+      draw("r-tag", t(47), 0.4);
+      out("#r-tag", t(51) - 0.05, 0.15);
+      swap("#rb1", "#rb2", t(51));
+      // everything after it turns bold
+      swap("#rc0", "#rc1", t(55));
+      pop("#wrong", t(60), { from: 1.5, ease: "power3.out", d: 0.3 });
+      pop("#script", t(69), { from: 0.7, d: 0.35 });
+
+      /* ---- 3. Change one letter: f becomes t. A template, two trays ---- */
+      out(["#r-note", "#n-glue"], t(70) - 0.1, 0.2);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(70));
+      cursorTo(136 + 7 * 18 + 4, 96 + 188 + 34, t(70), 0.6);
+      draw("r-f", t(72), 0.35);
+      bump("#pfx", t(74), 1.3);
+      swap("#pf", "#pt", t(77) - 0.05);
+      out("#r-f", t(78), 0.2);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(79));
+      pop("#n-tpl", t(82), { from: 0.7, d: 0.3 });
+      out(["#inp", "#script"], t(80), 0.25);
+      pop("#tp", t(82), { from: 0.85, d: 0.4 });
+      show(["#lb1", "#tr1"], t(87), 0.3);
+      show(["#lb2", "#tr2"], t(88), 0.3);
+      pop("#c1", t(91), { from: 0.5, d: 0.3 });
+      pop("#c2", t(91) + 0.2, { from: 0.5, d: 0.3 });
+      bump("#tr1", t(96), 1.03);
+      pop("#c3", t(99), { from: 0.5, d: 0.35 });
+      bump("#tr2", t(103), 1.03);
+
+      /* ---- 4. safe_html walks the template: text as is, values escaped, then joined ---- */
+      out("#n-tpl", t(104) - 0.1, 0.2);
+      tl.to("#hl", { opacity: 0, duration: 0.2 }, t(104) - 0.1);
+      type("#L4", t(104), 24, 0.3);
+      type("#L5", t(104) + 0.3, 15, 0.2);
+      type("#L6", t(104) + 0.5, 25, 0.3);
+      type("#L7", t(105), 43, 0.4);
+      type("#L8", t(105) + 0.4, 42, 0.4);
+      type("#L9", t(105) + 0.8, 27, 0.3);
+      type("#L10", t(106), 26, 0.3);
+      draw("r-safe", t(107), 0.4);
+      out("#r-safe", t(110) - 0.1, 0.2);
+      tl.set("#hl", { y: 388 - 88 }, t(109) - 0.2);
+      show("#hl", t(109), 0.2);
+      // fixed text: as is
+      hlTo(538, t(114), 0.25);
+      pop("#n-kept", t(116), { from: 0.7, d: 0.3 });
+      bump(["#c1", "#c2"], t(117), 1.08);
+      pop("#asis", t(118), { from: 0.6, d: 0.3 });
+      // values: escaped
+      out("#n-kept", t(119) - 0.1, 0.15);
+      hlTo(488, t(119) - 0.05, 0.25);
+      pop("#esc", t(119) + 0.2, { from: 1.5, ease: "power3.out", d: 0.3 });
+      swap("#v0", "#v1", t(124));
+      tl.to("#c3", { backgroundColor: "#ddefe6", color: "#1f7a5c", boxShadow: "0 0 0 3px #1f7a5c", duration: 0.3 }, t(127));
+      // joins the pieces
+      hlTo(588, t(130), 0.25);
+      pop("#joined", t(130) + 0.15, { from: 0.8, d: 0.35 });
+
+      /* ---- 5. The card shows Ben's note as plain text. Nothing turns bold ---- */
+      type("#L12", t(133), 22, 0.35);
+      hlTo(688, t(133), 0.25);
+      out("#wrong", t(135), 0.2);
+      swap("#rb2", "#rb3", t(137));
+      bump("#rb3", t(140), 1.05);
+      swap("#rc1", "#rc0", t(142));
+      pop("#safe", t(144), { from: 1.5, ease: "power3.out", d: 0.3 });
+      out("#hl", t(144) + 0.4, 0.3);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 59.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

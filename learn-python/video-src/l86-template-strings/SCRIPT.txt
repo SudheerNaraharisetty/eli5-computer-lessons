@@ -1,0 +1,11 @@
+Kitchen Coach prints tonight's menu as a small web page. Guests type their own notes. Ana wants pasta. Ben types a bold tag, and then, extra cheese.
+
+The code builds each line with an f-string. It glues the note straight into the page, so the browser reads Ben's tag as an instruction. Everything after it turns bold. The card is broken. And a sneakier guest could slip in a script.
+
+Change one letter. The f becomes a t. Now you get a template, not text. It keeps two trays apart. The fixed text stays in one tray. The guest's values go in the other.
+
+A small function, safe HTML, walks through the template. It leaves the fixed text alone, escapes each value, so the tag turns into harmless characters, and joins the pieces.
+
+Now the card shows Ben's note as plain text. Nothing turns bold.
+
+An f-string makes text now. A t-string keeps the blanks apart, so a function can fill them safely.

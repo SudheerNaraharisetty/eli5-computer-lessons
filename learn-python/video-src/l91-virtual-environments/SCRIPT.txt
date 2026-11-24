@@ -1,0 +1,13 @@
+Kitchen Coach needs pytest nine. Chloe's baking blog is older, and its tests need pytest eight. Both live on your laptop.
+
+With one shared kitchen, there is one shelf. Install pytest eight for Chloe, and pip throws pytest nine off the shelf. Now Kitchen Coach's tests break.
+
+So give each project a kitchen of its own. In the Kitchen Coach folder, type python 3, dash m, venv, dot venv. That builds a new kitchen, with its own walls and its own shelf. It is called a virtual environment.
+
+Switch it on: source, dot venv, slash bin, slash activate. The prompt now starts with dot venv. You are inside.
+
+Now pip install pytest. The jar goes on this kitchen's shelf, and nowhere else. Chloe's blog gets a kitchen of its own too, with pytest eight. Both work, side by side.
+
+Not sure which kitchen you are in? Ask Python. sys dot prefix tells you.
+
+One project, one virtual environment. Make it, activate it, then install.

@@ -1,0 +1,17 @@
+Ana keeps her shopping list in Kitchen Coach. Oats, rice, pasta.
+
+Ben wants a list too, so you write, ben equals ana.
+
+But a name is not a box. It is a label on a jar. Ben equals ana ties a second label to the same jar.
+
+Ben adds protein powder, and it lands on Ana's list. Ben is ana? True. One jar, two labels.
+
+To give Ben his own jar, copy it. Ben equals ana dot copy. A new jar, with its own label.
+
+Now Chloe's meal plan. A list of days, and each day is a list too. You copy this week for next week, and change next Monday to pancakes.
+
+This Monday changes too. Copy made a new outer jar, but the day jars inside are still shared. A shallow copy.
+
+Copy dot deep copy copies the inner jars as well. Now next Monday changes alone.
+
+A name is a label, not a box. Two labels can point at one jar.

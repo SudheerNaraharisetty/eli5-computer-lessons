@@ -1,0 +1,307 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* ---- code panel, left: 34 px mono = 20.4 px per char, rows of 60 px, text at page x 136 ---- */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .cd { position: absolute; font: 500 34px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .cd .st { color: #ff8fb1; }
+    .bdg { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 800 28px/44px "Manrope", sans-serif; opacity: 0; box-shadow: 0 0 0 3px #c9c6ff; }
+    #out-rule { position: absolute; left: 40px; top: 412px; width: 974px; height: 3px; background: #3a3666; }
+    #out-lab { position: absolute; left: 40px; top: 360px; font: 700 28px/40px "JetBrains Mono", monospace; color: #a9a6d9; }
+    .tm { position: absolute; left: 40px; font: 500 28px/44px "JetBrains Mono", monospace; color: #c9c6ff; white-space: pre; opacity: 0; }
+    .tm.err { color: #ff8fb1; }
+    .tm.ok { color: #7cf0b5; }
+    .cpill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .cpill.bad { background: #fbe0ea; color: #b8235a; }
+    .cpill.good { background: #ddefe6; color: #1f7a5c; }
+
+    /* ---- right: the kitchen side ---- */
+    #side { left: 1190px; top: 96px; width: 634px; height: 888px; border-radius: 26px; background: #fff; }
+    #side-t { left: 1222px; top: 112px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    /* the grocery bag */
+    #bag { left: 1347px; top: 230px; width: 320px; height: 240px; }
+    #bag > .body { position: absolute; inset: 0; border-radius: 10px 10px 26px 26px; background: #f3e2c4; box-shadow: 0 0 0 5px #0e0c1d; }
+    #bag > .rim { position: absolute; left: 0; top: 0; width: 320px; height: 22px; border-radius: 10px 10px 0 0; background: #e2c99c; box-shadow: 0 0 0 5px #0e0c1d; }
+    #bag > svg { position: absolute; left: 0; top: -70px; width: 320px; height: 80px; overflow: visible; }
+    /* packets: 130 x 80 */
+    .pk { position: absolute; width: 130px; height: 80px; border-radius: 14px; background: #fff; text-align: center; z-index: 3; }
+    .pk > .n { position: absolute; left: 0; top: 4px; width: 130px; font: 800 28px/36px "Manrope", sans-serif; }
+    .pk > .v { position: absolute; left: 0; top: 38px; width: 130px; font: 700 32px/38px "JetBrains Mono", monospace; }
+    #k-oats { left: 1367px; top: 260px; box-shadow: 0 0 0 5px #b9741a; }
+    #k-rice { left: 1517px; top: 260px; box-shadow: 0 0 0 5px #1d5f8a; }
+    #k-tofu { left: 1367px; top: 360px; box-shadow: 0 0 0 5px #1f7a5c; }
+    #k-lent { left: 1517px; top: 360px; box-shadow: 0 0 0 5px #b8235a; }
+    #k-oats > .n { color: #8a5612; } #k-rice > .n { color: #1d5f8a; } #k-tofu > .n { color: #1f7a5c; } #k-lent > .n { color: #b8235a; }
+    /* jars */
+    .jar { position: absolute; }
+    .jar > .body { position: absolute; inset: 0; border-radius: 22px; background: #fbf7f1; box-shadow: 0 0 0 5px #0e0c1d; }
+    .jar > .lid { position: absolute; left: 18px; right: 18px; top: -20px; height: 24px; border-radius: 8px; background: #0e0c1d; }
+    .jar > .lab { position: absolute; left: 12px; right: 12px; bottom: 22px; height: 52px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 3px #0e0c1d; text-align: center; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #list-lab { left: 1397px; top: 846px; width: 220px; text-align: center; font: 700 30px/48px "JetBrains Mono", monospace; color: #1f7a5c; opacity: 0; white-space: nowrap; }
+    #nojar { left: 1590px; top: 868px; }
+    #p-none { left: 1357px; top: 478px; z-index: 4; box-shadow: 0 0 0 3px #b8235a; }
+    #stamp { left: 1300px; top: 596px; width: 414px; height: 112px; border-radius: 16px; border: 7px solid #b8235a; color: #b8235a; background: rgba(255,255,255,0.93); text-align: center; font: 700 62px/98px "Fraunces", serif; transform: rotate(-8deg); opacity: 0; z-index: 4; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 5; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="56.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">bag.py</span></div>
+          <!-- row 1, top 100: bag = [500, 1000, 400] then bag = [500, 1000, 400, 250] -->
+          <div class="cd" id="r1a" style="left:40px; top:120px">bag = [500</div>
+          <div class="cd" id="r1b" style="left:244px; top:120px">, 1000</div>
+          <div class="cd" id="r1c" style="left:366.4px; top:120px">, 400]</div>
+          <div class="cd" id="r1d" style="left:366.4px; top:120px">, 400, 250]</div>
+          <!-- row 2, top 160: oats, rice, tofu = bag then first, *middle, last = bag -->
+          <div class="cd" id="r2a" style="left:40px; top:200px">oats</div>
+          <div class="cd" id="r2b" style="left:121.6px; top:200px">, rice</div>
+          <div class="cd" id="r2c" style="left:244px; top:200px">, tofu</div>
+          <div class="cd" id="r2d" style="left:366.4px; top:200px"> = bag</div>
+          <div class="cd" id="r2s" style="left:40px; top:200px">first, <span class="st">*</span>middle, last = bag</div>
+
+          <div class="bdg" id="bn1" style="left:58.8px; top:270px">1</div>
+          <div class="bdg" id="bn2" style="left:181.2px; top:270px">2</div>
+          <div class="bdg" id="bn3" style="left:303.6px; top:270px">3</div>
+          <div class="bdg" id="bv1" style="left:180.2px; top:66px">1</div>
+          <div class="bdg" id="bv2" style="left:303.6px; top:66px">2</div>
+          <div class="bdg" id="bv3" style="left:415.8px; top:66px">3</div>
+          <div class="bdg" id="bv4" style="left:518px; top:66px">4</div>
+          <div class="cpill bad" id="p-34" style="left:40px; top:290px">3 names, 4 values</div>
+
+          <div id="out-lab">output</div>
+          <div id="out-rule"></div>
+          <div class="tm" id="o0" style="top:436px">$ python3 bag.py</div>
+          <div class="tm" id="o1" style="top:480px">Traceback (most recent call last):</div>
+          <div class="tm" id="o2" style="top:524px">  File "/Users/you/kitchen/bag.py", line 2, in &lt;module&gt;</div>
+          <div class="tm" id="o3" style="top:568px">    oats, rice, tofu = bag</div>
+          <div class="tm" id="o4" style="top:612px">    ^^^^^^^^^^^^^^^^</div>
+          <div class="tm err" id="o5" style="top:656px">ValueError: too many values to unpack (expected 3, got 4)</div>
+          <div class="tm" id="o6" style="top:436px">$ python3 bag.py</div>
+          <div class="tm" id="o7" style="top:480px">$</div>
+          <div class="cpill good" id="p-ok" style="left:40px; top:290px">no error: every value has a jar</div>
+        </div>
+
+        <!-- the kitchen side -->
+        <div id="side" class="s-abs s-ol"></div>
+        <div id="side-t" class="s-abs">The grocery bag</div>
+        <div id="bag" class="s-abs">
+          <svg viewBox="0 0 320 80"><path d="M70 76 C70 14 130 14 130 76 M190 76 C190 14 250 14 250 76" fill="none" stroke="#0e0c1d" stroke-width="8" stroke-linecap="round" /></svg>
+          <div class="body"></div>
+          <div class="rim"></div>
+        </div>
+
+        <!-- jars, stage 1: 170 x 250, top 560 -->
+        <div class="jar s-hide" id="j-oats" style="left:1226px; top:560px; width:170px; height:250px"><div class="body"></div><div class="lid"></div><div class="lab" style="color:#8a5612">oats</div></div>
+        <div class="jar s-hide" id="j-rice" style="left:1422px; top:560px; width:170px; height:250px"><div class="body"></div><div class="lid"></div><div class="lab" style="color:#1d5f8a">rice</div></div>
+        <div class="jar s-hide" id="j-tofu" style="left:1618px; top:560px; width:170px; height:250px"><div class="body"></div><div class="lid"></div><div class="lab" style="color:#1f7a5c">tofu</div></div>
+        <!-- jars, stage 2: first 150, middle 220 (taller), last 150 -->
+        <div class="jar s-hide" id="j-first" style="left:1226px; top:560px; width:150px; height:250px"><div class="body"></div><div class="lid"></div><div class="lab">first</div></div>
+        <div class="jar s-hide" id="j-mid" style="left:1397px; top:520px; width:220px; height:290px"><div class="body"></div><div class="lid"></div><div class="lab">middle</div></div>
+        <div class="jar s-hide" id="j-last" style="left:1638px; top:560px; width:150px; height:250px"><div class="body"></div><div class="lid"></div><div class="lab">last</div></div>
+        <div id="list-lab" class="s-abs">[1000, 400]</div>
+
+        <!-- packets -->
+        <div class="pk s-hide" id="k-oats"><div class="n">oats</div><div class="v">500</div></div>
+        <div class="pk s-hide" id="k-rice"><div class="n">rice</div><div class="v">1000</div></div>
+        <div class="pk s-hide" id="k-tofu"><div class="n">tofu</div><div class="v">400</div></div>
+        <div class="pk s-hide" id="k-lent"><div class="n">lentils</div><div class="v">250</div></div>
+
+        <div id="nojar" class="s-abs cpill bad">no jar left</div>
+        <div id="stamp" class="s-abs">ValueError</div>
+        <div id="p-none" class="s-abs cpill bad">nothing is unpacked</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="rn1" style="stroke:#ffc24b" />
+          <path id="rn2" style="stroke:#8fd3ff" />
+          <path id="rn3" style="stroke:#7cf0b5" />
+          <path id="rv1" style="stroke:#ffc24b" />
+          <path id="rv2" style="stroke:#8fd3ff" />
+          <path id="rv3" style="stroke:#7cf0b5" />
+          <path id="rv4" style="stroke:#ff8fb1" />
+          <path id="rj1" style="stroke:#b9741a" />
+          <path id="rj2" style="stroke:#1d5f8a" />
+          <path id="rj3" style="stroke:#1f7a5c" />
+          <path id="rmiss" style="stroke:#b8235a; stroke-dasharray: 14 12" />
+          <path id="rtoo" style="stroke:#ff8fb1" />
+          <path id="rexp" style="stroke:#ff8fb1" />
+          <path id="rstar" style="stroke:#ff8fb1" />
+          <path id="rmid" style="stroke:#1f7a5c" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.36, 0.534, 0.789, 0.964, 1.08, 1.765, 1.892, 2.136, 2.554, 2.879, 3.669, 4.214, 4.551, 4.667, 5.19, 5.724, 6.072, 6.223, 6.594, 6.873, 7.454, 7.79, 7.93, 8.975, 9.404, 9.822, 9.961, 10.217, 10.519, 10.681, 10.902, 11.691, 12.318, 12.841, 13.491, 14.013, 14.919, 15.186, 15.511, 15.708, 15.848, 16.486, 16.765, 17.125, 17.206, 17.31, 18.158, 18.449, 18.785, 19.041, 19.296, 19.505, 19.83, 20.237, 20.446, 21.34, 21.955, 22.292, 22.953, 23.673, 24.033, 24.486, 25.124, 25.403, 26.378, 26.645, 26.796, 26.982, 27.69, 27.957, 28.515, 28.747, 29.095, 29.385, 30.244, 30.407, 30.651, 30.964, 31.347, 31.498, 31.614, 32.067, 32.276, 32.601, 32.729, 33.379, 33.658, 34.029, 34.32, 34.691, 35.237, 35.922, 36.409, 36.885, 37.164, 37.408, 37.837, 37.988, 38.917, 39.637, 40.183, 40.508, 41.1, 41.448, 41.611, 42.017, 42.284, 42.806, 43.039, 43.19, 43.387, 43.468, 44.293, 44.838, 45.187, 45.779, 46.754, 46.928, 47.241, 47.613, 47.88, 48.135, 48.751, 48.937, 49.308, 49.726, 50.016, 50.307, 51.224, 51.433, 51.572, 51.851, 52.164, 52.489, 52.896, 53.279, 53.697, 53.801, 54.37, 54.66, 54.823, 55.845, 56.518, 56.797, 57.052, 57.493, 57.667, 57.9, 58.271, 58.956, 59.13, 59.525, 59.804, 60.314, 60.582, 60.849, 60.953];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; if (!p.style.strokeDasharray) p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: page x 136 + col * 20.4; row 1 centre y 96 + 100 + 30, row 2 centre 96 + 160 + 30
+      const CW = 20.4;
+      const code = (id, c0, len, cy, pad) => path(id, ringD(136 + (c0 + len / 2) * CW, cy, (len * CW) / 2 + (pad || 12), 28));
+      code("rn1", 0, 4, 326); code("rn2", 6, 4, 326); code("rn3", 12, 4, 326);
+      code("rv1", 7, 3, 246); code("rv2", 12, 4, 246); code("rv3", 18, 3, 246); code("rv4", 23, 3, 246);
+      code("rstar", 7, 7, 326, 12);
+      // terminal row 5: an underline under the words, 16.8 px per char
+      const TW = 16.8;
+      const term = (id, c0, len) => path(id, `M${136 + c0 * TW + 2} 796 H${136 + (c0 + len) * TW - 2}`);
+      term("rtoo", 12, 25); term("rexp", 38, 19);
+      // jar labels: label centre y = jar top + height - 22 - 26
+      path("rj1", ringD(1311, 762, 74, 34)); path("rj2", ringD(1507, 762, 74, 34)); path("rj3", ringD(1703, 762, 74, 34));
+      path("rmiss", ringD(1507, 890, 92, 58));
+      path("rmid", ringD(1507, 870, 130, 34));
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      // the dashed ring: fade it in (dash offset is used for the dashes)
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.04 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // a packet flies from where it is to (dx, dy) from its home in the bag
+      const fly = (sel, dx, dy, at, d) => tl.to(sel, { x: dx, y: dy, duration: d || 0.7, ease: "power3.inOut" }, at);
+      const home = (sels, at) => tl.to(sels, { x: 0, y: 0, rotation: 0, duration: 0.6, ease: "power3.inOut" }, at);
+
+      /* ---- 1. Back from the shop: the bag holds oats, rice, tofu ---- */
+      bump("#bag", t(7), 1.05);
+      type("#r1a", t(11) - 0.1, 10, 0.4);
+      pop("#k-oats", t(11), { from: 0.4 });
+      type("#r1b", t(15) - 0.1, 6, 0.3);
+      pop("#k-rice", t(15), { from: 0.4 });
+      type("#r1c", t(20) - 0.1, 6, 0.3);
+      pop("#k-tofu", t(20), { from: 0.4 });
+
+      /* ---- 2. Unpack the whole bag in one line: oats, rice, tofu = bag ---- */
+      bump("#r1a, #r1b, #r1c", t(28), 1.04);
+      show("#r2a", t(32) - 0.05, 0.2);
+      pop("#j-oats", t(32), { from: 0.7 });
+      show("#r2b", t(33) - 0.05, 0.2);
+      pop("#j-rice", t(33), { from: 0.7 });
+      show("#r2c", t(34) - 0.05, 0.2);
+      pop("#j-tofu", t(34), { from: 0.7 });
+      show("#r2d", t(35), 0.25);
+      // 3 names on the left
+      draw("rn1", t(37), 0.35); pop("#bn1", t(37), { from: 0.3 });
+      draw("rn2", t(37) + 0.2, 0.35); pop("#bn2", t(37) + 0.2, { from: 0.3 });
+      draw("rn3", t(37) + 0.4, 0.35); pop("#bn3", t(37) + 0.4, { from: 0.3 });
+      draw("rj1", t(39), 0.35); draw("rj2", t(39) + 0.15, 0.35); draw("rj3", t(39) + 0.3, 0.35);
+      // 3 values in the bag
+      draw("rv1", t(42), 0.35); pop("#bv1", t(42), { from: 0.3 });
+      draw("rv2", t(42) + 0.2, 0.35); pop("#bv2", t(42) + 0.2, { from: 0.3 });
+      draw("rv3", t(42) + 0.4, 0.35); pop("#bv3", t(42) + 0.4, { from: 0.3 });
+      bump("#k-oats, #k-rice, #k-tofu", t(46), 1.08);
+
+      /* ---- 3. Each value into its own jar, by position ---- */
+      out(["#bn1", "#bn2", "#bn3", "#bv1", "#bv2", "#bv3"], t(47), 0.25);
+      fly("#k-oats", -121, 340, t(56) - 0.35, 0.7);
+      bump("#j-oats", t(57) + 0.1, 1.05);
+      fly("#k-rice", -75, 340, t(59) - 0.35, 0.7);
+      bump("#j-rice", t(60) + 0.1, 1.05);
+      fly("#k-tofu", 271, 240, t(62) - 0.35, 0.7);
+      bump("#j-tofu", t(63) + 0.1, 1.05);
+
+      /* ---- 4. Add lentils: 4 values, 3 jars ---- */
+      out(["#rn1", "#rn2", "#rn3", "#rv1", "#rv2", "#rv3", "#rj1", "#rj2", "#rj3"], t(65), 0.25);
+      home(["#k-oats", "#k-rice", "#k-tofu"], t(65));
+      out("#r1c", t(68) - 0.1, 0.15);
+      type("#r1d", t(68) - 0.05, 11, 0.45);
+      pop("#k-lent", t(68), { from: 0.4 });
+      draw("rv1", t(69), 0.3); pop("#bv1", t(69), { from: 0.3 });
+      draw("rv2", t(69) + 0.15, 0.3); pop("#bv2", t(69) + 0.15, { from: 0.3 });
+      draw("rv3", t(69) + 0.3, 0.3); pop("#bv3", t(69) + 0.3, { from: 0.3 });
+      draw("rv4", t(69) + 0.45, 0.3); pop("#bv4", t(69) + 0.45, { from: 0.3 });
+      bump("#j-oats, #j-rice, #j-tofu", t(73), 1.06);
+      pop("#p-34", t(74), { from: 0.7 });
+      // the first 3 go in
+      out(["#rv1", "#rv2", "#rv3", "#rv4", "#bv1", "#bv2", "#bv3", "#bv4"], t(75), 0.2);
+      // they start toward the jars, then bounce back: Python counts first and assigns nothing
+      const tryFly = (sel, dx, dy, at) => {
+        tl.to(sel, { x: dx * 0.45, y: dy * 0.45, duration: 0.4, ease: "power2.out" }, at);
+        tl.to(sel, { x: 0, y: 0, duration: 0.45, ease: "back.out(1.6)" }, at + 0.4);
+      };
+      tryFly("#k-oats", -121, 340, t(76) - 0.1);
+      tryFly("#k-rice", -75, 340, t(77) - 0.1);
+      tryFly("#k-tofu", 271, 240, t(78) - 0.1);
+      // the lentils have nowhere to go
+      fly("#k-lent", -75, 490, t(81) - 0.1, 0.75);
+      tl.to("#k-lent", { rotation: -7, duration: 0.12, ease: "power1.inOut", yoyo: true, repeat: 3 }, t(83));
+      tl.fromTo("#rmiss", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, t(83));
+      pop("#nojar", t(84), { from: 0.7 });
+
+      /* ---- 5. Python stops: ValueError ---- */
+      [0, 1, 2, 3, 4].forEach((i) => show(`#o${i}`, t(90) + i * 0.08, 0.2));
+      show("#o5", t(92) - 0.1, 0.25);
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)", immediateRender: false }, t(92));
+      pop("#p-none", t(87), { from: 0.7 });
+      bump("#j-oats, #j-rice, #j-tofu", t(87) + 0.3, 1.04);
+      draw("rtoo", t(94), 0.5);
+      bump("#p-none", t(97), 1.08);
+      draw("rexp", t(99), 0.45);
+      bump("#j-oats, #j-rice, #j-tofu", t(100), 1.05);
+      bump("#k-lent", t(102), 1.12);
+      bump("#p-34", t(105), 1.1);
+
+      /* ---- 6. Or add a star: first, *middle, last ---- */
+      out(["#o0", "#o1", "#o2", "#o3", "#o4", "#o5", "#rtoo", "#rexp", "#stamp", "#rmiss", "#nojar", "#p-34", "#p-none"], t(108) - 0.1, 0.25);
+      home(["#k-oats", "#k-rice", "#k-tofu", "#k-lent"], t(108));
+      out(["#j-oats", "#j-rice", "#j-tofu"], t(108) + 0.2, 0.3);
+      out(["#r2a", "#r2b", "#r2c", "#r2d"], t(113) - 0.25, 0.2);
+      type("#r2s", t(113) - 0.05, 26, 0.7);
+      pop("#j-first", t(113), { from: 0.7 });
+      draw("rstar", t(114), 0.35);
+      pop("#j-mid", t(115), { from: 0.7 });
+      pop("#j-last", t(116), { from: 0.7 });
+      show("#o6", t(117), 0.25);
+      show("#o7", t(117) + 0.15, 0.25);
+      pop("#p-ok", t(117) + 0.3, { from: 0.7 });
+      // the first value goes into first
+      out("#rstar", t(117), 0.2);
+      fly("#k-oats", -131, 340, t(119), 0.75);
+      bump("#j-first", t(122), 1.05);
+      // the last value goes into last
+      fly("#k-lent", 131, 240, t(124), 0.75);
+      bump("#j-last", t(128), 1.05);
+      // the big jar called middle takes everything in between
+      bump("#j-mid", t(132), 1.05);
+      fly("#k-rice", -75, 285, t(135) - 0.1, 0.7);
+      fly("#k-tofu", 75, 275, t(136) + 0.05, 0.7);
+      pop("#list-lab", t(139), { from: 0.6 });
+      draw("rmid", t(140), 0.4);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 56.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

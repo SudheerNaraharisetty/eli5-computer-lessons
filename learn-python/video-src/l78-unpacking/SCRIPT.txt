@@ -1,0 +1,11 @@
+You are back from the shop. The bag holds 3 things. 500 grams of oats, 1000 grams of rice, and 400 grams of tofu.
+
+Python unpacks the whole bag in one line. Oats, rice, tofu, equals bag. 3 names on the left. 3 values in the bag.
+
+Each value goes into its own jar, by position. 500 into oats. 1000 into rice. 400 into tofu.
+
+Now you add lentils. 4 values, but still 3 jars. The 3 jars wait, but the lentils have nowhere to go. So nothing goes in. Python stops. Value error. Too many values to unpack. Expected 3, got 4.
+
+So the counts must match. Or you add a star. First, star middle, last. The first value goes into first. The last value goes into last. And the big jar called middle takes everything in between, as a list.
+
+Unpacking puts each value in its own name. The counts must match, or use a star.

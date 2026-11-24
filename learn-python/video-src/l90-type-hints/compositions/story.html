@@ -1,0 +1,298 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+
+    /* the shelf of jars */
+    #plank { left: 1196px; top: 392px; width: 648px; height: 16px; border-radius: 4px; background: #0e0c1d; }
+    .jar { position: absolute; top: 150px; width: 190px; height: 242px; }
+    .jar > .lid { position: absolute; left: 30px; top: 0; width: 130px; height: 30px; border-radius: 8px; background: #b9741a; box-shadow: 0 0 0 4px #0e0c1d; }
+    .jar > .body { position: absolute; left: 0; top: 34px; width: 190px; height: 208px; border-radius: 22px 22px 18px 18px; background: #fdfbf7; box-shadow: 0 0 0 4px #0e0c1d; }
+    .jar > .in { position: absolute; left: 0; top: 62px; width: 190px; text-align: center; font: 500 28px/40px "JetBrains Mono", monospace; color: #3e3b52; white-space: nowrap; }
+    .jar > .lab { position: absolute; left: 14px; top: 142px; width: 162px; height: 58px; border-radius: 10px; background: #e6e3ff; box-shadow: 0 0 0 3px #3b37e6; text-align: center; font: 500 30px/58px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+
+    /* the function card */
+    #inlab { left: 1355px; top: 440px; width: 330px; height: 60px; border-radius: 12px; background: #e6e3ff; box-shadow: 0 0 0 4px #3b37e6; text-align: center; font: 500 30px/60px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; }
+    #inlab > span, #ttl > span { position: absolute; left: 0; top: 0; width: 100%; }
+    #slot { left: 1460px; top: 514px; width: 120px; height: 22px; border-radius: 6px; background: #0e0c1d; opacity: 0; }
+    #fcard { left: 1250px; top: 530px; width: 540px; height: 160px; background: #fff; border-radius: 22px; opacity: 0; }
+    #ttl { position: absolute; left: 0; top: 28px; width: 540px; height: 56px; text-align: center; font: 500 40px/56px "JetBrains Mono", monospace; }
+    #sub { position: absolute; left: 0; top: 92px; width: 540px; height: 40px; text-align: center; font: 600 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #sub > span { position: absolute; left: 0; top: 0; width: 100%; }
+    #chute { left: 1470px; top: 694px; width: 100px; height: 56px; opacity: 0; }
+    #outlab { left: 1598px; top: 692px; width: 160px; height: 60px; border-radius: 12px; background: #ddefe6; box-shadow: 0 0 0 4px #1f7a5c; text-align: center; font: 500 30px/60px "JetBrains Mono", monospace; color: #1f7a5c; opacity: 0; }
+    .res { position: absolute; top: 782px; height: 72px; padding: 0 24px; border-radius: 14px; font: 500 36px/72px "JetBrains Mono", monospace; white-space: nowrap; }
+    #res0 { left: 1430px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    #res1 { left: 1404px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #res2 { left: 1418px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+    .res small { font: 800 28px/72px "Manrope", sans-serif; }
+    #wrong { left: 1612px; top: 872px; height: 70px; padding: 0 28px; border-radius: 16px; background: #fbe0ea; color: #b8235a; font: 800 38px/70px "Manrope", sans-serif; box-shadow: 0 0 0 5px #b8235a; white-space: nowrap; }
+    #right { left: 1640px; top: 872px; height: 70px; padding: 0 28px; border-radius: 16px; background: #ddefe6; color: #1f7a5c; font: 800 38px/70px "Manrope", sans-serif; box-shadow: 0 0 0 5px #1f7a5c; white-space: nowrap; }
+    .chip { position: absolute; left: 1222px; top: 442px; height: 58px; padding: 0 16px; border-radius: 12px; font: 500 34px/58px "JetBrains Mono", monospace; white-space: pre; }
+    #chipS { background: #fbebd2; color: #7a4708; box-shadow: 0 0 0 4px #b9741a; }
+    #chipN { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; left: 1236px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #hl { position: absolute; left: 14px; top: 88px; width: 1012px; height: 50px; border-radius: 10px; background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; opacity: 0; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .h { color: #c9c6ff; }
+    .s-note { position: absolute; height: 54px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    #stamp { border-radius: 12px; box-shadow: 0 0 0 4px #b8235a; }
+
+    /* terminal inside the code panel */
+    #term { position: absolute; left: 20px; top: 512px; width: 1000px; height: 356px; border-radius: 16px; background: #0b0a1c; box-shadow: inset 0 0 0 3px #2c2950; }
+    #term > .tt { position: absolute; left: 24px; top: 12px; font: 800 28px/40px "Manrope", sans-serif; color: #a9a5d6; }
+    .tl { position: absolute; left: 24px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #a9a5d6; }
+    .tl .bad { color: #ff8fab; }
+    .tl .ok { color: #7cf0b5; }
+
+    #mag { left: 0; top: 0; width: 150px; height: 120px; }
+    #magtag { left: 0; top: 0; height: 48px; padding: 0 18px; border-radius: 999px; background: #3b37e6; color: #fff; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.5" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- the shelf: three jars, labels arrive when named -->
+        <div class="jar" id="j1" style="left:1206px"><div class="lid"></div><div class="body"></div><div class="in">[650, 850]</div><div class="lab" id="lab1">list[int]</div></div>
+        <div class="jar" id="j2" style="left:1426px"><div class="lid"></div><div class="body"></div><div class="in">2600</div><div class="lab" id="lab2">int</div></div>
+        <div class="jar" id="j3" style="left:1646px"><div class="lid"></div><div class="body"></div><div class="in">"pasta"</div><div class="lab" id="lab3">str</div></div>
+        <div id="plank" class="s-abs"></div>
+
+        <!-- the function card: an input slot with a label, an output chute with a label -->
+        <div id="inlab" class="s-abs" data-layout-allow-overlap><span id="in0">meals: list[int]</span><span id="in1" class="s-hide">grams: int</span></div>
+        <div id="slot" class="s-abs"></div>
+        <div id="fcard" class="s-abs s-ol" data-layout-allow-overlap>
+          <div id="ttl"><span id="tt0">daily_kcal</span><span id="tt1" class="s-hide">two_portions</span></div>
+          <div id="sub"><span id="sb0">adds up a day of meals</span><span id="sb1" class="s-hide">doubles Ben's protein</span></div>
+        </div>
+        <svg id="chute" class="s-abs" viewBox="0 0 100 56"><path d="M4 4 H96 L74 52 H26 Z" fill="#ece7df" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round" /></svg>
+        <div id="outlab" class="s-abs">-&gt; int</div>
+        <div id="res0" class="res s-hide">2600 <small>kcal</small></div>
+        <div id="res1" class="res s-hide">"3030" <small>g protein</small></div>
+        <div id="res2" class="res s-hide">60 <small>g protein</small></div>
+        <div id="wrong" class="s-abs s-hide">WRONG</div>
+        <div id="right" class="s-abs s-hide">right</div>
+        <div id="chipS" class="chip s-hide">"30"</div>
+        <div id="chipN" class="chip s-hide">30</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">protein.py</span></div>
+          <div id="hl"></div>
+          <div class="ln" id="L0" style="top:88px"><span class="k">def</span> <span class="f">daily_kcal</span>(meals<span class="h">: list[int]</span>) <span class="h">-&gt; int</span>:</div>
+          <div class="ln" id="L1" style="top:138px">    <span class="k">return</span> <span class="f">sum</span>(meals)</div>
+          <div class="ln" id="L3" style="top:238px"><span class="k">def</span> <span class="f">two_portions</span>(grams<span class="h">: int</span>) <span class="h">-&gt; int</span>:</div>
+          <div class="ln" id="L4" style="top:288px">    <span class="k">return</span> grams * 2</div>
+          <div class="ln" id="L6a" style="top:388px">grams = <span class="f">input</span>(<span class="m">"Protein (g)? "</span>)</div>
+          <div class="ln" id="L6b" style="top:388px">grams = <span class="f">int</span>(<span class="f">input</span>(<span class="m">"Protein (g)? "</span>))</div>
+          <div class="ln" id="L7" style="top:438px"><span class="f">print</span>(<span class="f">two_portions</span>(grams))</div>
+          <div class="s-note bad" id="stamp" style="left:540px; top:436px">incompatible type</div>
+          <div class="s-note bad" id="n-text" style="left:620px; top:386px">always text</div>
+
+          <div id="term">
+            <div class="tt">terminal</div>
+            <div class="tl" id="a0" style="top:60px"><span class="p">$ python3 protein.py</span></div>
+            <div class="tl" id="a1" style="top:104px">Protein (g)? 30</div>
+            <div class="tl" id="a2" style="top:148px"><span class="bad">3030</span></div>
+            <div class="tl" id="b0" style="top:60px"><span class="p">$ python3 -m mypy protein.py</span></div>
+            <div class="tl" id="b1" style="top:104px">protein.py:8: <span class="bad">error:</span> Argument 1 to "two_portions"</div>
+            <div class="tl" id="b2" style="top:148px">has incompatible type "str"; expected "int"  [arg-type]</div>
+            <div class="tl" id="b3" style="top:192px"><span class="bad">Found 1 error in 1 file</span> (checked 1 source file)</div>
+            <div class="tl" id="c0" style="top:60px"><span class="p">$ python3 -m mypy protein.py</span></div>
+            <div class="tl" id="c1" style="top:104px"><span class="ok">Success: no issues found in 1 source file</span></div>
+            <div class="tl" id="c2" style="top:148px"><span class="p">$ python3 protein.py</span></div>
+            <div class="tl" id="c3" style="top:192px">Protein (g)? 30</div>
+            <div class="tl" id="c4" style="top:236px"><span class="ok">60</span></div>
+          </div>
+        </div>
+
+        <!-- the mypy inspector -->
+        <svg id="mag" class="s-abs s-hide" viewBox="0 0 150 120"><circle cx="52" cy="52" r="38" fill="rgba(230,227,255,0.25)" stroke="#fff" stroke-width="9" /><circle cx="52" cy="52" r="38" fill="none" stroke="#3b37e6" stroke-width="4" /><path d="M80 80 L116 114" stroke="#fff" stroke-width="18" stroke-linecap="round" /><path d="M80 80 L116 114" stroke="#3b37e6" stroke-width="10" stroke-linecap="round" /></svg>
+        <div id="magtag" class="s-abs s-hide">mypy</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-lab1" style="stroke:#3b37e6" />
+          <path id="r-meals" style="stroke:#ffc24b" />
+          <path id="r-ret" style="stroke:#7cf0b5" />
+          <path id="r-grams" style="stroke:#ffc24b" />
+          <path id="r-input" style="stroke:#ff8fab" />
+          <path id="r-inlab" style="stroke:#b9741a" />
+          <path id="r-call" style="stroke:#ff8fab" />
+          <path id="r-str" style="stroke:#ff8fab" />
+          <path id="r-int" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.464, 0.778, 1.103, 1.393, 1.556, 2.31, 2.519, 2.786, 3.088, 3.274, 3.367, 4.261, 4.423, 4.69, 4.818, 5.108, 5.828, 6.118, 6.42, 7.001, 7.999, 8.557, 8.731, 8.94, 9.416, 10.159, 10.53, 10.809, 11.169, 12.005, 12.388, 13.026, 13.41, 13.99, 14.153, 14.408, 14.594, 15.511, 15.662, 15.929, 16.184, 16.393, 16.695, 17.182, 17.473, 18.169, 18.576, 19.017, 19.888, 20.189, 20.77, 21.246, 21.42, 22.291, 22.535, 22.883, 23.231, 23.835, 24.044, 24.218, 24.938, 25.124, 25.24, 25.623, 25.844, 26.134, 27.132, 27.388, 27.771, 28.247, 28.537, 29.268, 29.861, 30.139, 30.917, 31.405, 31.707, 31.892, 32.043, 32.484, 32.995, 33.808, 34.354, 34.667, 34.992, 35.642, 35.851, 35.979, 36.327, 37.163, 37.581, 37.999, 38.324, 38.846, 39.438, 39.752, 40.065, 40.483, 40.866, 41.284, 41.47, 42.236, 42.991, 43.154, 43.444, 43.827, 44.152, 44.303, 45.069, 45.394, 46.381, 46.567, 46.892, 47.02, 47.322, 47.658, 48.123, 48.68, 49.04, 49.156, 49.539, 49.783, 50.27, 51.06, 52.093, 52.848, 53.057, 53.278, 53.347, 53.788, 53.997, 54.613, 54.822, 55.646, 56.076, 56.633, 56.912, 57.898, 58.305, 58.769, 59.129, 59.315, 59.779, 60.035, 60.336, 60.65, 61.138, 62.113, 62.484, 62.844, 63.111, 64.295, 64.783, 65.12, 65.387, 65.642, 65.84, 66.049, 66.548, 66.838, 67.361];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      // a token in a code row: text starts at page x 136, centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28); };
+      // a token in a terminal row: text starts at page x 96 + 20 + 24 = 140, 28 px mono = 16.8 px per char
+      const ttok = (id, text, sub, top) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 140 + ((c0 + c1) / 2) * 16.8, 96 + 512 + top + 22, (sub.length * 16.8) / 2 + 14, 26); };
+      const L0 = "def daily_kcal(meals: list[int]) -> int:";
+      tok("r-meals", L0, "meals: list[int]", 88, 12);
+      tok("r-ret", L0, "-> int", 88, 14);
+      tok("r-grams", "def two_portions(grams: int) -> int:", "grams: int", 238, 12);
+      tok("r-input", 'grams = input("Protein (g)? ")', "input", 388, 14);
+      tok("r-call", "print(two_portions(grams))", "two_portions(grams)", 438, 12);
+      ttok("r-str", 'has incompatible type "str"; expected "int"  [arg-type]', '"str"', 148);
+      ttok("r-int", 'has incompatible type "str"; expected "int"  [arg-type]', '"int"', 148);
+      ring("r-lab1", 1301, 326, 98, 44);
+      ring("r-inlab", 1520, 470, 182, 46);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at, d) => tl.to("#hl", { y: row - 88, duration: d || 0.25, ease: "power2.inOut" }, at);
+      const swap = (a, b, at) => { out(a, at, 0.15); pop(b, at + 0.1, { from: 0.7, d: 0.3 }); };
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      // the magnifier: lens centre at (x, y) on the page; svg lens centre is (52, 52)
+      const magTo = (x, y, at, d) => tl.to(["#mag", "#magtag"], { x: (i) => (i === 0 ? x - 52 : x + 46), y: (i) => (i === 0 ? y - 52 : y - 104), duration: d || 0.4, ease: "power2.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 1000, y: 1000 }, 0);
+      tl.set(["#mag", "#magtag"], { x: (i) => (i === 0 ? 960 - 52 : 960 + 46), y: (i) => (i === 0 ? 209 - 52 : 209 - 104) }, 0);
+      tl.set("#stamp", { rotation: -4 }, 0);
+
+      /* ---- 1. Jars on a shelf, each with a label ---- */
+      bump(["#j1", "#j2", "#j3"], t(5), 1.04);
+      pop("#lab1", t(13), { from: 0.5 });
+      draw("r-lab1", t(13) + 0.2, 0.4);
+      out("#r-lab1", t(17) - 0.2, 0.2);
+      pop("#lab2", t(17), { from: 0.5 });
+      pop("#lab3", t(20), { from: 0.5 });
+
+      /* ---- 2. Functions wear labels: daily_kcal(meals: list[int]) -> int ---- */
+      type("#L0", t(21), 40, 0.8);
+      type("#L1", t(21) + 0.8, 21, 0.4);
+      tl.set("#hl", { y: 0 }, t(26));
+      show("#hl", t(26), 0.2);
+      pop("#fcard", t(30), { from: 0.85, d: 0.4 });
+      show("#slot", t(30) + 0.1, 0.2);
+      show("#chute", t(30) + 0.1, 0.2);
+      draw("r-meals", t(33), 0.4);
+      pop("#inlab", t(33) + 0.1, { from: 0.6 });
+      bump("#j1", t(35), 1.08);
+      out("#r-meals", t(38) - 0.2, 0.2);
+      draw("r-ret", t(39), 0.4);
+      pop("#outlab", t(39) + 0.1, { from: 0.6 });
+      bump("#j2", t(45), 1.08);
+      pop("#res0", t(43), { from: 0.6, d: 0.35 });
+      out("#r-ret", t(46) - 0.2, 0.2);
+
+      /* ---- 3. Ben's card: two_portions(grams: int) -> int, grams come from input ---- */
+      out("#res0", t(46), 0.2);
+      type("#L3", t(46) + 0.2, 36, 0.7);
+      type("#L4", t(46) + 0.9, 20, 0.35);
+      hlTo(238, t(49), 0.25);
+      swap("#tt0", "#tt1", t(49));
+      swap("#sb0", "#sb1", t(51));
+      draw("r-grams", t(57), 0.4);
+      swap("#in0", "#in1", t(57) + 0.1);
+      out("#r-grams", t(61) - 0.2, 0.2);
+      type("#L6a", t(61), 30, 0.6);
+      type("#L7", t(61) + 0.6, 26, 0.5);
+      hlTo(388, t(66), 0.25);
+      draw("r-input", t(66), 0.4);
+      pop("#n-text", t(70), { from: 0.7, d: 0.3 });
+      pop("#chipS", t(72), { from: 0.5 });
+
+      /* ---- 4. Text pours into the jar labelled int. Python runs anyway: "3030" ---- */
+      out(["#r-input", "#n-text"], t(75) - 0.1, 0.2);
+      tl.to("#chipS", { x: 240, y: 74, scale: 0.55, duration: 0.7, ease: "power2.in" }, t(76));
+      out("#chipS", t(76) + 0.65, 0.15);
+      draw("r-inlab", t(80), 0.4);
+      tl.to("#inlab", { opacity: 0.35, duration: 0.3 }, t(84));
+      out("#r-inlab", t(84), 0.25);
+      hlTo(438, t(86), 0.25);
+      show("#a0", t(88), 0.2);
+      show("#a1", t(88) + 0.3, 0.2);
+      show("#a2", t(91), 0.2);
+      bump("#fcard", t(91), 1.03);
+      pop("#res1", t(97), { from: 0.6, d: 0.35 });
+      pop("#wrong", t(102), { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- 5. mypy walks the code before it runs and stamps the call ---- */
+      out(["#a0", "#a1", "#a2", "#hl"], t(103), 0.25);
+      tl.to("#inlab", { opacity: 1, duration: 0.3 }, t(106));
+      pop(["#mag", "#magtag"], t(109), { from: 0.5 });
+      magTo(960, 259, t(112), 0.35);
+      magTo(960, 359, t(113) + 0.1, 0.35);
+      magTo(960, 409, t(115), 0.35);
+      magTo(960, 509, t(116) + 0.2, 0.35);
+      magTo(800, 559, t(118), 0.4);
+      draw("r-call", t(120), 0.4);
+      out(["#mag", "#magtag"], t(122) - 0.1, 0.2);
+      pop("#stamp", t(122), { from: 1.6, ease: "power3.out", d: 0.3 });
+      show("#b0", t(124) - 0.3, 0.2);
+      show("#b1", t(124), 0.2);
+      show("#b2", t(124) + 0.2, 0.2);
+      show("#b3", t(125), 0.2);
+      draw("r-str", t(129), 0.4);
+      draw("r-int", t(133), 0.4);
+
+      /* ---- 6. Wrap input in int: mypy is happy, Ben gets 60 ---- */
+      out(["#r-call", "#r-str", "#r-int"], t(134) - 0.1, 0.2);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(134));
+      cursorTo(136 + 8 * 18 + 8, 96 + 388 + 34, t(134), 0.5);
+      swap("#L6a", "#L6b", t(137));
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(138));
+      out(["#b0", "#b1", "#b2", "#b3", "#stamp"], t(138), 0.2);
+      show("#c0", t(139), 0.2);
+      show("#c1", t(141), 0.25);
+      out(["#wrong", "#res1"], t(143), 0.2);
+      pop("#chipN", t(143), { from: 0.5, d: 0.3 });
+      tl.to("#chipN", { x: 226, y: 74, scale: 0.55, duration: 0.5, ease: "power2.in" }, t(144));
+      out("#chipN", t(144) + 0.45, 0.15);
+      show("#c2", t(144), 0.2);
+      show("#c3", t(144) + 0.2, 0.2);
+      show("#c4", t(146), 0.2);
+      pop("#res2", t(146), { from: 0.6, d: 0.35 });
+      pop("#right", t(147), { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 62.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

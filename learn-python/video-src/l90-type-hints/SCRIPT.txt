@@ -1,0 +1,13 @@
+Kitchen Coach keeps food in jars, and every jar has a label. A list of whole numbers. One whole number. Text.
+
+Functions can wear labels too. These are type hints. Daily kcal takes meals, a list of ints. The arrow says what comes out: an int.
+
+Now Ben's card. Two portions doubles his protein. Its label says grams is an int. But the grams come from input, and input always gives text. Thirty, in quotes.
+
+Text pours into the jar labelled int. Python never reads labels, so it runs anyway. Text times two repeats it. Ben gets thirty thirty grams of protein. Wrong.
+
+A type checker reads the labels. Run mypy. It walks the code before anything runs, finds the call, and stamps it. Incompatible type. It got a string, and expected an int.
+
+Wrap input in int. Now mypy finds no issues, and Ben gets 60 grams.
+
+Type hints are labels. Python doesn't read them, but your editor and mypy do.

@@ -1,0 +1,369 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left */
+    #intro { left: 110px; top: 170px; font: 700 84px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro2 { left: 114px; top: 410px; font: 800 44px/1.3 "Manrope", sans-serif; color: #4a4760; white-space: nowrap; opacity: 0; }
+
+    /* the serving counter, right */
+    #counter { left: 1196px; top: 96px; width: 628px; height: 888px; border-radius: 26px; background: #fff; }
+    #counter-t { left: 1232px; top: 112px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    .bin { position: absolute; border-radius: 22px; box-shadow: 0 0 0 4px #0e0c1d; }
+    #tray { left: 1236px; top: 190px; width: 548px; height: 230px; background: #fbf7f1; }
+    #board { left: 1236px; top: 470px; width: 548px; height: 300px; background: #fbebd2; opacity: 0; }
+    .blab { position: absolute; font: 700 32px/48px "JetBrains Mono", monospace; color: #3b37e6; white-space: pre; }
+    .tag { position: absolute; height: 46px; padding: 0 20px; border-radius: 999px; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .tag.acc { background: #e6e3ff; color: #3b37e6; }
+    .tag.warn { background: #fbebd2; color: #7a4708; box-shadow: 0 0 0 3px #7a4708; }
+    .tag.ok { background: #ddefe6; color: #1f7a5c; }
+    .tag.bad { background: #fbe0ea; color: #b8235a; }
+    .chip { position: absolute; z-index: 4; width: 156px; height: 72px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 800 30px/72px "Manrope", sans-serif; opacity: 0; }
+    .num { position: absolute; z-index: 4; width: 104px; height: 64px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 30px/64px "JetBrains Mono", monospace; opacity: 0; }
+    .note { position: absolute; z-index: 4; width: 340px; height: 76px; border-radius: 8px; background: #ffe58a; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; text-align: center; font: 700 28px/76px "JetBrains Mono", monospace; opacity: 0; white-space: pre; }
+    .face { position: absolute; width: 96px; height: 96px; border-radius: 50%; text-align: center; font: 700 52px/96px "Fraunces", serif; box-shadow: 0 0 0 5px #0e0c1d; opacity: 0; z-index: 4; }
+    #chloe { left: 1700px; top: 412px; background: #e6e3ff; }
+    #ben { left: 1700px; top: 412px; background: #ddefe6; }
+    #bag { position: absolute; left: 1330px; top: 520px; width: 400px; height: 236px; opacity: 0; }
+    #bag > .body { position: absolute; left: 0; top: 30px; width: 400px; height: 206px; border-radius: 10px 10px 30px 30px; background: #ead9bf; box-shadow: 0 0 0 4px #0e0c1d; }
+    #bag > .fold { position: absolute; left: -10px; top: 18px; width: 420px; height: 30px; border-radius: 8px; background: #d9c29f; box-shadow: 0 0 0 4px #0e0c1d; }
+    #bag > .nm { position: absolute; left: 0; top: 62px; width: 400px; text-align: center; font: 700 30px/44px "JetBrains Mono", monospace; }
+    #ticket { left: 1236px; top: 190px; width: 548px; height: 230px; background: #fff; opacity: 0; }
+    #ticket-t { position: absolute; left: 24px; top: 16px; font: 700 34px/48px "Fraunces", serif; white-space: nowrap; }
+    #tk-row { position: absolute; left: 24px; top: 100px; font: 700 30px/48px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    #tk-row b { color: #1f7a5c; font-family: "Manrope", sans-serif; }
+    #stamp { left: 1500px; top: 640px; height: 64px; padding: 0 26px; border-radius: 12px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 5px #1f7a5c; font: 800 34px/64px "Manrope", sans-serif; transform: rotate(-8deg); opacity: 0; z-index: 4; white-space: nowrap; }
+
+    /* code panel: rows of 56 px, 30 px mono = 18 px per char, text at page x 136 */
+    #s-code { left: 96px; top: 96px; width: 1054px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1054px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    .ln { position: absolute; left: 40px; font: 500 30px/52px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .s { color: #ffb3c8; }
+    .ln .n { color: #7cf0b5; }
+    .ln .st { color: #ff8fb1; }
+    #out-rule { position: absolute; left: 40px; top: 560px; width: 974px; height: 3px; background: #3a3760; }
+    #out-l { position: absolute; left: 40px; top: 574px; font: 800 28px/40px "Manrope", sans-serif; color: #a9a6d6; }
+    .o { position: absolute; left: 40px; font: 500 30px/52px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    #err { position: absolute; left: 28px; top: 624px; width: 998px; height: 128px; border-radius: 14px; background: #3a1630; box-shadow: 0 0 0 3px #ff8fb1; opacity: 0; }
+    #err > div { position: absolute; left: 14px; font: 500 28px/48px "JetBrains Mono", monospace; color: #ffd0dc; white-space: pre; }
+    #err b { color: #ff8fb1; }
+    .cpill { position: absolute; height: 48px; padding: 0 18px; border-radius: 999px; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .cpill.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 5; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 16 12; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.6" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Cook for <span class="a">any number</span><br />of guests.</div>
+        <div id="intro2" class="s-abs">Kitchen Coach serves dinner.</div>
+
+        <!-- the serving counter -->
+        <div id="counter" class="s-abs s-ol"></div>
+        <div id="counter-t" class="s-abs">Serving counter</div>
+        <div id="tray" class="bin">
+          <div class="blab" id="tl-a" style="left:24px; top:14px; opacity:0">*dishes</div>
+          <div class="blab" id="tl-b" style="left:24px; top:14px; opacity:0">*amounts</div>
+        </div>
+        <div id="tag-tuple" class="tag acc" style="left:1636px; top:206px">tuple</div>
+        <div id="tag-many" class="tag warn" style="left:1376px; top:322px">how many?</div>
+        <div id="tag-any" class="tag ok" style="left:1452px; top:322px">any number ✓</div>
+        <div class="chip" id="ch0" style="left:1256px; top:310px">rice</div>
+        <div class="chip" id="ch1" style="left:1432px; top:310px">beans</div>
+        <div class="chip" id="ch2" style="left:1608px; top:310px">salsa</div>
+        <div class="chip" id="ch3" style="left:1256px; top:310px">soup</div>
+        <div id="tag-total" class="tag ok" style="left:1236px; top:438px">= 1380 kcal</div>
+
+        <div id="board" class="bin">
+          <div class="blab" style="left:24px; top:14px">**notes</div>
+        </div>
+        <div id="tag-dict" class="tag acc" style="left:1430px; top:484px">dict</div>
+        <div class="note" id="nt0" style="left:1262px; top:556px; transform: rotate(-2deg)">gluten_free=True</div>
+        <div class="note" id="nt1" style="left:1262px; top:660px; transform: rotate(1.5deg)">extra="cream"</div>
+        <div class="note" id="nt2" style="left:1262px; top:570px; transform: rotate(-2deg)">glutn_free=True</div>
+        <div id="tag-missed" class="tag bad" style="left:1640px; top:584px">missed</div>
+        <div id="stamp" class="s-abs">caught ✓</div>
+
+        <div id="bag">
+          <div class="body"></div><div class="fold"></div>
+          <div class="nm">ben_meals</div>
+        </div>
+        <div class="num" id="v0" style="left:1366px; top:650px">450</div>
+        <div class="num" id="v1" style="left:1478px; top:650px">320</div>
+        <div class="num" id="v2" style="left:1590px; top:650px">610</div>
+
+        <div id="ticket" class="bin">
+          <div id="ticket-t">Kitchen ticket</div>
+          <div id="tk-row">Order: pancakes <b>✓</b></div>
+        </div>
+        <div id="tag-stop" class="tag bad" style="left:1260px; top:296px">stopped at the typo</div>
+
+        <div id="chloe" class="face">C</div>
+        <div id="ben" class="face">B</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="ttl" id="tt-a">plate.py</span><span class="ttl" id="tt-b">order.py</span><span class="ttl" id="tt-c">kcal.py</span><span class="ttl" id="tt-d">typo.py</span>
+          </div>
+
+          <!-- page A: *dishes -->
+          <div class="ln" id="A0" style="top:84px"><span class="k">def</span> <span class="f">plate</span>(*dishes):</div>
+          <div class="ln" id="A1" style="top:140px">    <span class="f">print</span>(dishes)</div>
+          <div class="ln" id="A3" style="top:252px"><span class="f">plate</span>(<span class="s">"rice"</span>, <span class="s">"beans"</span>, <span class="s">"salsa"</span>)</div>
+          <div class="ln" id="A4" style="top:308px"><span class="f">plate</span>(<span class="s">"soup"</span>)</div>
+
+          <!-- page B: **notes -->
+          <div class="ln" id="B0" style="top:84px"><span class="k">def</span> <span class="f">order</span>(dish, **notes):</div>
+          <div class="ln" id="B1" style="top:140px">    <span class="f">print</span>(notes)</div>
+          <div class="ln" id="B3" style="top:252px"><span class="f">order</span>(<span class="s">"pancakes"</span>, gluten_free=<span class="k">True</span>, extra=<span class="s">"cream"</span>)</div>
+
+          <!-- page C: spreading a list with * -->
+          <div class="ln" id="C0" style="top:84px"><span class="k">def</span> <span class="f">total_kcal</span>(*amounts):</div>
+          <div class="ln" id="C1" style="top:140px">    <span class="k">return</span> <span class="f">sum</span>(amounts)</div>
+          <div class="ln" id="C3" style="top:252px">ben_meals = [<span class="n">450</span>, <span class="n">320</span>, <span class="n">610</span>]</div>
+          <div class="ln" id="C4" style="top:308px"><span class="f">print</span>(<span class="f">total_kcal</span>(ben_meals))</div>
+          <div class="ln" id="C4s" style="top:308px"><span class="f">print</span>(<span class="f">total_kcal</span>(<span class="st">*</span>ben_meals))</div>
+
+          <!-- page D: the typo that **notes swallows -->
+          <div class="ln" id="D0" style="top:84px"><span class="k">def</span> <span class="f">order</span>(dish, **notes):</div>
+          <div class="ln" id="D0f" style="top:84px"><span class="k">def</span> <span class="f">order</span>(dish, gluten_free=<span class="k">False</span>):</div>
+          <div class="ln" id="D1" style="top:140px">    <span class="k">if</span> notes.<span class="f">get</span>(<span class="s">"gluten_free"</span>):</div>
+          <div class="ln" id="D1f" style="top:140px">    <span class="k">if</span> gluten_free:</div>
+          <div class="ln" id="D2" style="top:196px">        <span class="f">print</span>(<span class="s">"Gluten-free kitchen"</span>)</div>
+          <div class="ln" id="D3" style="top:252px">    <span class="f">print</span>(<span class="s">f"Order: {dish}"</span>)</div>
+          <div class="ln" id="D5" style="top:364px"><span class="f">order</span>(<span class="s">"pancakes"</span>, glutn_free=<span class="k">True</span>)</div>
+          <div class="cpill bad" id="p-noe" style="left:364px; top:428px">gluten, with no e</div>
+
+          <div id="out-rule"></div>
+          <div id="out-l">Output</div>
+          <div class="o" id="oA0" style="top:624px">('rice', 'beans', 'salsa')</div>
+          <div class="o" id="oA1" style="top:680px">('soup',)</div>
+          <div class="o" id="oB0" style="top:624px">{'gluten_free': True, 'extra': 'cream'}</div>
+          <div class="o" id="oC0" style="top:624px">1380</div>
+          <div class="o" id="oD0" style="top:624px">Order: pancakes</div>
+          <div id="err">
+            <div style="top:16px"><b>TypeError:</b> order() got an unexpected keyword</div>
+            <div style="top:64px">argument 'glutn_free'. Did you mean 'gluten_free'?</div>
+          </div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-star" style="stroke:#ffc24b" />
+          <path id="r-sdish" style="stroke:#ffc24b" />
+          <path id="r-rice" style="stroke:#c9c6ff" />
+          <path id="r-beans" style="stroke:#c9c6ff" />
+          <path id="r-salsa" style="stroke:#c9c6ff" />
+          <path id="r-star2" style="stroke:#ffc24b" />
+          <path id="r-gf" style="stroke:#c9c6ff" />
+          <path id="r-ex" style="stroke:#c9c6ff" />
+          <path id="r-two" style="stroke:#ffc24b" />
+          <path id="r-list" style="stroke:#7cf0b5" />
+          <path id="r-spread" style="stroke:#ffc24b" />
+          <path id="r-typo" style="stroke:#ff8fb1" />
+          <path id="r-d2" class="dash" style="stroke:#ff8fb1" />
+          <path id="r-nt2" class="dash" style="stroke:#b8235a" />
+          <path id="r-kw" style="stroke:#ffc24b" />
+          <path id="r-fixed" style="stroke:#7cf0b5" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.441, 0.755, 1.138, 1.904, 2.101, 2.554, 2.949, 3.262, 3.425, 3.657, 4.04, 4.156, 4.957, 5.236, 5.526, 5.909, 6.211, 6.966, 7.175, 7.268, 7.755, 7.93, 9.056, 9.532, 10.426, 10.704, 10.983, 11.215, 11.68, 12.167, 12.434, 13.537, 13.862, 14.118, 14.594, 14.826, 14.93, 15.372, 16.115, 16.359, 16.835, 17.264, 18.437, 18.681, 18.959, 19.168, 19.598, 19.784, 20.19, 20.631, 20.817, 21.572, 22.001, 22.28, 22.617, 22.93, 23.72, 24.219, 24.648, 25.24, 26.007, 26.564, 27.168, 28.236, 28.538, 28.944, 29.06, 29.304, 29.49, 29.896, 30.302, 30.465, 30.894, 31.858, 32.137, 32.462, 32.624, 32.717, 33.333, 33.507, 34.726, 35.144, 35.504, 35.736, 36.363, 36.514, 36.619, 37.501, 37.722, 37.803, 38.221, 38.523, 38.662, 38.941, 39.057, 39.173, 39.556, 39.777, 39.927, 40.403, 40.949, 41.228, 41.715, 42.83, 43.48, 43.921, 44.769, 45.129, 45.314, 46.452, 46.928, 47.195, 47.393, 47.497, 48.356, 49.006, 49.297, 49.668, 50.504, 50.876, 51.201, 51.514, 51.851, 52.002, 52.814, 53.116, 53.743, 53.999, 54.451, 54.835, 54.951, 56.042, 56.263, 56.379, 56.564, 56.704, 57.319, 57.679, 57.876, 58.306, 58.596, 59.165, 59.664, 59.804, 61.081, 61.522, 61.951, 62.474, 62.915, 63.368, 63.53, 63.635, 64.819, 65.202, 65.527, 65.992, 66.34, 66.793, 67.153, 67.478, 67.652, 67.803];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const path = (id, d, dashed) => { const p = document.getElementById(id); p.setAttribute("d", d); if (!dashed) prep(p); };
+      // code rows: text starts at page x 136, 18 px per char, row r centre y = 96 + 84 + 56 r + 26
+      const CW = 18;
+      const col = (id, c0, len, row, pad, dashed) => path(id, ringD(136 + (c0 + len / 2) * CW, 206 + row * 56, (len * CW) / 2 + (pad || 14), 30), dashed);
+      col("r-star", 10, 1, 0, 12);       // * in def plate(*dishes)
+      col("r-sdish", 10, 7, 0);          // *dishes
+      col("r-rice", 6, 6, 3, 8);         // "rice"
+      col("r-beans", 14, 7, 3, 8);       // "beans"
+      col("r-salsa", 23, 7, 3, 8);       // "salsa"
+      col("r-star2", 10, 1, 0, 12);      // the star again
+      col("r-gf", 18, 16, 3, 10);        // gluten_free=True
+      col("r-ex", 36, 13, 3, 10);        // extra="cream"
+      col("r-two", 16, 2, 0, 14);        // **
+      col("r-list", 12, 15, 3, 12);      // [450, 320, 610]
+      col("r-spread", 17, 1, 4, 12);     // * in total_kcal(*ben_meals)
+      col("r-typo", 18, 10, 5, 12);      // glutn_free
+      col("r-d2", 8, 28, 2, 14, true);   // print("Gluten-free kitchen"), never runs
+      col("r-kw", 16, 7, 0, 12);         // **notes
+      col("r-fixed", 16, 17, 0, 12);     // gluten_free=False
+      // dashed ring around the typo note on the board (note at 1262,570, 340 x 76)
+      path("r-nt2", ringD(1432, 608, 190, 54), true);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, o) => tl.to(sel, { opacity: o, duration: 0.35, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const dashIn = (id, at) => tl.fromTo("#" + id, { opacity: 0, scale: 0.9, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, at);
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const fly = (sel, dx, dy, at, d, rot) => tl.fromTo(sel, { opacity: 1, x: dx, y: dy }, { opacity: 1, x: 0, y: 0, duration: d || 0.6, ease: "power3.inOut", immediateRender: false }, at);
+
+      /* ---- 1. Kitchen Coach serves dinner. Nobody knows how many dishes ---- */
+      show("#intro2", t(2) - 0.1, 0.35);
+      pop("#tag-many", t(8), { from: 0.6 });
+
+      /* ---- 2. plate gets one parameter, with a star in front. Star dishes ---- */
+      out(["#intro", "#intro2"], t(13) - 0.2, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(14) - 0.15);
+      show("#tt-a", t(14), 0.2);
+      type("#A0", t(15), 19, 0.55);
+      type("#A1", t(17), 17, 0.45);
+      draw("r-star", t(20) - 0.05, 0.4);
+      out("#r-star", t(23) - 0.1, 0.15);
+      draw("r-sdish", t(23), 0.45);
+      pop("#tl-a", t(24), { from: 0.5 });
+      out("#tag-many", t(24), 0.2);
+
+      /* ---- 3. Call plate with rice, beans and salsa. They slide into one tray, a tuple ---- */
+      out("#r-sdish", t(25) - 0.1, 0.2);
+      type("#A3", t(25), 31, 0.75);
+      draw("r-rice", t(28), 0.35);
+      draw("r-beans", t(29), 0.35);
+      draw("r-salsa", t(31), 0.35);
+      // chips start over their tokens in the code (row 3, page y 348) and slide right into the tray
+      [[0, 6, 34], [1, 14, 35], [2, 23, 37]].forEach(([i, c, w]) => {
+        const sx = 136 + c * CW - 30, tx = 1256 + i * 176;
+        fly("#ch" + i, sx - tx, 348 - 310, t(w) - 0.15, 0.6);
+        out("#r-" + ["rice", "beans", "salsa"][i], t(w) - 0.1, 0.15);
+      });
+      bump("#tray", t(38), 1.03);
+      show("#oA0", t(40), 0.3);
+      pop("#tag-tuple", t(40), { from: 0.5 });
+      bump("#tl-a", t(42), 1.12);
+
+      /* ---- 4. One dish or ten: the star collects them all ---- */
+      out(["#ch0", "#ch1", "#ch2"], t(43) - 0.1, 0.2);
+      type("#A4", t(43), 13, 0.35);
+      pop("#ch3", t(44), { from: 0.5 });
+      show("#oA1", t(44) + 0.2, 0.3);
+      pop("#tag-any", t(46), { from: 0.6 });
+      draw("r-star2", t(48) - 0.05, 0.4);
+
+      /* ---- 5. Chloe's order comes with notes: gluten_free=True, extra="cream" ---- */
+      out(["#A0", "#A1", "#A3", "#A4", "#oA0", "#oA1", "#r-star2", "#tt-a"], t(52) - 0.3, 0.25);
+      out(["#ch3", "#tag-any", "#tag-tuple"], t(52) - 0.3, 0.25);
+      dim(["#tray", "#tl-a"], t(52) - 0.3, 0.35);
+      pop("#chloe", t(52), { from: 0.4 });
+      show("#tt-b", t(52), 0.2);
+      type("#B0", t(52) + 0.1, 25, 0.5);
+      type("#B1", t(53) + 0.2, 16, 0.4);
+      type("#B3", t(54), 50, 1.1);
+      draw("r-gf", t(57), 0.45);
+      draw("r-ex", t(61), 0.45);
+
+      /* ---- 6. Two stars in front of notes collect the named values. A board. A dictionary ---- */
+      draw("r-two", t(64), 0.4);
+      pop("#board", t(69) - 0.1, { from: 0.85, d: 0.45 });
+      out(["#r-gf", "#r-ex"], t(71), 0.2);
+      fly("#nt0", (136 + 18 * CW - 40) - 1262, 348 - 556, t(71) + 0.1, 0.7);
+      fly("#nt1", (136 + 36 * CW - 40) - 1262, 348 - 660, t(72) + 0.1, 0.7);
+      bump("#board", t(78), 1.03);
+      show("#oB0", t(74), 0.3);
+      pop("#tag-dict", t(80), { from: 0.5 });
+
+      /* ---- 7. Ben's meals are in a list. A star in the call spills it out ---- */
+      out(["#B0", "#B1", "#B3", "#oB0", "#r-two", "#tt-b"], t(81) - 0.3, 0.25);
+      out(["#board", "#nt0", "#nt1", "#tag-dict", "#chloe"], t(81) - 0.3, 0.25);
+      dim("#tray", t(81) - 0.1, 1);
+      out("#tl-a", t(81) - 0.1, 0.2);
+      pop("#tl-b", t(81), { from: 0.5 });
+      pop("#ben", t(81), { from: 0.4 });
+      show("#tt-c", t(81), 0.2);
+      type("#C0", t(81) + 0.1, 25, 0.5);
+      type("#C1", t(82) + 0.1, 23, 0.45);
+      pop("#bag", t(84), { from: 0.8 });
+      pop(["#v0", "#v1", "#v2"], t(84) + 0.1, { from: 0.6 });
+      type("#C3", t(84), 27, 0.6);
+      draw("r-list", t(87) - 0.05, 0.45);
+      out("#r-list", t(88) + 0.2, 0.2);
+      type("#C4", t(88) - 0.15, 28, 0.3);
+      out("#C4", t(90) - 0.05, 0.12);
+      show("#C4s", t(90) - 0.05, 0.12);
+      draw("r-spread", t(90), 0.4);
+      // the values spill from the bag into the tray, one each
+      [[0, 99], [1, 101], [2, 102]].forEach(([i, w]) => {
+        tl.to("#v" + i, { x: (1282 + i * 176) - (1366 + i * 112), y: 314 - 650, duration: 0.55, ease: "power3.inOut" }, t(w) - 0.1);
+      });
+      bump("#bag", t(99) - 0.1, 1.04);
+      show("#oC0", t(104), 0.3);
+      pop("#tag-total", t(104) + 0.1, { from: 0.6 });
+
+      /* ---- 8. The catch: a typo, and **notes takes it anyway ---- */
+      out(["#C0", "#C1", "#C3", "#C4s", "#oC0", "#r-spread", "#tt-c"], t(107) - 0.3, 0.25);
+      out(["#tray", "#tl-b", "#v0", "#v1", "#v2", "#bag", "#tag-total", "#ben"], t(107) - 0.3, 0.25);
+      show("#tt-d", t(107), 0.2);
+      type("#D0", t(107), 25, 0.4);
+      type("#D1", t(107) + 0.35, 32, 0.4);
+      type("#D2", t(108) + 0.1, 36, 0.4);
+      type("#D3", t(109) - 0.1, 27, 0.4);
+      pop("#ticket", t(107) + 0.3, { from: 0.85 });
+      pop("#board", t(110) - 0.2, { from: 0.85 });
+      pop("#chloe", t(110), { from: 0.4 });
+      type("#D5", t(110) + 0.1, 34, 0.6);
+      draw("r-typo", t(114), 0.45);
+      pop("#p-noe", t(115), { from: 0.6 });
+      bump("#board", t(120), 1.03);
+      out(["#r-typo", "#p-noe"], t(121) - 0.2, 0.2);
+      fly("#nt2", (136 + 18 * CW - 40) - 1262, 460 - 570, t(121), 0.7);
+      show("#oD0", t(125), 0.3);
+      show("#tk-row", t(125) + 0.1, 0.3);
+      dashIn("r-d2", t(128));
+      dashIn("r-nt2", t(129) - 0.1);
+      pop("#tag-missed", t(129), { from: 0.6 });
+
+      /* ---- 9. Write the names out, and Python catches the typo ---- */
+      out(["#r-d2"], t(132) - 0.1, 0.2);
+      draw("r-kw", t(132), 0.4);
+      out("#r-kw", t(137) - 0.15, 0.15);
+      out(["#D0", "#D1"], t(137) - 0.1, 0.15);
+      pop(["#D0f", "#D1f"], t(137), { from: 0.85, d: 0.35 });
+      draw("r-fixed", t(138), 0.45);
+      out(["#oD0", "#r-nt2", "#tag-missed", "#tk-row"], t(141) - 0.1, 0.2);
+      pop("#err", t(141), { from: 0.9 });
+      pop("#stamp", t(142), { from: 1.6, ease: "back.out(2)" });
+      pop("#tag-stop", t(142) + 0.2, { from: 0.6 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 61.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

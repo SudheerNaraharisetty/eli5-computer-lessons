@@ -1,0 +1,53 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .row { left: 110px; width: 1700px; height: 250px; border-radius: 26px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #r1 { top: 140px; }
+    #r2 { top: 480px; }
+    .key { position: absolute; left: 40px; top: 40px; height: 84px; padding: 0 30px; border-radius: 18px; background: #15132b; color: #ffc24b; font: 700 52px/84px "JetBrains Mono", monospace; white-space: nowrap; }
+    .say { position: absolute; left: 40px; top: 146px; font: 700 52px/70px "Fraunces", serif; white-space: nowrap; }
+    .say .a { color: #3b37e6; }
+    .ex { position: absolute; top: 48px; height: 68px; padding: 0 26px; border-radius: 14px; font: 700 36px/68px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #ex1 { left: 520px; background: #e6e3ff; color: #2c28b8; }
+    #ex2 { left: 600px; background: #fbebd2; color: #7a4708; }
+    #t-next { left: 110px; top: 870px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="10.2" data-track-index="1">
+      <div id="r1" class="t-abs row">
+        <div class="key">*args</div>
+        <div class="ex" id="ex1">('rice', 'beans', 'salsa')</div>
+        <div class="say">collects extra values in a <span class="a">tuple</span>.</div>
+      </div>
+      <div id="r2" class="t-abs row">
+        <div class="key">**kwargs</div>
+        <div class="ex" id="ex2">{'gluten_free': True, 'extra': 'cream'}</div>
+        <div class="say">collects named ones in a <span class="a">dict</span>.</div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 80: lambda</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 61.6;
+      const g = { star: 61.681, tuple: 64.235, dbl: 65.419, dict: 68.403 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#r1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0.0);
+      tl.fromTo("#ex1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.tuple - S - 0.1);
+      tl.fromTo("#r2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.dbl - S - 0.2);
+      tl.fromTo("#ex2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.dict - S - 0.1);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 7.7);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Kitchen Coach serves dinner. But tonight, nobody knows how many dishes are coming.
+
+So plate gets one parameter, with a star in front. Star dishes.
+
+Call plate with rice, beans and salsa. Each one slides into a single tray, a tuple called dishes. One dish or ten, the star collects them all.
+
+Chloe's order comes with notes. Gluten free equals True. Extra equals cream. Two stars in front of notes collect the named values. They stick to a board. A dictionary.
+
+Ben's meals are already in a list. Put a star before the list in the call, and it spills out, one value each. Thirteen eighty calories.
+
+Now the catch. Chloe's note has a typo: gluten, with no e. Double star notes takes it anyway. No error, and nobody checks the gluten. When you know the names, write them out, and Python catches the typo.
+
+Star args collects extra values in a tuple. Double star keyword args collects named ones in a dict.

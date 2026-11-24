@@ -1,0 +1,17 @@
+Kitchen Coach keeps a record for every dish. Here is the class, written by hand.
+
+Count the word protein. One, two, three, in the setup. Once more in the printout. And twice in the equals check. Six times, for one field.
+
+Add a field, and you must update every place. Miss one, and print or equals goes quietly wrong.
+
+Now the same class as a dataclass. Just list the fields. Name, protein, and servings, with a default of two.
+
+The line with the at sign is a decorator. It writes the setup, the printout and the equals check for you.
+
+Print a dish. A clear record, every field named.
+
+One catch. Give it a list. Allergens equals an empty list. Python refuses, with a value error. A shared list would leak, like Chloe's gluten in lesson sixty-nine.
+
+Use field, with a default factory of list. Now each dish gets its own list.
+
+Dataclass writes the boring parts. You list the fields.

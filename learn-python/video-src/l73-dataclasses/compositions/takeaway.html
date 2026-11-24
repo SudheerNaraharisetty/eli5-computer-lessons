@@ -1,0 +1,56 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-h1 { left: 110px; top: 110px; font: 700 88px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h1 b { font: 700 80px/1.1 "JetBrains Mono", monospace; color: #3b37e6; letter-spacing: 0; }
+    .t-chip { top: 270px; height: 84px; padding: 0 30px; border-radius: 20px; background: #e6e3ff; color: #3b37e6; font: 700 44px/84px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #t-k1 { left: 110px; }
+    #t-k2 { left: 440px; }
+    #t-k3 { left: 770px; }
+    #t-h2 { left: 110px; top: 440px; font: 700 88px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h2 .a { color: #3b37e6; }
+    #t-code { left: 110px; top: 580px; width: 760px; height: 230px; background: #15132b; border-radius: 24px; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #t-code div { position: absolute; left: 40px; font: 500 38px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    #t-code .f { color: #8fd3ff; }
+    #t-code .m { color: #7cf0b5; }
+    #t-next { left: 110px; top: 890px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="6.9" data-track-index="1">
+      <div id="t-h1" class="t-abs"><b>@dataclass</b> writes the boring parts.</div>
+      <div id="t-k1" class="t-abs t-chip">__init__</div>
+      <div id="t-k2" class="t-abs t-chip">__repr__</div>
+      <div id="t-k3" class="t-abs t-chip">__eq__</div>
+      <div id="t-h2" class="t-abs">You <span class="a">list the fields</span>.</div>
+      <div id="t-code" class="t-abs">
+        <div style="top:25px">name: <span class="f">str</span></div>
+        <div style="top:85px">protein: <span class="f">int</span></div>
+        <div style="top:145px">servings: <span class="f">int</span> = <span class="m">2</span></div>
+      </div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 74: Properties</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 64.7;
+      const g = { dataclass: 64.966, boring: 66.266, you: 67.497, list: 67.718 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.dataclass - S - 0.15));
+      ["#t-k1", "#t-k2", "#t-k3"].forEach((id, i) => tl.fromTo(id, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.boring - S + i * 0.15));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.you - S);
+      tl.fromTo("#t-code", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, g.list - S + 0.2);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 4.5);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

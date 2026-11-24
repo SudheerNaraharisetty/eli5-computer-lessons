@@ -1,0 +1,362 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening: a title and one dish record card */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro-sub { left: 114px; top: 540px; font: 800 36px/48px "Manrope", sans-serif; color: #4a4760; white-space: nowrap; }
+    #rec { left: 1190px; top: 250px; width: 600px; height: 420px; background: #fff; border-radius: 28px; }
+    #rec .tag { position: absolute; left: 30px; top: 28px; height: 52px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #rec .row { position: absolute; left: 40px; width: 520px; height: 70px; border-bottom: 4px dashed #d8d2c8; font: 800 34px/70px "Manrope", sans-serif; }
+    #rec .row b { position: absolute; right: 0; top: 0; font: 700 34px/70px "JetBrains Mono", monospace; color: #1f7a5c; }
+
+    /* code panel: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1728px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 100%; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .d { color: #ff8fab; }
+    .sw { display: inline-block; position: relative; vertical-align: top; height: 50px; }
+    .sw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+    .s-note.big { height: 64px; padding: 0 30px; font: 800 34px/64px "Manrope", sans-serif; }
+
+    /* output strip inside the panel */
+    #out { position: absolute; left: 30px; top: 690px; width: 980px; height: 150px; border-radius: 16px; background: #0b0a1c; box-shadow: 0 0 0 3px #3a3660; opacity: 0; }
+    #out .lb { position: absolute; left: 18px; top: 8px; font: 800 28px/36px "Manrope", sans-serif; color: #a9a6c8; }
+    #out .o { position: absolute; left: 18px; top: 50px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    #o-err { font-size: 28px !important; line-height: 42px !important; top: 48px !important; color: #ff8fab !important; }
+    #o-fine { font: 800 30px/50px "Manrope", sans-serif !important; color: #7cf0b5 !important; }
+
+    /* the shelf of free methods, right */
+    #shelf { left: 1190px; top: 96px; width: 640px; height: 640px; }
+    #shelf > .bg { position: absolute; inset: 0; border-radius: 28px; background: #fff; }
+    #sh-h { position: absolute; left: 30px; top: 26px; font: 800 34px/48px "Manrope", sans-serif; white-space: nowrap; }
+    #sh-h b { font: 700 34px/48px "JetBrains Mono", monospace; color: #3b37e6; }
+    .slot { position: absolute; left: 30px; width: 580px; height: 150px; border-radius: 20px; border: 4px dashed #8c88b0; background: #faf7f3; }
+    .card { position: absolute; left: 30px; width: 580px; height: 150px; border-radius: 20px; background: #e6e3ff; box-shadow: 0 0 0 5px #0e0c1d; opacity: 0; }
+    .card .nm { position: absolute; left: 28px; top: 22px; font: 700 46px/56px "JetBrains Mono", monospace; color: #3b37e6; }
+    .card .cp { position: absolute; left: 30px; top: 88px; font: 800 30px/40px "Manrope", sans-serif; color: #4a4760; white-space: nowrap; }
+
+    /* the catch, right */
+    #stamp { left: 1270px; top: 150px; width: 500px; height: 130px; border-radius: 18px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 72px/130px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-7deg); }
+    #leak, #own { left: 1190px; top: 380px; width: 640px; height: 330px; }
+    #leak > .bg, #own > .bg { position: absolute; inset: 0; border-radius: 28px; background: #fff; }
+    .ctag { position: absolute; left: 30px; top: 24px; height: 50px; padding: 0 22px; border-radius: 999px; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; }
+    #leak .ctag { background: #fbebd2; color: #7a4708; }
+    #own .ctag { background: #ddefe6; color: #1f7a5c; }
+    #jar { position: absolute; left: 30px; top: 120px; width: 230px; height: 160px; border-radius: 22px; background: #fbe0ea; box-shadow: 0 0 0 5px #0e0c1d; }
+    #jar .lid { position: absolute; left: 30px; top: -22px; width: 170px; height: 22px; border-radius: 8px 8px 0 0; background: #0e0c1d; }
+    #jar .v { position: absolute; left: 0; top: 56px; width: 230px; text-align: center; font: 700 32px/48px "JetBrains Mono", monospace; color: #b8235a; }
+    .who { position: absolute; left: 340px; width: 270px; height: 70px; border-radius: 16px; background: #fbe0ea; text-align: center; font: 700 28px/70px "JetBrains Mono", monospace; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #leak svg { position: absolute; left: 0; top: 0; width: 640px; height: 330px; overflow: visible; }
+    #own .row { position: absolute; left: 30px; width: 580px; height: 90px; border-radius: 18px; background: #ddefe6; box-shadow: 0 0 0 4px #1f7a5c; opacity: 0; }
+    #own .row .a { position: absolute; left: 24px; top: 0; font: 700 30px/90px "JetBrains Mono", monospace; color: #0e0c1d; }
+    #own .row .b { position: absolute; right: 24px; top: 0; font: 700 32px/90px "JetBrains Mono", monospace; color: #1f7a5c; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    .badge { position: absolute; width: 50px; height: 50px; border-radius: 50%; background: #ffc24b; color: #15132b; text-align: center; font: 800 30px/50px "Manrope", sans-serif; box-shadow: 0 0 0 4px #15132b; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="64.7" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">A record for<br />every <span class="a">dish</span>.</div>
+        <div id="intro-sub" class="s-abs">Kitchen Coach</div>
+        <div id="rec" class="s-abs s-ol">
+          <div class="tag">soup</div>
+          <div class="row" style="top:110px">name <b>lentil soup</b></div>
+          <div class="row" style="top:190px">protein <b>18 g</b></div>
+          <div class="row" style="top:270px">servings <b>2</b></div>
+        </div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">dish.py</span></div>
+
+          <!-- written by hand -->
+          <div class="ln hand" id="H1" style="top:88px"><span class="k">class</span> <span class="f">Dish</span>:</div>
+          <div class="ln hand" id="H2" style="top:138px">    <span class="k">def</span> <span class="f">__init__</span>(self, name, protein, servings=<span class="m">2</span><span class="sw" style="width:270px"><span id="h2a">):</span><span id="h2b" class="s-hide">, calories=<span class="m">0</span>):</span></span></div>
+          <div class="ln hand" id="H3" style="top:188px">        self.name = name</div>
+          <div class="ln hand" id="H4" style="top:238px">        self.protein = protein</div>
+          <div class="ln hand" id="H5" style="top:288px">        self.servings = servings</div>
+          <div class="ln hand" id="H6" style="top:338px">        self.calories = calories</div>
+          <div class="ln hand" id="H7" style="top:388px">    <span class="k">def</span> <span class="f">__repr__</span>(self):</div>
+          <div class="ln hand" id="H8" style="top:438px">        <span class="k">return</span> <span class="m">f"Dish({self.name}, {self.protein}, {self.servings})"</span></div>
+          <div class="ln hand" id="H10" style="top:538px">    <span class="k">def</span> <span class="f">__eq__</span>(self, other):</div>
+          <div class="ln hand" id="H11" style="top:588px">        <span class="k">return</span> (self.name == other.name <span class="k">and</span> self.protein == other.protein</div>
+          <div class="ln hand" id="H12" style="top:638px">                <span class="k">and</span> self.servings == other.servings)</div>
+
+          <div class="s-note bad big" id="n-six" style="left:760px; top:231px">6 times, for one field</div>
+          <div class="s-note ok" id="n-add" style="left:700px; top:338px">a new field</div>
+          <div class="s-note bad" id="n-print" style="left:620px; top:488px">missed: print skips calories</div>
+          <div class="s-note bad" id="n-eq" style="left:620px; top:700px">missed: == skips calories</div>
+
+          <!-- the dataclass -->
+          <div class="ln" id="D1" style="top:88px"><span class="k">from</span> dataclasses <span class="k">import</span> dataclass<span class="sw" style="width:126px"><span id="d1b" class="s-hide">, field</span></span></div>
+          <div class="ln" id="D3" style="top:188px"><span class="d">@dataclass</span></div>
+          <div class="ln" id="D4" style="top:238px"><span class="k">class</span> <span class="f">Dish</span>:</div>
+          <div class="ln" id="D5" style="top:288px">    name: <span class="f">str</span></div>
+          <div class="ln" id="D6" style="top:338px">    protein: <span class="f">int</span></div>
+          <div class="ln" id="D7" style="top:388px">    servings: <span class="f">int</span> = <span class="m">2</span></div>
+          <div class="ln" id="D8" style="top:438px">    allergens: <span class="f">list</span> = <span class="sw" style="width:504px"><span id="d8a">[]</span><span id="d8b" class="s-hide"><span class="f">field</span>(default_factory=<span class="f">list</span>)</span></span></div>
+          <div class="ln" id="D10" style="top:538px">soup = <span class="f">Dish</span>(<span class="m">"lentil soup"</span>, <span class="m">18</span>)</div>
+          <div class="ln" id="D11" style="top:588px"><span class="f">print</span>(soup)</div>
+
+          <div class="s-note ok" id="n-five" style="left:560px; top:288px">the class: 5 lines, not 12</div>
+          <div class="s-note" id="n-dec" style="left:300px; top:188px">a decorator (lesson 84)</div>
+
+          <div id="out">
+            <div class="lb">output</div>
+            <div class="o" id="o-ok">Dish(name='lentil soup', protein=18, servings=2)</div>
+            <div class="o s-hide" id="o-err">ValueError: mutable default &lt;class 'list'&gt;
+for field allergens is not allowed: use default_factory</div>
+            <div class="o s-hide" id="o-fine">runs fine: no error</div>
+          </div>
+        </div>
+
+        <!-- free with @dataclass -->
+        <div id="shelf" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div id="sh-h">free with <b>@dataclass</b></div>
+          <div class="slot" style="top:100px"></div>
+          <div class="slot" style="top:280px"></div>
+          <div class="slot" style="top:460px"></div>
+          <div class="card" id="c-init" style="top:100px"><div class="nm">__init__</div><div class="cp">the setup</div></div>
+          <div class="card" id="c-repr" style="top:280px"><div class="nm">__repr__</div><div class="cp">the printout</div></div>
+          <div class="card" id="c-eq" style="top:460px"><div class="nm">__eq__</div><div class="cp">the equals check, ==</div></div>
+        </div>
+
+        <!-- the catch -->
+        <div id="stamp" class="s-abs s-hide">ValueError</div>
+        <div id="leak" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="ctag">lesson 69: one shared list</div>
+          <svg viewBox="0 0 640 330">
+            <path id="ar1" d="M266 180 C300 180 300 145 330 145" fill="none" stroke="#b8235a" stroke-width="6" stroke-linecap="round" />
+            <path id="ar2" d="M266 220 C300 220 300 255 330 255" fill="none" stroke="#b8235a" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div id="jar"><div class="lid"></div><div class="v" id="jar-v">[]</div><div class="v s-hide" id="jar-g">['gluten']</div></div>
+          <div class="who" style="top:110px">soup.allergens</div>
+          <div class="who" style="top:220px">bread.allergens</div>
+        </div>
+        <div id="own" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="ctag">each dish: its own new list</div>
+          <div class="row" id="own1" style="top:110px"><span class="a">soup.allergens</span><span class="b">[]</span></div>
+          <div class="row" id="own2" style="top:220px"><span class="a">bread.allergens</span><span class="b">['gluten']</span></div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r1" style="stroke:#ffc24b" />
+          <path id="r2" style="stroke:#ffc24b" />
+          <path id="r3" style="stroke:#ffc24b" />
+          <path id="r4" style="stroke:#ffc24b" />
+          <path id="r5" style="stroke:#ffc24b" />
+          <path id="r6" style="stroke:#ffc24b" />
+          <path id="u8" class="dash" style="stroke:#ffc24b" />
+          <path id="u11" class="dash" style="stroke:#ffc24b" />
+          <path id="r-def" style="stroke:#7cf0b5" />
+          <path id="r-at" style="stroke:#ff8fab" />
+          <path id="r-o1" style="stroke:#7cf0b5" />
+          <path id="r-o2" style="stroke:#7cf0b5" />
+          <path id="r-o3" style="stroke:#7cf0b5" />
+          <path id="r-empty" style="stroke:#ff8fab" />
+          <path id="r-fac" style="stroke:#7cf0b5" />
+        </svg>
+        <div class="badge s-abs" id="b1">1</div>
+        <div class="badge s-abs" id="b2">2</div>
+        <div class="badge s-abs" id="b3">3</div>
+        <div class="badge s-abs" id="b4">4</div>
+        <div class="badge s-abs" id="b5">5</div>
+        <div class="badge s-abs" id="b6">6</div>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.499, 0.824, 1.126, 1.254, 1.66, 1.846, 2.206, 3.344, 3.634, 3.762, 3.866, 4.423, 4.772, 5.05, 5.863, 6.153, 6.258, 6.548, 7.79, 8.104, 8.591, 9.044, 9.195, 9.3, 10.414, 10.751, 10.983, 11.088, 11.192, 12.074, 12.295, 12.771, 12.887, 13.05, 13.619, 14.687, 15.128, 15.755, 15.987, 16.3, 17.519, 17.81, 17.903, 18.564, 18.762, 18.89, 19.122, 19.633, 20.143, 21.27, 21.606, 22.036, 22.384, 22.767, 23.034, 23.638, 23.986, 24.66, 25.565, 25.879, 26.006, 26.308, 26.715, 26.912, 27.075, 28.143, 28.433, 28.642, 28.77, 29.71, 30.186, 30.801, 31.068, 31.8, 32.009, 32.171, 32.752, 32.914, 33.948, 34.122, 34.377, 34.54, 34.702, 35.004, 35.422, 35.643, 35.805, 37.024, 37.222, 37.582, 37.721, 38.371, 38.557, 39.126, 39.323, 39.486, 40.055, 40.38, 40.542, 41.018, 41.401, 41.599, 42.423, 42.597, 42.899, 43.422, 43.816, 44.339, 45.198, 45.488, 46.103, 46.347, 46.51, 46.672, 47.45, 48.135, 48.623, 48.867, 49.354, 49.946, 50.492, 51.351, 51.572, 51.699, 52.199, 53.186, 53.36, 53.685, 53.929, 54.184, 54.788, 55.02, 55.45, 56.019, 56.146, 56.553, 58.132, 58.515, 59.269, 59.467, 59.571, 60.14, 60.605, 60.767, 61.684, 62.079, 62.392, 62.741, 63.031, 63.24, 63.461, 64.366, 65.121, 65.504, 65.666, 66.154, 66.897, 67.118, 67.373, 67.536];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); return [cx, cy, rx, ry]; };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, from) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        return ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + 12, 27);
+      };
+      const badgeAt = (id, r) => { const b = document.getElementById(id); b.style.left = (r[0] + r[2] - 22) + "px"; b.style.top = (r[1] - r[3] - 46) + "px"; };
+
+      const H2 = "    def __init__(self, name, protein, servings=2):";
+      const H4 = "        self.protein = protein";
+      const H8 = '        return f"Dish({self.name}, {self.protein}, {self.servings})"';
+      const H11 = "        return (self.name == other.name and self.protein == other.protein";
+      badgeAt("b1", tok("r1", H2, "protein", 138));
+      badgeAt("b2", tok("r2", H4, "protein", 238));
+      badgeAt("b3", tok("r3", H4, "protein", 238, 20));
+      badgeAt("b4", tok("r4", H8, "protein", 438));
+      badgeAt("b5", tok("r5", H11, "protein", 588));
+      badgeAt("b6", tok("r6", H11, "protein", 588, 60));
+      tok("u8", H8, 'f"Dish({self.name}, {self.protein}, {self.servings})"', 438);
+      ring("u11", 136 + 41 * 18, 96 + 613 + 25, 34 * 18 + 16, 62);
+      tok("r-def", "    servings: int = 2", "= 2", 388);
+      tok("r-at", "@dataclass", "@dataclass", 188);
+      tok("r-empty", "    allergens: list = []", "[]", 438);
+      tok("r-fac", "    allergens: list = field(default_factory=list)", "default_factory=list", 438);
+      // output strip: text starts at page x 96 + 30 + 18 = 144, line centre y = 96 + 690 + 50 + 25
+      const O = "Dish(name='lentil soup', protein=18, servings=2)";
+      const otok = (id, sub) => { const c0 = O.indexOf(sub), c1 = c0 + sub.length; ring(id, 144 + ((c0 + c1) / 2) * 18, 861, (sub.length * 18) / 2 + 12, 27); };
+      otok("r-o1", "name=");
+      otok("r-o2", "protein=");
+      otok("r-o3", "servings=");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const drop = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)", immediateRender: false }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const dashIn = (id, at) => tl.fromTo("#" + id, { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, at);
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Kitchen Coach keeps a record for every dish. The class, by hand ---- */
+      bump("#rec", t(4), 1.04);
+      out(["#intro", "#intro-sub", "#rec"], t(8) - 0.15, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(8) + 0.1);
+      const hand = [["#H1", 11], ["#H2", 50], ["#H3", 24], ["#H4", 30], ["#H5", 32], ["#H7", 23], ["#H8", 66], ["#H10", 28], ["#H11", 74], ["#H12", 52]];
+      hand.forEach(([id, n], i) => type(id, t(11) + i * 0.16, n, 0.3));
+
+      /* ---- 2. Count protein: 1, 2, 3 in the setup, 4 in the printout, 5 and 6 in == ---- */
+      tl.to(["#H1", "#H3", "#H5", "#H7", "#H10", "#H12"], { opacity: 0.3, duration: 0.3 }, t(15));
+      const mark = (r, b, at) => { draw(r, at, 0.35); pop("#" + b, at + 0.1, { from: 0.4 }); };
+      mark("r1", "b1", t(19));
+      mark("r2", "b2", t(20));
+      mark("r3", "b3", t(21));
+      mark("r4", "b4", t(26));
+      mark("r5", "b5", t(31));
+      mark("r6", "b6", t(31) + 0.45);
+      pop("#n-six", t(36), { from: 0.7 });
+
+      /* ---- 3. Add a field: update every place. Miss one: print and == go wrong ---- */
+      out(["#r1", "#r2", "#r3", "#r4", "#r5", "#r6", "#b1", "#b2", "#b3", "#b4", "#b5", "#b6", "#n-six"], t(41), 0.25);
+      tl.to(["#H1", "#H3", "#H5", "#H7", "#H10", "#H12"], { opacity: 1, duration: 0.3 }, t(41));
+      type("#H6", t(43), 32, 0.4);
+      out("#h2a", t(43), 0.15);
+      pop("#h2b", t(43) + 0.1, { from: 0.8 });
+      pop("#n-add", t(43) + 0.3, { from: 0.7 });
+      dashIn("u8", t(48));
+      dashIn("u11", t(48) + 0.2);
+      tl.to(["#u8", "#u11"], { stroke: "#ff6b8b", duration: 0.2 }, t(50));
+      pop("#n-print", t(53), { from: 0.7 });
+      pop("#n-eq", t(55), { from: 0.7 });
+      bump(["#n-print", "#n-eq"], t(57), 1.08);
+
+      /* ---- 4. The same class as a dataclass: just list the fields ---- */
+      out(["#u8", "#u11", "#n-add", "#n-print", "#n-eq"], t(59), 0.25);
+      tl.to(".hand", { opacity: 0, y: -16, duration: 0.35, stagger: 0.03, ease: "power2.in" }, t(59) + 0.05);
+      tl.to("#s-code", { width: 1040, duration: 0.6, ease: "power3.inOut" }, t(59) + 0.5);
+      type("#D1", t(62), 33, 0.4);
+      type("#D3", t(65), 10, 0.25);
+      type("#D4", t(65) + 0.2, 11, 0.25);
+      pop("#shelf", t(65) + 0.3, { from: 0.9 });
+      type("#D5", t(70), 13, 0.3);
+      type("#D6", t(71), 16, 0.3);
+      type("#D7", t(73), 21, 0.35);
+      draw("r-def", t(76), 0.4);
+      pop("#n-five", t(73) + 0.4, { from: 0.7 });
+
+      /* ---- 5. The @ line is a decorator. It writes three methods for you ---- */
+      out(["#r-def", "#n-five"], t(79), 0.2);
+      tl.set("#s-cursor", { x: 520, y: 360 }, t(80) - 0.3);
+      cursorIn(t(80) - 0.3);
+      cursorTo(290, 312, t(80) - 0.2, 0.5);
+      draw("r-at", t(83), 0.4);
+      pop("#n-dec", t(87), { from: 0.7 });
+      cursorOut(t(87) + 0.3);
+      bump("#sh-h", t(89), 1.06);
+      drop("#c-init", t(91));
+      drop("#c-repr", t(93));
+      drop("#c-eq", t(96));
+
+      /* ---- 6. Print a dish: a clear record, every field named ---- */
+      out(["#r-at", "#n-dec"], t(100), 0.2);
+      type("#D10", t(100), 30, 0.4);
+      type("#D11", t(101) + 0.1, 11, 0.25);
+      pop("#out", t(104), { from: 0.9 });
+      draw("r-o1", t(106), 0.3);
+      draw("r-o2", t(107), 0.3);
+      draw("r-o3", t(108), 0.3);
+
+      /* ---- 7. One catch: a list default. ValueError ---- */
+      out(["#r-o1", "#r-o2", "#r-o3"], t(110), 0.2);
+      out("#shelf", t(110), 0.3);
+      type("#D8", t(115), 24, 0.4);
+      draw("r-empty", t(118), 0.35);
+      out("#o-ok", t(121), 0.15);
+      pop("#o-err", t(121) + 0.1, { from: 0.9 });
+      pop("#stamp", t(121) + 0.1, { from: 1.6, ease: "power3.out", d: 0.3 });
+      pop("#leak", t(127), { from: 0.9 });
+      tl.fromTo(["#ar1", "#ar2"], { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, t(130));
+      out("#jar-v", t(132), 0.15);
+      pop("#jar-g", t(132) + 0.1, { from: 0.5 });
+
+      /* ---- 8. The fix: field(default_factory=list). Each dish gets its own list ---- */
+      out("#r-empty", t(137), 0.15);
+      tl.set("#s-cursor", { x: 760, y: 620 }, t(137) - 0.3);
+      cursorIn(t(137) - 0.3);
+      cursorTo(560, 568, t(137) - 0.2, 0.45);
+      out("#d8a", t(138), 0.15);
+      pop("#d8b", t(138) + 0.1, { from: 0.8 });
+      pop("#d1b", t(138) + 0.3, { from: 0.6 });
+      cursorOut(t(139));
+      draw("r-fac", t(142), 0.4);
+      out(["#stamp", "#leak", "#o-err"], t(145), 0.25);
+      pop("#o-fine", t(145) + 0.2, { from: 0.8 });
+      pop("#own", t(145) + 0.2, { from: 0.9 });
+      pop("#own1", t(147), { from: 0.7 });
+      pop("#own2", t(150), { from: 0.7 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 64.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

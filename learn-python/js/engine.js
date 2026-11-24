@@ -213,7 +213,8 @@
   }
   function errHtml(err) {
     const last = err.split('\n').filter(Boolean).slice(-1)[0] || err;
-    const ln = (err.match(/line (\d+)/g) || []).slice(-1)[0];
+    const own = (err.match(/File "[^"]*", line \d+/g) || []).filter(f => !/\/lib\/python|^File "<frozen/.test(f));
+    const ln = (own.length ? own.slice(-1)[0].match(/line \d+/) : (err.match(/line (\d+)/g) || []).slice(-1))[0];
     return `<span class="lbl">Python stopped</span><p class="say">${ln ? `The problem is on <b>${esc(ln)}</b>. ` : ''}Read the last line first: it names the problem.</p><pre>${esc(err).replace(esc(last), `<b>${esc(last)}</b>`)}</pre>`;
   }
   // Printed text, with the learner's input() answers marked so they look typed.

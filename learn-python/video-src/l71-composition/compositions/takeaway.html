@@ -1,0 +1,53 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-h1 { left: 110px; top: 100px; font: 700 92px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-card { left: 110px; padding: 0 34px; height: 104px; line-height: 104px; background: #fff; border-radius: 26px; font-size: 44px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-card b { font: 700 40px/104px "JetBrains Mono", monospace; color: #3b37e6; margin-left: 28px; }
+    .t-card u { text-decoration: none; color: #3b37e6; }
+    #t-c1 { top: 290px; }
+    #t-c2 { top: 450px; }
+    .t-tag { height: 72px; padding: 0 30px; border-radius: 999px; font: 800 40px/72px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #t-g1 { left: 1530px; top: 306px; background: #fbebd2; color: #7a4708; }
+    #t-g2 { left: 1530px; top: 466px; background: #ddefe6; color: #1f7a5c; }
+    #t-big { left: 110px; top: 650px; font: 700 72px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; opacity: 0; }
+    #t-big .a { color: #3b37e6; }
+    #t-next { left: 110px; top: 850px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="10.7" data-track-index="1">
+      <div id="t-h1" class="t-abs">Say it out loud.</div>
+      <div id="t-c1" class="t-abs t-card">A blender <u>is an</u> appliance.<b>class Blender(Appliance):</b></div>
+      <div id="t-g1" class="t-abs t-tag">inherit</div>
+      <div id="t-c2" class="t-abs t-card">A kitchen <u>has an</u> oven.<b>self.oven = Oven()</b></div>
+      <div id="t-g2" class="t-abs t-tag">hold it</div>
+      <div id="t-big" class="t-abs">Is a: <span class="a">inherit</span>. Has a: <span class="a">hold it as an attribute</span>.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 72: Dunder methods</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 58.7;
+      const g = { say: 58.859, blender: 60.38, inherit: 61.982, kitchen: 63.34, hold: 64.896 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.say - S - 0.1));
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.blender - S);
+      tl.fromTo("#t-g1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.inherit - S);
+      tl.fromTo("#t-c2", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.kitchen - S);
+      tl.fromTo("#t-g2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.hold - S);
+      tl.fromTo("#t-big", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 7.2);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 8.4);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

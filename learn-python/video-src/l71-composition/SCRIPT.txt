@@ -1,0 +1,13 @@
+Dinner party tonight. Your kitchen has an oven, a fridge, and three guests. Ana, Ben and Chloe.
+
+In code, the kitchen holds them. Self dot oven is an Oven. Self dot fridge is a Fridge. Self dot guests is a list of Guest objects.
+
+An object made of other objects. That is called composition.
+
+Now bake Chloe's banana bread. Kitchen dot bake. The kitchen does not heat anything. It asks its oven. Self dot oven dot preheat, one hundred and eighty.
+
+Someone tried a shortcut. Class Kitchen, Oven in brackets. That says a kitchen is an oven. Is it? No. Now the kitchen has a temperature, and no place for the fridge or a second oven.
+
+Go back to has a. Swap the oven for an air fryer. It has a preheat button too, so bake still works. Any part with the right buttons fits.
+
+Say it out loud. A blender is an appliance. Inherit. A kitchen has an oven. Hold it as an attribute.

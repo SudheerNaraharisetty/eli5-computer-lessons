@@ -1,0 +1,371 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    .who { position: absolute; top: 560px; height: 64px; padding: 0 30px; border-radius: 999px; font: 800 34px/64px "Manrope", sans-serif; color: #fff; white-space: nowrap; }
+    #who-a { left: 110px; background: #3b37e6; }
+    #who-b { left: 290px; background: #1f7a5c; }
+    #who-c { left: 460px; background: #b8235a; }
+
+    /* the kitchen floor plan, right: page left 1190, top 96 */
+    #fp { left: 1190px; top: 96px; width: 640px; height: 888px; }
+    #fp > .bg { position: absolute; inset: 0; border-radius: 28px; background: #fff; }
+    .mono-pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 700 30px/52px "JetBrains Mono", monospace; white-space: nowrap; }
+    #fp-name { left: 30px; top: 26px; background: #e6e3ff; color: #3b37e6; }
+    #fp-bake { position: absolute; left: 370px; top: 22px; width: 240px; height: 60px; border-radius: 999px; background: #15132b; color: #fff; text-align: center; font: 700 30px/60px "JetBrains Mono", monospace; }
+    .slot { position: absolute; border-radius: 22px; border: 4px dashed #8c88b0; background: #faf7f3; }
+    .slot > .lb { position: absolute; left: 0; top: 4px; width: 100%; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #4a4760; }
+    #sl-oven { left: 30px; top: 110px; width: 280px; height: 330px; }
+    #sl-fridge { left: 330px; top: 110px; width: 280px; height: 330px; }
+    #sl-guests { left: 30px; top: 470px; width: 580px; height: 300px; }
+
+    /* parts, positioned in floor-plan coordinates */
+    .part { position: absolute; }
+    #p-oven, #p-fryer { left: 40px; top: 160px; width: 260px; height: 270px; }
+    #p-oven > .body { position: absolute; inset: 0; border-radius: 18px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .dial { position: absolute; left: 14px; top: 14px; width: 96px; height: 96px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 5px #0e0c1d; }
+    .dial .n { position: absolute; left: 0; top: 18px; width: 96px; height: 40px; }
+    .dial .n > span { position: absolute; left: 0; top: 0; width: 96px; text-align: center; font: 700 34px/40px "JetBrains Mono", monospace; }
+    .dial .n > .d1 { color: #b8235a; }
+    .dial .u { position: absolute; left: 0; top: 56px; width: 96px; text-align: center; font: 800 28px/30px "Manrope", sans-serif; color: #4a4760; }
+    .pre { position: absolute; left: 122px; top: 38px; width: 128px; height: 48px; border-radius: 999px; background: #15132b; color: #fff; text-align: center; font: 700 28px/48px "JetBrains Mono", monospace; }
+    #p-oven .win { position: absolute; left: 16px; top: 130px; width: 228px; height: 122px; border-radius: 14px; background: #2a2745; overflow: hidden; }
+    .heat { position: absolute; inset: 0; background: #f2a65a; opacity: 0; }
+    #p-oven .loaf { position: absolute; left: 64px; top: 58px; width: 100px; height: 44px; border-radius: 22px 22px 8px 8px; background: #c98a3c; box-shadow: 0 0 0 4px #0e0c1d; }
+    #p-fryer > .body { position: absolute; inset: 0; border-radius: 48px 48px 22px 22px; background: #e6e3ff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #p-fryer .drawer { position: absolute; left: 22px; top: 140px; width: 216px; height: 108px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #p-fryer .handle { position: absolute; left: 68px; top: 36px; width: 80px; height: 30px; border-radius: 15px; background: #15132b; }
+    #p-fryer .heat { border-radius: 16px; }
+    #p-fridge { left: 340px; top: 160px; width: 260px; height: 270px; }
+    #p-fridge > .body { position: absolute; inset: 0; border-radius: 18px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    #p-fridge .door { position: absolute; left: 0; top: 64px; width: 260px; height: 5px; background: #0e0c1d; }
+    #p-fridge .hd { position: absolute; left: 222px; top: 16px; width: 12px; height: 36px; border-radius: 6px; background: #0e0c1d; }
+    #p-fridge .row { position: absolute; left: 22px; width: 220px; font: 800 28px/36px "Manrope", sans-serif; white-space: nowrap; }
+    #p-fridge .row b { color: #1f7a5c; }
+    .g { position: absolute; top: 540px; width: 160px; height: 200px; }
+    .g > .c { position: absolute; left: 20px; top: 0; width: 120px; height: 120px; border-radius: 50%; color: #fff; text-align: center; font: 700 60px/120px "Fraunces", serif; box-shadow: 0 0 0 5px #0e0c1d; }
+    .g > .nm { position: absolute; left: 0; top: 136px; width: 160px; text-align: center; font: 800 30px/40px "Manrope", sans-serif; }
+    #g-a { left: 48px; } #g-a > .c { background: #3b37e6; }
+    #g-b { left: 240px; } #g-b > .c { background: #1f7a5c; }
+    #g-c { left: 432px; } #g-c > .c { background: #b8235a; }
+
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    /* the bad version: a kitchen shaped like an oven */
+    #bad { left: 1190px; top: 96px; width: 640px; height: 560px; }
+    #bad > .bg { position: absolute; inset: 0; border-radius: 28px; background: #fff; }
+    #bad-name { left: 30px; top: 26px; background: #e6e3ff; color: #3b37e6; }
+    #bad-is { left: 236px; top: 26px; background: #fbebd2; color: #7a4708; }
+    #bad-dial { position: absolute; left: 40px; top: 110px; width: 180px; height: 180px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 6px #0e0c1d; }
+    #bad-dial > .n { position: absolute; left: 0; top: 44px; width: 180px; text-align: center; font: 700 56px/64px "JetBrains Mono", monospace; color: #b8235a; }
+    #bad-dial > .u { position: absolute; left: 0; top: 108px; width: 180px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #4a4760; }
+    #bad-lab { position: absolute; left: 260px; top: 176px; font: 700 30px/40px "JetBrains Mono", monospace; color: #4a4760; white-space: nowrap; }
+    #bad-win { position: absolute; left: 40px; top: 330px; width: 560px; height: 190px; border-radius: 20px; background: #2a2745; overflow: hidden; }
+    #bad-win > .heat { opacity: 0.85; }
+    #stamp { left: 1300px; top: 470px; width: 420px; height: 120px; border-radius: 18px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 72px/120px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-7deg); }
+    #q-isit { left: 1190px; top: 690px; height: 64px; padding: 0 28px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; }
+    #q-no { left: 1610px; top: 690px; height: 64px; padding: 0 28px; border-radius: 999px; background: #b8235a; color: #fff; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; }
+    .ghost { position: absolute; top: 800px; width: 300px; height: 150px; border-radius: 22px; border: 5px dashed #b8235a; background: #fbe0ea; color: #b8235a; text-align: center; font: 800 32px/44px "Manrope", sans-serif; padding-top: 30px; }
+    .ghost small { display: block; font: 800 28px/40px "Manrope", sans-serif; color: #7a1d42; }
+    #gh-fridge { left: 1190px; }
+    #gh-oven { left: 1530px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a6c8; }
+    .sw { display: inline-block; position: relative; vertical-align: top; height: 50px; }
+    .sw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="58.7" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Dinner party<br /><span class="a">tonight</span>.</div>
+        <div id="who-a" class="who s-hide">Ana</div>
+        <div id="who-b" class="who s-hide">Ben</div>
+        <div id="who-c" class="who s-hide">Chloe</div>
+
+        <!-- the kitchen floor plan -->
+        <div id="fp" class="s-abs">
+          <div class="bg s-ol"></div>
+          <div id="fp-name" class="mono-pill">kitchen</div>
+          <div id="fp-bake" class="s-hide">bake()</div>
+          <div id="sl-oven" class="slot"><div class="lb">oven</div></div>
+          <div id="sl-fridge" class="slot"><div class="lb">fridge</div></div>
+          <div id="sl-guests" class="slot"><div class="lb">guests</div></div>
+
+          <div id="p-oven" class="part s-hide">
+            <div class="body"></div>
+            <div class="dial"><div class="n"><span class="d0">0</span><span class="d1 s-hide">180</span></div><div class="u">°C</div></div>
+            <div class="pre">preheat</div>
+            <div class="win"><div class="heat"></div><div class="loaf"></div></div>
+          </div>
+          <div id="p-fryer" class="part s-hide">
+            <div class="body"></div>
+            <div class="dial"><div class="n"><span class="d0">0</span><span class="d1 s-hide">180</span></div><div class="u">°C</div></div>
+            <div class="pre">preheat</div>
+            <div class="drawer"><div class="heat"></div><div class="handle"></div></div>
+          </div>
+          <div id="p-fridge" class="part s-hide">
+            <div class="body"></div>
+            <div class="hd"></div>
+            <div class="door"></div>
+            <div class="row" style="top:96px">tofu <b>400 g</b></div>
+            <div class="row" style="top:146px">eggs <b>360 g</b></div>
+            <div class="row" style="top:196px">butter <b>250 g</b></div>
+          </div>
+          <div id="g-a" class="g s-hide"><div class="c">A</div><div class="nm">Ana</div></div>
+          <div id="g-b" class="g s-hide"><div class="c">B</div><div class="nm">Ben</div></div>
+          <div id="g-c" class="g s-hide"><div class="c">C</div><div class="nm">Chloe</div></div>
+
+          <div class="s-note ok" id="n-works" style="left:330px; top:800px">bake still works</div>
+          <div class="s-note" id="n-asks" style="left:330px; top:800px">it asks its oven</div>
+        </div>
+
+        <!-- the bad version -->
+        <div id="bad" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div id="bad-name" class="mono-pill">kitchen</div>
+          <div id="bad-is" class="mono-pill s-hide">is an Oven</div>
+          <div id="bad-dial"><div class="n">180</div><div class="u">°C</div></div>
+          <div id="bad-lab">kitchen.temp</div>
+          <div id="bad-win"><div class="heat"></div></div>
+        </div>
+        <div id="stamp" class="s-abs s-hide">WRONG</div>
+        <div id="q-isit" class="s-abs s-hide">Is a kitchen an oven?</div>
+        <div id="q-no" class="s-abs s-hide">No.</div>
+        <div id="gh-fridge" class="ghost s-hide">fridge?<small>no place</small></div>
+        <div id="gh-oven" class="ghost s-hide">2nd oven?<small>no place</small></div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">kitchen.py</span></div>
+          <div class="ln" id="L1" style="top:88px"><span class="k">class</span> <span class="f">Kitchen</span><span class="sw" style="width:126px"><span id="k-a">:</span><span id="k-b" class="s-hide">(<span style="color:#ff8fab">Oven</span>):</span></span></div>
+          <div class="ln" id="L2" style="top:138px">    <span class="k">def</span> <span class="f">__init__</span>(self):</div>
+          <div class="ln" id="L3" style="top:188px">        self.oven = <span class="sw" style="width:180px"><span id="o-a" class="f">Oven()</span><span id="o-b" class="f s-hide">AirFryer()</span></span></div>
+          <div class="ln" id="L4" style="top:238px">        self.fridge = <span class="f">Fridge</span>()</div>
+          <div class="ln" id="L5" style="top:288px">        self.guests = [<span class="f">Guest</span>(<span class="m">"Ana"</span>),</div>
+          <div class="ln" id="L6" style="top:338px">                       <span class="f">Guest</span>(<span class="m">"Ben"</span>), <span class="f">Guest</span>(<span class="m">"Chloe"</span>)]</div>
+          <div class="ln" id="L8" style="top:438px">    <span class="k">def</span> <span class="f">bake</span>(self, dish):</div>
+          <div class="ln" id="L9" style="top:488px">        self.oven.<span class="f">preheat</span>(<span class="m">180</span>)</div>
+          <div class="ln" id="L10" style="top:538px">        <span class="f">print</span>(<span class="m">"Baking"</span>, dish)</div>
+          <div class="ln" id="L11" style="top:638px">kitchen = <span class="f">Kitchen</span>()</div>
+          <div class="ln" id="L12" style="top:688px">kitchen.<span class="f">bake</span>(<span class="m">"banana bread"</span>)</div>
+          <div class="ln" id="L13" style="top:738px"><span class="f">print</span>(kitchen.temp)</div>
+
+          <div class="s-note" id="n-comp" style="left:40px; top:388px">composition: objects inside an object</div>
+          <div class="s-note bad" id="n-noheat" style="left:520px; top:438px">no heat of its own</div>
+          <div class="s-note bad" id="n-temp" style="left:440px; top:738px">180 ?! a hot kitchen</div>
+          <div class="s-note ok" id="n-fits" style="left:40px; top:800px">any part with a preheat() button fits</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-soven" style="stroke:#ffc24b" />
+          <path id="r-sfridge" style="stroke:#ffc24b" />
+          <path id="r-sguests" style="stroke:#ffc24b" />
+          <path id="r-kname" style="stroke:#3b37e6" />
+          <path id="r-l9oven" style="stroke:#ffc24b" />
+          <path id="r-l9pre" style="stroke:#7cf0b5" />
+          <path id="r-dial" style="stroke:#3b37e6" />
+          <path id="a-bake" style="stroke:#3b37e6" />
+          <path id="r-paren" style="stroke:#ff8fab" />
+          <path id="r-baddial" style="stroke:#b8235a" />
+          <path id="r-ovenc" style="stroke:#ffc24b" />
+          <path id="r-fpre" style="stroke:#1f7a5c" />
+          <path id="a-bake2" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.337, 0.685, 1.567, 1.811, 2.194, 2.38, 2.531, 3.065, 3.274, 3.669, 3.924, 4.319, 5.062, 5.573, 6.049, 6.409, 7.477, 7.721, 8.092, 8.255, 8.707, 9.102, 9.729, 10.089, 10.403, 10.867, 11.088, 11.297, 11.993, 12.376, 12.655, 13.05, 13.247, 13.351, 14.292, 14.675, 14.954, 15.534, 15.755, 15.871, 16.208, 16.463, 16.881, 18.042, 18.228, 18.681, 18.924, 19.122, 19.493, 20.167, 20.399, 20.538, 20.875, 22.175, 22.581, 22.907, 23.313, 23.731, 24.311, 24.753, 25.031, 25.867, 26.03, 26.424, 26.645, 26.9, 27.237, 28.224, 28.444, 28.862, 29.083, 29.791, 30.174, 30.488, 30.848, 31.126, 31.893, 32.125, 32.485, 32.659, 33.785, 34.215, 34.54, 34.644, 35.538, 35.945, 36.618, 36.966, 37.106, 38.615, 38.859, 39.068, 39.161, 39.532, 39.66, 39.788, 40.403, 40.705, 41.262, 42.121, 42.377, 42.516, 42.899, 43.073, 43.178, 44.118, 44.327, 44.501, 44.826, 44.966, 45.105, 45.534, 45.802, 45.918, 46.382, 47.206, 47.427, 47.659, 47.949, 48.228, 48.53, 48.925, 49.052, 49.354, 49.621, 49.807, 50.12, 51.038, 51.235, 51.432, 51.548, 52.105, 52.489, 53.185, 53.441, 53.789, 54.126, 55.17, 55.461, 55.704, 55.867, 56.006, 56.285, 57.028, 58.259, 58.537, 58.665, 58.851, 59.629, 59.78, 60.232, 60.36, 60.453, 61.382, 62.566, 62.74, 63.146, 63.344, 63.495, 64.296, 64.679, 64.865, 65.097, 65.248];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, from) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + 14, 28);
+      };
+      const L9 = "        self.oven.preheat(180)", L1b = "class Kitchen(Oven):", L3 = "        self.oven = Oven()";
+      tok("r-l9oven", L9, "self.oven", 488);
+      tok("r-l9pre", L9, "preheat(180)", 488);
+      tok("r-paren", L1b, "(Oven)", 88);
+      tok("r-ovenc", L3, "Oven()", 188);
+      // floor plan: page left 1190, top 96
+      const fx = (x) => 1190 + x, fy = (y) => 96 + y;
+      ring("r-soven", fx(170), fy(275), 160, 190);
+      ring("r-sfridge", fx(470), fy(275), 160, 190);
+      ring("r-sguests", fx(320), fy(620), 310, 170);
+      ring("r-kname", fx(115), fy(52), 108, 42);
+      ring("r-dial", fx(102), fy(222), 66, 66);
+      ring("r-fpre", fx(226), fy(222), 82, 40);
+      ring("r-baddial", fx(130), fy(200), 112, 112);
+      // arrow from the bake() button down to the oven's preheat button
+      path("a-bake", `M${fx(470)} ${fy(90)} C${fx(450)} ${fy(150)} ${fx(260)} ${fy(110)} ${fx(232)} ${fy(186)} M${fx(212)} ${fy(168)} L${fx(232)} ${fy(188)} L${fx(252)} ${fy(166)}`);
+      path("a-bake2", `M${fx(470)} ${fy(90)} C${fx(450)} ${fy(150)} ${fx(260)} ${fy(110)} ${fx(232)} ${fy(186)} M${fx(212)} ${fy(168)} L${fx(232)} ${fy(188)} L${fx(252)} ${fy(166)}`);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const drop = (sel, at) => tl.fromTo(sel, { opacity: 0, y: -90, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)", immediateRender: false }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const tap = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 0.92, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Dinner party: a kitchen with an oven, a fridge and three guests ---- */
+      bump("#fp-name", t(4), 1.12);
+      bump("#sl-oven", t(7), 1.05);
+      bump("#sl-fridge", t(9), 1.05);
+      bump("#sl-guests", t(12), 1.04);
+      pop("#who-a", t(13), { from: 0.7 });
+      pop("#who-b", t(14), { from: 0.7 });
+      pop("#who-c", t(16), { from: 0.7 });
+
+      /* ---- 2. In code, the kitchen holds them: each line drops a part into its slot ---- */
+      out(["#intro", "#who-a", "#who-b", "#who-c"], t(17) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(17) + 0.1);
+      type("#L1", t(19), 14, 0.35);
+      type("#L2", t(20), 23, 0.45);
+      type("#L3", t(23), 26, 0.5);
+      drop("#p-oven", t(28));
+      type("#L4", t(29), 30, 0.5);
+      drop("#p-fridge", t(34));
+      type("#L5", t(35), 36, 0.5);
+      type("#L6", t(37), 53, 0.6);
+      drop("#g-a", t(42));
+      drop("#g-b", t(42) + 0.15);
+      drop("#g-c", t(42) + 0.3);
+
+      /* ---- 3. An object made of other objects: composition ---- */
+      draw("r-kname", t(45), 0.4);
+      bump("#p-oven", t(48), 1.05);
+      bump("#p-fridge", t(48) + 0.12, 1.05);
+      bump(["#g-a", "#g-b", "#g-c"], t(48) + 0.24, 1.06);
+      pop("#n-comp", t(50), { from: 0.7 });
+
+      /* ---- 4. Bake: the kitchen asks its oven ---- */
+      out(["#r-kname", "#n-comp"], t(55), 0.2);
+      type("#L8", t(55), 25, 0.45);
+      pop("#fp-bake", t(55) + 0.2, { from: 0.6 });
+      type("#L11", t(59) - 0.2, 19, 0.35);
+      type("#L12", t(59) + 0.2, 28, 0.45);
+      cursorIn(t(59));
+      cursorTo(1690, 150, t(59), 0.5);
+      tap("#fp-bake", t(61));
+      cursorOut(t(62));
+      pop("#n-noheat", t(66), { from: 0.7 });
+      draw("a-bake", t(69), 0.7);
+      pop("#n-asks", t(69) + 0.2, { from: 0.7 });
+      out("#n-noheat", t(71), 0.2);
+      type("#L9", t(72), 30, 0.55);
+      draw("r-l9oven", t(74), 0.35);
+      draw("r-l9pre", t(76), 0.4);
+      draw("r-dial", t(77), 0.4);
+      tl.to("#p-oven .d0", { opacity: 0, scale: 0.5, duration: 0.2 }, t(78));
+      pop("#p-oven .d1", t(78) + 0.1, { from: 0.5 });
+      tl.fromTo("#p-oven .heat", { opacity: 0 }, { opacity: 0.85, duration: 0.8, ease: "power1.out", immediateRender: false }, t(78));
+      type("#L10", t(80), 29, 0.45);
+
+      /* ---- 5. The shortcut: class Kitchen(Oven). Is a kitchen an oven? No. ---- */
+      out(["#a-bake", "#n-asks", "#r-l9oven", "#r-l9pre", "#r-dial"], t(81) - 0.1, 0.2);
+      tl.to(["#L2", "#L3", "#L4", "#L5", "#L6", "#L8", "#L9", "#L10"], { opacity: 0.25, duration: 0.3 }, t(81));
+      out("#k-a", t(85), 0.2);
+      pop("#k-b", t(85) + 0.15, { from: 0.8 });
+      draw("r-paren", t(87), 0.4);
+      out("#fp", t(90), 0.3);
+      pop("#bad", t(90) + 0.2, { from: 0.9 });
+      pop("#bad-is", t(94), { from: 0.6 });
+      pop("#q-isit", t(97), { from: 0.7 });
+      pop("#q-no", t(99), { from: 0.6 });
+      pop("#stamp", t(99) + 0.1, { from: 1.6, ease: "power3.out", d: 0.3 });
+      out("#r-paren", t(100), 0.2);
+      type("#L13", t(101), 19, 0.4);
+      draw("r-baddial", t(105) - 0.1, 0.45);
+      pop("#n-temp", t(105) + 0.2, { from: 0.7 });
+      pop("#gh-fridge", t(111), { from: 0.7 });
+      pop("#gh-oven", t(114), { from: 0.7 });
+
+      /* ---- 6. Back to has-a. Swap the oven for an air fryer ---- */
+      out(["#bad", "#stamp", "#q-isit", "#q-no", "#gh-fridge", "#gh-oven", "#r-baddial", "#n-temp", "#L13"], t(116), 0.3);
+      out("#k-b", t(116), 0.2);
+      tl.fromTo("#k-a", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, t(116) + 0.2);
+      tl.to(["#L2", "#L3", "#L4", "#L5", "#L6", "#L8", "#L9", "#L10"], { opacity: 1, duration: 0.3 }, t(117));
+      tl.fromTo("#fp", { opacity: 0 }, { opacity: 1, duration: 0.35, immediateRender: false }, t(119));
+      tl.set("#s-cursor", { x: 700, y: 330 }, t(121) - 0.4);
+      cursorIn(t(121) - 0.3);
+      cursorTo(560, 300, t(121) - 0.3, 0.35);
+      draw("r-ovenc", t(121), 0.35);
+      tl.to("#p-oven", { opacity: 0, x: -60, duration: 0.35, ease: "power2.in" }, t(123));
+      out("#r-ovenc", t(125), 0.15);
+      out("#o-a", t(126), 0.2);
+      pop("#o-b", t(126) + 0.1, { from: 0.8 });
+      drop("#p-fryer", t(127));
+      cursorOut(t(128));
+      draw("r-fpre", t(131), 0.4);
+      tl.set("#s-cursor", { x: 1760, y: 220 }, t(135) - 0.5);
+      cursorIn(t(135) - 0.5);
+      cursorTo(1690, 150, t(135) - 0.45, 0.4);
+      tap("#fp-bake", t(135));
+      draw("a-bake2", t(135) + 0.15, 0.6);
+      tl.to("#p-fryer .d0", { opacity: 0, scale: 0.5, duration: 0.2 }, t(136) + 0.3);
+      pop("#p-fryer .d1", t(136) + 0.4, { from: 0.5 });
+      tl.fromTo("#p-fryer .heat", { opacity: 0 }, { opacity: 0.85, duration: 0.6, ease: "power1.out", immediateRender: false }, t(136) + 0.3);
+      pop("#n-works", t(137), { from: 0.7 });
+      cursorOut(t(138));
+      pop("#n-fits", t(142), { from: 0.7 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 58.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

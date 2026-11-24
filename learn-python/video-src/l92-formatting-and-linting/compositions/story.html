@@ -1,0 +1,330 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* code panel on the left: rows of 44 px from page y 172, text at page x 136; 28 px mono = 16.8 px per char */
+    #p-code { position: absolute; left: 96px; top: 96px; width: 840px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar { position: absolute; left: 0; top: 0; width: 840px; height: 60px; background: #211e40; }
+    .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .hl { position: absolute; left: 14px; width: 812px; height: 44px; border-radius: 10px; opacity: 0; }
+    .hl.y { background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; }
+    .ln { position: absolute; left: 40px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    #strike { left: 132px; top: 192px; width: 194px; height: 5px; border-radius: 3px; background: #ff6b8b; transform-origin: 0 50%; transform: scaleX(0); }
+
+    /* numbered flags, between the code and the right column */
+    .badge { left: 946px; width: 52px; height: 52px; border-radius: 50%; background: #ffc24b; box-shadow: 0 0 0 4px #0e0c1d; font: 800 30px/52px "Manrope", sans-serif; text-align: center; color: #0e0c1d; opacity: 0; }
+    .badge.red { background: #ff6b8b; }
+    .badge > .ok { position: absolute; inset: 0; border-radius: 50%; background: #7cf0b5; opacity: 0; }
+    .badge > .ok svg { position: absolute; left: 10px; top: 10px; width: 32px; height: 32px; }
+    #lamp { left: 944px; top: 162px; width: 64px; height: 64px; opacity: 0; }
+
+    /* right column */
+    #head { left: 1030px; top: 92px; font: 700 52px/64px "Fraunces", serif; white-space: nowrap; }
+    .pill { height: 62px; padding: 0 26px; border-radius: 999px; font: 800 30px/62px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill code { font: 600 28px/62px "JetBrains Mono", monospace; }
+    #runs { left: 1030px; top: 184px; background: #ddefe6; color: #17604a; box-shadow: 0 0 0 4px #1f7a5c; }
+    #read { left: 1030px; top: 276px; background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .note { left: 1030px; top: 372px; }
+    .note.blue { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .note.warn { background: #fbebd2; color: #8a5410; box-shadow: 0 0 0 4px #b9741a; }
+    .note.bad { background: #fbe0ea; color: #a01d4c; box-shadow: 0 0 0 4px #b8235a; }
+
+    /* terminal: rows of 44 px from page y 542, text at page x 1062 */
+    #term { left: 1030px; top: 470px; width: 810px; height: 514px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #term .bar { width: 810px; height: 52px; }
+    #term .bar > i { top: 17px; }
+    #term .ttl { top: 6px; }
+    .tl { position: absolute; left: 32px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #9a96b8; }
+    .tl .g { color: #7cf0b5; }
+    .tl .y { color: #ffc24b; }
+    .tl .r { color: #ff6b8b; }
+    .tl.dim { color: #b3afd6; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="p-code" class="s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">coach.py</span></div>
+          <div class="hl y" id="hl"></div>
+          <div id="lines"></div>
+        </div>
+        <div id="strike" class="s-abs"></div>
+
+        <div class="s-abs badge" id="b1" style="top:168px">1<div class="ok"><svg viewBox="0 0 32 32"><path d="M5 17 L13 25 L27 8" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        <div class="s-abs badge" id="b2" style="top:432px">2<div class="ok"><svg viewBox="0 0 32 32"><path d="M5 17 L13 25 L27 8" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        <div class="s-abs badge red" id="b3" style="top:740px">3<div class="ok"><svg viewBox="0 0 32 32"><path d="M5 17 L13 25 L27 8" fill="none" stroke="#0e0c1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        <svg id="lamp" class="s-abs" viewBox="0 0 64 64"><path d="M2 20 L22 26 L22 38 L2 44 Z" fill="#ffc24b" opacity="0.55"/><rect x="22" y="22" width="14" height="20" rx="3" fill="#ffc24b" stroke="#0e0c1d" stroke-width="3"/><rect x="36" y="26" width="24" height="12" rx="4" fill="#3e3b52" stroke="#0e0c1d" stroke-width="3"/></svg>
+
+        <div id="head" class="s-abs">Ben's coach.py</div>
+        <div id="runs" class="s-abs pill">It runs: <code>Ben: 25 g to go</code></div>
+        <div id="read" class="s-abs pill">Read many times. Written once.</div>
+        <div id="n-reads" class="s-abs pill note blue">Reads every line. Runs none.</div>
+        <div id="n-shake" class="s-abs pill note warn">Ben's 30 g shake is lost</div>
+        <div id="n-typo" class="s-abs pill note bad"><code>protien</code>: the i and e swapped</div>
+        <div id="n-crash" class="s-abs pill note bad">Crashes only when Ben hits his goal</div>
+
+        <div id="term" class="s-abs s-ol s-hide">
+          <div class="bar"><i style="left:24px"></i><i style="left:52px"></i><i style="left:80px"></i><span class="ttl">terminal</span></div>
+          <div class="tl" id="a0" style="top:72px"><span class="p">$ </span>ruff format coach.py</div>
+          <div class="tl g" id="a1" style="top:116px">1 file reformatted</div>
+          <div class="tl" id="c0" style="top:72px"><span class="p">$ </span>ruff check coach.py</div>
+          <div class="tl" id="c1" style="top:116px"><span class="y">F401</span> [*] `json` imported but unused</div>
+          <div class="tl dim" id="c2" style="top:160px"> --> coach.py:1:8</div>
+          <div class="tl" id="c3" style="top:204px"><span class="y">F841</span> Local variable `total` is assigned</div>
+          <div class="tl" id="c4" style="top:248px">to but never used</div>
+          <div class="tl dim" id="c5" style="top:292px"> --> coach.py:7:9</div>
+          <div class="tl" id="c6" style="top:336px"><span class="r">F821</span> Undefined name `protien`</div>
+          <div class="tl dim" id="c7" style="top:380px">  --> coach.py:14:34</div>
+          <div class="tl r" id="c8" style="top:424px">Found 3 errors.</div>
+          <div class="tl" id="f0" style="top:72px"><span class="p">$ </span>ruff check --fix coach.py</div>
+          <div class="tl" id="f1" style="top:116px">Found 3 errors (1 fixed, 2 remaining).</div>
+          <div class="tl" id="f2" style="top:204px"><span class="p">$ </span>ruff check coach.py</div>
+          <div class="tl g" id="f3" style="top:248px">All checks passed!</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080"></svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.325, 0.604, 0.952, 1.231, 1.637, 1.834, 2.287, 3.1, 3.332, 4.029, 4.214, 4.423, 4.551, 5.143, 5.666, 6.351, 6.908, 7.07, 7.326, 8.336, 8.754, 9.125, 9.509, 9.892, 10.275, 11.122, 11.436, 11.598, 11.889, 12.156, 12.376, 12.748, 12.945, 13.073, 13.235, 14.129, 14.431, 14.663, 15.139, 15.604, 16.08, 16.405, 17.589, 17.984, 18.367, 18.785, 19.006, 19.528, 19.726, 19.876, 19.993, 20.41, 20.84, 21.653, 21.989, 22.744, 23.116, 24.184, 24.486, 24.996, 25.345, 26.285, 26.483, 26.761, 26.889, 27.167, 27.539, 27.899, 28.34, 28.549, 28.642, 29.292, 29.455, 29.548, 30.616, 31.01, 31.823, 32.427, 32.613, 33.46, 33.773, 34.156, 34.83, 35.201, 36.037, 36.513, 36.664, 37.082, 37.349, 37.697, 38.243, 38.464, 38.777, 39.125, 39.311, 39.996, 40.402, 41.169, 41.343, 41.912, 42.086, 42.887, 43.119, 43.433, 43.595, 43.746, 43.99, 44.106, 44.977, 45.221, 45.441, 45.662, 45.94, 46.718, 47.194, 47.38, 47.612, 48.03, 48.146, 48.274, 48.611, 48.913, 49.342, 49.516, 50.294, 50.724, 51.118, 51.652, 52.488, 52.778, 53.22, 53.475, 54.009, 54.427, 54.682, 55.251, 55.414, 55.611, 55.832, 56.041, 56.122, 56.865, 57.329, 57.782, 58.757, 58.943, 59.477, 60.023, 61.358, 61.602, 61.962, 62.728, 63.007, 63.471, 64.028, 64.156, 65.12, 65.398, 65.735, 66.107, 66.734, 67.059, 67.233];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // Ben's file as he wrote it, and exactly what ruff format made of it.
+      const MESSY = [
+        'import json', '', '',
+        'def protein_today(meals,shake = 0):',
+        '    protein=sum( meals )',
+        '    if shake>0 :',
+        '        total = protein+shake',
+        '    return protein',
+        '',
+        'def ben_message(protein,goal=140):',
+        '    if protein<goal:',
+        '        return f"Ben: {goal-protein} g to go"',
+        "    return f'Ben: goal reached, {protien} g!'",
+        '',
+        'print(ben_message(protein_today([30,45,40])))'
+      ];
+      const TIDY = [
+        'import json', '', '',
+        'def protein_today(meals, shake=0):',
+        '    protein = sum(meals)',
+        '    if shake > 0:',
+        '        total = protein + shake',
+        '    return protein',
+        '', '',
+        'def ben_message(protein, goal=140):',
+        '    if protein < goal:',
+        '        return f"Ben: {goal - protein} g to go"',
+        '    return f"Ben: goal reached, {protien} g!"',
+        '', '',
+        'print(ben_message(protein_today([30, 45, 40])))'
+      ];
+      // messy line -> row in the tidy file
+      const MOVE = { 0: 0, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 9: 10, 10: 11, 11: 12, 12: 13, 14: 16 };
+      const FIX = { 6: '        protein = protein + shake', 13: '    return f"Ben: goal reached, {protein} g!"' };
+
+      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const paint = (src) => src.split(/(f?"[^"]*"|f?'[^']*')/).map((seg, i) => i % 2
+        ? '<span class="m">' + esc(seg) + "</span>"
+        : esc(seg)
+          .replace(/\b(def|return|if|import)\b/g, '<span class="k">$1</span>')
+          .replace(/\b(protein_today|ben_message|sum|print)\(/g, '<span class="f">$1</span>(')
+          .replace(/([^\w])(\d+)\b/g, '$1<span class="m">$2</span>')).join("");
+      const rowY = (r) => 76 + r * 44;
+      const holder = document.getElementById("lines");
+      const addLine = (id, text, row, hidden) => {
+        const d = document.createElement("div");
+        d.className = "ln";
+        d.id = id;
+        d.style.top = rowY(row) + "px";
+        if (hidden) d.style.opacity = "0";
+        d.innerHTML = paint(text);
+        holder.appendChild(d);
+      };
+      MESSY.forEach((s, i) => { if (s) addLine("m" + i, s, i, false); });
+      TIDY.forEach((s, i) => { if (s) addLine("t" + i, s, i, true); });
+      Object.keys(FIX).forEach((r) => addLine("x" + r, FIX[r], +r, true));
+
+      // hand-drawn rings, from a line's text: row on the page, the token, which time it appears
+      const marks = document.getElementById("s-marks");
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, line, row, token, color, nth) => {
+        let col = line.indexOf(token);
+        if (nth) col = line.indexOf(token, col + 1);
+        const n = token.length;
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.id = id;
+        p.style.stroke = color;
+        p.setAttribute("d", ringD(136 + (col + n / 2) * 16.8, 172 + row * 44 + 22, (n * 16.8) / 2 + 14, 25));
+        marks.appendChild(p);
+        const L = p.getTotalLength();
+        p.dataset.len = L;
+        p.style.strokeDasharray = L;
+        p.style.strokeDashoffset = L;
+        return col;
+      };
+      const Y = "#ffc24b", G = "#7cf0b5", R = "#ff6b8b", B = "#8fd3ff";
+      ring("r-comma1", MESSY[3], 3, "meals,shake", Y);
+      ring("r-comma2", MESSY[9], 9, "protein,goal", Y);
+      ring("r-space1", MESSY[4], 4, "sum( meals )", B);
+      ring("r-space2", MESSY[5], 5, "shake>0 :", B);
+      ring("r-single", MESSY[12], 12, "f'Ben: goal reached, {protien} g!'", R);
+      ring("r-double", MESSY[11], 11, 'f"Ben: {goal-protein} g to go"', G);
+      ring("r-q1", TIDY[12], 12, 'f"Ben: {goal - protein} g to go"', G);
+      ring("r-q2", TIDY[13], 13, 'f"Ben: goal reached, {protien} g!"', G);
+      ring("r-json", TIDY[0], 0, "json", Y);
+      ring("r-total", TIDY[6], 6, "total", Y);
+      const typoCol = ring("r-typo", TIDY[13], 13, "protien", R);
+      ring("r-fix1", FIX[6], 6, "protein", G);
+      ring("r-fix2", FIX[13], 13, "protein", G);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const hlTo = (row, at) => { tl.set("#hl", { y: row * 44 }, at); tl.to("#hl", { opacity: 1, duration: 0.2 }, at); };
+      const tick = (b, at) => { tl.to(b + " > .ok", { opacity: 1, duration: 0.25 }, at); bump(b, at, 1.15); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1010 }, 0);
+      tl.set("#hl", { top: rowY(0), y: 0 }, 0);
+      bump("#head", t(2), 1.05);
+      bump("#p-code .ttl", t(3), 1.15);
+
+      /* ---- 1. Ben's messy file: it runs, but look at it ---- */
+      pop("#runs", t(9), { from: 0.7 });
+      draw("r-comma1", t(14), 0.45);
+      draw("r-comma2", t(15), 0.45);
+      draw("r-space1", t(16), 0.45);
+      draw("r-space2", t(18), 0.45);
+      draw("r-single", t(20), 0.5);
+      draw("r-double", t(23), 0.5);
+      out(["#r-comma1", "#r-comma2", "#r-space1", "#r-space2", "#r-single", "#r-double"], t(26) - 0.1, 0.3);
+      pop("#read", t(28), { from: 0.7 });
+      bump("#read", t(35), 1.06);
+
+      /* ---- 2. ruff format: every line snaps into place ---- */
+      show("#term", t(40) - 0.2, 0.3);
+      type("#a0", t(41), 22, 0.5);
+      show("#a1", t(43), 0.2);
+      const order = [0, 3, 4, 5, 6, 7, 9, 10, 11, 12, 14];
+      order.forEach((m, k) => {
+        const at = t(44) + k * 0.12;
+        const dy = (MOVE[m] - m) * 44;
+        tl.to("#m" + m, { y: dy, opacity: 0, duration: 0.35, ease: "power2.inOut" }, at);
+        tl.fromTo("#t" + MOVE[m], { opacity: 0, y: -dy, x: -10 }, { opacity: 1, y: 0, x: 0, duration: 0.35, ease: "back.out(1.4)", immediateRender: false }, at + 0.05);
+      });
+      draw("r-q1", t(51), 0.45);
+      draw("r-q2", t(52), 0.45);
+      out(["#r-q1", "#r-q2"], t(54), 0.25);
+      bump("#runs", t(54), 1.08);
+      bump("#runs", t(56), 1.08);
+
+      /* ---- 3. ruff check: the inspector and three flags ---- */
+      out(["#a0", "#a1"], t(58), 0.2);
+      type("#c0", t(59), 21, 0.5);
+      pop("#n-reads", t(63), { from: 0.7 });
+      tl.set("#lamp", { y: 0 }, t(70));
+      show("#lamp", t(70), 0.2);
+      hlTo(0, t(70));
+      tl.to("#lamp", { y: 16 * 44, duration: 1.4, ease: "none" }, t(71));
+      tl.to("#hl", { y: 16 * 44, duration: 1.4, ease: "none" }, t(71));
+      out("#lamp", t(75) - 0.2, 0.2);
+      out("#n-reads", t(75) - 0.2, 0.2);
+      tl.set("#hl", { y: 0 }, t(75));
+
+      // flag 1: the unused import
+      tl.fromTo("#b1", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out", immediateRender: false }, t(75));
+      draw("r-json", t(77), 0.4);
+      type("#c1", t(77), 35, 0.5);
+      show("#c2", t(80), 0.2);
+      // flag 2: total is filled, never read
+      tl.to("#hl", { y: 6 * 44, duration: 0.3, ease: "power2.inOut" }, t(83));
+      tl.fromTo("#b2", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out", immediateRender: false }, t(83));
+      draw("r-total", t(85), 0.4);
+      type("#c3", t(85), 39, 0.5);
+      show("#c4", t(87), 0.2);
+      show("#c5", t(89), 0.2);
+      pop("#n-shake", t(93), { from: 0.7 });
+      // flag 3: the typo
+      tl.to("#hl", { y: 13 * 44, duration: 0.3, ease: "power2.inOut" }, t(96));
+      tl.fromTo("#b3", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out", immediateRender: false }, t(96));
+      draw("r-typo", t(99), 0.45);
+      type("#c6", t(101), 29, 0.45);
+      out("#n-shake", t(102) - 0.2, 0.2);
+      pop("#n-typo", t(102), { from: 0.7 });
+      show("#c7", t(109), 0.2);
+      type("#c8", t(111), 15, 0.3);
+      out("#n-typo", t(116) - 0.2, 0.2);
+      pop("#n-crash", t(117), { from: 0.7 });
+      bump("#b3", t(117), 1.2);
+
+      /* ---- 4. --fix does the safe one, a person does the rest ---- */
+      out(["#c0", "#c1", "#c2", "#c3", "#c4", "#c5", "#c6", "#c7", "#c8", "#n-crash", "#read"], t(125) - 0.2, 0.2);
+      out(["#r-json", "#r-total", "#r-typo", "#hl"], t(125) - 0.2, 0.2);
+      type("#f0", t(126), 27, 0.6);
+      tl.to("#strike", { scaleX: 1, duration: 0.35, ease: "power2.out" }, t(130));
+      out(["#t0", "#strike"], t(133), 0.35);
+      tick("#b1", t(133));
+      type("#f1", t(134), 38, 0.5);
+      bump("#b2", t(138), 1.15);
+      bump("#b3", t(138) + 0.2, 1.15);
+
+      // total -> protein
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(141));
+      cursorTo(136 + 8 * 16.8 + 20, 172 + 6 * 44 + 30, t(141), 0.55);
+      out("#t6", t(143), 0.15);
+      show("#x6", t(143) + 0.05, 0.2);
+      draw("r-fix1", t(143) + 0.1, 0.4);
+      tick("#b2", t(144));
+      // protien -> protein
+      cursorTo(136 + typoCol * 16.8 + 20, 172 + 13 * 44 + 30, t(145), 0.55);
+      out("#t13", t(147), 0.15);
+      show("#x13", t(147) + 0.05, 0.2);
+      draw("r-fix2", t(147) + 0.1, 0.4);
+      tick("#b3", t(148));
+      cursorTo(1700, 1010, t(148) + 0.3, 0.5);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(148) + 0.6);
+      out(["#r-fix1", "#r-fix2"], t(149) - 0.3, 0.2);
+      type("#f2", t(148) + 0.4, 21, 0.35);
+      pop("#f3", t(149), { from: 0.7 });
+      bump("#f3", t(151), 1.08);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 63.15);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

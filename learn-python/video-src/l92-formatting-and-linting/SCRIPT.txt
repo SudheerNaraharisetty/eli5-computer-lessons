@@ -1,0 +1,9 @@
+Ben wrote coach dot py for Kitchen Coach. It runs. But look at it. Squashed commas. Spaces in odd places. Single quotes here, double quotes there. Code is read far more often than it is written.
+
+Ruff can tidy it. Type ruff format. Every line snaps into place, and all the quotes become double. Same program, same answer.
+
+Now type ruff check. It reads the code without running it, like an inspector with a flashlight. Flag 1. JSON is imported, but never used. Flag 2. Total is filled, but never read, so Ben's shake is lost. Flag 3. A typo in protein: the i and the e are swapped. That name does not exist. Python would only crash on the day Ben reaches his goal.
+
+Add dash dash fix. Ruff deletes the unused import for you. The other two need a person. Total becomes protein. The typo becomes protein. All checks passed.
+
+Ruff format tidies the layout. Ruff check finds mistakes before you run.

@@ -1,0 +1,9 @@
+Ben wants Kitchen Coach on his own laptop. So you send him a zip of loose recipe pages, with a note. Also pip install this. And only run it from this folder. On Ben's laptop, it breaks. No module named plans.
+
+So bind the pages into a real cookbook. First, the cover page: py project dot toml. It gives the book a name, kitchen coach. A version, zero point one point zero. The Python it needs, three point fourteen or newer. And under project scripts, one line makes a command. Kitchen coach runs the main function in C L I dot py.
+
+Now type python, dash m, build. The loose pages are bound into one book. A wheel file, in the dist folder.
+
+On Ben's laptop, pip install the wheel. Then he types kitchen coach, and today's plan appears.
+
+Py project dot toml is the cover page. Build it once, and anyone can pip install your cookbook.

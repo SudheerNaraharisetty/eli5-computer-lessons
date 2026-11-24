@@ -1,0 +1,320 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* ---- beat 1: loose pages in a zip, and a note ---- */
+    .pg { width: 260px; height: 320px; background: #fff; border-radius: 14px; }
+    .pg .pn { position: absolute; left: 24px; top: 20px; font: 700 30px/44px "JetBrains Mono", monospace; color: #0e0c1d; }
+    .pg i { position: absolute; left: 24px; height: 12px; border-radius: 6px; background: #ece7df; }
+    #pgA { left: 200px; top: 190px; transform: rotate(-6deg); }
+    #pgB { left: 520px; top: 220px; transform: rotate(5deg); }
+    #zip-svg { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #zip-svg rect { fill: none; stroke: #3e3b52; stroke-width: 5; stroke-dasharray: 18 14; opacity: 0; }
+    #zip-pill { left: 150px; top: 110px; height: 60px; padding: 0 26px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 700 30px/60px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #note { left: 250px; top: 650px; width: 640px; height: 270px; background: #fbebd2; border-radius: 10px; transform: rotate(-2deg); opacity: 0; }
+    #note .nt { position: absolute; left: 34px; top: 22px; font: 700 44px/60px "Fraunces", serif; color: #b9741a; }
+    #note .nl { position: absolute; left: 34px; font: 800 34px/48px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; opacity: 0; }
+
+    /* ---- Ben's laptop ---- */
+    #lap-bezel { left: 1200px; top: 150px; width: 640px; height: 420px; background: #0e0c1d; border-radius: 26px; }
+    #lap-screen { left: 1220px; top: 170px; width: 600px; height: 380px; background: #15132b; border-radius: 12px; overflow: hidden; }
+    #lap-base { left: 1140px; top: 580px; width: 760px; height: 40px; background: #3e3b52; border-radius: 6px 6px 24px 24px; }
+    #lap-lab { left: 1200px; top: 650px; font: 700 48px/60px "Fraunces", serif; white-space: nowrap; }
+    .sl { position: absolute; left: 24px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .sl .p { color: #9a96b8; }
+    .sl.r { color: #ff6b8b; }
+    #stamp { left: 1330px; top: 450px; height: 92px; padding: 0 34px; border-radius: 16px; background: #fbe0ea; color: #b8235a; font: 800 60px/92px "Manrope", sans-serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-8deg); opacity: 0; }
+    #scr-book { left: 230px; top: 64px; width: 140px; height: 180px; opacity: 0; }
+    #scr-txt { position: absolute; left: 0; top: 270px; width: 600px; text-align: center; font: 700 30px/44px "JetBrains Mono", monospace; color: #7cf0b5; opacity: 0; }
+    #lap-ok { left: 1764px; top: 120px; width: 96px; height: 96px; opacity: 0; }
+
+    /* ---- the code panel: pyproject.toml. Rows of 60 px, text at page x 136, 34 px mono = 20.4 px per char ---- */
+    .panel { background: #15132b; border-radius: 24px; overflow: hidden; opacity: 0; }
+    #code { left: 96px; top: 96px; width: 1054px; height: 600px; }
+    .bar { position: absolute; left: 0; top: 0; width: 100%; height: 60px; background: #211e40; }
+    .bar > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; white-space: nowrap; }
+    .cl { position: absolute; left: 40px; font: 500 34px/60px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .cl .k { color: #c9c6ff; }
+    .cl .s { color: #ffc24b; }
+    .cl .h { color: #7cf0b5; }
+
+    /* the terminals: 28 px mono = 16.8 px per char, text at page x 136 */
+    #bterm { left: 96px; top: 720px; width: 1054px; height: 264px; }
+    #bnterm { left: 96px; top: 96px; width: 1054px; height: 888px; }
+    .ln { position: absolute; left: 40px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    #bnterm .ln { line-height: 52px; }
+    .ln .p { color: #9a96b8; }
+    .ln.g { color: #7cf0b5; }
+    .ln.dim { color: #b8b4d8; }
+
+    /* ---- the cookbook on the right ---- */
+    .mini { width: 208px; height: 256px; background: #fff; border-radius: 12px; opacity: 0; }
+    .mini .pn { position: absolute; left: 20px; top: 14px; font: 700 28px/40px "JetBrains Mono", monospace; }
+    .mini i { position: absolute; left: 20px; height: 10px; border-radius: 5px; background: #ece7df; }
+    #book { left: 1210px; top: 140px; width: 620px; height: 640px; opacity: 0; }
+    #spine { left: 0; top: 6px; width: 44px; height: 628px; background: #3b37e6; border-radius: 10px; opacity: 0; }
+    #cover { left: 30px; top: 0; width: 580px; height: 640px; background: #fff; border-radius: 18px; }
+    #cover .ch { position: absolute; left: 0; top: 30px; width: 580px; text-align: center; font: 700 36px/50px "JetBrains Mono", monospace; color: #3b37e6; }
+    #cover .cs { position: absolute; left: 0; top: 82px; width: 580px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #cover .rule { position: absolute; left: 34px; top: 146px; width: 512px; height: 4px; border-radius: 2px; background: #ece7df; }
+    #cover .fl { position: absolute; left: 34px; font: 800 30px/48px "Manrope", sans-serif; color: #3e3b52; }
+    #cover .fv { position: absolute; right: 34px; font: 600 32px/48px "JetBrains Mono", monospace; color: #0e0c1d; white-space: nowrap; opacity: 0; }
+    #cover .fv.g { color: #1f7a5c; }
+    #dist { left: 1170px; top: 810px; width: 700px; height: 170px; background: #fff; border-radius: 20px; opacity: 0; }
+    #dist .dl { position: absolute; left: 30px; top: 18px; font: 800 30px/44px "Manrope", sans-serif; color: #3e3b52; }
+    #dist .dl b { font: 700 30px/44px "JetBrains Mono", monospace; color: #0e0c1d; }
+    #dist .df { position: absolute; left: 30px; top: 86px; height: 56px; padding: 0 16px; border-radius: 12px; background: #ddefe6; color: #1f7a5c; font: 700 28px/56px "JetBrains Mono", monospace; white-space: nowrap; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="57.6" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- beat 1: loose pages, the zip, the note -->
+        <svg id="zip-svg" class="s-abs" viewBox="0 0 1920 1080"><rect id="zip-rect" x="140" y="140" width="760" height="460" rx="26" /></svg>
+        <div id="zip-pill" class="s-abs">kitchen-coach.zip</div>
+        <div id="pgA" class="s-abs pg s-ol"><div class="pn">coach.py</div><i style="top:96px;width:200px"></i><i style="top:136px;width:160px"></i><i style="top:176px;width:200px"></i><i style="top:216px;width:120px"></i><i style="top:256px;width:180px"></i></div>
+        <div id="pgB" class="s-abs pg s-ol"><div class="pn">plans.py</div><i style="top:96px;width:180px"></i><i style="top:136px;width:200px"></i><i style="top:176px;width:140px"></i><i style="top:216px;width:200px"></i><i style="top:256px;width:110px"></i></div>
+        <div id="note" class="s-abs s-ol"><div class="nt">Note for Ben</div><div id="n1" class="nl" style="top:110px">Also pip install this.</div><div id="n2" class="nl" style="top:178px">Only run it from this folder.</div></div>
+
+        <!-- Ben's laptop -->
+        <div id="lap-bezel" class="s-abs s-ol"></div>
+        <div id="lap-screen" class="s-abs">
+          <div class="sl" id="e0" style="top:26px"><span class="p">$ </span>python3 coach.py</div>
+          <div class="sl r" id="e1" style="top:118px">ModuleNotFoundError:</div>
+          <div class="sl r" id="e2" style="top:162px">No module named 'plans'</div>
+          <svg id="scr-book" class="s-abs" viewBox="0 0 140 180"><rect x="4" y="4" width="22" height="172" rx="6" fill="#3b37e6"/><rect x="18" y="4" width="118" height="172" rx="10" fill="#fff"/><rect x="34" y="34" width="86" height="10" rx="5" fill="#3b37e6"/><rect x="34" y="62" width="70" height="8" rx="4" fill="#ece7df"/><rect x="34" y="82" width="80" height="8" rx="4" fill="#ece7df"/><rect x="34" y="102" width="60" height="8" rx="4" fill="#ece7df"/></svg>
+          <div id="scr-txt">kitchen-coach 0.1.0</div>
+        </div>
+        <div id="lap-base" class="s-abs s-ol"></div>
+        <div id="lap-lab" class="s-abs">Ben's laptop</div>
+        <div id="stamp" class="s-abs">BREAKS</div>
+        <svg id="lap-ok" class="s-abs" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#1f7a5c"/><path d="M12 25 L21 34 L37 15" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <!-- the cover page in code -->
+        <div id="code" class="s-abs panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">pyproject.toml</span></div>
+          <div class="cl" id="c0" style="top:84px"><span class="k">[project]</span></div>
+          <div class="cl" id="c1" style="top:144px">name = <span class="s">"kitchen-coach"</span></div>
+          <div class="cl" id="c2" style="top:204px">version = <span class="s">"0.1.0"</span></div>
+          <div class="cl" id="c3" style="top:264px">requires-python = <span class="s">"&gt;=3.14"</span></div>
+          <div class="cl" id="c5" style="top:384px"><span class="k">[project.scripts]</span></div>
+          <div class="cl" id="c6" style="top:444px"><span class="h">kitchen-coach</span> = <span class="s">"kitchen_coach.cli:main"</span></div>
+        </div>
+
+        <!-- your terminal: build -->
+        <div id="bterm" class="s-abs panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">terminal</span></div>
+          <div class="ln" id="b0" style="top:70px"><span class="p">$ </span>python -m build</div>
+          <div class="ln dim" id="b1" style="top:114px">* Building wheel...</div>
+          <div class="ln" id="b2" style="top:158px"><span class="p">$ </span>ls dist</div>
+          <div class="ln g" id="b3" style="top:202px">kitchen_coach-0.1.0-py3-none-any.whl</div>
+        </div>
+
+        <!-- loose pages, small, under the cover -->
+        <div id="mA" class="s-abs mini s-ol" style="left:1290px; top:810px; transform: rotate(-5deg)"><div class="pn">coach.py</div><i style="top:72px;width:160px"></i><i style="top:104px;width:120px"></i><i style="top:136px;width:160px"></i></div>
+        <div id="mB" class="s-abs mini s-ol" style="left:1560px; top:820px; transform: rotate(6deg)"><div class="pn">plans.py</div><i style="top:72px;width:150px"></i><i style="top:104px;width:160px"></i><i style="top:136px;width:110px"></i></div>
+
+        <!-- the book: spine + cover -->
+        <div id="book" class="s-abs">
+          <div id="spine" class="s-abs s-ol"></div>
+          <div id="cover" class="s-abs s-ol">
+            <div class="ch">pyproject.toml</div>
+            <div class="cs">the cover page</div>
+            <div class="rule"></div>
+            <div class="fl" style="top:196px">name</div><div class="fv" id="v-name" style="top:196px">kitchen-coach</div>
+            <div class="fl" style="top:296px">version</div><div class="fv" id="v-ver" style="top:296px">0.1.0</div>
+            <div class="fl" style="top:396px">needs</div><div class="fv" id="v-py" style="top:396px">Python &gt;=3.14</div>
+            <div class="fl" style="top:496px">command</div><div class="fv g" id="v-cmd" style="top:496px">kitchen-coach</div>
+          </div>
+        </div>
+        <div id="dist" class="s-abs s-ol"><div class="dl">in the <b>dist/</b> folder</div><div class="df">kitchen_coach-0.1.0-py3-none-any.whl</div></div>
+
+        <!-- Ben's terminal -->
+        <div id="bnterm" class="s-abs panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">terminal, on Ben's laptop</span></div>
+          <div class="ln" id="d0" style="top:84px"><span class="p">$ </span>pip install kitchen_coach-0.1.0-py3-none-any.whl</div>
+          <div class="ln dim" id="d1" style="top:136px">Processing ./kitchen_coach-0.1.0-py3-none-any.whl</div>
+          <div class="ln g" id="d2" style="top:188px">Successfully installed kitchen-coach-0.1.0</div>
+          <div class="ln" id="d3" style="top:292px"><span class="p">$ </span>kitchen-coach</div>
+          <div class="ln" id="d4" style="top:344px">Kitchen Coach: today's plan</div>
+          <div class="ln g" id="d5" style="top:396px">  Ana    rice bowl, 195 kcal, 2 hours before her run</div>
+          <div class="ln g" id="d6" style="top:448px">  Ben    tofu and lentils, 43.5 g protein</div>
+          <div class="ln g" id="d7" style="top:500px">  Chloe  gluten-free brownie after dinner</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-plans" style="stroke:#ffc24b" />
+          <path id="r-name" style="stroke:#7cf0b5" />
+          <path id="r-ver" style="stroke:#7cf0b5" />
+          <path id="r-py" style="stroke:#7cf0b5" />
+          <path id="r-cmd" style="stroke:#7cf0b5" />
+          <path id="r-main" style="stroke:#ffc24b" />
+          <path id="r-cli" style="stroke:#ffc24b" />
+          <path id="r-build" style="stroke:#ffc24b" />
+          <path id="r-whl" style="stroke:#7cf0b5" />
+          <path id="r-ben" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.302, 0.639, 1.045, 1.382, 1.509, 1.66, 1.869, 2.868, 3.077, 3.216, 3.46, 3.599, 3.715, 4.029, 4.214, 4.528, 4.957, 5.608, 5.84, 5.968, 6.85, 7.361, 7.686, 8.173, 8.812, 9.033, 9.276, 9.474, 9.59, 9.787, 10.054, 11.238, 11.505, 11.889, 12.574, 12.829, 13.688, 13.944, 14.396, 14.779, 15.801, 16.068, 16.37, 16.486, 16.985, 17.276, 17.426, 17.798, 18.913, 19.447, 19.632, 19.992, 20.677, 21.037, 21.652, 21.966, 22.988, 23.173, 23.429, 23.533, 23.742, 23.847, 24.381, 24.834, 25.623, 25.786, 26.366, 26.854, 27.167, 27.481, 27.841, 28.781, 28.944, 29.35, 29.478, 30.046, 30.36, 30.627, 31.289, 31.533, 32.334, 32.67, 32.903, 33.413, 34.203, 34.481, 34.853, 35.213, 35.294, 36.618, 37.094, 37.5, 37.79, 37.918, 38.208, 38.672, 38.812, 39.148, 39.404, 39.741, 40.089, 41.076, 41.354, 41.726, 42.469, 42.933, 43.363, 44.361, 44.512, 44.779, 45.244, 45.453, 45.813, 46.114, 46.37, 46.916, 47.078, 47.392, 47.833, 47.984, 48.1, 48.448, 49.365, 49.621, 49.981, 50.654, 51.049, 51.652, 51.815, 52.639, 52.941, 53.08, 53.475, 53.916, 54.427, 54.647, 55.054, 55.402, 56.389, 56.656, 57.178, 57.457, 57.968, 58.212, 58.339, 58.653, 59.5, 59.802, 59.942, 60.325, 60.545, 60.917, 61.103, 61.37, 61.846, 62.055];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // code panel token: 34 px mono, 20.4 px per char, text at page x 136, rows of 60 px (rowTop = page y)
+      const ctok = (id, c0, n, rowTop, pad) => ring(id, 136 + (c0 + n / 2) * 20.4, rowTop + 30, (n * 20.4) / 2 + (pad || 14), 32);
+      // terminal token: 28 px mono, 16.8 px per char; x0 = page x of column 0, rowMid = page y of the row's middle
+      const ttok = (id, x0, c0, n, rowMid, pad) => ring(id, x0 + (c0 + n / 2) * 16.8, rowMid, (n * 16.8) / 2 + (pad || 12), 28);
+
+      ttok("r-plans", 1244, 16, 7, 170 + 162 + 22, 10);   // 'plans' on Ben's screen
+      ctok("r-name", 7, 15, 240, 10);
+      ctok("r-ver", 10, 7, 300, 10);
+      ctok("r-py", 18, 8, 360, 10);
+      ctok("r-cmd", 0, 13, 540, 10);
+      ctok("r-cli", 31, 3, 540, 8);
+      ctok("r-main", 35, 4, 540, 8);
+      ttok("r-build", 136, 2, 15, 720 + 70 + 22, 10);
+      ttok("r-whl", 136, 0, 36, 720 + 202 + 22, 12);
+      ttok("r-ben", 136, 2, 13, 96 + 292 + 26, 10);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      const zr = document.getElementById("zip-rect");
+      tl.set("#s-cursor", { x: 1000, y: 1000 }, 0);
+
+      /* ---- 1. A zip of loose pages, a note, and it breaks on Ben's laptop ---- */
+      bump("#lap-bezel", t(2), 1.03);
+      tl.set(zr, { opacity: 1 }, t(13));
+      tl.fromTo(zr, { strokeDashoffset: 1200 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, t(13));
+      pop("#zip-pill", t(13) + 0.1, { from: 0.7 });
+      bump("#pgA", t(16), 1.05);
+      bump("#pgB", t(16) + 0.1, 1.05);
+      pop("#note", t(20) - 0.1, { from: 0.8 });
+      show("#n1", t(21), 0.3);
+      show("#n2", t(25), 0.3);
+      // the zip travels to Ben's laptop
+      tl.to(["#pgA", "#pgB", "#zip-pill"], { x: 160, duration: 0.5, ease: "power2.inOut" }, t(32));
+      tl.to(zr, { x: 160, duration: 0.5, ease: "power2.inOut" }, t(32));
+      type("#e0", t(32) + 0.2, 18, 0.6);
+      show("#e1", t(36), 0.2);
+      show("#e2", t(36) + 0.15, 0.2);
+      pop("#stamp", t(36), { from: 1.6, d: 0.35, ease: "power3.out" });
+      draw("r-plans", t(40), 0.45);
+
+      /* ---- 2. The cover page: pyproject.toml ---- */
+      out(["#zip-pill", "#note", "#stamp", "#r-plans", "#lap-bezel", "#lap-screen", "#lap-base", "#lap-lab"], t(41), 0.3);
+      out(zr, t(41), 0.3);
+      // the loose pages shrink and move under the cover's place
+      out(["#pgA", "#pgB"], t(42), 0.35);
+      show("#mA", t(42) + 0.15, 0.35);
+      show("#mB", t(42) + 0.25, 0.35);
+      bump("#mA", t(44), 1.06);
+      bump("#mB", t(44) + 0.1, 1.06);
+      pop("#book", t(51) - 0.1, { from: 0.85, d: 0.45 });
+      show("#code", t(53), 0.35);
+      tl.fromTo("#code .ttl", { color: "#c9c6ff" }, { color: "#ffc24b", duration: 0.2, immediateRender: false }, t(53));
+      tl.to("#code .ttl", { color: "#c9c6ff", duration: 0.3 }, t(57));
+      show("#c0", t(57), 0.25);
+      type("#c1", t(59), 22, 0.6);
+      draw("r-name", t(63), 0.4);
+      pop("#v-name", t(63), { from: 0.5 });
+      type("#c2", t(65), 17, 0.5);
+      out("#r-name", t(65), 0.2);
+      draw("r-ver", t(67), 0.4);
+      pop("#v-ver", t(67), { from: 0.5 });
+      type("#c3", t(72), 26, 0.7);
+      out("#r-ver", t(72), 0.2);
+      draw("r-py", t(76), 0.4);
+      pop("#v-py", t(76), { from: 0.5 });
+      out("#r-py", t(81), 0.2);
+      show("#c5", t(83), 0.25);
+      type("#c6", t(85), 40, 1.2);
+      // the command: cursor from the code line to the cover
+      draw("r-cmd", t(90), 0.4);
+      cursorIn(t(90));
+      tl.set("#s-cursor", { x: 300, y: 560 }, t(90) - 0.01);
+      cursorTo(1640, 690, t(90) + 0.1, 0.6);
+      pop("#v-cmd", t(91), { from: 0.5 });
+      cursorOut(t(92) + 0.2);
+      out("#r-cmd", t(94), 0.2);
+      draw("r-main", t(94), 0.4);
+      draw("r-cli", t(97), 0.4);
+
+      /* ---- 3. python -m build binds it into one book: a wheel in dist/ ---- */
+      out(["#r-main", "#r-cli"], t(102), 0.2);
+      show("#bterm", t(102), 0.3);
+      type("#b0", t(104), 17, 0.9);
+      draw("r-build", t(107), 0.4);
+      show("#b1", t(108), 0.2);
+      // the loose pages slide up under the cover, and a spine binds them
+      tl.to("#mA", { y: -480, rotation: 0, duration: 0.6, ease: "power2.inOut" }, t(109));
+      tl.to("#mB", { y: -500, rotation: 0, duration: 0.6, ease: "power2.inOut" }, t(109) + 0.1);
+      tl.to(["#mA", "#mB"], { opacity: 0, duration: 0.2 }, t(109) + 0.6);
+      pop("#spine", t(112), { from: 0.4 });
+      bump("#book", t(114), 1.04);
+      out("#r-build", t(115), 0.2);
+      bump("#book", t(117), 1.03);
+      show("#b2", t(116), 0.2);
+      show("#b3", t(117) + 0.3, 0.25);
+      pop("#dist", t(121), { from: 0.7 });
+      draw("r-whl", t(121) + 0.2, 0.5);
+
+      /* ---- 4. On Ben's laptop: pip install the wheel, then the command ---- */
+      out(["#code", "#bterm", "#r-whl", "#book"], t(124) + 0.2, 0.3);
+      show("#bnterm", t(124) + 0.4, 0.35);
+      tl.set(["#e0", "#e1", "#e2"], { opacity: 0 }, t(124));
+      show(["#lap-bezel", "#lap-screen", "#lap-base", "#lap-lab"], t(124) + 0.4, 0.35);
+            type("#d0", t(126), 51, 1.1);
+      tl.to("#dist", { x: 120, y: -490, scale: 0.4, opacity: 0, duration: 0.7, ease: "power2.in" }, t(127));
+      show("#d1", t(129), 0.2);
+      pop("#scr-book", t(129) + 0.3, { from: 0.5 });
+      show("#d2", t(129) + 0.5, 0.2);
+      show("#scr-txt", t(130), 0.3);
+      type("#d3", t(132), 15, 0.4);
+      draw("r-ben", t(133), 0.4);
+      show("#d4", t(134) + 0.3, 0.2);
+      show("#d5", t(135), 0.2);
+      show("#d6", t(135) + 0.2, 0.2);
+      show("#d7", t(135) + 0.4, 0.2);
+      pop("#lap-ok", t(138), { from: 0.3 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 57.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

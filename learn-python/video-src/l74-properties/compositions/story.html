@@ -1,0 +1,313 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro-s { position: absolute; left: 0; top: 230px; font: 800 36px/48px "Manrope", sans-serif; color: #4a4760; letter-spacing: 0; }
+
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* the jar, right */
+    #jar { left: 1240px; top: 120px; width: 540px; height: 850px; }
+    #jar-lid { position: absolute; left: 50px; top: 0; width: 440px; height: 50px; border-radius: 12px; background: #b9741a; box-shadow: 0 0 0 5px #0e0c1d; }
+    #jar-body { position: absolute; left: 0; top: 62px; width: 540px; height: 776px; border-radius: 40px 40px 90px 90px; background: #fdfbf8; overflow: hidden; }
+    #batter { position: absolute; left: 0; bottom: 0; width: 540px; height: 210px; background: #8a5a3c; transform-origin: 50% 100%; }
+    #batter-top { position: absolute; left: 0; bottom: 204px; width: 540px; height: 14px; background: #6e4429; transform-origin: 50% 100%; }
+
+    /* the label on the jar */
+    #lab { left: 1290px; top: 290px; width: 440px; height: 392px; }
+    #lab > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fff; }
+    #lab-h { position: absolute; left: 28px; top: 20px; font: 700 40px/56px "Fraunces", serif; white-space: nowrap; }
+    #lab-line { position: absolute; left: 28px; top: 86px; width: 384px; height: 4px; border-radius: 2px; background: #0e0c1d; }
+    .row { position: absolute; left: 28px; width: 384px; height: 64px; }
+    #row-t { top: 108px; }
+    #row-e { top: 196px; }
+    #row-s { top: 284px; }
+    .rk { position: absolute; left: 0; top: 10px; font: 800 30px/44px "Manrope", sans-serif; color: #4a4760; }
+    .rv { position: absolute; right: 0; top: 0; width: 230px; height: 64px; }
+    .rv > span { position: absolute; right: 0; top: 0; white-space: pre; font: 700 34px/64px "JetBrains Mono", monospace; }
+    .rv > .ok { color: #1f7a5c; }
+    .rv > .bad { color: #b8235a; }
+    #chk { left: 1556px; top: 580px; width: 50px; height: 50px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 30px/50px "Manrope", sans-serif; }
+
+    .note { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .note.ok { background: #ddefe6; color: #1f7a5c; }
+    .note.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    .note.warn { background: #fbebd2; color: #7a4708; }
+    .note.acc { background: #e6e3ff; color: #3b37e6; }
+    #real { left: 1330px; top: 852px; }
+    #stale { left: 1580px; top: 214px; }
+    #live { left: 1300px; top: 214px; }
+    #nut { left: 1520px; top: 1000px; box-shadow: 0 0 0 4px #7a4708; }
+    #zero { left: 1800px; top: 586px; box-shadow: 0 0 0 4px #b8235a; }
+    .stamp { width: 330px; height: 84px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 42px/84px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-5deg); }
+    #stamp { left: 1345px; top: 730px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .d { color: #ff9ee0; }
+    .ot { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; white-space: pre; opacity: 0; color: #ff8fab; }
+    #strike { position: absolute; left: 184px; top: 311px; width: 648px; height: 5px; border-radius: 3px; background: #ff8fab; transform-origin: 0 50%; transform: scaleX(0); }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+    .s-note code { font: 700 28px/50px "JetBrains Mono", monospace; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Chloe's <span class="a">gluten-free</span><br />brownies.<div id="intro-s" class="s-hide">12 of them, in one recipe jar.</div></div>
+
+        <!-- the jar -->
+        <div id="jar" class="s-abs">
+          <div id="jar-lid"></div>
+          <div id="jar-body" class="s-ol"><div id="batter"></div><div id="batter-top"></div></div>
+        </div>
+
+        <!-- the label on the jar -->
+        <div id="lab" class="s-abs">
+          <div class="bg s-ol"></div>
+          <div id="lab-h" class="s-hide">Chloe's brownies</div>
+          <div id="lab-line" class="s-hide"></div>
+          <div class="row s-hide" id="row-t"><div class="rk">total</div><div class="rv"><span class="t0 s-hide">2400 kcal</span><span class="t1 bad s-hide">2400 kcal</span><span class="t2 ok s-hide">2640 kcal</span></div></div>
+          <div class="row s-hide" id="row-e"><div class="rk">each</div><div class="rv"><span class="e0 ok s-hide">220 kcal</span><span class="e1 bad s-hide">2640 / 0</span><span class="e2 ok s-hide">220 kcal</span></div></div>
+          <div class="row s-hide" id="row-s"><div class="rk">servings</div><div class="rv"><span class="s0">12</span></div></div>
+        </div>
+        <div id="chk" class="s-abs s-hide">✓</div>
+
+        <div id="real" class="s-abs note ok s-hide">real total: 2640 kcal</div>
+        <div id="stale" class="s-abs note bad s-hide">stale</div>
+        <div id="live" class="s-abs note acc s-hide">worked out on every read</div>
+        <div id="nut" class="s-abs note warn s-hide">walnuts +240</div>
+        <div id="zero" class="s-abs note bad s-hide">= 0</div>
+        <div id="stamp" class="s-abs stamp s-hide">ValueError</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">recipe.py</span></div>
+          <div class="ln" id="L1" style="top:88px"><span class="k">class</span> <span class="f">Recipe</span>:</div>
+          <!-- view A: the stale label, then @property -->
+          <div class="ln va" id="L2" style="top:138px">    <span class="k">def</span> <span class="f">__init__</span>(self, servings, kcal):</div>
+          <div class="ln va" id="L3" style="top:188px">        self.servings = servings</div>
+          <div class="ln va" id="L4" style="top:238px">        self.kcal = kcal</div>
+          <div class="ln va" id="L5" style="top:288px">        self.total_kcal = <span class="f">sum</span>(kcal.<span class="f">values</span>())</div>
+          <div id="strike" class="va"></div>
+          <div class="ln va" id="L7" style="top:388px">    <span class="d">@property</span></div>
+          <div class="ln va" id="L8" style="top:438px">    <span class="k">def</span> <span class="f">total_kcal</span>(self):</div>
+          <div class="ln va" id="L9" style="top:488px">        <span class="k">return</span> <span class="f">sum</span>(self.kcal.<span class="f">values</span>())</div>
+          <div class="ln va" id="L11" style="top:588px">    <span class="d">@property</span></div>
+          <div class="ln va" id="L12" style="top:638px">    <span class="k">def</span> <span class="f">kcal_each</span>(self):</div>
+          <div class="ln va" id="L13" style="top:688px">        <span class="k">return</span> self.total_kcal / self.servings</div>
+          <div class="ln va" id="L15" style="top:788px">brownies.<span class="f">add</span>(<span class="m">"walnuts"</span>, <span class="m">240</span>)</div>
+          <div class="s-note warn va" id="n-once" style="left:184px; top:338px">worked out once, in __init__</div>
+          <div class="s-note va" id="n-nob" style="left:500px; top:438px">read: <code>brownies.total_kcal</code></div>
+
+          <!-- view B: the setter -->
+          <div class="ln" id="G1" style="top:138px">    <span class="d">@property</span></div>
+          <div class="ln" id="G2" style="top:188px">    <span class="k">def</span> <span class="f">servings</span>(self):</div>
+          <div class="ln" id="G3" style="top:238px">        <span class="k">return</span> self._servings</div>
+          <div class="ln" id="S1" style="top:338px">    <span class="d">@servings.setter</span></div>
+          <div class="ln" id="S2" style="top:388px">    <span class="k">def</span> <span class="f">servings</span>(self, value):</div>
+          <div class="ln" id="S3" style="top:438px">        <span class="k">if</span> value &lt; <span class="m">1</span>:</div>
+          <div class="ln" id="S4" style="top:488px">            <span class="k">raise</span> <span class="f">ValueError</span>(</div>
+          <div class="ln" id="S5" style="top:538px">                <span class="m">"servings must be at least 1"</span>)</div>
+          <div class="ln" id="S6" style="top:588px">        self._servings = value</div>
+          <div class="ln" id="S8" style="top:688px">brownies.servings = <span class="m">0</span></div>
+          <div class="ot" id="O1" style="top:738px">ValueError: servings must be at least 1</div>
+          <div class="s-note ok" id="n-run" style="left:620px; top:388px">runs on every <code>=</code></div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-L5" style="stroke:#ffc24b" />
+          <path id="r-tot" class="dash" style="stroke:#b8235a" />
+          <path id="r-prop" style="stroke:#ff9ee0" />
+          <path id="rail" style="stroke:#3b37e6" />
+          <path id="r-tot2" style="stroke:#1f7a5c" />
+          <path id="r-serv" style="stroke:#3b37e6" />
+          <path id="r-set" style="stroke:#ff9ee0" />
+          <path id="r-if" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.708, 1.579, 2.403, 2.775, 2.891, 3.553, 3.936, 4.226, 4.54, 4.667, 5.062, 5.166, 5.283, 5.782, 5.991, 6.095, 6.49, 6.583, 6.711, 7.407, 7.976, 8.278, 8.824, 9.114, 9.485, 10.82, 11.029, 11.25, 11.436, 12.051, 12.446, 12.922, 13.804, 14.153, 14.431, 14.977, 15.36, 15.836, 16.335, 16.475, 17.369, 17.74, 18.054, 18.89, 19.157, 19.47, 19.633, 20.051, 20.283, 21.316, 21.49, 21.734, 22.199, 22.454, 22.733, 23.232, 23.522, 23.859, 24.033, 24.927, 25.089, 25.461, 25.763, 26.25, 26.529, 27.168, 27.493, 28.561, 28.863, 29.466, 30.604, 30.79, 31.196, 31.382, 31.51, 32.671, 33.042, 33.704, 33.983, 34.296, 34.424, 34.575, 35.654, 35.956, 36.084, 36.421, 36.537, 36.839, 37.082, 37.349, 37.593, 37.756, 38.046, 38.499, 38.731, 39.532, 39.776, 39.88, 40.635, 40.89, 41.366, 41.668, 42.005, 42.156, 43.085, 43.433, 43.781, 44.478, 44.757, 45.093, 45.233, 46.394, 46.579, 47.067, 47.288, 47.601, 47.694, 48.181, 49.075, 49.412, 49.586, 50.469, 50.654, 50.945, 51.235, 51.549, 51.699, 52.605, 53.035, 53.429, 54.068, 54.579, 55.508, 55.751, 55.96, 56.413, 56.645, 57.597, 57.771, 58.085, 58.41, 59.188, 59.757, 60.569, 61.127, 61.394, 61.521, 61.649, 62.067, 62.822, 62.984, 63.472, 63.797, 64.029, 64.169, 64.935, 65.364, 65.864, 66.746, 66.932, 67.408, 67.64, 68.29];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28);
+      };
+      tok("r-L5", "        self.total_kcal = sum(kcal.values())", "self.total_kcal = sum(kcal.values())", 288, 12);
+      tok("r-prop", "    @property", "@property", 388);
+      tok("r-set", "    @servings.setter", "@servings.setter", 338);
+      tok("r-if", "        if value < 1:", "if value < 1:", 438);
+      // label values, page coordinates. label: left 1290, top 290; values end at x 1702
+      ring("r-tot", 1604, 430, 120, 40);
+      ring("r-tot2", 1604, 430, 120, 40);
+      ring("r-serv", 1676, 606, 50, 40);
+      // rail from "return sum(...)" (code row 488) to the total on the label
+      path("rail", "M852 609 C1010 609 1100 470 1236 446 M1218 432 L1238 446 L1220 462");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swap = (row, from, to, at) => { out(`${row} .${from}`, at, 0.15); pop(`${row} .${to}`, at + 0.1, { from: 0.5 }); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Chloe's brownies, 12 of them, a recipe jar with a label ---- */
+      show("#intro-s", t(3) - 0.1, 0.35);
+      bump("#jar", t(13) - 0.1, 1.04);
+      pop("#lab-h", t(16), { from: 0.7 });
+      show("#lab-line", t(16) + 0.2, 0.3);
+      pop("#row-s", t(16) + 0.35, { from: 0.8 });
+      pop("#row-t", t(20) - 0.1, { from: 0.8 });
+      pop("#row-t .t0", t(21), { from: 0.5 });
+
+      /* ---- 2. Who wrote that label? __init__, once: self.total_kcal = sum(...) ---- */
+      out("#intro", t(26) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(26) + 0.1);
+      type("#L1", t(28), 13, 0.3);
+      type("#L2", t(30), 39, 0.5);
+      type("#L3", t(31), 32, 0.35);
+      type("#L4", t(31) + 0.4, 24, 0.3);
+      pop("#n-once", t(32), { from: 0.7 });
+      type("#L5", t(33), 44, 0.9);
+      draw("r-L5", t(38), 0.45);
+
+      /* ---- 3. Add walnuts: the real total is 2640, the label still says 2400. Stale ---- */
+      out(["#r-L5", "#n-once"], t(41) - 0.1, 0.2);
+      pop("#nut", t(41), { from: 0.6 });
+      cursorIn(t(41));
+      cursorTo(1738, 1024, t(41), 0.3);
+      type("#L15", t(42), 28, 0.5);
+      tl.to("#nut", { x: -90, y: -830, duration: 0.9, ease: "power3.inOut" }, t(43));
+      cursorTo(1648, 194, t(43), 0.9);
+      out("#nut", t(44) + 0.15, 0.2);
+      cursorOut(t(44) + 0.3);
+      tl.to("#batter", { scaleY: 1.14, duration: 0.5, ease: "power2.out" }, t(44));
+      tl.to("#batter-top", { y: -29, duration: 0.5, ease: "power2.out" }, t(44));
+      pop("#real", t(54), { from: 0.6 });
+      draw("r-tot", t(61), 0.3);
+      bump("#row-t .rv", t(66), 1.1);
+      out("#row-t .t0", t(70) - 0.1, 0.12);
+      show("#row-t .t1", t(70) - 0.05, 0.12);
+      pop("#stale", t(70), { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- 4. The fix: @property on a method. Worked out every time you read it ---- */
+      tl.to("#strike", { scaleX: 1, duration: 0.35, ease: "power2.out" }, t(72));
+      tl.to("#L5", { opacity: 0.35, duration: 0.3 }, t(72) + 0.2);
+      type("#L7", t(76), 13, 0.3);
+      draw("r-prop", t(77), 0.4);
+      type("#L8", t(78), 25, 0.4);
+      type("#L9", t(80), 38, 0.6);
+      out(["#stale", "#r-tot"], t(83) - 0.1, 0.2);
+      out("#r-prop", t(84), 0.2);
+      pop("#live", t(87), { from: 0.7 });
+      draw("rail", t(87) + 0.2, 0.6);
+      pop("#n-nob", t(94), { from: 0.7 });
+
+      /* ---- 5. Read it again: 2640. Each brownie 220 ---- */
+      out("#rail", t(96) - 0.1, 0.2);
+      swap("#row-t", "t1", "t2", t(99));
+      out("#real", t(101), 0.25);
+      draw("r-tot2", t(101), 0.45);
+      out("#n-nob", t(105) - 0.15, 0.2);
+      type("#L11", t(105), 13, 0.25);
+      type("#L12", t(105) + 0.25, 24, 0.35);
+      type("#L13", t(106), 46, 0.6);
+      pop("#row-e", t(107) - 0.1, { from: 0.8 });
+      pop("#row-e .e0", t(108), { from: 0.5 });
+
+      /* ---- 6. A property can guard a value too: the setter ---- */
+      out(["#r-tot2", "#live"], t(112) - 0.2, 0.2);
+      out(".va", t(112) - 0.15, 0.3);
+      type("#G1", t(113), 13, 0.3);
+      type("#G2", t(113) + 0.35, 23, 0.35);
+      type("#G3", t(115), 29, 0.4);
+      draw("r-serv", t(115), 0.4);
+      out("#r-serv", t(119) - 0.1, 0.2);
+      type("#S1", t(120), 20, 0.35);
+      draw("r-set", t(121), 0.4);
+      type("#S2", t(121) + 0.2, 30, 0.4);
+      type("#S3", t(121) + 0.6, 21, 0.3);
+      type("#S4", t(122), 29, 0.35);
+      type("#S5", t(122) + 0.35, 47, 0.5);
+      type("#S6", t(123), 30, 0.4);
+      out("#r-set", t(124), 0.2);
+      pop("#n-run", t(124) + 0.2, { from: 0.7 });
+
+      /* ---- 7. servings = 0: the guard says no. ValueError ---- */
+      out("#n-run", t(128) - 0.1, 0.2);
+      cursorIn(t(128));
+      cursorTo(140, 810, t(128), 0.45);
+      type("#S8", t(129), 21, 0.9);
+      pop("#zero", t(132), { from: 0.6 });
+      tl.to("#zero", { x: -70, duration: 0.3, ease: "power2.out" }, t(132) + 0.3);
+      cursorOut(t(133));
+      swap("#row-e", "e0", "e1", t(135));
+      draw("r-if", t(139), 0.4);
+      tl.to("#zero", { x: 60, y: 90, rotation: 14, opacity: 0, duration: 0.5, ease: "power2.in" }, t(140));
+      pop("#stamp", t(142), { from: 1.6, ease: "power3.out", d: 0.3 });
+      type("#O1", t(142) + 0.3, 39, 0.7);
+      swap("#row-e", "e1", "e2", t(144));
+      out("#r-if", t(144), 0.2);
+      bump("#row-s .s0", t(144) + 0.2, 1.2);
+      pop("#chk", t(148), { from: 0.4 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 63.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Chloe's gluten-free brownies. Twelve of them. Kitchen Coach keeps the recipe in a jar, with a label on the front. Total, two thousand four hundred calories.
+
+Who wrote that label? Init did, once. Self dot total K cal equals the sum.
+
+Now add walnuts. Two hundred and forty more calories. The real total is two thousand six hundred and forty. The label still says two thousand four hundred. It is stale.
+
+The fix is a property. At property, on top of a method. Now the label is worked out every time you read it. No brackets.
+
+Read it again. Two thousand six hundred and forty. And each brownie, two hundred and twenty.
+
+A property can guard a value, too. Add a setter. It runs every time you assign. Someone types servings equals zero. That would divide by zero. The guard says no. Value error. Servings must be at least one.
+
+A property looks like an attribute, but runs code. The label is always right.

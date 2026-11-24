@@ -1,0 +1,13 @@
+Ana wants tea. Ben wants a protein smoothie. Kitchen Coach already has an appliance class. It knows a name and its watts. It can start, stop, and work out its power cost.
+
+A kettle is a kind of appliance. So is a blender. Put the parent in brackets. Class Blender, Appliance. The child gets every method, without writing them again.
+
+Blender dot stop. Python looks in Blender first. No stop there. So it climbs up to Appliance. Found it.
+
+But a blender does not just turn on. It goes whirr. Write start again, inside Blender. That overrides the parent.
+
+Ben's blender has three speeds, so it gets its own init. Now ask for the power cost. Attribute error. Blender object has no attribute watts. The new init replaced the parent's setup.
+
+Call super, dot init, with name and watts, first. Watts is back. Six minutes cost zero point zero three.
+
+A child class gets everything from its parent. Change only what is different.

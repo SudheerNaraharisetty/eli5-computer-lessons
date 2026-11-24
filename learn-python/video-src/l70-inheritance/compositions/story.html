@@ -1,0 +1,334 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening lines, left side */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.25 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro .b { color: #1f7a5c; }
+
+    /* cards on the right */
+    .card { position: absolute; }
+    .card > .bg { position: absolute; inset: 0; border-radius: 26px; background: #fff; }
+    .tag { position: absolute; height: 56px; padding: 0 22px; border-radius: 999px; font: 700 30px/56px "JetBrains Mono", monospace; white-space: nowrap; background: #e6e3ff; color: #3b37e6; }
+    .lbl { position: absolute; font: 800 28px/56px "Manrope", sans-serif; color: #4a4760; white-space: nowrap; }
+    .chip { position: absolute; height: 52px; padding: 0 20px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; background: #ece7df; color: #0e0c1d; }
+    .chip.ok { background: #ddefe6; color: #1f7a5c; }
+    .chip.miss { background: #fbe0ea; color: #b8235a; box-shadow: inset 0 0 0 3px #b8235a; }
+    .chip.warn { background: #fbebd2; color: #7a4708; }
+    .btn { position: absolute; height: 64px; border-radius: 999px; background: #15132b; color: #fff; text-align: center; font: 700 28px/64px "JetBrains Mono", monospace; white-space: nowrap; }
+    .btn.no { background: #fbe0ea; color: #b8235a; box-shadow: inset 0 0 0 4px #b8235a; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+    #ap { left: 1190px; top: 96px; width: 640px; height: 290px; }
+    #bl { left: 1190px; top: 580px; width: 310px; height: 370px; }
+    #kt { left: 1530px; top: 580px; width: 300px; height: 170px; }
+    .isa { position: absolute; z-index: 5; width: 78px; height: 44px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; text-align: center; font: 800 28px/44px "Manrope", sans-serif; }
+    #isa-b { left: 1378px; top: 500px; }
+    #isa-k { left: 1630px; top: 500px; }
+    #sup-l { z-index: 5; left: 1240px; top: 422px; height: 48px; padding: 0 16px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 700 28px/48px "JetBrains Mono", monospace; }
+    #stamp { left: 1520px; top: 790px; width: 320px; height: 96px; border-radius: 18px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 40px/96px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-5deg); white-space: nowrap; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char, 28 px = 16.8 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .s { color: #ffb3c7; }
+    .ln .c { color: #a9a6c8; }
+    .sw { display: inline-block; position: relative; vertical-align: top; height: 50px; width: 72px; }
+    .sw > span { position: absolute; left: 0; top: 0; white-space: pre; }
+    .ot { position: absolute; left: 40px; font: 500 28px/50px "JetBrains Mono", monospace; color: #7cf0b5; white-space: pre; opacity: 0; }
+    .ot.err { color: #ff8fab; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="64.5" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs"><div id="in1">Ana wants <span class="b">tea</span>.</div><div id="in2" class="s-hide">Ben wants a <span class="a">smoothie</span>.</div></div>
+
+        <!-- the parent: Appliance -->
+        <div id="ap" class="card s-hide">
+          <div class="bg s-ol"></div>
+          <div class="tag" style="left:30px; top:24px">Appliance</div>
+          <div class="lbl" style="left:262px; top:24px">the parent</div>
+          <div id="ap-init" class="lbl mono s-hide" style="left:30px; top:108px; color:#0e0c1d">__init__</div>
+          <div id="ap-name" class="chip s-hide" style="left:196px; top:110px">name</div>
+          <div id="ap-watts" class="chip s-hide" style="left:330px; top:110px">watts</div>
+          <div id="ap-start" class="btn s-hide" style="left:30px; top:196px; width:160px">start()</div>
+          <div id="ap-stop" class="btn s-hide" style="left:206px; top:196px; width:140px">stop()</div>
+          <div id="ap-cost" class="btn s-hide" style="left:362px; top:196px; width:248px">power_cost()</div>
+        </div>
+
+        <!-- the children -->
+        <div id="bl" class="card s-hide">
+          <div class="bg s-ol"></div>
+          <div class="tag" style="left:24px; top:22px">Blender</div>
+          <div id="bl-nostop" class="btn no s-hide" style="left:24px; top:96px; width:170px">no stop</div>
+          <div id="bl-start" class="btn s-hide" style="left:24px; top:96px; width:150px">start()</div>
+          <div id="bl-whirr" class="chip warn s-hide" style="left:184px; top:102px; padding:0 14px">whirr!</div>
+          <div id="bl-speeds" class="chip s-hide" style="left:24px; top:186px">speeds <span class="mono">3</span></div>
+          <div id="bl-name" class="chip ok s-hide" style="left:24px; top:270px">name</div>
+          <div id="bl-wmiss" class="chip miss s-hide" style="left:150px; top:270px">watts ?</div>
+          <div id="bl-watts" class="chip ok s-hide" style="left:150px; top:270px">watts</div>
+        </div>
+        <div id="kt" class="card s-hide">
+          <div class="bg s-ol"></div>
+          <div class="tag" style="left:24px; top:22px">Kettle</div>
+          <div class="lbl" style="left:24px; top:94px">pass: nothing new</div>
+        </div>
+        <div id="isa-b" class="isa s-abs s-hide">is a</div>
+        <div id="isa-k" class="isa s-abs s-hide">is a</div>
+        <div id="sup-l" class="s-abs s-hide">super()</div>
+        <div id="stamp" class="s-abs s-hide">AttributeError</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">kitchen.py</span></div>
+          <div class="ln" id="K1" style="top:88px"><span class="k">class</span> <span class="f">Kettle</span>(<span class="f">Appliance</span>):</div>
+          <div class="ln" id="K2" style="top:138px">    <span class="k">pass</span></div>
+          <div class="ln" id="B1" style="top:238px"><span class="k">class</span> <span class="f">Blender</span>(<span class="f">Appliance</span>):</div>
+          <div class="ln" id="B2" style="top:288px">    <span class="k">pass</span></div>
+          <div class="ln" id="I1" style="top:288px">    <span class="k">def</span> <span class="f">__init__</span>(self, name, watts, speeds):</div>
+          <div class="ln" id="SU" style="top:338px">        <span class="f">super</span>().<span class="f">__init__</span>(name, watts)</div>
+          <div class="ln" id="SP" style="top:338px">        self.speeds = speeds</div>
+          <div class="ln" id="S1" style="top:288px">    <span class="k">def</span> <span class="f">start</span>(self):</div>
+          <div class="ln" id="S2" style="top:338px">        <span class="f">print</span>(<span class="s">"whirr"</span>)</div>
+          <div class="ln" id="N1" style="top:638px">blender = <span class="f">Blender</span>(<span class="s">"blender"</span>, <span class="m">1000</span><span class="sw"><span id="n-a">)</span><span id="n-b" class="s-hide">, <span class="m">3</span>)</span></span></div>
+          <div class="ln" id="C1" style="top:688px">blender.<span class="f">stop</span>()</div>
+          <div class="ln" id="C2" style="top:688px">blender.<span class="f">start</span>()</div>
+          <div class="ln" id="C3" style="top:688px"><span class="f">print</span>(blender.<span class="f">power_cost</span>(<span class="m">6</span>))</div>
+          <div class="ot" id="O1" style="top:738px">blender is off</div>
+          <div class="ot" id="O2" style="top:738px">whirr</div>
+          <div class="ot err" id="E1" style="top:738px">AttributeError: 'Blender' object has</div>
+          <div class="ot err" id="E2" style="top:788px">no attribute 'watts'</div>
+          <div class="ot" id="O4" style="top:738px">0.03</div>
+
+          <div class="s-note" id="n-every" style="left:230px; top:288px">the child gets every method</div>
+          <div class="s-note warn" id="n-over" style="left:440px; top:288px">overrides the parent's start</div>
+          <div class="s-note bad" id="n-repl" style="left:300px; top:388px">replaces the parent's __init__</div>
+          <div class="s-note ok" id="n-first" style="left:730px; top:338px">first</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="a-isb" style="stroke:#1f7a5c" />
+          <path id="a-isk" style="stroke:#1f7a5c" />
+          <path id="a-sup" style="stroke:#1f7a5c" />
+          <path id="r-brk" style="stroke:#ffc24b" />
+          <path id="r-bapp" style="stroke:#ffc24b" />
+          <path id="r-stop" style="stroke:#1f7a5c" />
+          <path id="r-cost" style="stroke:#3b37e6" />
+          <path id="r-e2" style="stroke:#ffc24b" />
+          <path id="r-wmiss" class="dash" style="stroke:#b8235a" />
+          <path id="r-icode" class="dash" style="stroke:#ff8fab" />
+          <path id="r-iap" class="dash" style="stroke:#b8235a" />
+          <path id="r-iok" style="stroke:#1f7a5c" />
+          <path id="r-super" style="stroke:#7cf0b5" />
+          <path id="r-watts" style="stroke:#1f7a5c" />
+          <path id="r-out" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.337, 0.627, 1.393, 1.707, 2.009, 2.113, 2.635, 3.576, 4.005, 4.342, 4.737, 4.899, 4.981, 5.457, 6.153, 6.339, 6.618, 6.734, 7.105, 7.326, 7.535, 8.464, 8.684, 8.87, 9.462, 9.95, 10.17, 10.461, 10.67, 10.89, 11.25, 12.33, 12.504, 12.922, 13.084, 13.212, 13.56, 13.665, 14.594, 14.942, 15.128, 15.209, 16.08, 16.324, 16.463, 16.95, 17.09, 17.949, 18.32, 18.866, 20.062, 20.236, 20.584, 20.933, 21.397, 21.954, 22.361, 22.767, 22.918, 23.893, 24.439, 24.775, 25.878, 26.366, 26.633, 26.761, 27.19, 27.806, 28.096, 28.433, 29.361, 29.686, 29.849, 30.22, 30.395, 30.557, 31.985, 32.403, 32.844, 33.053, 33.135, 33.587, 33.878, 34.156, 34.458, 34.83, 35.515, 35.712, 36.095, 37.152, 37.465, 37.79, 38.289, 38.847, 39.497, 39.799, 40.426, 40.565, 41.61, 41.993, 42.399, 42.666, 43.049, 43.723, 43.92, 44.025, 44.268, 44.466, 44.721, 45.778, 46.173, 46.521, 46.649, 46.788, 47.171, 47.74, 48.494, 49.377, 49.83, 50.399, 50.712, 51.037, 51.734, 52.628, 52.802, 53.034, 53.383, 53.882, 54.021, 54.509, 55.519, 55.844, 56.274, 56.529, 57.005, 57.307, 57.655, 57.876, 58.282, 59.014, 59.443, 59.71, 60.801, 61.185, 61.568, 61.974, 62.473, 62.764, 63.193, 64.087, 64.25, 64.61, 64.923, 65.202, 65.666, 65.852, 66.061, 66.943, 67.408, 67.721, 67.953, 68.104];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, cw, pad) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * cw, 96 + top + 25, (sub.length * cw) / 2 + (pad || 14), 28);
+      };
+      tok("r-brk", "class Kettle(Appliance):", "(Appliance)", 88, 18);
+      tok("r-bapp", "class Blender(Appliance):", "Appliance", 238, 18);
+      tok("r-e2", "no attribute 'watts'", "'watts'", 788, 16.8);
+      tok("r-icode", "    def __init__(self, name, watts, speeds):", "__init__", 288, 18);
+      tok("r-super", "        super().__init__(name, watts)", "super().__init__", 338, 18);
+      tok("r-out", "0.03", "0.03", 738, 16.8, 18);
+      // cards: Appliance at (1190, 96). buttons row top 196 -> centre y 96 + 196 + 32 = 324
+      ring("r-stop", 1190 + 206 + 70, 324, 86, 44);
+      ring("r-cost", 1190 + 362 + 124, 324, 140, 44);
+      ring("r-iap", 1190 + 30 + 68, 96 + 108 + 28, 92, 36);
+      ring("r-iok", 1190 + 30 + 68, 96 + 108 + 28, 92, 36);
+      // Blender card at (1190, 580). watts chip at left 150, top 270
+      ring("r-wmiss", 1190 + 150 + 66, 580 + 270 + 26, 86, 40);
+      ring("r-watts", 1190 + 150 + 60, 580 + 270 + 26, 80, 40);
+      // "is a" arrows: from each child's top up to the parent's bottom edge (y 386)
+      const arr = (x1, y1, x2, y2) => {
+        const a = Math.atan2(y2 - y1, x2 - x1), b = 26, s = 16;
+        const p1 = [x2 - b * Math.cos(a) + s * Math.sin(a), y2 - b * Math.sin(a) - s * Math.cos(a)];
+        const p2 = [x2 - b * Math.cos(a) - s * Math.sin(a), y2 - b * Math.sin(a) + s * Math.cos(a)];
+        return `M${x1} ${y1} L${x2} ${y2} M${p1[0]} ${p1[1]} L${x2} ${y2} L${p2[0]} ${p2[1]}`;
+      };
+      path("a-isb", arr(1400, 566, 1460, 402));
+      path("a-isk", arr(1680, 566, 1640, 402));
+      path("a-sup", arr(1222, 566, 1222, 402));
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x - 5, y: y - 4, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const shake = (sel, at) => tl.to(sel, { x: -8, duration: 0.06, yoyo: true, repeat: 5, ease: "sine.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Ana wants tea, Ben a smoothie. Kitchen Coach has an Appliance class ---- */
+      tl.fromTo("#in2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, t(3) - 0.1);
+      pop("#ap", t(13) - 0.15, { from: 0.85 });
+      show("#ap-init", t(18) - 0.1, 0.3);
+      pop("#ap-name", t(18), { from: 0.6 });
+      pop("#ap-watts", t(21), { from: 0.6 });
+      pop("#ap-start", t(24), { from: 0.6 });
+      pop("#ap-stop", t(25), { from: 0.6 });
+      pop("#ap-cost", t(30), { from: 0.6 });
+
+      /* ---- 2. A kettle is a kind of appliance. So is a blender. Parent in brackets ---- */
+      out("#intro", t(32) - 0.2, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(32));
+      type("#K1", t(33) + 0.1, 24, 0.45);
+      type("#K2", t(33) + 0.6, 8, 0.2);
+      pop("#kt", t(33) + 0.2, { from: 0.8 });
+      draw("a-isk", t(36), 0.45);
+      pop("#isa-k", t(36) + 0.25, { from: 0.6 });
+      pop("#bl", t(42) - 0.1, { from: 0.8 });
+      draw("a-isb", t(42) + 0.2, 0.45);
+      pop("#isa-b", t(42) + 0.45, { from: 0.6 });
+      draw("r-brk", t(45), 0.45);
+      out("#r-brk", t(48) - 0.15, 0.2);
+      type("#B1", t(48), 25, 0.5);
+      type("#B2", t(48) + 0.6, 8, 0.2);
+      draw("r-bapp", t(50), 0.4);
+
+      /* ---- 3. The child gets every method, without writing them again ---- */
+      pop("#n-every", t(53) - 0.1, { from: 0.7 });
+      bump(["#isa-b", "#isa-k"], t(53), 1.15);
+      bump("#ap-start", t(54), 1.1);
+      bump("#ap-stop", t(54) + 0.2, 1.1);
+      bump("#ap-cost", t(54) + 0.4, 1.1);
+
+      /* ---- 4. blender.stop(): look in Blender, no stop, climb to Appliance, found ---- */
+      out(["#n-every", "#r-bapp"], t(60) - 0.2, 0.2);
+      type("#N1", t(60) - 0.4, 34, 0.45);
+      type("#C1", t(60) + 0.15, 14, 0.4);
+      tl.set("#s-cursor", { x: 136 + 14 * 18, y: 96 + 688 + 20 }, t(63) - 0.3);
+      cursorIn(t(63) - 0.3);
+      cursorTo(1300, 760, t(64), 0.7);
+      pop("#bl-nostop", t(68), { from: 0.7 });
+      shake("#bl", t(68) + 0.2);
+      tl.to("#s-cursor", { keyframes: [{ x: 1395, y: 560, duration: 0.3 }, { x: 1440, y: 440, duration: 0.3 }, { x: 1470, y: 330, duration: 0.3 }], ease: "power1.inOut" }, t(73));
+      draw("r-stop", t(77), 0.4);
+      bump("#ap-stop", t(77) + 0.1, 1.1);
+      show("#O1", t(77) + 0.15, 0.25);
+
+      /* ---- 5. A blender goes whirr: override start ---- */
+      out(["#bl-nostop", "#r-stop"], t(79) - 0.1, 0.2);
+      out(["#O1", "#C1"], t(89) - 0.1, 0.2);
+      cursorOut(t(79) - 0.1);
+      pop("#bl-whirr", t(89), { from: 0.5 });
+      out("#B2", t(90), 0.2);
+      type("#S1", t(91), 20, 0.4);
+      type("#S2", t(91) + 0.45, 23, 0.45);
+      pop("#bl-start", t(91) + 0.3, { from: 0.6 });
+      tl.to("#ap-start", { opacity: 0.3, duration: 0.3 }, t(96));
+      pop("#n-over", t(96), { from: 0.7 });
+      type("#C2", t(96) + 0.3, 15, 0.35);
+      bump("#bl-start", t(98), 1.12);
+      show("#O2", t(98) + 0.1, 0.25);
+
+      /* ---- 6. Three speeds: its own __init__. Ask the power cost: AttributeError ---- */
+      out(["#n-over", "#C2", "#O2", "#bl-whirr"], t(99) - 0.1, 0.2);
+      pop("#bl-speeds", t(102), { from: 0.6 });
+      tl.to(["#S1", "#S2"], { y: 150, duration: 0.4, ease: "power2.inOut" }, t(105));
+      type("#I1", t(106), 44, 0.6);
+      type("#SP", t(106) + 0.6, 28, 0.45);
+      out("#n-a", t(109), 0.15);
+      pop("#n-b", t(109) + 0.1, { from: 0.8 });
+      type("#C3", t(111), 28, 0.5);
+      tl.set("#s-cursor", { x: 1290, y: 740 }, t(113) - 0.2);
+      cursorIn(t(113) - 0.2);
+      tl.to("#s-cursor", { keyframes: [{ x: 1395, y: 560, duration: 0.25 }, { x: 1440, y: 440, duration: 0.25 }, { x: 1670, y: 330, duration: 0.35 }], ease: "power1.inOut" }, t(113));
+      draw("r-cost", t(115) - 0.1, 0.35);
+      cursorOut(t(116));
+      shake("#s-code", t(116));
+      show("#E1", t(116), 0.25);
+      show("#E2", t(116) + 0.15, 0.25);
+      pop("#stamp", t(116) + 0.1, { from: 1.6, ease: "power3.out", d: 0.3 });
+      bump("#bl", t(118), 1.04);
+      draw("r-e2", t(123) - 0.1, 0.4);
+      pop("#bl-wmiss", t(123), { from: 0.7 });
+      draw("r-wmiss", t(123) + 0.2, 0.3);
+      draw("r-icode", t(126), 0.3);
+      pop("#n-repl", t(127), { from: 0.7 });
+      tl.to(["#ap-init", "#ap-name", "#ap-watts"], { opacity: 0.3, duration: 0.3 }, t(129));
+      draw("r-iap", t(129), 0.3);
+
+      /* ---- 7. Call super().__init__(name, watts) first. Watts is back. 0.03 ---- */
+      out(["#stamp", "#E1", "#E2", "#r-e2", "#n-repl", "#r-icode", "#r-cost", "#r-iap", "#r-wmiss", "#C3"], t(131) - 0.1, 0.2);
+      tl.to(["#ap-init", "#ap-name", "#ap-watts"], { opacity: 1, duration: 0.3 }, t(131));
+      tl.to(["#S1", "#S2"], { y: 200, duration: 0.35, ease: "power2.inOut" }, t(131));
+      tl.to("#SP", { y: 50, duration: 0.35, ease: "power2.inOut" }, t(131));
+      type("#SU", t(132), 37, 0.6);
+      draw("a-sup", t(134) - 0.1, 0.4);
+      pop("#sup-l", t(134) + 0.1, { from: 0.6 });
+      draw("r-iok", t(134) + 0.3, 0.4);
+      pop("#bl-name", t(136), { from: 0.6 });
+      out("#bl-wmiss", t(138) - 0.05, 0.15);
+      pop("#bl-watts", t(138), { from: 0.6 });
+      pop("#n-first", t(139), { from: 0.7 });
+      draw("r-super", t(139) + 0.1, 0.4);
+      draw("r-watts", t(140), 0.4);
+      type("#C3", t(143), 28, 0.4);
+      show("#O4", t(146), 0.25);
+      draw("r-out", t(149) - 0.2, 0.4);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 64.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

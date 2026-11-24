@@ -1,0 +1,11 @@
+Tonight, four dishes sit on the counter, in the order you will serve them. Ben lifts weights, so he wants them lined up by protein. Sorted, with a key, does it. Twenty-four, twenty-two, eighteen, fifteen grams. And look. The counter still has the serving order. Sorted made a new list.
+
+Now try dishes dot sort, and put its answer back in dishes. Sort works in place, and hands back None. Your list is gone. An empty plate.
+
+Chloe is gluten-free. Filter is a sieve. It keeps a dish only when the function says true. Bean chili and lentil soup get through.
+
+Ana wants the calories from protein. Map sends every dish through the same function. Protein times four. Sixty, ninety-six, seventy-two, eighty-eight.
+
+One catch. Map and filter hand back a lazy object, so wrap it in list. And use it once. The second time, it is empty.
+
+Sorted makes a new ordered list. Map changes each item. Filter keeps some.

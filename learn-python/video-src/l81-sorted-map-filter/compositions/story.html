@@ -1,0 +1,358 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro-s { position: absolute; left: 0; top: 230px; font: 800 36px/48px "Manrope", sans-serif; color: #4a4760; letter-spacing: 0; }
+
+    /* dish cards: column A at x 1200, column B at x 1550, rows at 230 / 370 / 510 / 650 */
+    .card { width: 270px; height: 110px; }
+    .card > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fff; }
+    .card > .nm { position: absolute; left: 22px; top: 12px; font: 800 30px/44px "Manrope", sans-serif; white-space: nowrap; }
+    .card > .g { position: absolute; left: 22px; top: 56px; font: 700 30px/44px "JetBrains Mono", monospace; color: #1f7a5c; white-space: nowrap; }
+    .card > .kc { position: absolute; left: 22px; top: 56px; font: 700 30px/44px "JetBrains Mono", monospace; color: #8a5208; white-space: nowrap; }
+    .card > .gf { position: absolute; right: 18px; top: 60px; height: 38px; padding: 0 12px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 28px/38px "Manrope", sans-serif; }
+    .card.ok > .bg { background: #ddefe6; }
+    .card.wm > .bg { background: #fbebd2; }
+    .A { left: 1190px; }
+    .B { left: 1550px; }
+    .r0 { top: 230px; } .r1 { top: 370px; } .r2 { top: 510px; } .r3 { top: 650px; }
+
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.warn { background: #fbebd2; color: #7a4708; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #p-dishes { left: 1190px; top: 148px; }
+    #p-new, #p-safe, #p-kcal, #p-ben { left: 1550px; top: 148px; }
+    #p-still { left: 1190px; top: 800px; }
+    #p-newlist { left: 1550px; top: 800px; }
+
+    #plate { left: 1205px; top: 330px; width: 240px; height: 240px; }
+    #plate > .rim { position: absolute; inset: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #plate > .in { position: absolute; left: 40px; top: 40px; width: 160px; height: 160px; border-radius: 50%; background: #f6f1eb; box-shadow: 0 0 0 4px #0e0c1d; text-align: center; font: 700 40px/160px "JetBrains Mono", monospace; color: #b8235a; }
+    .stamp { height: 88px; padding: 0 34px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 44px/88px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-5deg); white-space: nowrap; }
+    #wrong { left: 1225px; top: 640px; }
+
+    #sieve { left: 1490px; top: 220px; width: 40px; height: 550px; }
+    #machine { left: 1486px; top: 220px; width: 48px; height: 550px; border-radius: 14px; background: #fbebd2; }
+    #machine > span { position: absolute; left: 0; width: 48px; text-align: center; font: 700 34px/40px "JetBrains Mono", monospace; color: #7a4708; }
+    #slot { left: 1550px; top: 230px; width: 270px; height: 530px; border-radius: 22px; border: 5px dashed #b8235a; color: #b8235a; text-align: center; font: 700 40px/520px "JetBrains Mono", monospace; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln.cm { color: #a9a6d6; }
+    .ot { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; white-space: pre; opacity: 0; color: #c9c6ff; }
+    .ot.bad { color: #ff8fab; }
+    .ot.ok { color: #7cf0b5; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Line up the dishes<br />by <span class="a">protein</span>.<div id="intro-s" class="s-hide">4 dishes, in serving order.</div></div>
+
+        <div id="p-dishes" class="pill acc s-hide">dishes</div>
+        <div id="p-new" class="pill acc s-hide">by_protein</div>
+        <div id="p-ben" class="pill ok s-hide">Ben: most protein</div>
+        <div id="p-safe" class="pill ok s-hide">safe</div>
+        <div id="p-kcal" class="pill warn s-hide">kcal</div>
+
+        <!-- column A: the counter, serving order -->
+        <div id="a1" class="s-abs card A r0 s-hide"><div class="bg s-ol"></div><div class="nm">bean chili</div><div class="g">15 g</div><div class="gf s-hide">GF</div></div>
+        <div id="a2" class="s-abs card A r1 s-hide"><div class="bg s-ol"></div><div class="nm">tofu stir-fry</div><div class="g">24 g</div></div>
+        <div id="a3" class="s-abs card A r2 s-hide"><div class="bg s-ol"></div><div class="nm">lentil soup</div><div class="g">18 g</div><div class="gf s-hide">GF</div></div>
+        <div id="a4" class="s-abs card A r3 s-hide"><div class="bg s-ol"></div><div class="nm">pasta bake</div><div class="g">22 g</div></div>
+
+        <!-- column B: sorted copies -->
+        <div id="bs1" class="s-abs card B r0 s-hide"><div class="bg s-ol"></div><div class="nm">tofu stir-fry</div><div class="g">24 g</div></div>
+        <div id="bs2" class="s-abs card B r1 s-hide"><div class="bg s-ol"></div><div class="nm">pasta bake</div><div class="g">22 g</div></div>
+        <div id="bs3" class="s-abs card B r2 s-hide"><div class="bg s-ol"></div><div class="nm">lentil soup</div><div class="g">18 g</div></div>
+        <div id="bs4" class="s-abs card B r3 s-hide"><div class="bg s-ol"></div><div class="nm">bean chili</div><div class="g">15 g</div></div>
+        <div id="p-still" class="pill ok s-hide">still serving order</div>
+        <div id="p-newlist" class="pill acc s-hide">a NEW list</div>
+
+        <!-- the pain: None -->
+        <div id="plate" class="s-abs s-hide"><div class="rim"></div><div class="in">None</div></div>
+        <div id="wrong" class="s-abs stamp s-hide">WRONG</div>
+
+        <!-- filter: the sieve -->
+        <svg id="sieve" class="s-abs s-hide" viewBox="0 0 40 550"><rect x="2" y="2" width="36" height="546" rx="10" fill="#ddefe6" stroke="#0e0c1d" stroke-width="4" /><g stroke="#1f7a5c" stroke-width="3"><line x1="12" y1="14" x2="12" y2="536" /><line x1="20" y1="14" x2="20" y2="536" /><line x1="28" y1="14" x2="28" y2="536" /></g></svg>
+        <div id="bf1" class="s-abs card ok B r0 s-hide"><div class="bg s-ol"></div><div class="nm">bean chili</div><div class="g">15 g</div><div class="gf">GF</div></div>
+        <div id="bf2" class="s-abs card ok B r1 s-hide"><div class="bg s-ol"></div><div class="nm">lentil soup</div><div class="g">18 g</div><div class="gf">GF</div></div>
+
+        <!-- map: the stamp machine -->
+        <div id="machine" class="s-abs s-ol s-hide"><span style="top:120px">×</span><span style="top:160px">4</span><span style="top:330px">×</span><span style="top:370px">4</span></div>
+        <div id="bm1" class="s-abs card wm B r0 s-hide"><div class="bg s-ol"></div><div class="nm">bean chili</div><div class="kc">60 kcal</div></div>
+        <div id="bm2" class="s-abs card wm B r1 s-hide"><div class="bg s-ol"></div><div class="nm">tofu stir-fry</div><div class="kc">96 kcal</div></div>
+        <div id="bm3" class="s-abs card wm B r2 s-hide"><div class="bg s-ol"></div><div class="nm">lentil soup</div><div class="kc">72 kcal</div></div>
+        <div id="bm4" class="s-abs card wm B r3 s-hide"><div class="bg s-ol"></div><div class="nm">pasta bake</div><div class="kc">88 kcal</div></div>
+        <div id="slot" class="s-abs s-hide">[]</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">coach.py</span></div>
+          <div class="ln cm" id="C0" style="top:88px"># dishes: the 4 cards on the right</div>
+
+          <!-- view S: sorted -->
+          <div class="ln vs" id="S1" style="top:188px">by_protein = <span class="f">sorted</span>(dishes,</div>
+          <div class="ln vs" id="S2" style="top:238px">    key=<span class="k">lambda</span> d: d[<span class="m">"protein"</span>],</div>
+          <div class="ln vs" id="S3" style="top:288px">    reverse=<span class="k">True</span>)</div>
+          <div class="s-note vs" id="n-new" style="left:40px; top:388px">a NEW list. dishes is not touched</div>
+
+          <!-- view P: .sort() and None -->
+          <div class="ln vp" id="P1" style="top:188px">dishes = dishes.<span class="f">sort</span>(</div>
+          <div class="ln vp" id="P2" style="top:238px">    key=<span class="k">lambda</span> d: d[<span class="m">"protein"</span>])</div>
+          <div class="ln vp" id="P3" style="top:288px"><span class="f">print</span>(dishes)</div>
+          <div class="ot bad vp" id="PO" style="top:388px">None</div>
+          <div class="s-note bad vp" id="n-place" style="left:40px; top:488px">sorts in place, hands back None</div>
+
+          <!-- view F: filter -->
+          <div class="ln vf" id="F1" style="top:188px">safe = <span class="f">list</span>(<span class="f">filter</span>(</div>
+          <div class="ln vf" id="F2" style="top:238px">    <span class="k">lambda</span> d: d[<span class="m">"gluten_free"</span>],</div>
+          <div class="ln vf" id="F3" style="top:288px">    dishes))</div>
+          <div class="ln vf" id="F4" style="top:338px"><span class="f">print</span>([d[<span class="m">"name"</span>] <span class="k">for</span> d <span class="k">in</span> safe])</div>
+          <div class="ot ok vf" id="FO" style="top:438px">['bean chili', 'lentil soup']</div>
+
+          <!-- view M: map -->
+          <div class="ln vm" id="M1" style="top:188px">kcal = <span class="f">list</span>(<span class="f">map</span>(</div>
+          <div class="ln vm" id="M2" style="top:238px">    <span class="k">lambda</span> d: d[<span class="m">"protein"</span>] * <span class="m">4</span>,</div>
+          <div class="ln vm" id="M3" style="top:288px">    dishes))</div>
+          <div class="ln vm" id="M4" style="top:338px"><span class="f">print</span>(kcal)</div>
+          <div class="ot ok vm" id="MO" style="top:438px">[60, 96, 72, 88]</div>
+
+          <!-- view C: lazy, and used once -->
+          <div class="ln vc" id="K1" style="top:188px">kcal = <span class="f">map</span>(<span class="k">lambda</span> d: d[<span class="m">"protein"</span>] * <span class="m">4</span>,</div>
+          <div class="ln vc" id="K2" style="top:238px">           dishes)</div>
+          <div class="ln vc" id="K3" style="top:338px"><span class="f">print</span>(kcal)</div>
+          <div class="ot vc" id="KO1" style="top:388px">&lt;map object at 0x10a3f2b90&gt;</div>
+          <div class="ln vc" id="K4" style="top:488px"><span class="f">print</span>(<span class="f">list</span>(kcal))</div>
+          <div class="ot ok vc" id="KO2" style="top:538px">[60, 96, 72, 88]</div>
+          <div class="ln vc" id="K5" style="top:638px"><span class="f">print</span>(<span class="f">list</span>(kcal))</div>
+          <div class="ot bad vc" id="KO3" style="top:688px">[]</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-sorted" style="stroke:#8fd3ff" />
+          <path id="r-key" style="stroke:#ffc24b" />
+          <path id="r-sort" style="stroke:#ff8fab" />
+          <path id="r-none" style="stroke:#ff8fab" />
+          <path id="r-filter" style="stroke:#8fd3ff" />
+          <path id="r-true" style="stroke:#7cf0b5" />
+          <path id="r-map" style="stroke:#8fd3ff" />
+          <path id="r-times" style="stroke:#ffc24b" />
+          <path id="r-lazy" style="stroke:#ff9ee0" />
+          <path id="r-list" style="stroke:#7cf0b5" />
+          <path id="r-empty" class="dash" style="stroke:#ff8fab" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.906, 1.196, 1.637, 1.881, 1.985, 2.09, 2.868, 3.019, 3.146, 3.46, 3.576, 3.785, 4.087, 4.934, 5.283, 5.642, 6.223, 6.432, 6.536, 6.792, 7.001, 7.314, 7.512, 7.732, 9.056, 9.671, 9.868, 9.985, 10.565, 10.844, 11.656, 12.527, 13.421, 14.141, 14.814, 16.057, 16.3, 17.078, 17.229, 17.589, 17.868, 18.054, 18.193, 18.623, 19.389, 19.818, 20.027, 20.144, 20.411, 21.026, 21.258, 21.583, 21.99, 22.291, 22.872, 23.058, 23.232, 23.406, 23.777, 24.021, 24.195, 25.287, 25.658, 26.03, 26.181, 26.889, 27.179, 27.527, 27.969, 29.06, 29.292, 29.559, 29.733, 30.291, 30.523, 30.906, 31.835, 32.369, 32.601, 34.226, 34.714, 34.899, 35.062, 35.944, 36.119, 36.409, 36.513, 36.827, 37.14, 37.314, 37.43, 37.965, 38.371, 39.323, 39.625, 39.927, 40.054, 40.472, 40.809, 41.053, 41.819, 42.156, 42.411, 42.527, 43.061, 43.305, 44.35, 44.698, 45.047, 45.476, 45.755, 46.01, 46.138, 46.486, 47.427, 47.949, 48.379, 49.029, 49.83, 50.747, 51.769, 52.988, 53.313, 54.045, 54.312, 54.428, 54.788, 55.066, 55.298, 55.415, 55.902, 56.703, 56.924, 57.191, 57.319, 57.469, 58.213, 58.456, 58.689, 58.874, 59.85, 60.012, 60.384, 60.964, 61.208, 61.44, 62.45, 62.891, 63.251, 63.437, 63.774, 64.273, 64.795, 65.132, 65.666, 66.014, 66.804, 67.303, 67.709];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28);
+      };
+      tok("r-sorted", "by_protein = sorted(dishes,", "sorted", 188, 12);
+      tok("r-key", '    key=lambda d: d["protein"],', 'key=lambda d: d["protein"]', 238, 10);
+      tok("r-sort", "dishes = dishes.sort(", ".sort", 188, 12);
+      tok("r-none", "None", "None", 388, 16);
+      tok("r-filter", "safe = list(filter(", "filter", 188, 12);
+      tok("r-true", '    lambda d: d["gluten_free"],', 'd["gluten_free"]', 238, 10);
+      tok("r-map", "kcal = list(map(", "map", 188, 14);
+      tok("r-times", '    lambda d: d["protein"] * 4,', "* 4", 238, 14);
+      tok("r-lazy", "<map object at 0x10a3f2b90>", "<map object at 0x10a3f2b90>", 388, 8);
+      tok("r-list", "print(list(kcal))", "list(kcal)", 488, 10);
+      tok("r-empty", "[]", "[]", 688, 16);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      // slide a column-B card in from column A (dx -350) and from a source row (dy)
+      const slide = (sel, at, dy, d) => tl.fromTo(sel, { opacity: 1, x: -360, y: dy || 0 }, { opacity: 1, x: 0, y: 0, duration: d || 0.6, ease: "power3.inOut", immediateRender: false }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+      const A = ["#a1", "#a2", "#a3", "#a4"];
+
+      /* ---- 1. Four dishes on the counter, serving order ---- */
+      pop("#p-dishes", t(1) - 0.1, { from: 0.7 });
+      A.forEach((s, k) => pop(s, t(1) + k * 0.15, { from: 0.8, d: 0.35 }));
+      show("#intro-s", t(9), 0.35);
+
+      /* ---- 2. Ben wants them lined up by protein ---- */
+      pop("#p-ben", t(14), { from: 0.7 });
+      A.forEach((s, k) => bump(`${s} .g`, t(21) + k * 0.12, 1.25));
+
+      /* ---- 3. sorted with a key: 24, 22, 18, 15 ---- */
+      out("#intro", t(25) - 0.5, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(25) - 0.3);
+      type("#C0", t(25), 34, 0.4);
+      type("#S1", t(25) + 0.3, 27, 0.4);
+      draw("r-sorted", t(25) + 0.6, 0.4);
+      type("#S2", t(28) - 0.2, 31, 0.45);
+      draw("r-key", t(28) + 0.3, 0.45);
+      type("#S3", t(30), 17, 0.3);
+      out(["#r-sorted", "#r-key"], t(31) - 0.2, 0.2);
+      out("#p-ben", t(31) - 0.6, 0.2);
+      pop("#p-new", t(31) - 0.3, { from: 0.7 });
+      slide("#bs1", t(31), 140);
+      slide("#bs2", t(32), 280);
+      slide("#bs3", t(33), 0);
+      slide("#bs4", t(34), -420);
+      bump("#bs1 .g", t(31) + 0.5, 1.3);
+      bump("#bs2 .g", t(32) + 0.5, 1.3);
+      bump("#bs3 .g", t(33) + 0.5, 1.3);
+      bump("#bs4 .g", t(34) + 0.5, 1.3);
+
+      /* ---- 4. The counter still has the serving order: a new list ---- */
+      bump(A, t(39), 1.05);
+      pop("#p-still", t(43), { from: 0.7 });
+      pop("#p-newlist", t(48), { from: 0.7 });
+      pop("#n-new", t(44), { from: 0.7 });
+
+      /* ---- 5. dishes = dishes.sort(...): None ---- */
+      out([".vs", "#bs1", "#bs2", "#bs3", "#bs4", "#p-new", "#p-still", "#p-newlist"], t(51), 0.3);
+      type("#P1", t(52) + 0.15, 21, 0.4);
+      draw("r-sort", t(54), 0.4);
+      type("#P2", t(55), 31, 0.45);
+      type("#P3", t(58), 13, 0.3);
+      out("#r-sort", t(61), 0.2);
+      // sort works in place: the counter itself reorders
+      tl.to("#a1", { y: 420, duration: 0.6, ease: "power3.inOut" }, t(63));
+      tl.to("#a2", { y: -140, duration: 0.6, ease: "power3.inOut" }, t(63));
+      tl.to("#a4", { y: -280, duration: 0.6, ease: "power3.inOut" }, t(63));
+      // hands back None
+      type("#PO", t(69), 4, 0.15);
+      draw("r-none", t(69) + 0.15, 0.35);
+      pop("#n-place", t(69) + 0.4, { from: 0.7 });
+      tl.to(A, { opacity: 0, scale: 0.3, duration: 0.35, ease: "power2.in" }, t(71));
+      pop("#plate", t(71) + 0.25, { from: 0.5 });
+      pop("#wrong", t(73), { from: 1.6, ease: "power3.out", d: 0.3 });
+      bump("#plate", t(75), 1.08);
+
+      /* ---- 6. Chloe: filter is a sieve ---- */
+      out(["#plate", "#wrong", ".vp", "#r-none"], t(77) - 0.2, 0.25);
+      tl.to(A, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, t(77));
+      pop(["#a1 .gf", "#a3 .gf"], t(79), { from: 0.4 });
+      type("#F1", t(80), 19, 0.35);
+      draw("r-filter", t(80) + 0.35, 0.4);
+      show("#sieve", t(83), 0.35);
+      pop("#p-safe", t(83) + 0.2, { from: 0.7 });
+      type("#F2", t(85), 31, 0.45);
+      out("#r-filter", t(85), 0.2);
+      draw("r-true", t(91), 0.4);
+      // the two with gluten hit the sieve and stay behind
+      ["#a2", "#a4"].forEach((s, k) => {
+        tl.fromTo(s, { x: 0 }, { x: 40, duration: 0.22, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, t(93) + k * 0.1);
+        tl.to(s, { opacity: 0.3, duration: 0.3 }, t(93) + 0.5);
+      });
+      type("#F3", t(93), 12, 0.2);
+      slide("#bf1", t(94), 0);
+      slide("#bf2", t(97), 140);
+      out("#r-true", t(99), 0.2);
+      type("#F4", t(99), 32, 0.4);
+      type("#FO", t(100), 29, 0.4);
+
+      /* ---- 7. Ana: map, protein times 4 ---- */
+      out([".vf", "#sieve", "#bf1", "#bf2", "#p-safe", "#a1 .gf", "#a3 .gf"], t(101), 0.3);
+      tl.to(["#a2", "#a4"], { opacity: 1, duration: 0.3 }, t(101));
+      type("#M1", t(107), 16, 0.3);
+      draw("r-map", t(107) + 0.3, 0.35);
+      show("#machine", t(108), 0.35);
+      pop("#p-kcal", t(108) + 0.2, { from: 0.7 });
+      type("#M2", t(111), 31, 0.45);
+      out("#r-map", t(113), 0.2);
+      draw("r-times", t(115), 0.4);
+      type("#M3", t(116), 12, 0.2);
+      slide("#bm1", t(118) - 0.3, 0, 0.55);
+      slide("#bm2", t(119) - 0.3, 0, 0.55);
+      slide("#bm3", t(120) - 0.3, 0, 0.55);
+      slide("#bm4", t(121) - 0.3, 0, 0.55);
+      [118, 119, 120, 121].forEach((w, k) => bump(`#bm${k + 1} .kc`, t(w) + 0.25, 1.3));
+      out("#r-times", t(121), 0.2);
+      type("#M4", t(121) + 0.3, 11, 0.2);
+      type("#MO", t(121) + 0.6, 16, 0.3);
+
+      /* ---- 8. The catch: lazy, wrap in list, used once ---- */
+      out([".vm", "#machine"], t(123), 0.3);
+      type("#K1", t(124), 38, 0.5);
+      type("#K2", t(124) + 0.5, 18, 0.2);
+      type("#K3", t(130) - 0.2, 11, 0.2);
+      type("#KO1", t(130) + 0.1, 27, 0.4);
+      draw("r-lazy", t(131), 0.45);
+      tl.to(["#bm1", "#bm2", "#bm3", "#bm4"], { opacity: 0.35, duration: 0.3 }, t(131));
+      out("#r-lazy", t(133) - 0.1, 0.2);
+      cursorIn(t(132));
+      cursorTo(300, 610, t(132), 0.45);
+      type("#K4", t(133), 17, 0.3);
+      cursorOut(t(133) + 0.4);
+      draw("r-list", t(134), 0.4);
+      type("#KO2", t(136), 16, 0.3);
+      tl.to(["#bm1", "#bm2", "#bm3", "#bm4"], { opacity: 1, duration: 0.3 }, t(136));
+      bump(["#bm1", "#bm2", "#bm3", "#bm4"], t(137), 1.05);
+      out("#r-list", t(139), 0.2);
+      type("#K5", t(141), 17, 0.3);
+      out(["#bm1", "#bm2", "#bm3", "#bm4"], t(144) - 0.1, 0.3);
+      type("#KO3", t(146), 2, 0.1);
+      show("#slot", t(146), 0.3);
+      draw("r-empty", t(146) + 0.1, 0.3);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 62.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

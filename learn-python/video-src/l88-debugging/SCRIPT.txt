@@ -1,0 +1,9 @@
+Kitchen Coach adds up Ana's day. Breakfast, lunch, a snack, and dinner. It says three thousand, one hundred and ten calories. But by hand, it should be two thousand six hundred. No error, no traceback. The program runs fine, and it lies.
+
+So don't guess. Walk the recipe one step at a time, and look at the total after every step. A print with an equals sign shows it. So does the debugger. Press n, for next.
+
+Step one, breakfast. Six hundred and fifty. Right. Step two, lunch. Fourteen seventy. Right. Step three, the snack. Twenty-four ninety. That should be nineteen eighty. The total jumped too far. Here is the first step that goes wrong.
+
+Look inside. The line under if adds the snack to total, again. It was meant for the snacks jar. Change total to snacks, and run it again. Two thousand six hundred. Correct.
+
+Don't guess. Walk the steps, look at the values, and find the first step that goes wrong.

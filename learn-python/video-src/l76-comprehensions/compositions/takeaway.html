@@ -1,0 +1,57 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    #t-h1 { left: 110px; top: 90px; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    #t-h1 .a { color: #3b37e6; }
+    /* code card: 40 px mono = 24 px per char, text starts at x 150 */
+    #t-code { left: 110px; top: 390px; width: 1520px; height: 120px; background: #fff; border-radius: 26px; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #t-code > div { position: absolute; left: 40px; top: 0; font: 700 40px/120px "JetBrains Mono", monospace; white-space: pre; }
+    #t-code .k { color: #3b37e6; }
+    .bar { position: absolute; top: 540px; height: 10px; border-radius: 5px; transform-origin: left center; transform: scaleX(0); }
+    .lab { position: absolute; top: 572px; width: 300px; margin-left: -150px; text-align: center; opacity: 0; }
+    .lab > span { display: inline-block; height: 64px; padding: 0 30px; border-radius: 999px; font: 800 40px/64px "Manrope", sans-serif; white-space: nowrap; }
+    #b-w, #l-w > span { background: #1f7a5c; }
+    #b-e, #l-e > span { background: #1d5f8a; }
+    #b-h, #l-h > span { background: #b8235a; }
+    .lab > span { color: #fff; }
+    #t-next { left: 110px; top: 860px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.6" data-track-index="1">
+      <div id="t-h1" class="t-abs">A comprehension builds<br />a list in <span class="a">one line</span>.</div>
+      <div id="t-code" class="t-abs"><div>[name <span class="k">for</span> name, grams, gluten_free <span class="k">in</span> pantry <span class="k">if</span> gluten_free]</div></div>
+      <div id="b-w" class="t-abs bar" style="left:174px; width:96px"></div>
+      <div id="b-e" class="t-abs bar" style="left:294px; width:912px"></div>
+      <div id="b-h" class="t-abs bar" style="left:1230px; width:336px"></div>
+      <div id="l-w" class="t-abs lab" style="left:222px"><span>what</span></div>
+      <div id="l-e" class="t-abs lab" style="left:750px"><span>for each</span></div>
+      <div id="l-h" class="t-abs lab" style="left:1398px"><span>which</span></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 77: enumerate and zip</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 54;
+      const g = { a: 54.157, one: 56.177, what: 57.164, fore: 57.5, which: 58.394 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.a - S - 0.15));
+      tl.fromTo("#t-code", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, g.one - S - 0.3);
+      [["w", g.what], ["e", g.fore], ["h", g.which]].forEach(([k, at]) => {
+        tl.fromTo("#b-" + k, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, at - S - 0.05);
+        tl.fromTo("#l-" + k, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, at - S);
+      });
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 5.3);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

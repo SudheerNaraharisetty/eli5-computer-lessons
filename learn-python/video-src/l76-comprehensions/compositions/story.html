@@ -1,0 +1,303 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, top */
+    #intro { left: 110px; top: 150px; font: 700 84px/1.15 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro2 { left: 114px; top: 270px; font: 800 48px/1.3 "Manrope", sans-serif; color: #4a4760; white-space: nowrap; opacity: 0; }
+
+    /* the pantry shelf, bottom left */
+    #shelf { left: 96px; top: 596px; width: 1000px; height: 404px; }
+    #shelf > .bg, #list > .bg { position: absolute; inset: 0; border-radius: 26px; background: #fff; }
+    .card-t { position: absolute; left: 32px; top: 16px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    .jar { position: absolute; top: 110px; width: 172px; height: 230px; }
+    .jar > .body { position: absolute; inset: 0; border-radius: 18px; background: #fbf7f1; box-shadow: 0 0 0 4px #0e0c1d; }
+    .jar > .tint { position: absolute; inset: 0; border-radius: 18px; background: #ddefe6; opacity: 0; }
+    .jar > .lid { position: absolute; left: 22px; top: -18px; width: 128px; height: 22px; border-radius: 8px; background: #0e0c1d; }
+    .jar .nm { position: absolute; left: 0; top: 34px; width: 172px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; white-space: nowrap; }
+    .jar .g { position: absolute; left: 0; top: 78px; width: 172px; text-align: center; font: 600 28px/40px "Manrope", sans-serif; color: #4a4760; }
+    .jar .tag { position: absolute; left: 26px; top: 152px; width: 120px; height: 48px; border-radius: 999px; text-align: center; font: 700 28px/48px "JetBrains Mono", monospace; }
+    .jar .tag.y { background: #ddefe6; color: #1f7a5c; }
+    .jar .tag.n { background: #fbe0ea; color: #b8235a; }
+    #ptr { left: 0; top: 0; width: 36px; height: 30px; opacity: 0; z-index: 3; }
+
+    /* Chloe's shopping list, bottom right */
+    #list { left: 1180px; top: 596px; width: 644px; height: 404px; }
+    #list-rule { position: absolute; left: 32px; top: 84px; width: 580px; height: 4px; border-radius: 2px; background: #0e0c1d; }
+    .it { position: absolute; left: 40px; height: 56px; opacity: 0; white-space: nowrap; }
+    .it > i { position: absolute; left: 0; top: 12px; width: 32px; height: 32px; border-radius: 8px; background: #ddefe6; box-shadow: 0 0 0 4px #0e0c1d; font: 800 26px/32px "Manrope", sans-serif; font-style: normal; text-align: center; color: #1f7a5c; }
+    .it > span { position: absolute; left: 56px; top: 0; font: 800 34px/56px "Manrope", sans-serif; }
+    #chloe { left: 1730px; top: 548px; width: 96px; height: 96px; border-radius: 50%; background: #e6e3ff; text-align: center; font: 700 52px/96px "Fraunces", serif; box-shadow: 0 0 0 5px #0e0c1d; z-index: 4; }
+    #chloe-n { left: 1700px; top: 652px; width: 156px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; z-index: 4; opacity: 0; }
+
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.warn { background: #fbebd2; color: #7a4708; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill b { font: 700 28px/52px "JetBrains Mono", monospace; }
+    #p-works { left: 1212px; top: 920px; z-index: 4; }
+    #p-same { left: 1212px; top: 920px; z-index: 4; }
+
+    /* code panel: rows of 48 px, 28 px mono = 16.8 px per char, text at page x 136 */
+    #s-code { left: 96px; top: 96px; width: 1728px; height: 456px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1728px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .bdg { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #3b37e6; color: #fff; text-align: center; font: 800 28px/44px "Manrope", sans-serif; opacity: 0; box-shadow: 0 0 0 3px #c9c6ff; }
+    .cp { position: absolute; top: 324px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .cp .k { color: #ffc24b; }
+    .cp .f { color: #8fd3ff; }
+    #n-four { left: 900px; top: 150px; }
+    #n-again { left: 900px; top: 220px; }
+    #n-comp { left: 1260px; top: 322px; }
+    .lab { position: absolute; top: 384px; width: 240px; margin-left: -120px; text-align: center; opacity: 0; }
+    .lab > span { display: inline-block; height: 50px; padding: 0 22px; border-radius: 999px; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; }
+    .lab.w > span { background: #ddefe6; color: #1f7a5c; }
+    .lab.e > span { background: #dceefc; color: #1d5f8a; }
+    .lab.h > span { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 5; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="54" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Chloe is <span class="a">gluten-free</span>.</div>
+        <div id="intro2" class="s-abs">Kitchen Coach checks the pantry for her.</div>
+
+        <!-- the pantry -->
+        <div id="shelf" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="card-t">Pantry</div>
+          <div class="jar" id="j0" style="left:32px"><div class="body"></div><div class="tint"></div><div class="lid"></div><div class="nm">rice</div><div class="g">750 g</div><div class="tag y">True</div></div>
+          <div class="jar" id="j1" style="left:220px"><div class="body"></div><div class="tint"></div><div class="lid"></div><div class="nm">pasta</div><div class="g">500 g</div><div class="tag n">False</div></div>
+          <div class="jar" id="j2" style="left:408px"><div class="body"></div><div class="tint"></div><div class="lid"></div><div class="nm">lentils</div><div class="g">400 g</div><div class="tag y">True</div></div>
+          <div class="jar" id="j3" style="left:596px"><div class="body"></div><div class="tint"></div><div class="lid"></div><div class="nm">rye bread</div><div class="g">300 g</div><div class="tag n">False</div></div>
+          <div class="jar" id="j4" style="left:784px"><div class="body"></div><div class="tint"></div><div class="lid"></div><div class="nm">tofu</div><div class="g">200 g</div><div class="tag y">True</div></div>
+          <svg id="ptr" class="s-abs" viewBox="0 0 36 30"><path d="M3 3 H33 L18 27 Z" fill="#3b37e6" stroke="#0e0c1d" stroke-width="3" stroke-linejoin="round" /></svg>
+        </div>
+
+        <!-- Chloe's shopping list -->
+        <div id="list" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="card-t">Chloe's shopping list</div>
+          <div id="list-rule"></div>
+          <div class="it" id="i0" style="top:110px"><i>✓</i><span>rice</span></div>
+          <div class="it" id="i1" style="top:180px"><i>✓</i><span>lentils</span></div>
+          <div class="it" id="i2" style="top:250px"><i>✓</i><span>tofu</span></div>
+        </div>
+        <div id="p-works" class="s-abs pill ok">It works ✓</div>
+        <div id="p-same" class="s-abs pill ok">The same list, from one line ✓</div>
+        <div id="chloe" class="s-abs">C</div>
+        <div id="chloe-n" class="s-abs">Chloe</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">shopping.py</span></div>
+          <div class="ln" id="L0" style="top:84px">shopping = []</div>
+          <div class="ln" id="L1" style="top:132px"><span class="k">for</span> name, grams, gluten_free <span class="k">in</span> pantry:</div>
+          <div class="ln" id="L2" style="top:180px">    <span class="k">if</span> gluten_free:</div>
+          <div class="ln" id="L3" style="top:228px">        shopping.<span class="f">append</span>(name)</div>
+          <div class="bdg" id="b1" style="left:272px; top:86px">1</div>
+          <div class="bdg" id="b2" style="left:709px; top:134px">2</div>
+          <div class="bdg" id="b3" style="left:373px; top:182px">3</div>
+          <div class="bdg" id="b4" style="left:541px; top:230px">4</div>
+          <div class="pill warn" id="n-four">4 lines</div>
+          <div class="pill warn" id="n-again">the same 4 lines, for every list you build</div>
+
+          <!-- the comprehension, in pieces: cols 0, 12, 17, 56, 70 -->
+          <div class="cp" id="c-open" style="left:40px">shopping = [</div>
+          <div class="cp" id="c-what" style="left:241.6px">name</div>
+          <div class="cp" id="c-for" style="left:325.6px"><span class="k">for</span> name, grams, gluten_free <span class="k">in</span> pantry</div>
+          <div class="cp" id="c-if" style="left:980.8px"><span class="k">if</span> gluten_free</div>
+          <div class="cp" id="c-close" style="left:1216px">]</div>
+          <div class="pill acc" id="n-comp">a comprehension</div>
+
+          <div class="lab w" id="lb-w" style="left:275.2px"><span>what</span></div>
+          <div class="lab e" id="lb-e" style="left:644.8px"><span>for each</span></div>
+          <div class="lab h" id="lb-h" style="left:1098.4px"><span>which</span></div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-four" style="stroke:#ffc24b" />
+          <path id="r-b1" style="stroke:#c9c6ff" />
+          <path id="r-b2" style="stroke:#c9c6ff" />
+          <path id="r-sw" style="stroke:#7cf0b5" />
+          <path id="r-dw" style="stroke:#7cf0b5" />
+          <path id="r-se" style="stroke:#8fd3ff" />
+          <path id="r-de" style="stroke:#8fd3ff" />
+          <path id="r-sh" style="stroke:#ff8fb1" />
+          <path id="r-dh" style="stroke:#ff8fb1" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.569, 0.871, 1.567, 2.392, 2.694, 3.088, 3.425, 3.785, 3.901, 4.4, 4.656, 5.004, 5.155, 5.248, 5.654, 6.339, 6.618, 6.757, 6.885, 7.14, 7.349, 8.324, 8.87, 9.253, 9.392, 9.799, 10.298, 10.948, 11.192, 11.54, 12.04, 12.167, 12.272, 13.038, 13.607, 13.874, 14.048, 14.35, 14.791, 15.546, 16.126, 16.637, 16.846, 17.531, 18.158, 18.971, 19.958, 20.213, 20.875, 21.049, 21.246, 21.432, 21.769, 22.245, 22.43, 22.547, 22.779, 22.918, 23.266, 23.522, 23.835, 24.752, 25.112, 25.368, 25.53, 25.797, 25.913, 26.807, 27.272, 27.469, 27.574, 27.876, 28.282, 28.653, 28.793, 30.186, 30.581, 31.196, 31.498, 31.8, 32.171, 33.332, 33.843, 34.075, 34.342, 34.458, 34.586, 35.074, 35.283, 36.188, 36.583, 36.815, 37.14, 37.547, 37.628, 37.733, 38.708, 39.126, 39.486, 40.078, 40.264, 40.403, 40.6, 41.146, 42.121, 42.377, 42.783, 42.98, 43.329, 43.77, 44.513, 45.14, 45.906, 47.102, 47.392, 47.497, 47.717, 47.822, 48.75, 48.936, 49.389, 49.61, 49.935, 50.422, 50.562, 50.689, 51.339, 51.618, 51.781, 52.001, 52.57, 53.557, 53.708, 54.462, 54.857, 55.02, 55.403, 55.577, 55.821, 56.564, 56.9, 57.133, 57.794];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, 16.8 px per char, row centre y = 96 + top + 24
+      const CW = 16.8;
+      const col = (id, c0, len, top, pad) => path(id, ringD(136 + (c0 + len / 2) * CW, 96 + top + 24, (len * CW) / 2 + (pad || 16), 30));
+      col("r-sw", 24, 4, 228);        // name in shopping.append(name)
+      // in the one line, an underline under each part (rings would touch: the parts are one space apart)
+      const under = (id, c0, len) => path(id, `M${136 + c0 * CW + 2} 466 H${136 + (c0 + len) * CW - 2}`);
+      under("r-dw", 12, 4);
+      col("r-se", 0, 38, 132, 20);    // for name, grams, gluten_free in pantry
+      under("r-de", 17, 38);
+      col("r-sh", 4, 14, 180);        // if gluten_free
+      under("r-dh", 56, 14);
+      col("r-b1", 11, 1, 324, 14);    // [
+      col("r-b2", 70, 1, 324, 14);    // ]
+      // a bracket in the left gutter around the 4 lines
+      path("r-four", "M128 186 H112 V366 H128");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const dim = (sel, at, o) => tl.to(sel, { opacity: o, duration: 0.35, ease: "power2.out" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      // pointer above jar i (shelf coordinates)
+      const ptrTo = (i, at, d) => tl.to("#ptr", { x: 32 + i * 188 + 68, y: 74, duration: d || 0.3, ease: "power3.inOut" }, at);
+      // one loop round: the pointer lands on jar i; safe jars turn green and go on the list
+      const visit = (i, at, item) => {
+        ptrTo(i, at - 0.3);
+        if (item != null) {
+          tl.fromTo(`#j${i} > .tint`, { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, at);
+          bump(`#j${i}`, at, 1.05);
+          pop(`#i${item}`, at + 0.05, { from: 0.5, d: 0.35 });
+        } else {
+          dim(`#j${i}`, at, 0.4);
+        }
+      };
+      // a piece of code flies from its place in the loop to its place in the one line
+      const fly = (sel, dx, dy, at, d) => tl.fromTo(sel, { opacity: 1, x: dx, y: dy }, { opacity: 1, x: 0, y: 0, duration: d || 0.8, ease: "power3.inOut", immediateRender: false }, at);
+
+      tl.set("#ptr", { x: 32 + 68, y: 74 }, 0);
+
+      /* ---- 1. Chloe is gluten free. Kitchen Coach checks the pantry, builds her a shopping list ---- */
+      bump("#chloe", t(0) + 0.1, 1.08);
+      show("#chloe-n", t(0), 0.3);
+      show("#intro2", t(5) - 0.1, 0.35);
+      pop("#shelf", t(9) - 0.15, { from: 0.85, d: 0.5 });
+      out("#chloe-n", t(13) - 0.2, 0.2);
+      pop("#list", t(14) - 0.1, { from: 0.85, d: 0.5 });
+
+      /* ---- 2. The way you know: four lines, badges 1 to 4 ---- */
+      out(["#intro", "#intro2"], t(16) - 0.3, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(16) - 0.05);
+      type("#L0", t(22) + 0.1, 13, 0.45);
+      pop("#b1", t(22), { from: 0.3 });
+      type("#L1", t(27) + 0.1, 39, 0.8);
+      pop("#b2", t(27), { from: 0.3 });
+      type("#L2", t(34) + 0.1, 19, 0.5);
+      pop("#b3", t(34), { from: 0.3 });
+      type("#L3", t(40) + 0.1, 29, 0.6);
+      pop("#b4", t(40), { from: 0.3 });
+
+      /* ---- 3. The loop runs: rice, (pasta), lentils, (rye bread), tofu ---- */
+      show("#ptr", t(44) - 0.5, 0.2);
+      visit(0, t(44), 0);
+      visit(1, t(44) + 0.35);
+      visit(2, t(45), 1);
+      visit(3, t(45) + 0.45);
+      visit(4, t(46), 2);
+      out("#ptr", t(47), 0.2);
+      pop("#p-works", t(48) - 0.1, { from: 0.7 });
+
+      /* ---- 4. But that is 4 lines, written again and again ---- */
+      draw("r-four", t(52) - 0.1, 0.4);
+      pop("#n-four", t(52), { from: 0.7 });
+      bump(["#b1", "#b2", "#b3", "#b4"], t(53), 1.15);
+      pop("#n-again", t(58) - 0.1, { from: 0.7 });
+      bump(["#b1", "#b2", "#b3", "#b4"], t(62), 1.15);
+
+      /* ---- 5. Python has a short way: a comprehension. Square brackets ---- */
+      out(["#n-four", "#n-again", "#r-four", "#p-works", "#b1", "#b2", "#b3", "#b4"], t(68) - 0.1, 0.25);
+      dim(["#L0", "#L1", "#L2", "#L3"], t(68), 0.6);
+      pop("#n-comp", t(75), { from: 0.7 });
+      show("#c-open", t(76), 0.25);
+      show("#c-close", t(76) + 0.1, 0.25);
+      draw("r-b1", t(77) - 0.1, 0.35);
+      draw("r-b2", t(77) + 0.05, 0.35);
+      out(["#r-b1", "#r-b2"], t(81) + 0.3, 0.2);
+
+      /* ---- 6. First, what goes on the list: the name ---- */
+      draw("r-sw", t(83) - 0.05, 0.4);
+      fly("#c-what", (24 - 12) * CW, 228 - 324, t(88) - 0.3, 0.75);
+      draw("r-dw", t(89) + 0.3, 0.35);
+      out("#r-sw", t(89) + 0.3, 0.2);
+
+      /* ---- 7. Then, for each item in the pantry ---- */
+      draw("r-se", t(91) - 0.05, 0.45);
+      fly("#c-for", (0 - 17) * CW, 132 - 324, t(93), 0.8);
+      draw("r-de", t(96) + 0.1, 0.4);
+      out("#r-se", t(96) + 0.1, 0.2);
+
+      /* ---- 8. Then, which ones: if it is gluten free ---- */
+      draw("r-sh", t(98) - 0.05, 0.4);
+      fly("#c-if", (4 - 56) * CW, 180 - 324, t(100) - 0.1, 0.8);
+      draw("r-dh", t(103) + 0.2, 0.35);
+      out("#r-sh", t(103) + 0.2, 0.2);
+
+      /* ---- 9. Run it: the same shopping list ---- */
+      out(["#r-dw", "#r-de", "#r-dh"], t(105) - 0.1, 0.2);
+      out(["#i0", "#i1", "#i2"], t(105), 0.25);
+      tl.to(["#j0 > .tint", "#j2 > .tint", "#j4 > .tint"], { opacity: 0, duration: 0.25 }, t(105));
+      tl.to(["#j1", "#j3"], { opacity: 1, duration: 0.25 }, t(105));
+      bump(["#c-open", "#c-what", "#c-for", "#c-if", "#c-close"], t(106), 1.04);
+      pop("#p-same", t(108), { from: 0.7 });
+      [[0, 0, 111], [2, 1, 112], [4, 2, 113]].forEach(([j, i, w]) => {
+        tl.fromTo(`#j${j} > .tint`, { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, t(w) - 0.1);
+        pop(`#i${i}`, t(w) - 0.05, { from: 0.5, d: 0.35 });
+      });
+      dim(["#j1", "#j3"], t(113), 0.4);
+
+      /* ---- 10. Read it like a sentence: what, for each, which ---- */
+      out("#n-comp", t(114), 0.2);
+      dim(["#L0", "#L1", "#L2", "#L3"], t(114), 0.35);
+      pop("#lb-w", t(119), { from: 0.6 });
+      draw("r-dw", t(119) + 0.05, 0.35);
+      pop("#lb-e", t(121), { from: 0.6 });
+      draw("r-de", t(121) + 0.05, 0.4);
+      pop("#lb-h", t(127), { from: 0.6 });
+      draw("r-dh", t(127) + 0.05, 0.35);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 53.8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

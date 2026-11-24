@@ -1,0 +1,13 @@
+Chloe is gluten free. So Kitchen Coach checks the pantry, and builds her a shopping list.
+
+Here is the way you know. One: start an empty list. Two: for each item in the pantry. Three: if it is gluten free. Four: append its name. Rice. Lentils. Tofu.
+
+It works. But that is 4 lines, and you write the same 4 lines again, every time you build a list.
+
+Python has a short way, called a comprehension. Square brackets, and 3 parts inside. First, what goes on the list: the name. Then, for each item in the pantry. Then, which ones: if it is gluten free.
+
+Run it. The same shopping list. Rice, lentils, tofu.
+
+Read it like a sentence. The name, for each item in the pantry, if it is gluten free.
+
+A comprehension builds a list in one line. What, for each, which.

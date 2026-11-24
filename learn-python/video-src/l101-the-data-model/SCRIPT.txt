@@ -1,0 +1,11 @@
+Kitchen Coach adds up Ana's meals. Breakfast: 450 calories, 15 grams of protein. Lunch: 700 calories, 38 grams. Breakfast plus lunch.
+
+Type error! Python does not know what plus means for a meal.
+
+Python's syntax is a switchboard. Len, plus, equals, in, square brackets, for. Each one is a cable, and each cable needs a socket on your class: a dunder method. Plus looks for dunder add. That socket is empty.
+
+So write dunder add. Return a new meal, with the calories added and the protein added. Plug it in. Breakfast plus lunch: 1150 calories, 53 grams.
+
+Now add up the whole day with sum. Error again! Sum starts at 0, and 0 plus a meal asks the int first. The int answers: not implemented. So Python turns around and asks the meal, with dunder r add. Write it, and the day adds up: 1450 calories.
+
+Python's syntax is a set of plugs. Write the dunder, and your object fits.

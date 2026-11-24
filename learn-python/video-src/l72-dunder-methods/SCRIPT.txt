@@ -1,0 +1,13 @@
+Kitchen Coach prints today's menu for Ana, Ben and Chloe. Print soup.
+
+And the card comes out like this. A Dish object, at a long, strange number. That number is where soup sits in memory, and it changes on every run. Python just does not know how to show your dish.
+
+So teach it, with a dunder method. Dunder means double underscore, like init. Def, dunder str. Return the name and the protein. You never call it yourself. Print calls it for you.
+
+Print soup again. Lentil soup, 18 grams protein.
+
+Now print the whole menu. It is a list, and it is ugly again! A list shows each dish with a different dunder: repr. Repr is for programmers. Make it look like the code that builds the dish. Dish, lentil soup, 18.
+
+Print the menu again. Every dish is readable.
+
+Dunder methods are hooks. Python calls them when you print, compare or measure.

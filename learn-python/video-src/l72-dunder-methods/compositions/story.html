@@ -1,0 +1,342 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 330px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+
+    /* the menu printer, right, top */
+    #pr { left: 1210px; top: 96px; width: 600px; height: 168px; z-index: 3; }
+    #pr > .bg { position: absolute; inset: 0; border-radius: 26px; background: #fff; }
+    #pr-t { position: absolute; left: 34px; top: 26px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    #pr-s { position: absolute; left: 34px; top: 80px; font: 800 28px/36px "Manrope", sans-serif; color: #4a4760; white-space: nowrap; }
+    #pr-led { position: absolute; left: 532px; top: 34px; width: 34px; height: 34px; border-radius: 50%; background: #ddefe6; box-shadow: 0 0 0 4px #0e0c1d; }
+    #pr-led > i { position: absolute; inset: 0; border-radius: 50%; background: #1f7a5c; opacity: 0; }
+    #pr-slot { position: absolute; left: 40px; top: 136px; width: 520px; height: 14px; border-radius: 7px; background: #0e0c1d; }
+
+    /* the paper card that comes out of the slot */
+    #clip { left: 1220px; top: 250px; width: 580px; height: 540px; overflow: hidden; z-index: 2; }
+    #card { position: absolute; left: 30px; top: 0; width: 520px; height: 440px; }
+    #card > .bg { position: absolute; inset: 0; background: #fffdf8; border-radius: 0 0 22px 22px; box-shadow: 0 0 0 5px #0e0c1d; }
+    #card-h { position: absolute; left: 24px; top: 26px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    #card-rule { position: absolute; left: 24px; top: 88px; width: 472px; height: 4px; border-radius: 2px; background: #0e0c1d; opacity: 0.85; }
+    .cc { position: absolute; left: 24px; top: 104px; width: 472px; opacity: 0; }
+    .cl { font: 700 28px/48px "JetBrains Mono", monospace; white-space: pre; height: 48px; }
+    .bad { color: #b8235a; }
+    .good { color: #1f7a5c; }
+    .addr { display: inline-block; position: relative; width: 185px; height: 48px; vertical-align: top; }
+    .addr > span { position: absolute; left: 0; top: 0; white-space: pre; opacity: 0; }
+    .addr > span.a0 { opacity: 1; }
+    #c-ugly { opacity: 1; }
+
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    #n-mem { left: 1274px; top: 610px; background: #fbe0ea; color: #b8235a; z-index: 4; }
+    #n-list { left: 1274px; top: 610px; background: #fbe0ea; color: #b8235a; z-index: 4; }
+    #n-list b { font: 700 28px/52px "JetBrains Mono", monospace; }
+
+    /* the three guests */
+    .gu { top: 820px; width: 180px; height: 200px; }
+    #gu-a { left: 1236px; }
+    #gu-b { left: 1426px; }
+    #gu-c { left: 1616px; }
+    .gu .face { position: absolute; left: 40px; top: 0; width: 100px; height: 100px; border-radius: 50%; text-align: center; font: 700 52px/100px "Fraunces", serif; box-shadow: 0 0 0 5px #0e0c1d; }
+    #gu-a .face { background: #fbebd2; }
+    #gu-b .face { background: #ddefe6; }
+    #gu-c .face { background: #e6e3ff; }
+    .gu .nm { position: absolute; left: 0; top: 116px; width: 180px; text-align: center; font: 800 32px/40px "Manrope", sans-serif; }
+    .bd { position: absolute; left: 116px; top: -14px; width: 50px; height: 50px; border-radius: 50%; text-align: center; font: 800 32px/50px "Manrope", sans-serif; color: #fff; opacity: 0; box-shadow: 0 0 0 4px #0e0c1d; }
+    .bd.q { background: #b8235a; }
+    .bd.k { background: #1f7a5c; }
+
+    /* code panel on the left: rows of 48 px, 28 px mono = 16.8 px per char, text at page x 136 */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln.on { opacity: 1; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+    .s-note b { font: 700 28px/50px "JetBrains Mono", monospace; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 5; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; z-index: 6; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.2" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Kitchen Coach<br />prints today's <span class="a">menu</span>.</div>
+
+        <!-- the printer -->
+        <div id="pr" class="s-abs">
+          <div class="bg s-ol"></div>
+          <div id="pr-t">Menu printer</div>
+          <div id="pr-s">Kitchen Coach</div>
+          <div id="pr-led"><i></i></div>
+          <div id="pr-slot"></div>
+        </div>
+
+        <!-- the card -->
+        <div id="clip" class="s-abs">
+          <div id="card">
+            <div class="bg"></div>
+            <div id="card-h">Today's menu</div>
+            <div id="card-rule"></div>
+            <div class="cc" id="c-ugly">
+              <div class="cl bad">&lt;__main__.Dish object</div>
+              <div class="cl bad">at <span class="addr"><span class="a0">0x10a3f2c50</span><span class="a1">0x1049ce120</span><span class="a2">0x102b7f3d0</span></span>&gt;</div>
+            </div>
+            <div class="cc" id="c-str">
+              <div class="cl good">lentil soup (18 g protein)</div>
+            </div>
+            <div class="cc" id="c-lbad">
+              <div class="cl bad">[&lt;__main__.Dish object</div>
+              <div class="cl bad"> at 0x10a3f2c50&gt;,</div>
+              <div class="cl bad"> &lt;__main__.Dish object</div>
+              <div class="cl bad"> at 0x10a3f3d10&gt;]</div>
+            </div>
+            <div class="cc" id="c-lgood">
+              <div class="cl good">[Dish('lentil soup', 18),</div>
+              <div class="cl good"> Dish('green salad', 12)]</div>
+            </div>
+          </div>
+        </div>
+        <div id="n-mem" class="s-abs pill s-hide">where soup sits in memory</div>
+        <div id="n-list" class="s-abs pill s-hide">a list asks for <b>__repr__</b></div>
+
+        <!-- the guests -->
+        <div id="gu-a" class="s-abs gu s-hide"><div class="face">A</div><div class="nm">Ana</div><div class="bd q">?</div><div class="bd k">✓</div></div>
+        <div id="gu-b" class="s-abs gu s-hide"><div class="face">B</div><div class="nm">Ben</div><div class="bd q">?</div><div class="bd k">✓</div></div>
+        <div id="gu-c" class="s-abs gu s-hide"><div class="face">C</div><div class="nm">Chloe</div><div class="bd q">?</div><div class="bd k">✓</div></div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">menu.py</span></div>
+          <div class="ln on" id="L0" style="top:84px"><span class="k">class</span> <span class="f">Dish</span>:</div>
+          <div class="ln on" id="L1" style="top:132px">    <span class="k">def</span> <span class="f">__init__</span>(self, name, protein):</div>
+          <div class="ln on" id="L2" style="top:180px">        self.name = name</div>
+          <div class="ln on" id="L3" style="top:228px">        self.protein = protein</div>
+          <div class="ln" id="L5" style="top:324px">    <span class="k">def</span> <span class="f">__str__</span>(self):</div>
+          <div class="ln" id="L6" style="top:372px">        <span class="k">return</span> <span class="m">f"{self.name} ({self.protein} g protein)"</span></div>
+          <div class="ln" id="L8" style="top:468px">    <span class="k">def</span> <span class="f">__repr__</span>(self):</div>
+          <div class="ln" id="L9" style="top:516px">        <span class="k">return</span> <span class="m">f"Dish('{self.name}', {self.protein})"</span></div>
+          <div class="ln on" id="L11" style="top:612px">soup = <span class="f">Dish</span>(<span class="m">"lentil soup"</span>, 18)</div>
+          <div class="ln on" id="L12" style="top:660px">salad = <span class="f">Dish</span>(<span class="m">"green salad"</span>, 12)</div>
+          <div class="ln" id="L13" style="top:708px">menu = [soup, salad]</div>
+          <div class="ln on" id="L14" style="top:756px"><span class="f">print</span>(soup)</div>
+          <div class="ln" id="L15" style="top:804px"><span class="f">print</span>(menu)</div>
+
+          <div class="s-note" id="n-dunder" style="left:330px; top:275px">dunder = <b>d</b>ouble <b>under</b>score</div>
+          <div class="s-note ok" id="n-calls" style="left:290px; top:755px">print() calls <b>__str__</b> for you</div>
+          <div class="s-note warn" id="n-prog" style="left:470px; top:563px">for programmers</div>
+          <div class="s-note ok" id="n-res" style="left:470px; top:563px">→ <b>Dish('lentil soup', 18)</b></div>
+          <div class="s-note ok" id="n-calls2" style="left:290px; top:803px">a list calls <b>__repr__</b></div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-p1" style="stroke:#ffc24b" />
+          <path id="r-obj" style="stroke:#b8235a" />
+          <path id="r-addr" class="dash" style="stroke:#b8235a" />
+          <path id="r-init" style="stroke:#ffc24b" />
+          <path id="r-str" style="stroke:#ffc24b" />
+          <path id="r-sn" style="stroke:#7cf0b5" />
+          <path id="r-sp" style="stroke:#7cf0b5" />
+          <path id="rail1" style="stroke:#7cf0b5" />
+          <path id="r-p1b" style="stroke:#ffc24b" />
+          <path id="r-p2" style="stroke:#ffc24b" />
+          <path id="r-repr" style="stroke:#ffc24b" />
+          <path id="r-call" style="stroke:#8fd3ff" />
+          <path id="r-r9" style="stroke:#7cf0b5" />
+          <path id="rail2" style="stroke:#7cf0b5" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.488, 0.813, 1.126, 1.556, 1.892, 2.136, 2.612, 2.972, 3.239, 4.098, 4.47, 5.515, 5.712, 5.828, 6.188, 6.467, 6.653, 6.885, 7.999, 8.22, 8.591, 9.369, 9.59, 9.694, 10.019, 10.681, 11.54, 11.784, 12.156, 12.283, 12.492, 12.806, 13.131, 13.282, 14.002, 14.211, 14.338, 14.919, 15.244, 15.697, 16.776, 17.252, 17.496, 17.786, 18.03, 18.25, 18.436, 18.564, 18.808, 18.994, 20.073, 20.387, 20.712, 20.898, 21.118, 21.281, 21.699, 22.546, 22.906, 23.22, 23.591, 24.241, 24.543, 25.333, 26.076, 26.459, 26.83, 27.237, 27.364, 27.678, 27.852, 27.956, 28.804, 28.978, 29.199, 29.419, 29.524, 30.313, 30.638, 30.952, 31.103, 31.393, 31.823, 32.136, 32.391, 33.123, 33.576, 33.994, 34.516, 34.899, 35.77, 36.037, 36.316, 36.455, 36.745, 37.535, 37.72, 37.86, 37.987, 38.475, 38.696, 38.823, 39.044, 39.543, 40.6, 40.762, 40.983, 41.331, 41.633, 41.923, 42.086, 42.19, 42.655, 43.409, 44.06, 44.524, 44.721, 44.93, 46.3, 46.556, 46.649, 46.869, 47.066, 47.229, 47.682, 47.914, 48.344, 48.471, 49.284, 49.76, 50.167, 50.643, 51.734, 52.013, 52.117, 52.419, 53.185, 53.58, 53.87, 54.033, 54.927, 55.298, 55.751, 56.03, 56.982, 57.493, 57.783, 57.957, 58.154, 58.305, 58.758, 59.35, 59.606];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, 16.8 px per char, row centre y = 96 + top + 24
+      const CW = 16.8;
+      const tok = (id, text, sub, top, pad) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * CW, 96 + top + 24, (sub.length * CW) / 2 + (pad || 18), 31);
+      };
+      tok("r-p1", "print(soup)", "print(soup)", 756);
+      tok("r-p1b", "print(soup)", "print(soup)", 756);
+      tok("r-p2", "print(menu)", "print(menu)", 804);
+      tok("r-init", "    def __init__(self, name, protein):", "__init__", 132);
+      tok("r-str", "    def __str__(self):", "__str__", 324);
+      const L6 = '        return f"{self.name} ({self.protein} g protein)"';
+      tok("r-sn", L6, "self.name", 372, 10);
+      tok("r-sp", L6, "self.protein", 372, 10);
+      tok("r-repr", "    def __repr__(self):", "__repr__", 468);
+      tok("r-call", 'soup = Dish("lentil soup", 18)', 'Dish("lentil soup", 18)', 612, 20);
+      const L9 = `        return f"Dish('{self.name}', {self.protein})"`;
+      tok("r-r9", L9, `f"Dish('{self.name}', {self.protein})"`, 516, 22);
+      // card text: x 1274, line i centre y = 250 + 104 + 48 i + 24 (card at rest)
+      ring("r-obj", 1274 + 15.5 * CW, 378, 11 * CW / 2 + 14, 27);
+      path("r-addr", ringD(1274 + 8.5 * CW, 426, 11 * CW / 2 + 16, 30));
+      // rails in the left gutter: from a print line up to the method it calls
+      const head = (x, y) => ` M${x - 14} ${y - 12} L${x} ${y} L${x - 14} ${y + 12}`;
+      path("rail1", "M128 876 H112 V444 H190" + head(190, 444));
+      path("rail2", "M128 924 H108 V588 H190" + head(190, 588));
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const blink = (at) => tl.fromTo("#pr-led > i", { opacity: 0 }, { opacity: 1, duration: 0.12, yoyo: true, repeat: 3, immediateRender: false }, at);
+      const printOut = (at, d) => { blink(at); tl.to("#card", { y: 0, duration: d || 0.9, ease: "power1.inOut" }, at + 0.15); };
+      const pullIn = (at, d) => tl.to("#card", { y: -470, duration: d || 0.4, ease: "power2.in" }, at);
+      const badge = (g, kind, at) => pop(`${g} .bd.${kind}`, at, { from: 0.3 });
+
+      tl.set("#card", { y: -470 }, 0);
+      tl.set("#s-cursor", { x: 700, y: 1000 }, 0);
+
+      /* ---- 1. Kitchen Coach prints today's menu for Ana, Ben and Chloe. Print soup. ---- */
+      pop("#gu-a", t(6) - 0.1, { from: 0.7 });
+      pop("#gu-b", t(7) - 0.1, { from: 0.7 });
+      pop("#gu-c", t(9) - 0.1, { from: 0.7 });
+      out("#intro", t(10) - 0.35, 0.25);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, t(10) - 0.15);
+      draw("r-p1", t(11) - 0.05, 0.4);
+
+      /* ---- 2. The card comes out: <__main__.Dish object at 0x...> ---- */
+      printOut(t(12), 1.0);
+      out("#r-p1", t(19) - 0.2, 0.2);
+      draw("r-obj", t(20), 0.45);
+      out("#r-obj", t(25), 0.2);
+      draw("r-addr", t(26) - 0.1, 0.3);
+      pop("#n-mem", t(34) - 0.3, { from: 0.7 });
+      // the number is different on every run
+      out("#c-ugly .a0", t(37), 0.12); pop("#c-ugly .a1", t(37) + 0.08, { from: 0.5, d: 0.3 });
+      out("#c-ugly .a1", t(39), 0.12); pop("#c-ugly .a2", t(39) + 0.08, { from: 0.5, d: 0.3 });
+      bump("#c-ugly", t(40), 1.03);
+      badge("#gu-a", "q", t(45));
+      badge("#gu-b", "q", t(47));
+      badge("#gu-c", "q", t(49));
+
+      /* ---- 3. Teach it: a dunder method. Double underscore, like init. ---- */
+      out(["#r-addr", "#n-mem"], t(51) - 0.1, 0.2);
+      pullIn(t(51));
+      draw("r-init", t(58) - 0.1, 0.45);
+      pop("#n-dunder", t(60) - 0.1, { from: 0.7 });
+      bump("#r-init", t(63), 1.04);
+      out(["#r-init", "#n-dunder"], t(64) - 0.25, 0.2);
+      type("#L5", t(64), 22, 0.5);
+      draw("r-str", t(65) + 0.1, 0.4);
+      out("#r-str", t(67) - 0.1, 0.2);
+      type("#L6", t(67), 56, 0.9);
+      draw("r-sn", t(69), 0.35);
+      draw("r-sp", t(72) - 0.1, 0.35);
+
+      /* ---- 4. You never call it. Print calls it for you. ---- */
+      out(["#r-sn", "#r-sp"], t(73), 0.2);
+      cursorIn(t(73));
+      cursorTo(280, 420, t(73), 0.5);
+      bump("#L5", t(75), 1.04);
+      cursorTo(260, 860, t(78) - 0.3, 0.45);
+      cursorOut(t(78) + 0.3);
+      draw("rail1", t(78), 0.7);
+      pop("#n-calls", t(79), { from: 0.7 });
+
+      /* ---- 5. Print soup again: lentil soup (18 g protein) ---- */
+      draw("r-p1b", t(83), 0.35);
+      tl.set("#c-ugly", { opacity: 0 }, t(83));
+      tl.set("#c-str", { opacity: 1 }, t(83));
+      printOut(t(83) + 0.2, 0.8);
+      out(["#gu-a .bd.q", "#gu-b .bd.q", "#gu-c .bd.q"], t(87), 0.15);
+      badge("#gu-a", "k", t(88));
+      badge("#gu-b", "k", t(89));
+      badge("#gu-c", "k", t(90));
+
+      /* ---- 6. Print the whole menu: a list, ugly again ---- */
+      out(["#rail1", "#n-calls", "#r-p1b"], t(91) - 0.1, 0.2);
+      pullIn(t(91));
+      type("#L13", t(93) - 0.1, 20, 0.4);
+      type("#L15", t(95) - 0.1, 11, 0.3);
+      draw("r-p2", t(95) + 0.3, 0.35);
+      tl.set("#c-str", { opacity: 0 }, t(95));
+      tl.set("#c-lbad", { opacity: 1 }, t(95));
+      printOut(t(96), 0.9);
+      out(["#gu-a .bd.k", "#gu-b .bd.k", "#gu-c .bd.k"], t(103) - 0.1, 0.15);
+      badge("#gu-a", "q", t(103));
+      badge("#gu-b", "q", t(103) + 0.15);
+      badge("#gu-c", "q", t(103) + 0.3);
+      bump("#c-lbad", t(104), 1.03);
+
+      /* ---- 7. A list uses a different dunder: __repr__, for programmers ---- */
+      out("#r-p2", t(106), 0.2);
+      pop("#n-list", t(113) - 0.1, { from: 0.7 });
+      type("#L8", t(114), 23, 0.5);
+      draw("r-repr", t(115), 0.4);
+      pop("#n-prog", t(118) - 0.1, { from: 0.7 });
+
+      /* ---- 8. Make it look like the code that builds the dish ---- */
+      out("#r-repr", t(119), 0.2);
+      draw("r-call", t(124), 0.45);
+      type("#L9", t(126), 53, 0.9);
+      out(["#r-call", "#n-prog"], t(129) - 0.2, 0.2);
+      draw("r-r9", t(129), 0.45);
+      pop("#n-res", t(130), { from: 0.7 });
+
+      /* ---- 9. Print the menu again: every dish is readable ---- */
+      out(["#r-r9", "#n-list"], t(133) - 0.1, 0.2);
+      draw("rail2", t(133), 0.6);
+      pop("#n-calls2", t(133) + 0.4, { from: 0.7 });
+      pullIn(t(133) + 0.05, 0.3);
+      tl.set("#c-lbad", { opacity: 0 }, t(133) + 0.4);
+      tl.set("#c-lgood", { opacity: 1 }, t(133) + 0.4);
+      printOut(t(133) + 0.4, 0.8);
+      out(["#gu-a .bd.q", "#gu-b .bd.q", "#gu-c .bd.q"], t(137) - 0.1, 0.15);
+      badge("#gu-a", "k", t(137));
+      badge("#gu-b", "k", t(138));
+      badge("#gu-c", "k", t(140));
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 55.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

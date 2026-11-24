@@ -1,0 +1,13 @@
+Tonight, Kitchen Coach has 4 dishes. Ben lifts weights, so he wants them lined up by protein.
+
+But sorted can't compare two whole dishes. So you hand it a recipe card. Take a dish, give back its protein. Key equals protein of, with no brackets. You pass the card itself, and sorted uses it on every dish.
+
+But that card is used just once. A whole def, with a name, for one sort.
+
+So write it on a sticky note instead. Lambda d, colon, d protein. No name. One line. And the answer comes back by itself.
+
+Stick the note on sorted. It weighs each dish. 18. 24. 22. 15. Then it lines them up. Bean chili first. Tofu stir fry last.
+
+Careful. If you leave out the lambda, Python reads d protein right away. There is no d yet. Name error.
+
+A lambda is a one-line recipe with no name. Use it where a function is needed just once.

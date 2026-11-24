@@ -1,0 +1,280 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* the whiteboard */
+    #board { left: 56px; top: 40px; width: 1808px; height: 990px; border-radius: 26px; background: #fff; }
+    #title { left: 120px; top: 78px; font: 700 60px/80px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #title-ul { left: 124px; top: 160px; width: 560px; height: 8px; border-radius: 4px; background: #3b37e6; transform-origin: 0 50%; }
+    .step { left: 1180px; top: 88px; height: 64px; padding: 0 28px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 800 32px/64px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .step b { color: #c9c6ff; margin-right: 10px; }
+
+    /* friend cards */
+    .card { top: 220px; width: 500px; height: 300px; border-radius: 22px; background: #fff; overflow: hidden; opacity: 0; }
+    .card .hd { position: absolute; left: 0; top: 0; width: 500px; height: 84px; color: #fff; font: 700 48px/84px "Fraunces", serif; text-align: center; }
+    .card .l { position: absolute; left: 36px; font: 800 36px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .card .l.dim { color: #3e3b52; }
+
+    /* must-do list */
+    #must { left: 140px; top: 580px; width: 1640px; height: 380px; border-radius: 22px; background: #fbf8f4; opacity: 0; }
+    #must-h { left: 186px; top: 606px; font: 700 44px/60px "Fraunces", serif; opacity: 0; }
+    .row { left: 190px; height: 60px; font: 800 38px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .row i { display: inline-block; width: 44px; height: 44px; margin: 8px 24px 0 0; vertical-align: top; border-radius: 10px; box-shadow: inset 0 0 0 5px #0e0c1d; background: #fff; position: relative; }
+    .tick { width: 50px; height: 50px; opacity: 0; }
+
+    /* data boxes */
+    .data { top: 300px; width: 440px; height: 340px; border-radius: 22px; background: #fff; overflow: hidden; opacity: 0; }
+    .data .bar { position: absolute; left: 0; top: 0; width: 18px; height: 340px; }
+    .data .nm { position: absolute; left: 0; right: 0; top: 40px; text-align: center; font: 700 56px/70px "Fraunces", serif; }
+    .data .fl { position: absolute; left: 0; right: 0; top: 124px; text-align: center; font: 600 30px/40px "JetBrains Mono", monospace; color: #3e3b52; }
+    .data .sh { position: absolute; left: 50px; right: 30px; top: 206px; height: 84px; border-radius: 14px; background: #ece7df; text-align: center; font: 700 34px/84px "JetBrains Mono", monospace; }
+    #data-n { left: 760px; top: 700px; font: 800 36px/50px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; opacity: 0; }
+
+    /* small data column + module boxes */
+    .file { left: 110px; width: 270px; height: 64px; border-radius: 14px; background: #ece7df; font: 700 28px/64px "JetBrains Mono", monospace; text-align: center; opacity: 0; box-shadow: inset 0 0 0 4px #0e0c1d; }
+    .mod { top: 300px; width: 250px; height: 200px; border-radius: 20px; background: #fff; overflow: hidden; opacity: 0; }
+    .mod .bar { position: absolute; left: 0; top: 0; width: 250px; height: 16px; }
+    .mod .nm { position: absolute; left: 0; right: 0; top: 46px; text-align: center; font: 700 34px/44px "JetBrains Mono", monospace; }
+    .mod .jb { position: absolute; left: 0; right: 0; top: 108px; text-align: center; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; }
+    .stub { height: 48px; padding: 0 18px; border-radius: 999px; background: #ece7df; color: #3e3b52; box-shadow: 0 0 0 3px #6f6b80; font: 700 28px/48px "JetBrains Mono", monospace; opacity: 0; }
+    .grow { height: 52px; padding: 0 20px; border-radius: 999px; background: #ddefe6; color: #17604a; box-shadow: 0 0 0 4px #1f7a5c; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .dot { width: 34px; height: 34px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #1f7a5c; opacity: 0; }
+    .dot.on { background: #1f7a5c; }
+    .say { height: 62px; padding: 0 26px; border-radius: 999px; background: #1f7a5c; color: #fff; font: 800 34px/62px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+
+    /* printed plan */
+    #out { left: 1000px; top: 660px; width: 780px; height: 300px; border-radius: 22px; background: #15132b; opacity: 0; }
+    .ol { left: 1040px; font: 500 36px/56px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ol .p { color: #9a96b8; }
+    .ol .s { color: #ffc24b; }
+    #silly { left: 700px; top: 780px; height: 82px; padding: 0 30px; border-radius: 16px; border: 7px solid #b8235a; background: #fbe0ea; color: #b8235a; font: 700 52px/68px "Fraunces", serif; transform: rotate(-6deg); opacity: 0; }
+    #runs { left: 140px; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path.ring { fill: none; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+    #cursor { left: 0; top: 0; width: 56px; height: 70px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.5" data-track-index="1">
+      <div id="board" class="s-abs s-ol"></div>
+      <div id="title" class="s-abs">Kitchen Coach: the plan</div>
+      <div id="title-ul" class="s-abs"></div>
+      <div id="st1" class="s-abs step"><b>1</b>Who is it for?</div>
+      <div id="st2" class="s-abs step"><b>2</b>What must it do?</div>
+      <div id="st3" class="s-abs step"><b>3</b>What data?</div>
+      <div id="st4" class="s-abs step"><b>4</b>Which pieces?</div>
+      <div id="st5" class="s-abs step"><b>5</b>Smallest version that runs</div>
+
+      <!-- 1. the friends -->
+      <div id="c-ana" class="s-abs card s-ol" style="left:140px">
+        <div class="hd" style="background:#3b37e6">Ana</div>
+        <div id="ana1" class="l dim" style="top:120px">runs half-marathons</div>
+        <div id="ana2" class="l" style="top:186px">2600 kcal a day</div>
+      </div>
+      <div id="c-ben" class="s-abs card s-ol" style="left:710px">
+        <div class="hd" style="background:#1f7a5c">Ben</div>
+        <div id="ben1" class="l" style="top:120px">140 g protein</div>
+        <div id="ben2" class="l" style="top:186px;color:#1f7a5c">no meat</div>
+      </div>
+      <div id="c-chl" class="s-abs card s-ol" style="left:1280px">
+        <div class="hd" style="background:#b8235a">Chloe</div>
+        <div id="chl1" class="l dim" style="top:120px">loves dessert</div>
+        <div id="chl2" class="l" style="top:186px;color:#b8235a">no gluten</div>
+      </div>
+
+      <!-- 2. what it must do -->
+      <div id="must" class="s-abs s-ol"></div>
+      <div id="must-h" class="s-abs">What it must do</div>
+      <div id="m1" class="s-abs row" style="top:690px"><i></i>read the data</div>
+      <div id="m2" class="s-abs row" style="top:756px"><i></i>plan 3 meals for each friend</div>
+      <div id="m3" class="s-abs row" style="top:822px"><i></i>take the food from the pantry</div>
+      <div id="m4" class="s-abs row" style="top:888px"><i></i>print the plan</div>
+      <svg id="k1" class="s-abs tick" style="left:186px;top:686px" viewBox="0 0 50 50"><path d="M8 26 L20 38 L44 10" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg id="k2" class="s-abs tick" style="left:186px;top:752px" viewBox="0 0 50 50"><path d="M8 26 L20 38 L44 10" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg id="k3" class="s-abs tick" style="left:186px;top:818px" viewBox="0 0 50 50"><path d="M8 26 L20 38 L44 10" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg id="k4" class="s-abs tick" style="left:186px;top:884px" viewBox="0 0 50 50"><path d="M8 26 L20 38 L44 10" fill="none" stroke="#1f7a5c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+      <!-- 3. the data -->
+      <div id="d-g" class="s-abs data s-ol" style="left:170px"><div class="bar" style="background:#3b37e6"></div><div class="nm">Guests</div><div class="fl">guests.json</div><div class="sh">list of dicts</div></div>
+      <div id="d-r" class="s-abs data s-ol" style="left:740px"><div class="bar" style="background:#b9741a"></div><div class="nm">Recipes</div><div class="fl">recipes.json</div><div class="sh">list of dicts</div></div>
+      <div id="d-p" class="s-abs data s-ol" style="left:1310px"><div class="bar" style="background:#1f7a5c"></div><div class="nm">Pantry</div><div class="fl">pantry.json</div><div class="sh">name → grams</div></div>
+      <div id="data-n" class="s-abs">3 guests · 7 recipes · 13 things</div>
+
+      <!-- 4. the pieces -->
+      <div id="f1" class="s-abs file" style="top:300px">guests.json</div>
+      <div id="f2" class="s-abs file" style="top:368px">recipes.json</div>
+      <div id="f3" class="s-abs file" style="top:436px">pantry.json</div>
+      <div id="mo-m" class="s-abs mod s-ol" style="left:440px"><div class="bar" style="background:#3b37e6"></div><div class="nm">models</div><div class="jb">the shapes</div></div>
+      <div id="mo-p" class="s-abs mod s-ol" style="left:780px"><div class="bar" style="background:#1f7a5c"></div><div class="nm">pantry</div><div class="jb">the food</div></div>
+      <div id="mo-l" class="s-abs mod s-ol" style="left:1120px"><div class="bar" style="background:#b9741a"></div><div class="nm">planner</div><div class="jb">picks meals</div></div>
+      <div id="mo-c" class="s-abs mod s-ol" style="left:1460px"><div class="bar" style="background:#0e0c1d"></div><div class="nm">cli</div><div class="jb">runs the day</div></div>
+      <div id="sb1" class="s-abs stub" style="left:500px;top:526px">stub</div>
+      <div id="sb2" class="s-abs stub" style="left:840px;top:526px">stub</div>
+      <div id="sb3" class="s-abs stub" style="left:1180px;top:526px">stub</div>
+      <div id="sb4" class="s-abs stub" style="left:1520px;top:526px">stub</div>
+      <div id="g1" class="s-abs grow" style="left:476px;top:222px">lesson 104</div>
+      <div id="g2" class="s-abs grow" style="left:816px;top:222px">lesson 105</div>
+      <div id="g3" class="s-abs grow" style="left:1156px;top:222px">lesson 106</div>
+      <div id="g4" class="s-abs grow" style="left:1496px;top:222px">lesson 107</div>
+      <div id="sk" class="s-abs say" style="left:140px;top:670px">walking skeleton</div>
+
+      <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+        <g id="wires" opacity="0" stroke="#0e0c1d" stroke-width="6" stroke-linecap="round" fill="#0e0c1d">
+          <line x1="386" y1="400" x2="420" y2="400"/><path d="M432 400 L414 388 L414 412 Z"/>
+          <line x1="696" y1="400" x2="760" y2="400"/><path d="M772 400 L754 388 L754 412 Z"/>
+          <line x1="1036" y1="400" x2="1100" y2="400"/><path d="M1112 400 L1094 388 L1094 412 Z"/>
+          <line x1="1376" y1="400" x2="1440" y2="400"/><path d="M1452 400 L1434 388 L1434 412 Z"/>
+        </g>
+        <path id="spine" d="M245 620 L1585 620 L1585 650" fill="none" stroke="#1f7a5c" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div id="dt0" class="s-abs dot" style="left:228px;top:603px"></div>
+      <div id="dt1" class="s-abs dot" style="left:548px;top:603px"></div>
+      <div id="dt2" class="s-abs dot" style="left:888px;top:603px"></div>
+      <div id="dt3" class="s-abs dot" style="left:1228px;top:603px"></div>
+      <div id="dt4" class="s-abs dot" style="left:1568px;top:603px"></div>
+      <div id="dn0" class="s-abs dot on" style="left:228px;top:603px"></div>
+      <div id="dn1" class="s-abs dot on" style="left:548px;top:603px"></div>
+      <div id="dn2" class="s-abs dot on" style="left:888px;top:603px"></div>
+      <div id="dn3" class="s-abs dot on" style="left:1228px;top:603px"></div>
+      <div id="dn4" class="s-abs dot on" style="left:1568px;top:603px"></div>
+
+      <div id="out" class="s-abs s-ol"></div>
+      <div id="o0" class="s-abs ol" style="top:690px"><span class="p">$ </span>kitchen-coach</div>
+      <div id="o1" class="s-abs ol" style="top:750px">Ana:   <span class="s">lentil soup</span></div>
+      <div id="o2" class="s-abs ol" style="top:806px">Ben:   <span class="s">lentil soup</span></div>
+      <div id="o3" class="s-abs ol" style="top:862px">Chloe: <span class="s">lentil soup</span></div>
+      <div id="silly" class="s-abs">silly!</div>
+      <div id="runs" class="s-abs say" style="top:890px">it runs, end to end</div>
+
+      <svg id="s-rings" class="s-abs" style="left:0;top:0;width:1920px;height:1080px;overflow:visible" viewBox="0 0 1920 1080"></svg>
+      <svg id="cursor" class="s-abs" viewBox="0 0 56 70"><path d="M6 4 L6 56 L19 44 L28 64 L37 60 L28 41 L46 41 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const W = [0.0, 0.406, 0.534, 0.801, 1.184, 1.672, 2.055, 3.077, 3.274, 3.367, 4.458, 4.911, 5.12, 5.259, 5.399, 5.956, 6.339, 7.314, 7.512, 7.79, 8.034, 8.475, 8.777, 9.102, 9.567, 9.683, 10.565, 10.879, 11.192, 11.378, 11.68, 11.819, 12.156, 12.504, 12.655, 13.549, 13.978, 14.28, 15.337, 15.708, 16.01, 16.405, 16.684, 16.974, 17.996, 18.356, 18.599, 18.832, 18.971, 19.772, 20.085, 20.225, 20.945, 21.339, 21.711, 22.117, 22.338, 22.674, 23.243, 23.545, 23.661, 23.928, 24.103, 24.219, 24.88, 25.217, 25.333, 26.262, 26.842, 27.017, 27.702, 28.05, 28.781, 29.478, 30.244, 30.523, 30.639, 31.579, 31.951, 32.113, 32.845, 33.205, 33.472, 33.808, 34.795, 35.318, 35.736, 35.863, 36.548, 37.071, 37.361, 37.686, 37.814, 38.441, 38.847, 39.161, 39.288, 40.031, 40.217, 40.322, 40.705, 40.995, 41.378, 41.541, 42.446, 42.76, 43.05, 43.201, 43.747, 44.118, 44.304, 44.977, 45.233, 45.732, 46.823, 47.195, 47.497, 47.775, 48.286, 49.075, 49.296, 49.575, 49.946, 50.295, 50.562, 50.747, 50.875, 51.084, 51.919, 52.546, 53.104, 54.195, 54.381, 54.694, 55.101, 55.391, 56.18, 56.703, 57.039, 57.225, 57.69, 57.887, 58.061, 58.723, 59.048, 60.255, 60.615, 60.964, 61.312, 61.591, 61.892, 62.009, 62.113, 62.984];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      // hand-drawn rings and the skeleton line: dash from getTotalLength
+      const rings = document.getElementById("s-rings");
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 8} ${cy + 6} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 4} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 4} ${cy + ry + 4} ${cx - rx} ${cy - 10}`;
+      const mkRing = (id, d, color) => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.id = id; p.setAttribute("class", "ring"); p.setAttribute("d", d);
+        p.style.stroke = color; p.style.fill = "none"; p.style.strokeWidth = 7; p.style.strokeLinecap = "round";
+        rings.appendChild(p);
+        const L = p.getTotalLength();
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+        return L;
+      };
+      const draw = (id, at, d) => tl.fromTo("#" + id, { strokeDashoffset: document.getElementById(id).getTotalLength() }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      mkRing("r-kcal", ringD(320, 431, 160, 38), "#3b37e6");
+      mkRing("r-prot", ringD(866, 365, 146, 38), "#1f7a5c");
+      mkRing("r-meat", ringD(810, 431, 92, 36), "#1f7a5c");
+      mkRing("r-glut", ringD(1394, 431, 108, 36), "#b8235a");
+      mkRing("r-soup", ringD(1300, 834, 180, 120), "#b8235a");
+      const spine = document.getElementById("spine");
+      const SL = spine.getTotalLength();
+      spine.style.strokeDasharray = SL; spine.style.strokeDashoffset = SL;
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.7 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const rise = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power2.in" }, at);
+      const move = (x, y, at, d) => tl.to("#cursor", { x: x, y: y, duration: d || 0.5, ease: "power2.inOut" }, at);
+      const step = (n, at) => { if (n > 1) out("#st" + (n - 1), at - 0.2, 0.2); pop("#st" + n, at); };
+
+      // start: the board, the title, the cursor
+      tl.set("#cursor", { x: 760, y: 130 }, 0);
+      tl.fromTo("#title-ul", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, t(5));
+
+      // 1. who is it for
+      step(1, t(10));
+      move(380, 300, t(15) - 0.5);
+      rise("#c-ana", t(15)); show("#ana1", t(16));
+      show("#ana2", t(19)); draw("r-kcal", t(20));
+      move(950, 300, t(26) - 0.5);
+      rise("#c-ben", t(26)); show("#ben1", t(29)); draw("r-prot", t(32));
+      show("#ben2", t(36)); draw("r-meat", t(37));
+      move(1520, 300, t(38) - 0.5);
+      rise("#c-chl", t(38)); show("#chl1", t(39));
+      show("#chl2", t(42)); draw("r-glut", t(43));
+
+      // 2. what it must do
+      step(2, t(44));
+      rise("#must", t(45)); show("#must-h", t(45) + 0.1);
+      move(220, 730, t(49) - 0.5);
+      show("#m1", t(49)); pop("#k1", t(49) + 0.3);
+      move(220, 796, t(52) - 0.4);
+      show("#m2", t(52)); pop("#k2", t(53));
+      move(220, 862, t(58) - 0.4);
+      show("#m3", t(58)); pop("#k3", t(59));
+      move(220, 928, t(64) - 0.4);
+      show("#m4", t(64)); pop("#k4", t(65));
+
+      // 3. the data: clear the board, three boxes
+      const page1 = "#c-ana, #c-ben, #c-chl, #must, #must-h, #m1, #m2, #m3, #m4, #k1, #k2, #k3, #k4, #r-kcal, #r-prot, #r-meat, #r-glut";
+      out(page1, t(70) - 0.4, 0.4);
+      step(3, t(67));
+      move(960, 820, t(67) + 0.2);
+      rise("#d-g", t(70)); rise("#d-r", t(70) + 0.15); rise("#d-p", t(70) + 0.3);
+      const pulse = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.07, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, at);
+      pulse("#d-g", t(72)); pulse("#d-r", t(73)); pulse("#d-p", t(76));
+      move(390, 662, t(72) - 0.4, 0.4); move(960, 662, t(73) - 0.3, 0.4); move(1530, 662, t(76) - 0.4, 0.4);
+      show("#data-n", t(76) + 0.8);
+
+      // 4. the pieces: data becomes three files, four modules with one job each
+      out("#d-g, #d-r, #d-p, #data-n", t(77) - 0.1, 0.35);
+      step(4, t(77));
+      show("#f1", t(79)); show("#f2", t(79) + 0.12); show("#f3", t(79) + 0.24);
+      move(560, 470, t(84) - 0.5);
+      rise("#mo-m", t(84));
+      move(900, 470, t(88) - 0.5);
+      rise("#mo-p", t(88));
+      move(1240, 470, t(93) - 0.5);
+      rise("#mo-l", t(93));
+      move(1580, 470, t(99) - 0.5);
+      rise("#mo-c", t(99));
+      show("#wires", t(101), 0.5);
+
+      // 5. walking skeleton
+      step(5, t(104));
+      out("#cursor", t(104), 0.3);
+      tl.set("#cursor", { x: 1620, y: 960 }, t(104) + 0.4);
+      pop("#sk", t(112));
+      pop("#sb1", t(116)); pop("#sb2", t(116) + 0.15); pop("#sb3", t(116) + 0.3); pop("#sb4", t(116) + 0.45);
+      show("#dt0, #dt1, #dt2, #dt3, #dt4", t(120), 0.3);
+      tl.fromTo("#spine", { strokeDashoffset: SL }, { strokeDashoffset: 0, duration: 1.9, ease: "power1.inOut", immediateRender: false }, t(121));
+      pop("#dn0", t(128)); pop("#dn1", t(128) + 0.15); pop("#dn2", t(128) + 0.3);
+      pop("#dn3", t(129));
+      pop("#dn4", t(130));
+      rise("#out", t(130)); show("#o0", t(130) + 0.2);
+
+      // the first plan is silly
+      show("#o1", t(133)); show("#o2", t(133) + 0.3); show("#o3", t(133) + 0.6);
+      pop("#silly", t(135));
+      show("#cursor", t(136) - 0.7, 0.25);
+      move(1470, 900, t(136) - 0.4);
+      draw("r-soup", t(136), 0.6);
+      out("#sb1, #sb2, #sb3, #sb4", t(143), 0.3);
+      pop("#runs", t(143));
+      move(1700, 160, t(145) - 0.3, 0.6);
+
+      // grow it, one piece at a time
+      pop("#g1", t(148)); pop("#g2", t(149)); pop("#g3", t(150)); pop("#g4", t(152));
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

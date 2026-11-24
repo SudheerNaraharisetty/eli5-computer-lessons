@@ -1,0 +1,15 @@
+Before you write Kitchen Coach, plan it. On a whiteboard.
+
+First, who is it for? Ana runs. She needs two thousand six hundred calories a day. Ben wants one hundred and forty grams of protein, and no meat. Chloe needs food with no gluten.
+
+So what must it do? Read the data. Plan three meals for each friend. Take the food from the pantry. Print the plan.
+
+Next, the data. Three boxes. Guests. Recipes. And the pantry.
+
+Then the pieces, each with one job. Models holds the shapes. Pantry looks after the food. Planner picks the meals. And the command line runs the day.
+
+Now build the smallest version that runs. A walking skeleton. Every piece does almost nothing, but one thin line goes all the way through. Read, plan, print.
+
+The first plan is silly. Lentil soup for everyone. That is fine. It runs. Now grow it, one piece at a time.
+
+Plan the shape first. Then make the smallest version that runs.

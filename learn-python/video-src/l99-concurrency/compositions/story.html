@@ -1,0 +1,440 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    /* code panel: rows of 44 px from page y 172, code text at page x 176 (16.8 px per char) */
+    #p-code { position: absolute; left: 96px; top: 96px; width: 760px; height: 540px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar3 { position: absolute; left: 0; top: 0; width: 760px; height: 60px; background: #211e40; }
+    .bar3 > i { position: absolute; top: 21px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar3 > i:nth-child(2) { background: #ffc24b; }
+    .bar3 > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 10px; font: 700 28px/40px "JetBrains Mono", monospace; color: #c9c6ff; opacity: 0; }
+    .ln { position: absolute; left: 80px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a5c9; }
+
+    /* terminal under the code */
+    #p-term { position: absolute; left: 96px; top: 690px; width: 760px; height: 294px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .tl { position: absolute; left: 36px; font: 500 28px/44px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .tl .p { color: #9a96b8; }
+    .tl.g { color: #7cf0b5; }
+    .tl.r { color: #ff6b8b; }
+    .tl.dim { color: #b3afd6; }
+
+    /* the stage on the right */
+    .pill { height: 66px; padding: 0 28px; border-radius: 999px; font: 800 32px/66px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill code { font: 600 30px/66px "JetBrains Mono", monospace; }
+    .ink { background: #0e0c1d; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .blue { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .warn { background: #fbebd2; color: #8a5410; box-shadow: 0 0 0 4px #b9741a; }
+    .bad { background: #fbe0ea; color: #a01d4c; box-shadow: 0 0 0 4px #b8235a; }
+    .good { background: #ddefe6; color: #17604a; box-shadow: 0 0 0 4px #1f7a5c; }
+
+    .lane { left: 920px; width: 160px; font: 800 30px/64px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; opacity: 0; }
+    .bar { height: 64px; border-radius: 12px; font: 800 30px/64px "Manrope", sans-serif; text-align: center; white-space: nowrap; opacity: 0; }
+    .bar.wait { background: #fbebd2; color: #8a5410; box-shadow: inset 0 0 0 4px #b9741a; }
+    .bar.work { background: #3b37e6; color: #fff; box-shadow: inset 0 0 0 4px #0e0c1d; }
+    .slice { width: 40px; height: 64px; border-radius: 8px; background: #3b37e6; box-shadow: inset 0 0 0 3px #0e0c1d; opacity: 0; }
+    #axis { left: 1090px; top: 580px; width: 660px; height: 5px; background: #0e0c1d; opacity: 0; }
+    .tick { top: 594px; width: 80px; margin-left: -40px; text-align: center; font: 800 28px/36px "Manrope", sans-serif; color: #3e3b52; opacity: 0; }
+    .bowl { top: 190px; height: 52px; padding: 0 22px; border-radius: 999px; background: #fbebd2; color: #8a5410; box-shadow: 0 0 0 4px #b9741a; font: 800 28px/52px "Manrope", sans-serif; opacity: 0; }
+    #gil { left: 1772px; width: 100px; height: 52px; border-radius: 999px; background: #ffc24b; box-shadow: 0 0 0 4px #0e0c1d, 0 6px 0 4px #0e0c1d; font: 800 30px/52px "Manrope", sans-serif; text-align: center; opacity: 0; }
+    .kit { left: 904px; width: 900px; height: 92px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; opacity: 0; }
+    #kit-all { left: 904px; top: 238px; width: 900px; height: 324px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 4px #0e0c1d, 0 8px 0 4px #0e0c1d; opacity: 0; }
+    .own { left: 1520px; height: 52px; padding: 0 20px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 3px #3b37e6; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+
+    /* the whiteboard */
+    #wb { left: 1350px; top: 110px; width: 460px; height: 240px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; opacity: 0; }
+    #wb-lbl { position: absolute; left: 0; right: 0; top: 18px; text-align: center; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; }
+    .wbn { left: 1350px; top: 170px; width: 460px; text-align: center; font: 700 130px/150px "Fraunces", serif; opacity: 0; }
+    #wb7 { color: #1f7a5c; }
+    #lock { left: 1736px; top: 70px; width: 84px; height: 100px; opacity: 0; }
+    #tick7 { left: 1640px; top: 200px; width: 90px; height: 90px; opacity: 0; }
+    .chip { height: 64px; width: 170px; border-radius: 14px; text-align: center; font: 800 30px/64px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .chip.rd { background: #e6e3ff; color: #3b37e6; box-shadow: inset 0 0 0 4px #3b37e6; }
+    .chip.wr { background: #fff; color: #0e0c1d; box-shadow: inset 0 0 0 4px #0e0c1d; }
+    .chip.wr.bad { background: #fbe0ea; color: #a01d4c; box-shadow: inset 0 0 0 4px #b8235a; }
+    .chip.wr.ok { background: #ddefe6; color: #17604a; box-shadow: inset 0 0 0 4px #1f7a5c; }
+    .chip.wt { background: #f6f1eb; color: #6f6b80; box-shadow: inset 0 0 0 4px #6f6b80; }
+    .plus { width: 60px; height: 60px; border-radius: 50%; background: #3b37e6; color: #fff; font: 800 28px/60px "Manrope", sans-serif; text-align: center; opacity: 0; box-shadow: 0 0 0 3px #0e0c1d; }
+    #stamp { left: 1380px; top: 170px; width: 400px; height: 130px; border-radius: 18px; border: 8px solid #b8235a; color: #b8235a; font: 700 72px/114px "Fraunces", serif; text-align: center; opacity: 0; background: rgba(251, 224, 234, 0.92); }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.3" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="p-code" class="s-ol">
+          <div class="bar3"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i>
+            <span class="ttl" id="ttl-a">one_cook.py</span>
+            <span class="ttl" id="ttl-b">three_cooks.py</span>
+            <span class="ttl" id="ttl-c">bowls.py</span>
+            <span class="ttl" id="ttl-f">whiteboard.py</span>
+          </div>
+          <div id="lines"></div>
+        </div>
+
+        <div id="p-term" class="s-ol">
+          <div class="bar3"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl" style="opacity:1">terminal</span></div>
+          <div class="tl" id="oa0" style="top:84px"><span class="p">$ </span>python3 one_cook.py</div>
+          <div class="tl r" id="oa1" style="top:128px">one cook took 3.0 s</div>
+          <div class="tl" id="ob0" style="top:84px"><span class="p">$ </span>python3 three_cooks.py</div>
+          <div class="tl g" id="ob1" style="top:128px">three cooks took 1.0 s</div>
+          <div class="tl" id="oc0" style="top:84px"><span class="p">$ </span>python3 bowls.py</div>
+          <div class="tl" id="oc1" style="top:128px">one cook: 1.2 s</div>
+          <div class="tl r" id="oc2" style="top:172px">three threads: 1.2 s</div>
+          <div class="tl g" id="oc3" style="top:216px">three processes: 0.5 s</div>
+          <div class="tl" id="oe0" style="top:84px"><span class="p">$ </span>python3.14t bowls.py</div>
+          <div class="tl dim" id="oe1" style="top:128px"># the free-threaded build</div>
+          <div class="tl" id="of0" style="top:84px"><span class="p">$ </span>python3 whiteboard.py</div>
+          <div class="tl r" id="of1" style="top:128px">plates served: 10 | should be 30</div>
+          <div class="tl dim" id="of2" style="top:172px"># with the lock:</div>
+          <div class="tl g" id="of3" style="top:216px">plates served: 30 | should be 30</div>
+        </div>
+
+        <!-- headers -->
+        <div id="h-wait" class="s-abs pill warn" style="left:920px;top:110px">Waiting work: the oven</div>
+        <div id="h-work" class="s-abs pill blue" style="left:920px;top:110px">Heavy work: chopping</div>
+        <div id="h-proc" class="s-abs pill ink" style="left:920px;top:110px">Processes: 3 kitchens</div>
+        <div id="h-free" class="s-abs pill ink" style="left:920px;top:110px">Free-threaded build</div>
+        <div id="b-new" class="s-abs pill good" style="left:1366px;top:110px">official in 3.14</div>
+        <div id="h-race" class="s-abs pill ink" style="left:920px;top:110px">Two cooks, one board</div>
+
+        <!-- lanes -->
+        <div id="la1" class="s-abs lane" style="top:268px">cook</div>
+        <div id="lb1" class="s-abs lane" style="top:268px">cook 1</div>
+        <div id="lb2" class="s-abs lane" style="top:378px">cook 2</div>
+        <div id="lb3" class="s-abs lane" style="top:488px">cook 3</div>
+        <div id="kc1" class="s-abs kit" style="top:250px"></div>
+        <div id="kc2" class="s-abs kit" style="top:360px"></div>
+        <div id="kc3" class="s-abs kit" style="top:470px"></div>
+        <div id="kit-all" class="s-abs"></div>
+        <div id="lt1" class="s-abs lane" style="top:268px">thread 1</div>
+        <div id="lt2" class="s-abs lane" style="top:378px">thread 2</div>
+        <div id="lt3" class="s-abs lane" style="top:488px">thread 3</div>
+        <div id="lk1" class="s-abs lane" style="top:268px">kitchen 1</div>
+        <div id="lk2" class="s-abs lane" style="top:378px">kitchen 2</div>
+        <div id="lk3" class="s-abs lane" style="top:488px">kitchen 3</div>
+        <div id="own1" class="s-abs own" style="top:270px">own Python</div>
+        <div id="own2" class="s-abs own" style="top:380px">own Python</div>
+        <div id="own3" class="s-abs own" style="top:490px">own Python</div>
+
+        <!-- waiting bars: 220 px per second from x 1090 -->
+        <div id="w1" class="s-abs bar wait" style="left:1090px;top:268px;width:212px">pasta</div>
+        <div id="w2" class="s-abs bar wait" style="left:1310px;top:268px;width:212px">chili</div>
+        <div id="w3" class="s-abs bar wait" style="left:1530px;top:268px;width:212px">pudding</div>
+        <div id="axis" class="s-abs"></div>
+        <div class="s-abs tick" id="tk0" style="left:1090px">0 s</div>
+        <div class="s-abs tick" id="tk1" style="left:1310px">1 s</div>
+        <div class="s-abs tick" id="tk2" style="left:1530px">2 s</div>
+        <div class="s-abs tick" id="tk3" style="left:1750px">3 s</div>
+
+        <div id="r-3s" class="s-abs pill bad" style="left:920px;top:660px">1 cook: 3 seconds</div>
+        <div id="n-idle" class="s-abs pill warn" style="left:920px;top:760px">The cook just stands there</div>
+        <div id="r-1s" class="s-abs pill good" style="left:920px;top:760px">3 cooks: about 1 second</div>
+
+        <!-- heavy work -->
+        <div id="bw1" class="s-abs bowl" style="left:1090px">bowl 1</div>
+        <div id="bw2" class="s-abs bowl" style="left:1290px">bowl 2</div>
+        <div id="bw3" class="s-abs bowl" style="left:1490px">bowl 3</div>
+        <div id="slices"></div>
+        <div id="gil" class="s-abs" style="top:274px">GIL</div>
+        <div id="r-nofast" class="s-abs pill bad" style="left:920px;top:660px">3 threads: no faster</div>
+        <div id="p1" class="s-abs bar work" style="left:1090px;top:268px;width:212px">bowl 1</div>
+        <div id="p2" class="s-abs bar work" style="left:1090px;top:378px;width:212px">bowl 2</div>
+        <div id="p3" class="s-abs bar work" style="left:1090px;top:488px;width:212px">bowl 3</div>
+        <div id="r-proc" class="s-abs pill good" style="left:920px;top:660px">All 3 chop at the same time</div>
+        <div id="fb1" class="s-abs bar work" style="left:1090px;top:268px;width:212px">bowl 1</div>
+        <div id="fb2" class="s-abs bar work" style="left:1090px;top:378px;width:212px">bowl 2</div>
+        <div id="fb3" class="s-abs bar work" style="left:1090px;top:488px;width:212px">bowl 3</div>
+        <div id="r-free" class="s-abs pill good" style="left:920px;top:660px">No stick: threads chop together</div>
+
+        <!-- the whiteboard race -->
+        <div id="wb" class="s-abs"><div id="wb-lbl">plates served</div></div>
+        <div id="wb5" class="s-abs wbn" data-layout-allow-overlap>5</div>
+        <div id="wb6" class="s-abs wbn" data-layout-allow-overlap>6</div>
+        <div id="wb5b" class="s-abs wbn" data-layout-allow-overlap>5</div>
+        <div id="wb6b" class="s-abs wbn" data-layout-allow-overlap>6</div>
+        <div id="wb7" class="s-abs wbn" data-layout-allow-overlap>7</div>
+        <svg id="lock" class="s-abs" viewBox="0 0 84 100"><path d="M20 46 V30 a22 22 0 0 1 44 0 V46" fill="none" stroke="#0e0c1d" stroke-width="9"/><rect x="6" y="44" width="72" height="52" rx="10" fill="#ffc24b" stroke="#0e0c1d" stroke-width="6"/><circle cx="42" cy="68" r="7" fill="#0e0c1d"/></svg>
+        <svg id="tick7" class="s-abs" viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="#1f7a5c"/><path d="M26 46 L40 60 L66 32" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div id="lc1" class="s-abs lane" style="top:408px">cook 1</div>
+        <div id="lc2" class="s-abs lane" style="top:528px">cook 2</div>
+        <div id="c1r" class="s-abs chip rd" style="left:1090px;top:408px">read 5</div>
+        <div id="c2r" class="s-abs chip rd" style="left:1280px;top:528px">read 5</div>
+        <div id="c1p" class="s-abs plus" style="left:1236px;top:380px">+1</div>
+        <div id="c2p" class="s-abs plus" style="left:1426px;top:500px">+1</div>
+        <div id="c1w" class="s-abs chip wr bad" style="left:1470px;top:408px">write 6</div>
+        <div id="c2w" class="s-abs chip wr bad" style="left:1660px;top:528px">write 6</div>
+        <div id="n-two" class="s-abs pill bad" style="left:920px;top:660px">2 plates out, so it should be 7</div>
+        <div id="stamp" class="s-abs" data-layout-allow-overlap>WRONG</div>
+        <div id="d1r" class="s-abs chip rd" style="left:1090px;top:408px">read 5</div>
+        <div id="d1w" class="s-abs chip wr ok" style="left:1280px;top:408px">write 6</div>
+        <div id="d2t" class="s-abs chip wt" style="left:1090px;top:528px">waits</div>
+        <div id="d2r" class="s-abs chip rd" style="left:1470px;top:528px">read 6</div>
+        <div id="d2w" class="s-abs chip wr ok" style="left:1660px;top:528px">write 7</div>
+        <div id="n-one" class="s-abs pill good" style="left:920px;top:660px">Locked: one cook at a time</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080"></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.43, 1.324, 1.625, 1.8, 2.125, 2.368, 2.821, 2.914, 3.042, 3.843, 4.075, 4.342, 4.574, 4.807, 5.039, 5.352, 5.979, 6.339, 7.581, 7.814, 8.394, 8.696, 8.963, 9.88, 10.298, 10.704, 11.645, 11.865, 12.469, 12.666, 12.852, 13.886, 14.187, 14.466, 14.721, 15.499, 15.743, 16.138, 16.288, 16.614, 16.741, 17.055, 17.333, 18.436, 18.936, 19.319, 20.12, 20.573, 20.932, 21.2, 21.525, 21.664, 22.384, 22.674, 22.999, 23.916, 24.102, 24.218, 24.683, 25.031, 25.391, 25.878, 26.47, 26.83, 27.063, 28.189, 28.502, 28.63, 28.897, 29.245, 29.373, 29.594, 30.395, 30.65, 30.882, 31.428, 31.637, 31.753, 31.881, 32.078, 33.181, 33.936, 34.156, 34.516, 34.957, 35.933, 36.2, 36.362, 36.536, 36.734, 37.674, 37.964, 38.301, 38.545, 38.638, 38.754, 39.021, 39.787, 40.008, 40.135, 40.751, 41.262, 41.772, 42.399, 42.701, 43.154, 43.421, 43.688, 44.582, 44.93, 45.081, 45.453, 46.672, 46.916, 47.113, 47.903, 48.192, 48.575, 48.854, 48.97, 49.887, 50.224, 50.572, 51.373, 51.652, 51.931, 52.325, 52.569, 52.86, 53.15, 54.171, 54.45, 54.775, 55.042, 55.414, 55.634, 55.959, 56.296, 56.528, 57.794, 58.107, 58.235, 59.164, 59.454, 59.698, 59.814, 59.918, 60.917, 61.404, 61.683, 61.915, 62.914, 63.622, 63.831, 64.655, 64.922, 65.131, 65.456, 66.49, 66.873, 67.291, 67.616, 67.802];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- code lines ---- */
+      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const paint = (src) => {
+        const cut = src.indexOf("#");
+        const main = cut < 0 ? src : src.slice(0, cut);
+        const cmt = cut < 0 ? "" : '<span class="c">' + esc(src.slice(cut)) + "</span>";
+        return main.split(/(f?"[^"]*")/).map((seg, i) => i % 2
+          ? '<span class="m">' + esc(seg) + "</span>"
+          : esc(seg)
+            .replace(/\b(def|return|for|in|with|as)\b/g, '<span class="k">$1</span>')
+            .replace(/\b(cook|chop|ThreadPoolExecutor|ProcessPoolExecutor|range)\(/g, '<span class="f">$1</span>(')
+            .replace(/([^\w.])(\d+)\b/g, '$1<span class="m">$2</span>')).join("") + cmt;
+      };
+      const holder = document.getElementById("lines");
+      const addLine = (id, text, row) => {
+        const d = document.createElement("div");
+        d.className = "ln";
+        d.id = id;
+        d.style.top = 76 + row * 44 + "px";
+        d.innerHTML = paint(text);
+        holder.appendChild(d);
+      };
+      // one_cook.py
+      addLine("a0", "def cook(order):", 0);
+      addLine("a1", "    time.sleep(1)  # oven", 1);
+      addLine("a2", '    return f"{order} ready"', 2);
+      addLine("a4", "for order in orders:", 4);
+      addLine("a5", "    cook(order)", 5);
+      // three_cooks.py
+      addLine("b4", "with ThreadPoolExecutor(3) as pool:", 4);
+      addLine("b5", "    pool.map(cook, orders)", 5);
+      // bowls.py
+      addLine("c0", "def chop(cuts):", 0);
+      addLine("c1", "    done = 0", 1);
+      addLine("c2", "    for cut in range(cuts):", 2);
+      addLine("c3", "        done += 1", 3);
+      addLine("c4", "    return done", 4);
+      addLine("c6", "with ThreadPoolExecutor(3) as pool:", 6);
+      addLine("c7", "    pool.map(chop, bowls)", 7);
+      addLine("d6", "with ProcessPoolExecutor(3) as pool:", 6);
+      // whiteboard.py
+      addLine("f0", 'seen = board["served"]', 0);
+      addLine("f1", 'board["served"] = seen + 1', 1);
+      addLine("g0", "with lock:", 0);
+      addLine("g1", '    seen = board["served"]', 1);
+      addLine("g2", '    board["served"] = seen + 1', 2);
+
+      /* ---- the 15 time slices of three threads sharing one GIL ---- */
+      const sh = document.getElementById("slices");
+      for (let k = 0; k < 15; k++) {
+        const d = document.createElement("div");
+        d.className = "s-abs slice";
+        d.id = "sl" + k;
+        d.style.left = 1090 + k * 44 + "px";
+        d.style.top = 268 + (k % 3) * 110 + "px";
+        sh.appendChild(d);
+      }
+
+      /* ---- hand-drawn rings around code tokens (page x 176 + col * 16.8, row centre 194 + row * 44) ---- */
+      const marks = document.getElementById("s-marks");
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const mkRing = (id, d, color) => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.id = id;
+        p.style.stroke = color;
+        p.setAttribute("d", d);
+        marks.appendChild(p);
+        const L = p.getTotalLength();
+        p.dataset.len = L;
+        p.style.strokeDasharray = L;
+        p.style.strokeDashoffset = L;
+      };
+      const ring = (id, row, col, n, color) => mkRing(id, ringD(176 + (col + n / 2) * 16.8, 194 + row * 44, (n * 16.8) / 2 + 16, 27), color);
+      const Y = "#ffc24b", R = "#ff6b8b", G = "#4bd69b";
+      ring("r-sleep", 1, 4, 13, Y);
+      ring("r-tpe", 4, 5, 18, Y);
+      ring("r-done", 3, 8, 9, Y);
+      ring("r-ppe", 6, 5, 19, G);
+      ring("r-lock", 0, 0, 10, G);
+      mkRing("r-five", ringD(1580, 245, 90, 82), "#b8235a");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.08, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.03 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const fill = (sel, at, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.6, ease: "none", immediateRender: false }, at);
+
+      /* ---- frame 0: the first order is already on screen ---- */
+      tl.set(["#ttl-a", "#a0", "#a1", "#a2", "#a4", "#a5", "#h-wait", "#la1", "#axis", "#tk0", "#tk1", "#tk2", "#tk3"], { opacity: 1 }, 0);
+
+      /* ---- 1. one cook, three orders, waiting ---- */
+      draw("r-sleep", t(4), 0.45);
+      bump("#h-wait", t(9), 1.06);
+      type("#oa0", t(10), 20, 0.5);
+      fill("#w1", t(10), 0.7);
+      fill("#w2", t(10) + 0.72, 0.7);
+      fill("#w3", t(10) + 1.44, 0.7);
+      pop("#r-3s", t(17), { from: 0.7 });
+      show("#oa1", t(17), 0.2);
+
+      /* ---- 2. waiting is not working: three cooks (threads) ---- */
+      pop("#n-idle", t(20), { from: 0.7 });
+      out("#r-sleep", t(23), 0.3);
+      out("#la1", t(24) - 0.1, 0.2);
+      show("#lb1", t(24), 0.25);
+      pop(["#lb2", "#lb3"], t(25), { from: 0.7 });
+      // code: the for loop becomes a pool of three threads
+      out(["#a4", "#a5", "#ttl-a", "#oa0", "#oa1"], t(31) - 0.25, 0.2);
+      show(["#b4", "#b5", "#ttl-b"], t(31), 0.25);
+      draw("r-tpe", t(31) + 0.1, 0.45);
+      type("#ob0", t(31) + 0.2, 24, 0.5);
+      // all three wait together
+      out("#n-idle", t(32) - 0.1, 0.2);
+      tl.to(["#w1", "#w2", "#w3"], { clipPath: "inset(0% 100% 0% 0%)", duration: 0.25, ease: "power2.in" }, t(32));
+      tl.set("#w2", { x: -220, y: 110 }, t(32) + 0.3);
+      tl.set("#w3", { x: -440, y: 220 }, t(32) + 0.3);
+      fill(["#w1", "#w2", "#w3"], t(34), 1.0);
+      tl.to(["#tk2", "#tk3"], { opacity: 0.35, duration: 0.3 }, t(36));
+      pop("#r-1s", t(42), { from: 0.7 });
+      show("#ob1", t(42), 0.2);
+      bump("#ob1", t(43), 1.06);
+
+      /* ---- 3. heavy work: three threads, one talking stick ---- */
+      out(["#w1", "#w2", "#w3", "#r-3s", "#r-1s", "#tk0", "#tk1", "#tk2", "#tk3", "#h-wait", "#r-tpe"], t(44) - 0.1, 0.3);
+      out(["#a0", "#a1", "#a2", "#b4", "#b5", "#ttl-b", "#ob0", "#ob1"], t(44) - 0.1, 0.3);
+      pop("#h-work", t(45), { from: 0.7 });
+      show(["#c0", "#c1", "#c2", "#c3", "#c4", "#c6", "#c7", "#ttl-c"], t(45), 0.3);
+      pop("#bw1", t(47), { from: 0.6 });
+      pop("#bw2", t(48), { from: 0.6 });
+      pop("#bw3", t(49), { from: 0.6 });
+      draw("r-done", t(50), 0.45);
+      out(["#lb1", "#lb2", "#lb3"], t(53) - 0.2, 0.2);
+      show(["#lt1", "#lt2", "#lt3"], t(53), 0.25);
+      type("#oc0", t(53), 17, 0.45);
+      out("#r-done", t(56), 0.3);
+      tl.fromTo("#gil", { opacity: 0, scale: 0.4, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2)", immediateRender: false }, t(61));
+      bump("#gil", t(65), 1.2);
+      // only the cook holding the stick may chop: slices take turns, lane by lane
+      for (let k = 0; k < 15; k++) {
+        const at = t(66) + k * 0.21;
+        const lane = k % 3;
+        if (k > 0) tl.to("#gil", { y: lane * 110, duration: 0.12, ease: "power2.inOut" }, at - 0.12);
+        tl.fromTo("#sl" + k, { opacity: 0, scaleX: 0.2, transformOrigin: "0% 50%" }, { opacity: 1, scaleX: 1, duration: 0.16, ease: "power2.out", immediateRender: false }, at);
+      }
+      pop("#r-nofast", t(79), { from: 0.7 });
+      show("#oc1", t(79), 0.2);
+      show("#oc2", t(79) + 0.3, 0.2);
+
+      /* ---- 4. processes: three separate kitchens ---- */
+      const SL = Array.from({ length: 15 }, (_, k) => "#sl" + k);
+      out(SL.concat(["#axis", "#gil", "#r-nofast", "#h-work", "#lt1", "#lt2", "#lt3"]), t(81) - 0.1, 0.25);
+      pop("#h-proc", t(81) + 0.1, { from: 0.7 });
+      out("#c6", t(81), 0.2);
+      show("#d6", t(81) + 0.15, 0.25);
+      draw("r-ppe", t(81) + 0.3, 0.45);
+      pop("#kc1", t(85) - 0.3, { from: 0.85 });
+      pop("#kc2", t(85) - 0.15, { from: 0.85 });
+      pop("#kc3", t(85), { from: 0.85 });
+      show(["#lk1", "#lk2", "#lk3"], t(85), 0.25);
+      pop(["#own1", "#own2", "#own3"], t(89), { from: 0.6 });
+      fill(["#p1", "#p2", "#p3"], t(93), 1.0);
+      pop("#r-proc", t(97), { from: 0.7 });
+      show("#oc3", t(97), 0.2);
+      bump("#oc3", t(97) + 0.3, 1.06);
+
+      /* ---- 5. the free-threaded build takes the stick away ---- */
+      out("#r-proc", t(109) - 0.3, 0.25);
+      out(["#kc1", "#kc2", "#kc3", "#own1", "#own2", "#own3", "#p1", "#p2", "#p3", "#h-proc", "#lk1", "#lk2", "#lk3", "#r-ppe"], t(100) - 0.25, 0.25);
+      out("#d6", t(100) - 0.25, 0.25);
+      out(["#oc0", "#oc1", "#oc2", "#oc3"], t(104), 0.25);
+      pop("#h-free", t(100), { from: 0.7 });
+      pop("#kit-all", t(100) + 0.1, { from: 0.9 });
+      show(["#lt1", "#lt2", "#lt3", "#c6"], t(100) + 0.2, 0.25);
+      tl.set("#gil", { y: 110 }, t(100));
+      tl.fromTo("#gil", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, t(100) + 0.4);
+      pop("#b-new", t(102), { from: 0.6 });
+      type("#oe0", t(105), 23, 0.5);
+      show("#oe1", t(106), 0.25);
+      tl.to("#gil", { y: -260, x: 60, rotation: 25, opacity: 0, duration: 0.6, ease: "power2.in" }, t(109));
+      fill(["#fb1", "#fb2", "#fb3"], t(110), 1.0);
+      pop("#r-free", t(110) + 0.4, { from: 0.7 });
+
+      /* ---- 6. two cooks, one whiteboard ---- */
+      out(["#kit-all", "#lt1", "#lt2", "#lt3", "#fb1", "#fb2", "#fb3", "#r-free", "#h-free", "#b-new", "#bw1", "#bw2", "#bw3", "#axis"], t(113) - 0.1, 0.25);
+      out(["#c0", "#c1", "#c2", "#c3", "#c4", "#c6", "#c7", "#ttl-c", "#oe0", "#oe1"], t(113) - 0.1, 0.25);
+      pop("#h-race", t(113) + 0.2, { from: 0.7 });
+      show(["#f0", "#f1", "#ttl-f"], t(113) + 0.3, 0.3);
+      show(["#lc1", "#lc2"], t(116), 0.25);
+      type("#of0", t(116), 23, 0.5);
+      pop("#wb", t(120) - 0.15, { from: 0.8 });
+      show("#wb5", t(120) - 0.05, 0.2);
+      pop("#c1r", t(121), { from: 0.7 });
+      pop("#c2r", t(121) + 0.25, { from: 0.7 });
+      draw("r-five", t(121) + 0.1, 0.45);
+      out("#r-five", t(124) - 0.2, 0.2);
+      pop("#c1p", t(124), { from: 0.4 });
+      pop("#c2p", t(124) + 0.2, { from: 0.4 });
+      pop("#c1w", t(128), { from: 0.7 });
+      out("#wb5", t(128) + 0.15, 0.15);
+      pop("#wb6", t(128) + 0.2, { from: 0.6 });
+      pop("#c2w", t(130), { from: 0.7 });
+      bump("#wb6", t(130) + 0.15, 1.15);
+      pop("#n-two", t(131), { from: 0.7 });
+      show("#of1", t(131) + 0.1, 0.2);
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.8, rotation: -8 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "power3.in", immediateRender: false }, t(136) + 0.2);
+
+      /* ---- 7. lock the whiteboard: one cook at a time ---- */
+      out(["#stamp", "#c1r", "#c2r", "#c1p", "#c2p", "#c1w", "#c2w", "#n-two", "#wb6", "#f0", "#f1"], t(140) - 0.15, 0.2);
+      show("#wb5b", t(140), 0.15);
+      tl.fromTo("#lock", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.4, ease: "bounce.out", immediateRender: false }, t(140) + 0.05);
+      show(["#g0", "#g1", "#g2"], t(140) + 0.05, 0.25);
+      draw("r-lock", t(140) + 0.3, 0.4);
+      pop("#d1r", t(143), { from: 0.7, d: 0.3 });
+      pop("#d2t", t(143) + 0.15, { from: 0.7, d: 0.3 });
+      pop("#d1w", t(143) + 0.4, { from: 0.7, d: 0.3 });
+      out("#wb5b", t(143) + 0.5, 0.1);
+      show("#wb6b", t(143) + 0.55, 0.15);
+      pop("#d2r", t(146), { from: 0.7, d: 0.3 });
+      pop("#d2w", t(147) + 0.1, { from: 0.7, d: 0.3 });
+      out("#wb6b", t(147) + 0.2, 0.1);
+      pop("#wb7", t(147) + 0.25, { from: 0.6, d: 0.3 });
+      pop("#tick7", t(147) + 0.3, { from: 0.4, d: 0.3 });
+      show("#of2", t(144), 0.2);
+      show("#of3", t(147) + 0.25, 0.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 61.08);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

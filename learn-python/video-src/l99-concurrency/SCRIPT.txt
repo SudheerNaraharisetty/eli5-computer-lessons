@@ -1,0 +1,13 @@
+Three orders. Each one waits one second in the oven. One cook does them one after another. Three seconds.
+
+But waiting is not working. Hire three cooks. In Python, they are threads. All three wait together, and everything is ready in about one second.
+
+Now real work. Chopping three big bowls of carrots. Three threads again. But the kitchen has one talking stick, called the GIL. Only the cook holding it may chop. They take turns, so it is no faster.
+
+Processes are three separate kitchens, each with its own Python. All three chop at the same time.
+
+And the free-threaded build, officially supported since Python three point fourteen, takes the stick away.
+
+One more danger. Two cooks read the whiteboard. Five plates served. Each adds one, and both write six. Two plates went out, but only one was counted. Lock the whiteboard. One cook at a time.
+
+Threads help with waiting. Processes or free-threading help with heavy work. Shared things need a lock.

@@ -1,0 +1,19 @@
+Kitchen Coach reads Ana, Ben and Chloe from a JSON file. Each friend is a dict with string keys.
+
+One typo, protein spelled wrong, and nothing complains. Later, the planner stops with a key error, far from the cause.
+
+Give each kind of thing a class. A Guest dataclass is a form with labelled fields. K-cal target. Protein target. Vegetarian. Gluten free.
+
+Two stars unpack each JSON line into those fields. Ana, Ben and Chloe fill in.
+
+Recipes get a class too, with badges. Veg. Gluten free.
+
+The rule moves onto the guest. Guest dot allows puts a gate in front of each friend.
+
+The chicken bowl slides toward Ben. It has meat. It bounces off.
+
+Pasta and tofu slide toward Chloe. Both have gluten. Off they go.
+
+The typo? Ben's form has no field with that spelling. Type error, at load time. It fails early. Good.
+
+Give each kind of thing a class. Put the rules on the class that owns them.

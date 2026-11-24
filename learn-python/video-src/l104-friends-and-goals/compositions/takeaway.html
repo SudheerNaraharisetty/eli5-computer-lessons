@@ -1,0 +1,50 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-head { left: 110px; font: 700 80px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h1 { top: 130px; }
+    #t-h2 { top: 270px; }
+    .card { position: absolute; top: 520px; width: 560px; height: 300px; background: #fff; border-radius: 20px; overflow: hidden; opacity: 0; }
+    .card .hd { position: absolute; left: 0; top: 0; width: 560px; height: 84px; background: #e6e3ff; border-bottom: 4px solid #0e0c1d; font: 700 40px/84px "JetBrains Mono", monospace; color: #3b37e6; padding-left: 30px; }
+    .card .ln { position: absolute; left: 30px; font: 500 30px/48px "JetBrains Mono", monospace; color: #3e3b52; white-space: pre; }
+    .card .rule { position: absolute; left: 20px; right: 20px; top: 210px; height: 64px; border-radius: 12px; background: #ddefe6; box-shadow: 0 0 0 4px #1f7a5c; font: 500 30px/64px "JetBrains Mono", monospace; color: #1f7a5c; padding-left: 14px; opacity: 0; }
+    #t-next { left: 110px; top: 950px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="7.8" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">Give each kind of thing <span class="a">a class</span>.</div>
+      <div id="t-h2" class="t-abs t-head">Put the rules on the class <span class="a">that owns them</span>.</div>
+      <div class="card t-ol" id="cG" style="left:110px"><div class="hd">Guest</div><div class="ln" style="top:100px">protein_target: int</div><div class="ln" style="top:148px">vegetarian: bool</div><div class="rule" id="rG">allows(recipe)</div></div>
+      <div class="card t-ol" id="cR" style="left:760px"><div class="hd">Recipe</div><div class="ln" style="top:100px">kcal: int</div><div class="ln" style="top:148px">ingredients: dict</div><div class="rule" id="rR">vegetarian, gluten_free</div></div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 105: The pantry</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 62;
+      const g = { give: 62.26, cls: 63.688, put: 64.687, rules: 65.035, owns: 66.335 };
+      const tl = gsap.timeline({ paused: true });
+      const pop = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at);
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.give - S - 0.1);
+      pop("#cG", g.cls - S - 0.3);
+      pop("#cR", g.cls - S - 0.1);
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.put - S - 0.1);
+      pop("#rG", g.rules - S);
+      pop("#rR", g.owns - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.owns - S + 0.9);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,288 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    .panel { position: absolute; background: #15132b; border-radius: 24px; overflow: hidden; }
+    .bar { position: absolute; left: 0; top: 0; right: 0; height: 64px; background: #211e40; }
+    .bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    .bar > i:nth-child(2) { background: #ffc24b; }
+    .bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #json { left: 96px; top: 70px; width: 1728px; height: 266px; }
+    .jl { position: absolute; left: 48px; font: 500 28px/48px "JetBrains Mono", monospace; color: #c9c6ff; white-space: pre; opacity: 0; }
+    .jk { color: #eceaff; }
+    .js { color: #7cf0b5; }
+    .jn { color: #ff8fab; }
+    .jk.bad { color: #fff; background: #b8235a; border-radius: 6px; }
+    .jhl { position: absolute; left: 0; width: 1728px; height: 48px; background: #2e2a5c; opacity: 0; }
+
+    #plan { left: 96px; top: 440px; width: 1000px; height: 220px; opacity: 0; }
+    .cl { position: absolute; left: 48px; font: 500 28px/48px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; }
+    .cl .k { color: #ffc24b; }
+    .cl .s { color: #7cf0b5; }
+    .cl .b { color: #ff8fab; }
+    .cl .m { color: #a9a5d6; }
+    #code { left: 420px; top: 470px; width: 1080px; height: 420px; opacity: 0; }
+    #code .cl { opacity: 0; }
+
+    .form { position: absolute; width: 520px; height: 366px; background: #fff; border-radius: 20px; overflow: hidden; opacity: 0; }
+    .fh { position: absolute; left: 0; top: 0; width: 520px; height: 80px; background: #e6e3ff; border-bottom: 4px solid #0e0c1d; }
+    .ftag { position: absolute; left: 28px; top: 18px; font: 700 34px/44px "JetBrains Mono", monospace; color: #3b37e6; }
+    .fn0 { position: absolute; right: 28px; top: 20px; font: 500 28px/40px "JetBrains Mono", monospace; color: #5d596e; }
+    .fn { position: absolute; right: 28px; top: 10px; font: 700 46px/60px "Fraunces", serif; opacity: 0; }
+    .flab { position: absolute; left: 28px; font: 500 28px/48px "JetBrains Mono", monospace; color: #3e3b52; white-space: pre; }
+    .slot { position: absolute; right: 28px; width: 92px; height: 44px; border-bottom: 4px dashed #8a8698; }
+    .fval { position: absolute; right: 28px; font: 500 28px/48px "JetBrains Mono", monospace; color: #3b37e6; opacity: 0; background: #fff; min-width: 104px; text-align: right; }
+    .rhl { position: absolute; left: 10px; width: 500px; height: 52px; border-radius: 10px; background: #fbebd2; box-shadow: 0 0 0 3px #b9741a; opacity: 0; top: 102px; }
+    .chip { position: absolute; font: 500 28px/48px "JetBrains Mono", monospace; color: #fff; background: #3b37e6; border-radius: 8px; white-space: pre; opacity: 0; }
+
+    .pill { position: absolute; height: 64px; padding: 0 26px; border-radius: 14px; font: 800 34px/64px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 5px #b8235a; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 5px #1f7a5c; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; }
+    .pill.mute { background: #ece7df; color: #3e3b52; box-shadow: 0 0 0 4px #3e3b52; }
+    .pill code { font: 500 32px/64px "JetBrains Mono", monospace; }
+
+    .gate { position: absolute; top: 452px; width: 500px; height: 52px; background: #fff; border-radius: 12px; font: 500 28px/52px "JetBrains Mono", monospace; text-align: center; color: #0e0c1d; box-shadow: 0 0 0 5px #0e0c1d; opacity: 0; }
+    .gate > i { position: absolute; top: -26px; width: 10px; height: 104px; background: #0e0c1d; border-radius: 4px; }
+
+    .rc { position: absolute; width: 400px; height: 130px; background: #fff; border-radius: 18px; opacity: 0; }
+    .rn { position: absolute; left: 24px; top: 14px; font: 800 34px/46px "Manrope", sans-serif; white-space: nowrap; }
+    .bd { position: absolute; top: 70px; height: 44px; padding: 0 18px; border-radius: 22px; font: 800 28px/44px "Manrope", sans-serif; color: #fff; opacity: 0; }
+    .bd:empty { display: none; }
+    .bd.veg { background: #1f7a5c; }
+    .bd.gf { background: #3b37e6; }
+    .no { position: absolute; right: 16px; top: 68px; height: 48px; padding: 0 16px; border-radius: 12px; background: #b8235a; color: #fff; font: 800 30px/48px "Manrope", sans-serif; opacity: 0; }
+
+    #typo { left: 96px; top: 640px; width: 1728px; height: 158px; opacity: 0; }
+    #tchip { left: 0; top: 0; font: 500 28px/48px "JetBrains Mono", monospace; color: #fff; background: #b8235a; border-radius: 8px; white-space: pre; opacity: 0; }
+    #terr { left: 96px; top: 824px; font: 500 28px/48px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; opacity: 0; }
+    #stamp { left: 760px; top: 200px; padding: 6px 30px; border-radius: 14px; background: #fff; color: #b8235a; box-shadow: 0 0 0 7px #b8235a; font: 700 64px/84px "Fraunces", serif; opacity: 0; }
+
+    #s-lines { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="62" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="json" class="panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">data/guests.json</span></div>
+          <div class="jhl" id="jh0" style="top:84px"></div>
+          <div class="jhl" id="jh1" style="top:138px"></div>
+          <div class="jhl" id="jh2" style="top:192px"></div>
+          <div class="jl" id="j0" style="top:84px">{<span class="jk">"name"</span>:<span class="js">"Ana"</span>,<span class="jk">"kcal_target"</span>:<span class="jn">2600</span>,<span class="jk">"protein_target"</span>:<span class="jn">100</span>,<span class="jk">"vegetarian"</span>:<span class="jn">false</span>,<span class="jk">"gluten_free"</span>:<span class="jn">false</span>}</div><div class="jl" id="j1" style="top:138px">{<span class="jk">"name"</span>:<span class="js">"Ben"</span>,<span class="jk">"kcal_target"</span>:<span class="jn">2400</span>,<span class="jk">"protein_target"</span>:<span class="jn">140</span>,<span class="jk">"vegetarian"</span>:<span class="jn">true</span>,<span class="jk">"gluten_free"</span>:<span class="jn">false</span>}</div><div class="jl" id="j2" style="top:192px">{<span class="jk">"name"</span>:<span class="js">"Chloe"</span>,<span class="jk">"kcal_target"</span>:<span class="jn">2000</span>,<span class="jk">"protein_target"</span>:<span class="jn">75</span>,<span class="jk">"vegetarian"</span>:<span class="jn">false</span>,<span class="jk">"gluten_free"</span>:<span class="jn">true</span>}</div><div class="jl" id="j1t" style="top:138px">{<span class="jk">"name"</span>:<span class="js">"Ben"</span>,<span class="jk">"kcal_target"</span>:<span class="jn">2400</span>,<span class="jk bad">"protien_target"</span>:<span class="jn">140</span>,<span class="jk">"vegetarian"</span>:<span class="jn">true</span>,<span class="jk">"gluten_free"</span>:<span class="jn">false</span>}</div>
+        </div>
+
+        <div id="plan" class="panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">planner.py</span></div>
+          <div class="cl" style="top:84px"><span class="m"># ... 100 lines later ...</span></div>
+          <div class="cl" style="top:138px">goal = guest[<span class="s">"protein_target"</span>]</div>
+        </div>
+
+        <div class="pill mute" id="pDict" style="left:96px; top:356px">a dict: any string key goes in</div>
+        <div class="pill mute" id="pQuiet" style="left:760px; top:356px">no complaint</div>
+        <div class="pill bad" id="pKey" style="left:1170px; top:530px">KeyError: 'protein_target'</div>
+        <div class="pill acc" id="pStar" style="left:96px; top:356px"><code>Guest(**row)</code> for each line</div>
+
+        <div class="form s-ol" id="f0" style="left:96px; top:430px"><div class="fh"></div><div class="ftag">Guest</div><div class="fn0" id="f0n0">name: str</div><div class="fn" id="f0n">Ana</div><div class="rhl" id="f0hl"></div><div class="flab" style="top:104px">kcal_target: int</div><div class="slot" style="top:104px"></div><div class="fval" id="f0v0" style="top:104px">2600</div><div class="flab" style="top:166px">protein_target: int</div><div class="slot" style="top:166px"></div><div class="fval" id="f0v1" style="top:166px">100</div><div class="flab" style="top:228px">vegetarian: bool</div><div class="slot" style="top:228px"></div><div class="fval" id="f0v2" style="top:228px">False</div><div class="flab" style="top:290px">gluten_free: bool</div><div class="slot" style="top:290px"></div><div class="fval" id="f0v3" style="top:290px">False</div></div><div class="form s-ol" id="f1" style="left:700px; top:430px"><div class="fh"></div><div class="ftag">Guest</div><div class="fn0" id="f1n0">name: str</div><div class="fn" id="f1n">Ben</div><div class="rhl" id="f1hl"></div><div class="flab" style="top:104px">kcal_target: int</div><div class="slot" style="top:104px"></div><div class="fval" id="f1v0" style="top:104px">2400</div><div class="flab" style="top:166px">protein_target: int</div><div class="slot" style="top:166px"></div><div class="fval" id="f1v1" style="top:166px">140</div><div class="flab" style="top:228px">vegetarian: bool</div><div class="slot" style="top:228px"></div><div class="fval" id="f1v2" style="top:228px">True</div><div class="flab" style="top:290px">gluten_free: bool</div><div class="slot" style="top:290px"></div><div class="fval" id="f1v3" style="top:290px">False</div></div><div class="form s-ol" id="f2" style="left:1304px; top:430px"><div class="fh"></div><div class="ftag">Guest</div><div class="fn0" id="f2n0">name: str</div><div class="fn" id="f2n">Chloe</div><div class="rhl" id="f2hl"></div><div class="flab" style="top:104px">kcal_target: int</div><div class="slot" style="top:104px"></div><div class="fval" id="f2v0" style="top:104px">2000</div><div class="flab" style="top:166px">protein_target: int</div><div class="slot" style="top:166px"></div><div class="fval" id="f2v1" style="top:166px">75</div><div class="flab" style="top:228px">vegetarian: bool</div><div class="slot" style="top:228px"></div><div class="fval" id="f2v2" style="top:228px">False</div><div class="flab" style="top:290px">gluten_free: bool</div><div class="slot" style="top:290px"></div><div class="fval" id="f2v3" style="top:290px">True</div></div>
+
+        <div class="gate" id="g0" style="left:106px"><i style="left:-5px"></i><i style="right:-5px"></i>ana.allows(recipe)</div>
+        <div class="gate" id="g1" style="left:710px"><i style="left:-5px"></i><i style="right:-5px"></i>ben.allows(recipe)</div>
+        <div class="gate" id="g2" style="left:1314px"><i style="left:-5px"></i><i style="right:-5px"></i>chloe.allows(recipe)</div>
+
+        <div id="code" class="panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">models.py</span></div>
+          <div class="cl" id="k0" style="top:76px"><span class="k">class</span> Guest:</div><div class="cl" id="k1" style="top:122px">    <span class="k">def</span> allows(self, recipe):</div><div class="cl" id="k2" style="top:168px">        <span class="k">if</span> self.vegetarian <span class="k">and not</span> recipe.vegetarian:</div><div class="cl" id="k3" style="top:214px">            <span class="k">return</span> <span class="b">False</span></div><div class="cl" id="k4" style="top:260px">        <span class="k">if</span> self.gluten_free <span class="k">and not</span> recipe.gluten_free:</div><div class="cl" id="k5" style="top:306px">            <span class="k">return</span> <span class="b">False</span></div><div class="cl" id="k6" style="top:352px">        <span class="k">return</span> <span class="s">True</span></div>
+        </div>
+
+        <div class="rc s-ol" id="rL" style="left:96px; top:910px"><div class="rn">lentil soup</div><div class="bd veg" id="rLbv" style="left:24px">veg</div><div class="bd gf" id="rLbg" style="left:132px">GF</div><div class="no" id="rLx">✗ gluten</div></div><div class="rc s-ol" id="rT" style="left:536px; top:910px"><div class="rn">tofu stir-fry</div><div class="bd veg" id="rTbv" style="left:24px">veg</div><div class="bd gf" id="rTbg" style="left:132px"></div><div class="no" id="rTx">✗ gluten</div></div><div class="rc s-ol" id="rP" style="left:976px; top:910px"><div class="rn">pasta bake</div><div class="bd veg" id="rPbv" style="left:24px">veg</div><div class="bd gf" id="rPbg" style="left:132px"></div><div class="no" id="rPx">✗ gluten</div></div><div class="rc s-ol" id="rC" style="left:1416px; top:910px"><div class="rn">chicken rice bowl</div><div class="bd veg" id="rCbv" style="left:24px"></div><div class="bd gf" id="rCbg" style="left:24px">GF</div><div class="no" id="rCx">✗ meat</div></div>
+
+        <div id="typo" class="panel s-ol">
+          <div class="bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">data/guests.json, Ben's line</span></div>
+          <div class="jl" id="jt" style="top:84px; opacity:1">{<span class="jk">"name"</span>:<span class="js">"Ben"</span>,<span class="jk">"kcal_target"</span>:<span class="jn">2400</span>,<span class="jk bad">"protien_target"</span>:<span class="jn">140</span>,<span class="jk">"vegetarian"</span>:<span class="jn">true</span>,<span class="jk">"gluten_free"</span>:<span class="jn">false</span>}</div>
+        </div>
+        <div id="tchip" class="s-abs" data-layout-allow-overlap>"protien_target":140</div>
+        <div id="terr" class="s-abs">TypeError: Guest.__init__() got an unexpected keyword argument 'protien_target'</div>
+        <div id="stamp" class="s-abs" data-layout-allow-overlap>TypeError</div>
+        <div class="pill acc" id="pLoad" style="left:96px; top:920px">at load time: <code>Guest(**row)</code></div>
+        <div class="pill ok" id="pGood" style="left:760px; top:920px">fails early. Good.</div>
+
+        <div class="chip" id="f0c4" style="left:278.4px; top:154px" data-tx="504" data-ty="446">"Ana"</div><div class="chip" id="f0c0" style="left:614.4000000000001px; top:154px" data-tx="520.8" data-ty="534">2600</div><div class="chip" id="f0c1" style="left:984px; top:154px" data-tx="537.6" data-ty="596">100</div><div class="chip" id="f0c2" style="left:1269.6000000000001px; top:154px" data-tx="504" data-ty="658">false</div><div class="chip" id="f0c3" style="left:1605.6000000000001px; top:154px" data-tx="504" data-ty="720">false</div><div class="chip" id="f1c4" style="left:278.4px; top:208px" data-tx="1108" data-ty="446">"Ben"</div><div class="chip" id="f1c0" style="left:614.4000000000001px; top:208px" data-tx="1124.8" data-ty="534">2400</div><div class="chip" id="f1c1" style="left:984px; top:208px" data-tx="1141.6" data-ty="596">140</div><div class="chip" id="f1c2" style="left:1269.6000000000001px; top:208px" data-tx="1124.8" data-ty="658">true</div><div class="chip" id="f1c3" style="left:1588.8px; top:208px" data-tx="1108" data-ty="720">false</div><div class="chip" id="f2c4" style="left:278.4px; top:262px" data-tx="1678.4" data-ty="446">"Chloe"</div><div class="chip" id="f2c0" style="left:648px; top:262px" data-tx="1728.8" data-ty="534">2000</div><div class="chip" id="f2c1" style="left:1017.6px; top:262px" data-tx="1762.4" data-ty="596">75</div><div class="chip" id="f2c2" style="left:1286.4px; top:262px" data-tx="1712" data-ty="658">false</div><div class="chip" id="f2c3" style="left:1622.4px; top:262px" data-tx="1728.8" data-ty="720">true</div>
+
+        <svg id="s-lines" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="far" d="M1400 528 C1380 420 1100 330 872.8000000000001 262" fill="none" stroke="#b8235a" stroke-width="5" stroke-dasharray="14 12" opacity="0" />
+          <path id="farH" d="M872.8000000000001 262 l30 -2 M872.8000000000001 262 l14 26" fill="none" stroke="#b8235a" stroke-width="6" stroke-linecap="round" opacity="0" />
+          <text id="farT" x="1440" y="420" font-family="Manrope" font-weight="800" font-size="34" fill="#b8235a" opacity="0">far from the cause</text>
+        </svg>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-json" style="stroke:#ffc24b" />
+          <path id="r-typo" style="stroke:#ff8fab" />
+          <path id="r-pk" style="stroke:#b8235a" />
+          <path id="r-allows" style="stroke:#ffc24b" />
+          <path id="r-veg" style="stroke:#ffc24b" />
+          <path id="r-gf" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0,0.488,0.859,1.289,1.707,1.939,2.078,2.496,2.694,2.821,3.39,4.261,4.551,4.888,5.062,5.213,5.77,5.968,6.339,7.221,7.5,8.092,8.591,8.94,9.311,9.555,9.903,11.389,11.9,12.063,12.434,12.829,13.003,13.119,13.479,14.048,14.35,14.524,14.652,15.685,15.999,16.312,16.591,16.707,17.009,17.194,18.495,18.669,18.994,19.667,19.83,19.946,20.236,20.468,20.956,21.862,22.454,23.255,23.754,24.485,25.437,25.913,26.738,27.016,27.539,28.061,28.398,28.862,29.153,29.455,29.698,30.488,30.952,31.219,31.37,31.753,32.02,32.74,33.297,33.472,33.541,33.877,34.307,34.562,35.41,36.281,36.792,37.593,37.755,38.011,38.347,38.638,38.789,39.543,39.915,40.205,40.634,40.902,41.029,41.436,41.598,41.865,42.051,42.364,43.2,43.363,43.723,44.025,44.454,44.849,45.511,45.708,46.01,46.672,46.927,47.45,48.146,48.622,48.785,49.296,49.644,50.004,50.747,51.118,51.409,52.105,52.361,52.57,53.197,53.371,54.532,54.903,55.159,55.379,55.658,56.064,56.227,56.471,57.237,57.608,58.05,58.386,58.735,59.385,59.629,60.081,60.848,61.66,61.962,62.264,62.519,62.612,62.903,63.088,64.087,64.307,64.435,64.818,64.969,65.097,65.515,65.735,66.13];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      ring("r-json", 300, 102, 200, 34);
+      ring("r-typo", 832.8000000000001, 232, 152.4, 30);
+      ring("r-pk", 1400, 562, 250, 50);
+      ring("r-allows", 669.6, 616, 66.4, 28);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.025 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      // a chip flies from its JSON token to its slot on the form, then the form value appears
+      const fly = (f, k, at, d) => {
+        const c = document.getElementById(f + "c" + k);
+        const dx = +c.dataset.tx - parseFloat(c.style.left), dy = +c.dataset.ty - parseFloat(c.style.top);
+        tl.set(c, { opacity: 1, x: 0, y: 0 }, at);
+        tl.to(c, { x: dx, y: dy, duration: d, ease: "power2.inOut" }, at);
+        tl.set(c, { opacity: 0 }, at + d);
+        if (k === 4) { tl.set("#" + f + "n0", { opacity: 0 }, at + d); pop("#" + f + "n", at + d, { d: 0.3, from: 0.7 }); }
+        else pop("#" + f + "v" + k, at + d, { d: 0.25, from: 0.7 });
+      };
+      const fill = (i, at, step, d) => { const f = "f" + i; show("#jh" + i, at - 0.1, 0.2); [4, 0, 1, 2, 3].forEach((k, n) => fly(f, k, at + n * step, d)); out("#jh" + i, at + 4 * step + d, 0.2); };
+
+      tl.set("#s-cursor", { x: 1000, y: 700 }, 0);
+      tl.set("#stamp", { rotation: -7 }, 0);
+
+      /* ---- 1. Kitchen Coach reads Ana, Ben and Chloe from a JSON file. A dict with string keys ---- */
+      type("#j0", t(3) - 0.1, 30, 0.45);
+      type("#j1", t(4) - 0.05, 30, 0.45);
+      type("#j2", t(6), 30, 0.45);
+      draw("r-json", t(9), 0.45);
+      out("#r-json", t(11), 0.25);
+      pop("#pDict", t(15), { d: 0.4 });
+      tl.to("#json .jk", { color: "#ffc24b", duration: 0.3 }, t(17));
+
+      /* ---- 2. One typo, and nothing complains. Later, a KeyError far from the cause ---- */
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(19));
+      cursorTo(812.8000000000001, 236, t(19), 0.5);
+      tl.set("#j1t", { opacity: 1 }, t(20) + 0.05);
+      tl.set("#j1", { opacity: 0 }, t(20) + 0.05);
+      draw("r-typo", t(21), 0.4);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(23));
+      pop("#pQuiet", t(25), { d: 0.4 });
+      out("#r-typo", t(27) - 0.2, 0.2);
+      pop("#plan", t(27), { from: 0.9, d: 0.4 });
+      draw("r-pk", t(33) + 0.15, 0.4);
+      pop("#pKey", t(33), { d: 0.35 });
+      show(["#far", "#farH"], t(35), 0.35);
+      show("#farT", t(35) + 0.2, 0.3);
+      draw("r-typo", t(36), 0.4);
+
+      /* ---- 3. Give each kind of thing a class. A Guest dataclass is a form with labelled fields ---- */
+      out(["#plan", "#pKey", "#far", "#farH", "#farT", "#pQuiet", "#pDict", "#r-pk", "#r-typo"], t(39) - 0.2, 0.3);
+      tl.set("#j1", { opacity: 1 }, t(39) + 0.1);
+      tl.set("#j1t", { opacity: 0 }, t(39) + 0.1);
+      tl.to("#json .jk", { color: "#eceaff", duration: 0.3 }, t(39));
+      pop("#f0", t(47), { d: 0.4, from: 0.8 });
+      pop("#f1", t(47) + 0.15, { d: 0.4, from: 0.8 });
+      pop("#f2", t(48), { d: 0.4, from: 0.8 });
+      tl.to(".flab", { color: "#0e0c1d", duration: 0.2 }, t(53));
+      bump(["#f0", "#f1", "#f2"], t(53), 1.03);
+      show(["#f0hl", "#f1hl", "#f2hl"], t(55), 0.2);
+      tl.to(["#f0hl", "#f1hl", "#f2hl"], { y: 62, duration: 0.3, ease: "power3.inOut" }, t(57));
+      tl.to(["#f0hl", "#f1hl", "#f2hl"], { y: 124, duration: 0.3, ease: "power3.inOut" }, t(59));
+      tl.to(["#f0hl", "#f1hl", "#f2hl"], { y: 186, duration: 0.3, ease: "power3.inOut" }, t(60));
+      out(["#f0hl", "#f1hl", "#f2hl"], t(62) - 0.1, 0.2);
+
+      /* ---- 4. Two stars unpack each JSON line into those fields. Ana, Ben and Chloe fill in ---- */
+      pop("#pStar", t(62), { d: 0.4 });
+      fill(0, t(64), 0.4, 0.6);
+      fill(1, t(72) - 0.2, 0.12, 0.5);
+      fill(2, t(74) - 0.1, 0.12, 0.5);
+
+      /* ---- 5. Recipes get a class too, with badges. Veg. Gluten free ---- */
+      out(["#json", "#pStar"], t(77) - 0.3, 0.3);
+      tl.to(["#f0", "#f1", "#f2"], { y: -360, duration: 0.6, ease: "power3.inOut" }, t(77) - 0.2);
+      pop("#rL", t(77) + 0.1, { d: 0.35, from: 0.8 });
+      pop("#rT", t(77) + 0.25, { d: 0.35, from: 0.8 });
+      pop("#rP", t(77) + 0.4, { d: 0.35, from: 0.8 });
+      pop("#rC", t(77) + 0.55, { d: 0.35, from: 0.8 });
+      pop(["#rLbv", "#rTbv", "#rPbv"], t(84), { d: 0.35 });
+      pop(["#rLbg", "#rCbg"], t(85), { d: 0.35 });
+
+      /* ---- 6. The rule moves onto the guest. Guest.allows puts a gate in front of each friend ---- */
+      pop("#code", t(87), { from: 0.92, d: 0.35 });
+      type("#k0", t(88) + 0.00, 12, 0.3);
+      type("#k1", t(88) + 0.12, 29, 0.3);
+      type("#k2", t(88) + 0.24, 53, 0.3);
+      type("#k3", t(88) + 0.36, 12, 0.3);
+      type("#k4", t(88) + 0.48, 55, 0.3);
+      type("#k5", t(88) + 0.60, 12, 0.3);
+      type("#k6", t(88) + 0.72, 12, 0.3);
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(92));
+      cursorTo(619.2, 622, t(92), 0.45);
+      draw("r-allows", t(95), 0.4);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(96) + 0.3);
+      out(["#code", "#r-allows"], t(97) + 0.1, 0.3);
+      tl.fromTo(".gate", { opacity: 1, clipPath: "inset(-30px 100% -30px -30px)" }, { opacity: 1, clipPath: "inset(-30px -30px -30px -30px)", duration: 0.5, ease: "power2.out", stagger: 0.15, immediateRender: false }, t(98));
+
+      /* ---- 7. The chicken bowl slides toward Ben. It has meat. It bounces off ---- */
+      tl.to("#rC", { x: -656, y: -382, duration: 1.0, ease: "power2.inOut" }, t(107));
+      bump("#g1", t(109) + 0.2, 1.06);
+      tl.to("#rC", { x: -670, duration: 0.07, yoyo: true, repeat: 3, ease: "none" }, t(109) + 0.2);
+      pop("#rCx", t(112), { d: 0.35 });
+      tl.to("#rC", { x: 0, y: 0, duration: 0.8, ease: "back.out(1.4)" }, t(114));
+
+      /* ---- 8. Pasta and tofu slide toward Chloe. Both have gluten. Off they go ---- */
+      tl.to("#rP", { x: 388, y: -382, duration: 0.9, ease: "power2.inOut" }, t(116));
+      tl.to("#rT", { x: 828, y: -210, duration: 0.9, ease: "power2.inOut" }, t(118));
+      bump("#g2", t(121), 1.06);
+      tl.to(["#rP", "#rT"], { x: "-=14", duration: 0.07, yoyo: true, repeat: 3, ease: "none" }, t(121));
+      pop(["#rPx", "#rTx"], t(124), { d: 0.35 });
+      tl.to(["#rP", "#rT"], { x: 0, y: 0, duration: 0.8, ease: "back.out(1.4)", stagger: 0.12 }, t(125));
+
+      /* ---- 9. The typo? Ben's form has no field with that spelling. TypeError at load time ---- */
+      out(["#rL", "#rT", "#rP", "#rC", ".gate"], t(128) - 0.1, 0.3);
+      pop("#typo", t(129) - 0.1, { from: 0.9, d: 0.4 });
+      tl.set("#tchip", { x: 698.4, y: 724 }, 0);
+      tl.set("#tchip", { opacity: 1 }, t(130));
+      tl.to("#tchip", { x: 820, y: 236, duration: 0.7, ease: "power2.inOut" }, t(130));
+      tl.to("#f1", { x: -14, duration: 0.07, yoyo: true, repeat: 5, ease: "none" }, t(134));
+      tl.to("#tchip", { y: 356, x: 760, rotation: -10, duration: 0.6, ease: "power2.in" }, t(135));
+      out("#tchip", t(137) - 0.1, 0.3);
+      pop("#stamp", t(138), { from: 1.6, ease: "power3.out", d: 0.3 });
+      type("#terr", t(138) + 0.2, 79, 0.6);
+      pop("#pLoad", t(140), { d: 0.35 });
+      pop("#pGood", t(144), { d: 0.35 });
+      bump("#pGood", t(146), 1.08);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.2, ease: "power2.in" }, 61.75);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

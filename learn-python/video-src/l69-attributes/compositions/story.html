@@ -1,0 +1,341 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 330px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* the template card on the wall, right, top */
+    #tp { left: 1190px; top: 96px; width: 640px; height: 250px; }
+    #tp > .bg { position: absolute; inset: 0; border-radius: 26px; background: #fff; }
+    #tp-name { left: 30px; top: 26px; background: #e6e3ff; color: #3b37e6; font: 700 30px/52px "JetBrains Mono", monospace; }
+    #tp-h { position: absolute; left: 30px; top: 104px; font: 700 40px/52px "Fraunces", serif; white-space: nowrap; }
+    #tp-s { position: absolute; left: 30px; top: 162px; font: 800 28px/36px "Manrope", sans-serif; color: #4a4760; white-space: nowrap; }
+    #tj { position: absolute; left: 430px; top: 26px; width: 180px; height: 220px; }
+    .lid { position: absolute; border-radius: 8px; background: #b9741a; box-shadow: 0 0 0 4px #0e0c1d; }
+    .jarb { position: absolute; border-radius: 12px 12px 34px 34px; background: #f6f1eb; box-shadow: 0 0 0 5px #0e0c1d; }
+    #tj .lid { left: 0; top: 8px; width: 180px; height: 20px; }
+    #tj .jarb { left: 10px; top: 32px; width: 160px; height: 140px; }
+    #tj-e { position: absolute; left: 10px; top: 60px; width: 160px; text-align: center; font: 700 30px/44px "JetBrains Mono", monospace; }
+    #tj-l { position: absolute; left: 0; top: 180px; width: 180px; text-align: center; font: 700 28px/36px "JetBrains Mono", monospace; color: #3b37e6; }
+
+    /* the three guest cards */
+    .gc { left: 1190px; width: 640px; height: 140px; }
+    #g-a { top: 400px; }
+    #g-b { top: 570px; }
+    #g-c { top: 740px; }
+    .gc > .bg { position: absolute; inset: 0; border-radius: 24px; background: #fff; }
+    .gn { position: absolute; left: 36px; top: 14px; font: 700 44px/56px "Fraunces", serif; white-space: nowrap; }
+    .gs { left: 36px; top: 80px; height: 44px; padding: 0 20px; background: #ddefe6; color: #1f7a5c; font: 700 28px/44px "JetBrains Mono", monospace; }
+    .gl { position: absolute; left: 260px; top: 22px; font: 700 28px/36px "JetBrains Mono", monospace; color: #4a4760; white-space: nowrap; }
+    .gv { position: absolute; left: 260px; top: 70px; width: 220px; height: 44px; }
+    .gv > span { position: absolute; left: 0; top: 0; white-space: pre; font: 700 30px/44px "JetBrains Mono", monospace; }
+    .gv > .v1 { color: #b8235a; }
+    .gv > .v2, .gv > .v3 { color: #1f7a5c; }
+    .gj { position: absolute; left: 488px; top: 8px; width: 144px; height: 124px; }
+    .gj .lid { left: 0; top: 0; width: 144px; height: 16px; }
+    .gj .jarb { left: 6px; top: 20px; width: 132px; height: 98px; }
+    .gj .je { position: absolute; left: 6px; top: 46px; width: 132px; text-align: center; font: 700 28px/40px "JetBrains Mono", monospace; }
+    .gk { position: absolute; left: 196px; top: 18px; width: 50px; height: 50px; border-radius: 50%; background: #1f7a5c; color: #fff; text-align: center; font: 800 30px/50px "Manrope", sans-serif; }
+    .stamp { width: 176px; height: 76px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 40px/76px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-6deg); }
+    #st-a { left: 1648px; top: 432px; }
+    #st-b { left: 1648px; top: 602px; }
+    .chip { width: 124px; height: 48px; border-radius: 999px; background: #fbe0ea; color: #b8235a; text-align: center; font: 800 28px/48px "Manrope", sans-serif; box-shadow: 0 0 0 4px #b8235a; }
+    #chip1 { left: 1500px; top: 806px; }
+    #chip2 { left: 1688px; top: 796px; background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a6c8; }
+    .ot { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    #O1 { color: #ff8fab; }
+    #O2 { color: #7cf0b5; }
+    #strike { position: absolute; left: 106px; top: 161px; width: 264px; height: 5px; border-radius: 3px; background: #ff8fab; transform-origin: 0 50%; transform: scaleX(0); }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="63.5" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Three guests.<br /><span id="intro2" style="display:inline-block">One <span class="a">template</span>.</span></div>
+
+        <!-- the template card on the wall -->
+        <div id="tp" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="pill" id="tp-name">class Guest</div>
+          <div id="tp-h">the template</div>
+          <div id="tp-s">one card, on the wall</div>
+          <div id="tj" class="s-hide">
+            <div class="lid"></div><div class="jarb"></div>
+            <div id="tj-e" class="s-hide">[]</div>
+            <div id="tj-l" class="s-hide">allergies</div>
+          </div>
+        </div>
+
+        <!-- the guests -->
+        <div id="g-a" class="s-abs gc s-hide">
+          <div class="bg s-ol"></div>
+          <div class="gn">Ana</div>
+          <div class="pill gs s-hide">self.name</div>
+          <div class="gk s-hide">✓</div>
+          <div class="gl s-hide">allergies</div>
+          <div class="gv"><span class="v0 s-hide">[]</span><span class="v1 s-hide">['gluten']</span><span class="v2 s-hide">[]</span></div>
+          <div class="gj s-hide"><div class="lid"></div><div class="jarb"></div><div class="je">[]</div></div>
+        </div>
+        <div id="g-b" class="s-abs gc s-hide">
+          <div class="bg s-ol"></div>
+          <div class="gn">Ben</div>
+          <div class="pill gs s-hide">self.name</div>
+          <div class="gk s-hide">✓</div>
+          <div class="gl s-hide">allergies</div>
+          <div class="gv"><span class="v0 s-hide">[]</span><span class="v1 s-hide">['gluten']</span><span class="v2 s-hide">[]</span></div>
+          <div class="gj s-hide"><div class="lid"></div><div class="jarb"></div><div class="je">[]</div></div>
+        </div>
+        <div id="g-c" class="s-abs gc s-hide">
+          <div class="bg s-ol"></div>
+          <div class="gn">Chloe</div>
+          <div class="pill gs s-hide">self.name</div>
+          <div class="gl s-hide">allergies</div>
+          <div class="gv"><span class="v0 s-hide">[]</span><span class="v1 s-hide">['gluten']</span><span class="v2 s-hide">[]</span><span class="v3 s-hide">['gluten']</span></div>
+          <div class="gj s-hide"><div class="lid"></div><div class="jarb"></div><div class="je">[]</div></div>
+        </div>
+        <div id="st-a" class="s-abs stamp s-hide">WRONG</div>
+        <div id="st-b" class="s-abs stamp s-hide">WRONG</div>
+        <div id="chip1" class="s-abs chip s-hide">gluten</div>
+        <div id="chip2" class="s-abs chip s-hide">gluten</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">guests.py</span></div>
+          <div class="ln" id="L1" style="top:88px"><span class="k">class</span> <span class="f">Guest</span>:</div>
+          <div class="ln" id="L2" style="top:138px">    allergies = []</div>
+          <div id="strike"></div>
+          <div class="ln" id="L4" style="top:238px">    <span class="k">def</span> <span class="f">__init__</span>(self, name):</div>
+          <div class="ln" id="L5" style="top:288px">        self.name = name</div>
+          <div class="ln" id="L6" style="top:338px">        self.allergies = []</div>
+          <div class="ln" id="L8" style="top:438px">ana = <span class="f">Guest</span>(<span class="m">"Ana"</span>)</div>
+          <div class="ln" id="L9" style="top:488px">ben = <span class="f">Guest</span>(<span class="m">"Ben"</span>)</div>
+          <div class="ln" id="L10" style="top:538px">chloe = <span class="f">Guest</span>(<span class="m">"Chloe"</span>)</div>
+          <div class="ln" id="L12" style="top:638px">chloe.allergies.<span class="f">append</span>(<span class="m">"gluten"</span>)</div>
+          <div class="ln" id="L13" style="top:688px"><span class="f">print</span>(ben.allergies)</div>
+          <div class="ot" id="O1" style="top:738px">['gluten']</div>
+          <div class="ot" id="O2" style="top:738px">[]</div>
+
+          <div class="s-note ok" id="n-own" style="left:500px; top:288px">on this guest only</div>
+          <div class="s-note warn" id="n-cls" style="left:430px; top:138px">class attribute: on the template</div>
+          <div class="s-note bad" id="n-ben" style="left:290px; top:738px">Ben's list, but Chloe's gluten</div>
+          <div class="s-note ok" id="n-init" style="left:550px; top:338px">a new list per guest</div>
+          <div class="s-note ok" id="n-ben2" style="left:150px; top:738px">Ben's own list: empty</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-sname" style="stroke:#7cf0b5" />
+          <path id="r-gsa" style="stroke:#1f7a5c" />
+          <path id="r-L2" style="stroke:#ffc24b" />
+          <path id="rails-g" class="dash" style="stroke:#8c88b0" />
+          <path id="rails-r" style="stroke:#b8235a" />
+          <path id="r-gnc" style="stroke:#3b37e6" />
+          <path id="r-cmiss" class="dash" style="stroke:#b8235a" />
+          <path id="r-init" style="stroke:#ffc24b" />
+          <path id="r-L6" style="stroke:#7cf0b5" />
+          <path id="r-L12" style="stroke:#ffc24b" />
+          <path id="r-gc" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.476, 0.813, 1.138, 1.254, 1.614, 1.834, 2.159, 3.042, 3.576, 4.005, 4.331, 5.433, 5.77, 6.142, 6.339, 6.49, 6.885, 7.686, 7.976, 8.231, 8.487, 9.81, 10.101, 10.426, 10.728, 11.169, 11.343, 11.61, 12.608, 12.98, 13.247, 13.56, 13.816, 14.002, 14.35, 14.838, 15.116, 15.569, 16.649, 16.834, 17.125, 17.496, 17.601, 17.717, 18.239, 18.808, 19.11, 20.224, 20.549, 20.782, 20.898, 21.397, 22.314, 22.604, 23.046, 23.406, 23.626, 24.021, 24.95, 25.205, 25.542, 25.739, 25.902, 26.447, 26.714, 27.632, 28.2, 28.7, 28.955, 29.501, 30.209, 30.581, 30.708, 30.824, 32.101, 32.589, 32.81, 34.261, 34.714, 35.225, 35.526, 36.165, 36.455, 37.221, 38.022, 38.382, 38.58, 38.719, 39.392, 39.636, 39.775, 40.182, 40.797, 40.971, 41.076, 41.401, 42.26, 42.573, 42.794, 42.933, 43.583, 44.245, 44.756, 45.72, 46.242, 46.509, 46.997, 47.217, 48.135, 48.471, 48.611, 48.936, 49.307, 50.015, 50.41, 50.654, 51.292, 51.803, 52.047, 52.535, 53.347, 53.718, 53.916, 54.276, 54.554, 54.647, 55.007, 55.147, 55.437, 56.11, 56.633, 57.016, 57.933, 58.13, 58.409, 58.63, 59.059, 59.651, 59.907, 60.185, 61.207, 61.636, 61.927, 62.298, 63.146, 63.471, 63.784, 64.353, 64.655, 65.096, 65.387, 66.536, 66.954, 67.639, 67.917, 68.428, 68.73];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      const path = (id, d) => { const p = document.getElementById(id); p.setAttribute("d", d); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, cw, from, pad) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * cw, 96 + top + 25, (sub.length * cw) / 2 + (pad || 14), 28);
+      };
+      tok("r-sname", "        self.name = name", "self.name", 288, 18);
+      tok("r-L2", "    allergies = []", "allergies = []", 138, 18);
+      tok("r-init", "    def __init__(self, name):", "__init__", 238, 18);
+      tok("r-L6", "        self.allergies = []", "self.allergies", 338, 18);
+      tok("r-L12", 'chloe.allergies.append("gluten")', 'chloe.allergies.append("gluten")', 638, 18, 0, 10);
+      // right side, page coordinates. cards: left 1190, tops 400 / 570 / 740, 640 x 140
+      ring("r-gsa", 1323, 502, 116, 36);
+      ring("r-gnc", 1288, 782, 84, 38);
+      ring("r-cmiss", 1550, 832, 124, 36);
+      ring("r-gc", 1750, 812, 86, 70);
+      // rails from the template jar (right edge x 1800, y 217) to every card's right edge
+      const head = (y) => `M1858 ${y - 12} L1844 ${y} L1858 ${y + 12}`;
+      const rails = `M1806 217 L1880 217 L1880 810 M1880 470 L1846 470 ${head(470)} M1880 640 L1846 640 ${head(640)} M1880 810 L1846 810 ${head(810)}`;
+      path("rails-g", rails);
+      path("rails-r", rails);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swapV = (card, from, to, at) => { out(`${card} .gv .${from}`, at, 0.15); pop(`${card} .gv .${to}`, at + 0.1, { from: 0.5 }); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+      pop("#intro2", t(4), { from: 0.7 });
+
+      /* ---- 1. A card for each guest: Ana, Ben, Chloe. Each a Guest object from one template ---- */
+      pop("#g-a", t(8) - 0.1, { from: 0.85 });
+      pop("#g-b", t(9) - 0.1, { from: 0.85 });
+      pop("#g-c", t(11) - 0.1, { from: 0.85 });
+      out("#intro", t(12) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(12) + 0.1);
+      type("#L8", t(14), 18, 0.35);
+      type("#L9", t(14) + 0.4, 18, 0.35);
+      type("#L10", t(16), 22, 0.4);
+      pop("#tp", t(21) - 0.1, { from: 0.85 });
+      type("#L1", t(21), 12, 0.35);
+
+      /* ---- 2. Each guest has jars of its own: self.name ---- */
+      type("#L4", t(22), 29, 0.5);
+      type("#L5", t(25), 24, 0.45);
+      pop("#g-a .gs", t(25) + 0.3, { from: 0.6 });
+      pop("#g-b .gs", t(25) + 0.45, { from: 0.6 });
+      pop("#g-c .gs", t(25) + 0.6, { from: 0.6 });
+      draw("r-sname", t(29), 0.45);
+      draw("r-gsa", t(34) - 0.05, 0.45);
+      pop("#n-own", t(37), { from: 0.7 });
+
+      /* ---- 3. A jar on the template itself: a class attribute, shared by every guest ---- */
+      out(["#r-sname", "#r-gsa"], t(39) - 0.1, 0.2);
+      pop("#tj", t(40) - 0.05, { from: 0.5 });
+      out("#n-own", t(48), 0.2);
+      pop("#n-cls", t(51) - 0.1, { from: 0.7 });
+      bump("#tj", t(53), 1.12);
+      draw("rails-g", t(55), 0.4);
+
+      /* ---- 4. allergies = [] right on the template ---- */
+      out("#n-cls", t(59), 0.2);
+      pop("#tj-l", t(63), { from: 0.6 });
+      pop("#g-a .gl", t(63) + 0.2, { from: 0.7 });
+      pop("#g-b .gl", t(63) + 0.3, { from: 0.7 });
+      pop("#g-c .gl", t(63) + 0.4, { from: 0.7 });
+      type("#L2", t(66), 18, 0.45);
+      pop("#tj-e", t(70) - 0.1, { from: 0.5 });
+      pop("#g-a .gv .v0", t(70) + 0.25, { from: 0.5 });
+      pop("#g-b .gv .v0", t(70) + 0.4, { from: 0.5 });
+      pop("#g-c .gv .v0", t(70) + 0.55, { from: 0.5 });
+      draw("r-L2", t(74) - 0.05, 0.4);
+
+      /* ---- 5. Chloe is gluten-free: chloe.allergies.append("gluten") ---- */
+      out("#r-L2", t(75) - 0.15, 0.2);
+      draw("r-gnc", t(75), 0.4);
+      cursorIn(t(78));
+      cursorTo(200, 770, t(78), 0.45);
+      out("#r-gnc", t(79) - 0.1, 0.2);
+      type("#L12", t(79), 32, 1.1);
+      pop("#chip1", t(84), { from: 0.5 });
+
+      /* ---- 6. Watch where it lands: the shared jar. Ben and Ana get it too ---- */
+      cursorOut(t(85));
+      tl.to("#chip1", { x: 40, duration: 0.35, ease: "power2.out" }, t(85));
+      draw("r-cmiss", t(89), 0.3);
+      tl.to("#chip1", { x: 148, y: -616, duration: 0.85, ease: "power3.inOut" }, t(93) - 0.25);
+      out("#tj-e", t(96) - 0.2, 0.15);
+      out("#r-cmiss", t(96), 0.2);
+      bump("#tj", t(96) + 0.05, 1.08);
+      out("#rails-g", t(96) + 0.15, 0.2);
+      draw("rails-r", t(96) + 0.2, 0.6);
+      swapV("#g-c", "v0", "v1", t(96) + 0.5);
+      type("#L13", t(97), 20, 0.4);
+      swapV("#g-b", "v0", "v1", t(98));
+      show("#O1", t(98) + 0.3, 0.25);
+      pop("#st-b", t(100) + 0.1, { from: 1.6, ease: "power3.out", d: 0.3 });
+      pop("#n-ben", t(101), { from: 0.7 });
+      swapV("#g-a", "v0", "v1", t(103) - 0.1);
+      pop("#st-a", t(103) + 0.3, { from: 1.6, ease: "power3.out", d: 0.3 });
+      bump("#st-b", t(104), 1.12);
+      bump("#st-a", t(106), 1.12);
+
+      /* ---- 7. The fix: move the list into __init__ ---- */
+      out(["#st-a", "#st-b", "#rails-r", "#n-ben", "#O1", "#chip1", "#g-a .gv .v1", "#g-b .gv .v1", "#g-c .gv .v1"], t(107) - 0.1, 0.25);
+      tl.to("#strike", { scaleX: 1, duration: 0.35, ease: "power2.out" }, t(109));
+      tl.to("#L2", { opacity: 0.35, duration: 0.3 }, t(109) + 0.2);
+      tl.to("#tj", { opacity: 0.2, duration: 0.4 }, t(110));
+      draw("r-init", t(113) - 0.1, 0.4);
+      out("#r-init", t(114) + 0.2, 0.2);
+      type("#L6", t(114), 27, 0.6);
+      draw("r-L6", t(116), 0.45);
+      pop("#n-init", t(121) - 0.1, { from: 0.7 });
+      pop("#g-a .gj", t(121) + 0.1, { from: 0.5 });
+      pop("#g-a .gv .v2", t(121) + 0.25, { from: 0.5 });
+      pop("#g-b .gj", t(124), { from: 0.5 });
+      pop("#g-b .gv .v2", t(124) + 0.15, { from: 0.5 });
+      pop("#g-c .gj", t(126), { from: 0.5 });
+      pop("#g-c .gv .v2", t(126) + 0.15, { from: 0.5 });
+
+      /* ---- 8. Append gluten again: only Chloe's jar ---- */
+      out(["#r-L6", "#n-init"], t(130) - 0.15, 0.2);
+      draw("r-L12", t(130), 0.5);
+      tl.fromTo("#chip2", { opacity: 0, y: -240 }, { opacity: 1, y: -240, duration: 0.2, immediateRender: false }, t(133));
+      tl.to("#chip2", { y: 0, duration: 0.6, ease: "bounce.out" }, t(134));
+      out("#g-c .gj .je", t(135) - 0.05, 0.15);
+      swapV("#g-c", "v2", "v3", t(137));
+      out("#r-L12", t(138), 0.2);
+      draw("r-gc", t(139), 0.5);
+      pop("#g-b .gk", t(141), { from: 0.4 });
+      tl.to("#O2", { opacity: 1, duration: 0.25 }, t(141) + 0.2);
+      tl.to("#L13", { opacity: 1, duration: 0.1 }, t(141));
+      pop("#n-ben2", t(141) - 0.5, { from: 0.7 });
+      pop("#g-a .gk", t(143), { from: 0.4 });
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 63.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

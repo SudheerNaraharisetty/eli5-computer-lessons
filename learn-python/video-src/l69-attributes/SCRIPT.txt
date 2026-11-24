@@ -1,0 +1,17 @@
+Kitchen Coach keeps a card for each guest. Ana, Ben and Chloe. Each card is a Guest object, made from one template.
+
+Each guest has jars of their own. Self dot name lives on Ana's card, and nowhere else.
+
+A jar written on the template itself is different. It is a class attribute. One jar, shared by every guest.
+
+And someone put the allergies list there. Allergies equals an empty list, right on the template.
+
+Chloe is gluten-free. So, Chloe dot allergies dot append, gluten.
+
+Watch where it lands. Not on Chloe's card. In the shared jar. Now Ben is gluten-free too. And Ana. Wrong, and wrong.
+
+The fix. Move the list into init. Self dot allergies equals an empty list. Every new guest gets a jar of their own.
+
+Append gluten again. It goes into Chloe's jar, and only Chloe's. Ben's list stays empty.
+
+Set each object's own things in init. Class attributes are shared by all.

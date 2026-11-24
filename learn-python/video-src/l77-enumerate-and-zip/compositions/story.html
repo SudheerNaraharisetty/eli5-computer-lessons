@@ -1,0 +1,320 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* opening title, left side */
+    #intro { left: 110px; top: 300px; font: 700 84px/1.12 "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #intro .a { color: #3b37e6; }
+    #intro-s { position: absolute; left: 0; top: 230px; font: 800 36px/48px "Manrope", sans-serif; color: #4a4760; letter-spacing: 0; }
+
+    /* part 1: the recipe card, right */
+    #card { left: 1200px; top: 130px; width: 640px; height: 620px; }
+    #card > .bg { position: absolute; inset: 0; border-radius: 26px; background: #fff; }
+    #card-h { position: absolute; left: 32px; top: 22px; font: 700 42px/56px "Fraunces", serif; white-space: nowrap; }
+    #card-line { position: absolute; left: 32px; top: 92px; width: 576px; height: 4px; border-radius: 2px; background: #0e0c1d; }
+    .step { position: absolute; left: 28px; width: 590px; height: 80px; }
+    .step > .tx { position: absolute; left: 104px; top: 0; font: 800 30px/80px "Manrope", sans-serif; white-space: nowrap; }
+    .bdg { position: absolute; left: 0; top: 0; width: 80px; height: 80px; }
+    .bdg > span { position: absolute; inset: 0; border-radius: 50%; text-align: center; font: 700 40px/80px "JetBrains Mono", monospace; }
+    .bdg > .b0 { background: #f6f1eb; box-shadow: 0 0 0 4px #0e0c1d; }
+    .bdg > .bb { background: #b8235a; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    .bdg > .bg { background: #1f7a5c; color: #fff; box-shadow: 0 0 0 4px #0e0c1d; }
+    #st1 { top: 120px; }
+    #st2 { top: 240px; }
+    #st3 { top: 360px; }
+    #st4 { top: 480px; }
+
+    .stamp { height: 88px; padding: 0 34px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 44px/88px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-5deg); white-space: nowrap; }
+    #wrong { left: 1420px; top: 800px; }
+    #verr { left: 1300px; top: 790px; }
+
+    /* part 2: guests and plates, right */
+    .pill { position: absolute; height: 52px; padding: 0 22px; border-radius: 999px; font: 800 28px/52px "Manrope", sans-serif; white-space: nowrap; }
+    .pill.acc { background: #e6e3ff; color: #3b37e6; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; }
+    .pill.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #p-g { left: 1200px; top: 56px; }
+    #p-m { left: 1550px; top: 56px; }
+    .guest { left: 1200px; width: 240px; height: 100px; }
+    .guest > .bg, .plate > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fff; }
+    .guest > .av { position: absolute; left: 22px; top: 20px; width: 60px; height: 60px; border-radius: 50%; color: #fff; text-align: center; font: 800 30px/60px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    .guest > .nm { position: absolute; left: 100px; top: 0; font: 700 38px/100px "Fraunces", serif; white-space: nowrap; }
+    .plate { left: 1550px; width: 290px; height: 100px; }
+    .plate > svg { position: absolute; left: 18px; top: 18px; width: 64px; height: 64px; }
+    .plate > .ml { position: absolute; left: 96px; top: 0; font: 800 30px/100px "Manrope", sans-serif; white-space: nowrap; }
+    #g1, #m1 { top: 150px; }
+    #g2, #m2 { top: 290px; }
+    #g3, #m3 { top: 430px; }
+    #g4 { top: 570px; }
+    #slot { left: 1550px; top: 570px; width: 290px; height: 100px; border-radius: 22px; border: 5px dashed #b8235a; color: #b8235a; text-align: center; font: 800 30px/90px "Manrope", sans-serif; }
+    #teeth { left: 1478px; top: 150px; width: 40px; height: 380px; }
+    #teeth rect { fill: #0e0c1d; }
+    #dropped { left: 1214px; top: 700px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ot { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; white-space: pre; opacity: 0; color: #c9c6ff; }
+    .ot.bad { color: #ff8fab; }
+    .ot.ok { color: #7cf0b5; }
+    #E1 { font-size: 28px; color: #ff8fab; }
+    #out-l { position: absolute; left: 40px; font: 800 28px/40px "Manrope", sans-serif; color: #c9c6ff; opacity: 0; }
+    .s-note { position: absolute; height: 50px; padding: 0 22px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 28px/50px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.6" data-track-index="1">
+      <div id="s-wrap">
+
+        <div id="intro" class="s-abs">Chloe's <span class="a">gluten-free</span><br />pancakes.<div id="intro-s" class="s-hide">4 steps on the recipe card.</div></div>
+
+        <!-- part 1: the recipe card -->
+        <div id="card" class="s-abs">
+          <div class="bg s-ol"></div>
+          <div id="card-h">Chloe's pancakes</div>
+          <div id="card-line"></div>
+          <div class="step s-hide" id="st1"><div class="bdg"><span class="b0"></span><span class="bb s-hide">0</span><span class="bg s-hide">1</span></div><div class="tx">Whisk rice flour and milk</div></div>
+          <div class="step s-hide" id="st2"><div class="bdg"><span class="b0"></span><span class="bb s-hide">1</span><span class="bg s-hide">2</span></div><div class="tx">Beat in 2 eggs</div></div>
+          <div class="step s-hide" id="st3"><div class="bdg"><span class="b0"></span><span class="bb s-hide">2</span><span class="bg s-hide">3</span></div><div class="tx">Rest the batter 10 minutes</div></div>
+          <div class="step s-hide" id="st4"><div class="bdg"><span class="b0"></span><span class="bb s-hide">3</span><span class="bg s-hide">4</span></div><div class="tx">Fry 2 minutes a side</div></div>
+        </div>
+        <div id="wrong" class="s-abs stamp s-hide">WRONG</div>
+
+        <!-- part 2: guests and plates -->
+        <div id="p-g" class="pill acc s-hide">guests</div>
+        <div id="p-m" class="pill ok s-hide">meals</div>
+        <div id="g1" class="s-abs guest s-hide"><div class="bg s-ol"></div><div class="av" style="background:#3b37e6">A</div><div class="nm">Ana</div></div>
+        <div id="g2" class="s-abs guest s-hide"><div class="bg s-ol"></div><div class="av" style="background:#1f7a5c">B</div><div class="nm">Ben</div></div>
+        <div id="g3" class="s-abs guest s-hide"><div class="bg s-ol"></div><div class="av" style="background:#b8235a">C</div><div class="nm">Chloe</div></div>
+        <div id="g4" class="s-abs guest s-hide"><div class="bg s-ol"></div><div class="av" style="background:#b9741a">D</div><div class="nm">Dev</div></div>
+        <div id="m1" class="s-abs plate s-hide"><div class="bg s-ol"></div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="32" r="17" fill="#fbebd2" stroke="#0e0c1d" stroke-width="3" /></svg><div class="ml">pasta</div></div>
+        <div id="m2" class="s-abs plate s-hide"><div class="bg s-ol"></div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="32" r="17" fill="#fbe0ea" stroke="#0e0c1d" stroke-width="3" /></svg><div class="ml">bean chili</div></div>
+        <div id="m3" class="s-abs plate s-hide"><div class="bg s-ol"></div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="32" r="17" fill="#ddefe6" stroke="#0e0c1d" stroke-width="3" /></svg><div class="ml">pancakes</div></div>
+        <div id="slot" class="s-abs s-hide">no plate</div>
+        <svg id="teeth" class="s-abs s-hide" viewBox="0 0 40 380"><rect x="0" y="0" width="24" height="14" rx="3" /><rect x="16" y="24" width="24" height="14" rx="3" /><rect x="0" y="48" width="24" height="14" rx="3" /><rect x="16" y="72" width="24" height="14" rx="3" /><rect x="0" y="96" width="24" height="14" rx="3" /><rect x="16" y="120" width="24" height="14" rx="3" /><rect x="0" y="144" width="24" height="14" rx="3" /><rect x="16" y="168" width="24" height="14" rx="3" /><rect x="0" y="192" width="24" height="14" rx="3" /><rect x="16" y="216" width="24" height="14" rx="3" /><rect x="0" y="240" width="24" height="14" rx="3" /><rect x="16" y="264" width="24" height="14" rx="3" /><rect x="0" y="288" width="24" height="14" rx="3" /><rect x="16" y="312" width="24" height="14" rx="3" /><rect x="0" y="336" width="24" height="14" rx="3" /><rect x="16" y="360" width="24" height="14" rx="3" /></svg>
+        <div id="dropped" class="pill bad s-hide">dropped, no error</div>
+        <div id="verr" class="s-abs stamp s-hide">ValueError</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol s-hide">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl" id="ttl1">pancakes.py</span><span class="ttl s-hide" id="ttl2">place_cards.py</span></div>
+          <!-- view A: numbered steps -->
+          <div class="ln va" id="A1" style="top:88px">steps = [</div>
+          <div class="ln va" id="A2" style="top:138px">    <span class="m">"Whisk rice flour and milk"</span>,</div>
+          <div class="ln va" id="A3" style="top:188px">    <span class="m">"Beat in 2 eggs"</span>,</div>
+          <div class="ln va" id="A4" style="top:238px">    <span class="m">"Rest the batter 10 minutes"</span>,</div>
+          <div class="ln va" id="A5" style="top:288px">    <span class="m">"Fry 2 minutes a side"</span>,</div>
+          <div class="ln va" id="A6" style="top:338px">]</div>
+          <div class="ln va" id="A8" style="top:438px"><span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="f">len</span>(steps)):</div>
+          <div class="ln va" id="A9" style="top:488px">    <span class="f">print</span>(<span class="m">f"Step {i}: {steps[i]}"</span>)</div>
+          <div class="ln va" id="B8" style="top:438px"><span class="k">for</span> i, step <span class="k">in</span> <span class="f">enumerate</span>(steps, start=<span class="m">1</span>):</div>
+          <div class="ln va" id="B9" style="top:488px">    <span class="f">print</span>(<span class="m">f"Step {i}: {step}"</span>)</div>
+          <div class="ot bad va" id="O1" style="top:588px">Step 0: Whisk rice flour and milk</div>
+          <div class="ot ok va" id="O2" style="top:588px">Step 1: Whisk rice flour and milk</div>
+          <div class="s-note va" id="n-pair" style="left:40px; top:688px">each round: a number and a step</div>
+
+          <!-- view B: place cards -->
+          <div class="ln" id="C1" style="top:88px">guests = [<span class="m">"Ana"</span>, <span class="m">"Ben"</span>, <span class="m">"Chloe"</span>]</div>
+          <div class="ln" id="C1b" style="top:88px">guests = [<span class="m">"Ana"</span>, <span class="m">"Ben"</span>, <span class="m">"Chloe"</span>, <span class="m">"Dev"</span>]</div>
+          <div class="ln" id="C2" style="top:138px">meals = [<span class="m">"pasta"</span>, <span class="m">"bean chili"</span>, <span class="m">"pancakes"</span>]</div>
+          <div class="ln" id="C4" style="top:238px"><span class="k">for</span> guest, meal <span class="k">in</span> <span class="f">zip</span>(guests, meals):</div>
+          <div class="ln" id="C4b" style="top:238px"><span class="k">for</span> guest, meal <span class="k">in</span> <span class="f">zip</span>(guests, meals, strict=<span class="k">True</span>):</div>
+          <div class="ln" id="C5" style="top:288px">    <span class="f">print</span>(<span class="m">f"{guest}: {meal}"</span>)</div>
+          <div class="ot" id="P1" style="top:388px">Ana: pasta</div>
+          <div class="ot" id="P2" style="top:438px">Ben: bean chili</div>
+          <div class="ot" id="P3" style="top:488px">Chloe: pancakes</div>
+          <div class="s-note warn" id="n-quiet" style="left:420px; top:488px">no error, no Dev</div>
+          <div class="ot" id="E1" style="top:588px">ValueError: zip() argument 2 is shorter than argument 1</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-range" style="stroke:#ffc24b" />
+          <path id="r-i" style="stroke:#ffc24b" />
+          <path id="r-step" style="stroke:#7cf0b5" />
+          <path id="r-start" style="stroke:#ff9ee0" />
+          <path id="r-zip" style="stroke:#8fd3ff" />
+          <path id="r-meals" style="stroke:#ffc24b" />
+          <path id="r-dev" class="dash" style="stroke:#b8235a" />
+          <path id="r-strict" style="stroke:#ff9ee0" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.627, 1.428, 2.496, 2.798, 3.17, 3.286, 3.402, 3.831, 4.621, 5.05, 5.399, 5.735, 5.898, 6.072, 6.223, 6.629, 7.001, 7.372, 7.639, 8.731, 9.149, 9.938, 10.461, 10.774, 11.111, 12.063, 12.388, 12.771, 12.992, 13.293, 13.653, 14.443, 14.907, 15.081, 15.186, 15.546, 15.673, 16.184, 17.496, 17.705, 18.007, 18.135, 18.402, 18.657, 18.959, 19.11, 19.737, 19.899, 20.48, 20.747, 20.875, 21.931, 22.233, 22.581, 22.999, 23.615, 23.812, 23.916, 24.288, 24.45, 24.868, 25.193, 25.669, 26.25, 27.225, 27.666, 27.829, 28.177, 28.804, 29.141, 29.594, 29.849, 30.186, 31.161, 31.602, 31.927, 32.125, 32.368, 32.728, 32.949, 33.564, 33.808, 33.936, 34.273, 34.389, 34.482, 35.55, 35.945, 36.235, 37.117, 37.419, 37.721, 38.011, 38.545, 38.917, 39.196, 40.357, 40.751, 41.123, 41.97, 42.145, 42.284, 42.621, 43.445, 43.723, 44.246, 44.455, 44.826, 45.152, 46.231, 46.556, 46.939, 47.032, 47.148, 47.601, 48.054, 48.275, 48.611, 49.587, 49.9, 50.689, 51.049, 51.212, 51.63, 52.42, 52.733, 53.047, 53.592, 54.115, 54.811, 55.055, 55.136, 55.496, 55.833, 56.03, 56.681, 57.145, 57.934, 58.26, 58.689, 59.095, 59.246, 59.63, 59.827, 60.396, 61.127, 61.859, 62.253, 62.88, 63.298, 63.693];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => {
+        const c0 = text.indexOf(sub), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28);
+      };
+      tok("r-range", "for i in range(len(steps)):", "range(len(steps))", 438);
+      tok("r-i", "for i, step in enumerate(steps, start=1):", "i", 438, 16);
+      tok("r-step", "for i, step in enumerate(steps, start=1):", "step", 438, 10);
+      tok("r-start", "for i, step in enumerate(steps, start=1):", "start=1", 438, 10);
+      tok("r-zip", "for guest, meal in zip(guests, meals):", "zip(guests, meals)", 238, 12);
+      tok("r-meals", 'meals = ["pasta", "bean chili", "pancakes"]', '["pasta", "bean chili", "pancakes"]', 138, 12);
+      tok("r-strict", "for guest, meal in zip(guests, meals, strict=True):", "strict=True", 238, 10);
+      ring("r-dev", 1320, 620, 160, 72);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const swapBadge = (n, at) => { out(`#st${n} .bb`, at, 0.12); pop(`#st${n} .bg`, at + 0.05, { from: 0.4 }); };
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Chloe's pancakes: 4 steps on the card ---- */
+      show("#intro-s", t(3) - 0.1, 0.35);
+      [1, 2, 3, 4].forEach((n, k) => pop(`#st${n}`, t(3) + k * 0.22, { from: 0.85, d: 0.35 }));
+
+      /* ---- 2. Kitchen Coach prints them with range(len(...)) ---- */
+      out("#intro", t(9) - 0.1, 0.3);
+      tl.fromTo("#s-code", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", immediateRender: false }, t(9) + 0.1);
+      type("#A1", t(10), 9, 0.2);
+      type("#A2", t(10) + 0.25, 32, 0.35);
+      type("#A3", t(10) + 0.55, 21, 0.25);
+      type("#A4", t(11), 33, 0.35);
+      type("#A5", t(11) + 0.35, 27, 0.3);
+      type("#A6", t(11) + 0.65, 1, 0.05);
+      type("#A8", t(15), 27, 0.45);
+      draw("r-range", t(17), 0.45);
+      type("#A9", t(18) + 0.1, 34, 0.5);
+
+      /* ---- 3. Step zero? Every number is one too low ---- */
+      type("#O1", t(20), 33, 0.45);
+      [1, 2, 3, 4].forEach((n, k) => pop(`#st${n} .bb`, t(21) + k * 0.12, { from: 0.4 }));
+      bump("#O1", t(24), 1.04);
+      [1, 2, 3, 4].forEach((n, k) => bump(`#st${n} .bdg`, t(26) + k * 0.1, 1.15));
+      pop("#wrong", t(29), { from: 1.6, ease: "power3.out", d: 0.3 });
+
+      /* ---- 4. enumerate: a number and the step, start=1 ---- */
+      out(["#wrong", "#r-range"], t(32), 0.25);
+      cursorIn(t(36) - 0.3);
+      cursorTo(160, 560, t(36) - 0.3, 0.45);
+      out(["#A8", "#A9"], t(38) - 0.15, 0.15);
+      type("#B8", t(38), 41, 0.7);
+      cursorOut(t(38) + 0.5);
+      type("#B9", t(38) + 0.8, 30, 0.45);
+      draw("r-i", t(48), 0.35);
+      draw("r-step", t(51), 0.35);
+      pop("#n-pair", t(51) + 0.3, { from: 0.7 });
+      out(["#r-i", "#r-step"], t(52), 0.2);
+      draw("r-start", t(53), 0.4);
+      out("#O1", t(55), 0.15);
+      type("#O2", t(55) + 0.1, 33, 0.45);
+      swapBadge(1, t(61));
+      swapBadge(2, t(62));
+      swapBadge(3, t(63));
+      swapBadge(4, t(64));
+
+      /* ---- 5. Place cards: three guests, three plates, zip ---- */
+      out(["#card", ".va", "#r-start"], t(65), 0.35);
+      out("#ttl1", t(65), 0.2);
+      show("#ttl2", t(65) + 0.25, 0.25);
+      pop("#p-g", t(69), { from: 0.7 });
+      [1, 2, 3].forEach((n, k) => pop(`#g${n}`, t(69) + 0.1 + k * 0.15, { from: 0.7 }));
+      type("#C1", t(69) + 0.1, 32, 0.45);
+      pop("#p-m", t(72), { from: 0.7 });
+      [1, 2, 3].forEach((n, k) => pop(`#m${n}`, t(72) + 0.1 + k * 0.15, { from: 0.7 }));
+      type("#C2", t(72) + 0.1, 43, 0.55);
+      type("#C4", t(74), 38, 0.5);
+      draw("r-zip", t(74) + 0.3, 0.4);
+      type("#C5", t(76), 29, 0.4);
+      [1, 2, 3].forEach((n, k) => {
+        tl.to(`#g${n}`, { x: 50, duration: 0.45, ease: "power3.inOut" }, t(78) + k * 0.3);
+        tl.to(`#m${n}`, { x: -60, duration: 0.45, ease: "power3.inOut" }, t(78) + k * 0.3);
+      });
+      tl.fromTo("#teeth", { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "power2.inOut", immediateRender: false }, t(83));
+      out("#r-zip", t(86), 0.2);
+      type("#P1", t(87), 10, 0.3);
+      bump(["#g1", "#m1"], t(88), 1.05);
+      type("#P2", t(90), 15, 0.35);
+      bump(["#g2", "#m2"], t(91), 1.05);
+      type("#P3", t(94), 15, 0.35);
+      bump(["#g3", "#m3"], t(95), 1.05);
+
+      /* ---- 6. Dev is coming too: four guests, three plates. Dropped ---- */
+      cursorIn(t(97));
+      cursorTo(700, 200, t(97), 0.45);
+      out("#C1", t(98) - 0.05, 0.1);
+      show("#C1b", t(98), 0.1);
+      pop("#g4", t(98), { from: 0.6 });
+      cursorOut(t(99) + 0.2);
+      [1, 2, 3, 4].forEach((n, k) => bump(`#g${n} .av`, t(104) + k * 0.08, 1.2));
+      [1, 2, 3].forEach((n, k) => bump(`#m${n} svg`, t(108) + k * 0.08, 1.2));
+      show("#slot", t(109), 0.3);
+      draw("r-zip", t(110), 0.35);
+      draw("r-meals", t(114), 0.45);
+      pop("#n-quiet", t(118), { from: 0.7 });
+      out(["#r-zip", "#r-meals"], t(120), 0.2);
+      tl.to("#g4", { opacity: 0.35, duration: 0.4 }, t(121));
+      draw("r-dev", t(121), 0.3);
+      pop("#dropped", t(124), { from: 0.6 });
+
+      /* ---- 7. strict=True: a missing plate is loud ---- */
+      out("#n-quiet", t(125), 0.2);
+      cursorIn(t(125));
+      cursorTo(800, 360, t(125), 0.45);
+      out("#C4", t(127) - 0.05, 0.1);
+      show("#C4b", t(127), 0.1);
+      cursorOut(t(128));
+      draw("r-strict", t(128), 0.4);
+      out(["#dropped", "#r-dev"], t(130), 0.2);
+      tl.to("#g4", { opacity: 1, duration: 0.3 }, t(132));
+      bump("#slot", t(135), 1.08);
+      pop("#verr", t(136), { from: 1.6, ease: "power3.out", d: 0.3 });
+      type("#E1", t(138), 55, 1.2);
+      out("#r-strict", t(140), 0.2);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 61.4);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

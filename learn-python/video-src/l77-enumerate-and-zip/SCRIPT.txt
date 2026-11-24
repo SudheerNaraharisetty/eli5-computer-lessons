@@ -1,0 +1,11 @@
+Chloe's gluten-free pancakes. Four steps on the recipe card. Kitchen Coach prints them with a loop over range of len. Step zero? Nobody cooks step zero. Every number is one too low.
+
+Python has a tool for this. Enumerate. It hands the loop two things at once: a number, and the step. Say start equals one, and the steps are numbered one, two, three, four.
+
+Now the place cards. Three guests, and three plates. Zip pairs them up, side by side, like the teeth of a zipper. Ana gets pasta. Ben gets bean chili. Chloe gets pancakes.
+
+Then Dev texts. He is coming too. Four guests, but still three plates. Zip stops at the shortest list, and says nothing. No error. Dev is simply dropped.
+
+So add strict equals true. Now a missing plate is loud. Value error. Zip argument two is shorter than argument one.
+
+Enumerate numbers things. Zip pairs things.

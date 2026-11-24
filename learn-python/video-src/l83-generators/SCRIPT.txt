@@ -1,0 +1,13 @@
+Saturday brunch. Up to 100 guests might want pancakes. So this recipe cooks them all first, and returns a list. 100 pancakes, stacked on the counter.
+
+But right now, only 3 guests are hungry. 97 go cold.
+
+Change one line. Instead of append, write yield. Now calling pancakes runs nothing. You get a generator, a station waiting for orders.
+
+Ana asks with next. The station runs down to the yield, hands her pancake 1, and pauses right there. Nothing else is cooked.
+
+Ben asks. The station wakes up on the same line, goes round the loop once, and hands him pancake 2. Pause again.
+
+Chloe asks. Pancake 3. Three guests, three pancakes, nothing wasted. And a for loop asks for you, one at a time, until the station runs out.
+
+Yield hands out one value and pauses. Nothing is cooked until someone asks.

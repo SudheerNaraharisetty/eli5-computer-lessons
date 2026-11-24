@@ -1,0 +1,361 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* right side, top */
+    #head { left: 1200px; top: 96px; font: 700 52px/64px "Fraunces", serif; white-space: nowrap; }
+    #many { left: 1200px; top: 186px; height: 58px; padding: 0 26px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/58px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* phase 1: the stack on the counter */
+    #space { left: 1200px; top: 400px; width: 300px; height: 540px; border-radius: 18px; border: 5px dashed #6f6b80; }
+    #plate { left: 1215px; top: 896px; width: 270px; height: 44px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #0e0c1d; }
+    .cake { position: absolute; left: 1240px; width: 220px; height: 34px; border-radius: 50%; background: #f2c46b; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .card { background: #fff; border-radius: 22px; }
+    #cooked { left: 1540px; top: 400px; width: 300px; height: 160px; }
+    #cooked > .lb, #eaten > .lb { position: absolute; left: 26px; top: 14px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; }
+    #cooked > .n { position: absolute; left: 26px; top: 54px; font: 700 84px/96px "Fraunces", serif; }
+    #eaten { left: 1540px; top: 600px; width: 300px; height: 160px; }
+    .av { position: absolute; width: 60px; height: 60px; border-radius: 50%; color: #fff; text-align: center; font: 800 30px/60px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #eaten > .av { top: 72px; }
+    #cold { left: 1540px; top: 806px; height: 70px; padding: 0 26px; border-radius: 16px; background: #fbebd2; color: #7a4708; font: 700 38px/70px "Fraunces", serif; box-shadow: 0 0 0 5px #b9741a; white-space: nowrap; }
+
+    /* phase 2: the station and the guests */
+    #st { left: 1200px; top: 196px; width: 640px; height: 280px; }
+    #st > .bg { position: absolute; inset: 0; border-radius: 24px; background: #fff; }
+    #st > .tt { position: absolute; left: 28px; top: 14px; font: 800 32px/48px "Manrope", sans-serif; }
+    #st > .ck { position: absolute; right: 28px; top: 14px; font: 700 30px/48px "JetBrains Mono", monospace; color: #1f7a5c; white-space: pre; }
+    .ckn { position: absolute; left: 0; top: 0; }
+    #ckbox { position: relative; display: inline-block; vertical-align: top; width: 18px; height: 48px; }
+    #grid { position: absolute; left: 28px; top: 82px; width: 584px; height: 170px; border-radius: 18px; background: #3e3b52; }
+    #grid > .w { position: absolute; left: 0; width: 584px; top: 112px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #e6e3ff; }
+    .gp { left: 1440px; top: 300px; width: 160px; height: 34px; border-radius: 50%; background: #f2c46b; box-shadow: 0 0 0 4px #0e0c1d; }
+    #gen { left: 1200px; top: 520px; height: 64px; padding: 0 24px; border-radius: 14px; background: #15132b; color: #c9c6ff; font: 500 28px/64px "JetBrains Mono", monospace; white-space: pre; }
+    .gu { top: 640px; width: 200px; height: 290px; }
+    .gu > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fff; }
+    .gu > .av { left: 70px; top: 22px; }
+    .gu > .nm { position: absolute; left: 0; width: 200px; top: 96px; text-align: center; font: 800 32px/44px "Manrope", sans-serif; }
+    .gu > .pl { position: absolute; left: 0; width: 200px; top: 228px; text-align: center; font: 700 28px/40px "JetBrains Mono", monospace; color: #1f7a5c; }
+    #g1 { left: 1200px; }
+    #g2 { left: 1420px; }
+    #g3 { left: 1640px; }
+    #all3 { left: 1200px; top: 952px; height: 64px; padding: 0 26px; border-radius: 999px; background: #ddefe6; color: #1f7a5c; font: 800 30px/64px "Manrope", sans-serif; box-shadow: 0 0 0 4px #1f7a5c; white-space: nowrap; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    #hl { position: absolute; left: 14px; top: 88px; width: 1012px; height: 50px; border-radius: 10px; background: rgba(255, 194, 75, 0.18); box-shadow: inset 6px 0 0 #ffc24b; opacity: 0; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .c { color: #a9a5d6; }
+    #pz { position: absolute; left: 580px; top: 193px; height: 40px; padding: 0 18px 0 50px; border-radius: 999px; background: #ffc24b; color: #15132b; font: 800 28px/40px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #pz > i { position: absolute; top: 10px; width: 7px; height: 20px; border-radius: 2px; background: #15132b; }
+    .s-note { position: absolute; height: 54px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.warn { background: #fbebd2; color: #7a4708; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.9" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right side, top -->
+        <div id="head" class="s-abs">Saturday brunch</div>
+        <div id="many" class="s-abs s-hide">up to 100 guests</div>
+
+        <!-- phase 1: cook them all first -->
+        <div id="space" class="s-abs"></div>
+        <div id="plate" class="s-abs"></div>
+        <div id="cakes">
+<!-- CAKES:BEGIN -->
+          <div class="cake" id="c0" style="top:880px"></div>
+          <div class="cake" id="c1" style="top:867px"></div>
+          <div class="cake" id="c2" style="top:854px"></div>
+          <div class="cake" id="c3" style="top:841px"></div>
+          <div class="cake" id="c4" style="top:828px"></div>
+          <div class="cake" id="c5" style="top:815px"></div>
+          <div class="cake" id="c6" style="top:802px"></div>
+          <div class="cake" id="c7" style="top:789px"></div>
+          <div class="cake" id="c8" style="top:776px"></div>
+          <div class="cake" id="c9" style="top:763px"></div>
+          <div class="cake" id="c10" style="top:750px"></div>
+          <div class="cake" id="c11" style="top:737px"></div>
+          <div class="cake" id="c12" style="top:724px"></div>
+          <div class="cake" id="c13" style="top:711px"></div>
+          <div class="cake" id="c14" style="top:698px"></div>
+          <div class="cake" id="c15" style="top:685px"></div>
+          <div class="cake" id="c16" style="top:672px"></div>
+          <div class="cake" id="c17" style="top:659px"></div>
+          <div class="cake" id="c18" style="top:646px"></div>
+          <div class="cake" id="c19" style="top:633px"></div>
+          <div class="cake" id="c20" style="top:620px"></div>
+          <div class="cake" id="c21" style="top:607px"></div>
+          <div class="cake" id="c22" style="top:594px"></div>
+          <div class="cake" id="c23" style="top:581px"></div>
+          <div class="cake" id="c24" style="top:568px"></div>
+          <div class="cake" id="c25" style="top:555px"></div>
+          <div class="cake" id="c26" style="top:542px"></div>
+          <div class="cake" id="c27" style="top:529px"></div>
+          <div class="cake" id="c28" style="top:516px"></div>
+          <div class="cake" id="c29" style="top:503px"></div>
+          <div class="cake" id="c30" style="top:490px"></div>
+          <div class="cake" id="c31" style="top:477px"></div>
+          <div class="cake" id="c32" style="top:464px"></div>
+          <div class="cake" id="c33" style="top:451px"></div>
+          <div class="cake" id="c34" style="top:438px"></div>
+          <div class="cake" id="c35" style="top:425px"></div>
+          <div class="cake" id="c36" style="top:412px"></div>
+          <div class="cake" id="c37" style="top:399px"></div>
+          <div class="cake" id="c38" style="top:386px"></div>
+          <div class="cake" id="c39" style="top:373px"></div>
+          <div class="cake" id="c40" style="top:360px"></div>
+          <div class="cake" id="c41" style="top:347px"></div>
+          <div class="cake" id="c42" style="top:334px"></div>
+          <div class="cake" id="c43" style="top:321px"></div>
+<!-- CAKES:END -->
+        </div>
+        <div id="cooked" class="s-abs card s-ol s-hide"><div class="lb">cooked</div><div class="n" id="cn">0</div></div>
+        <div id="eaten" class="s-abs card s-ol s-hide"><div class="lb">eaten: 3</div>
+          <div class="av s-hide" id="ea" style="left:26px; background:#1f7a5c">A</div>
+          <div class="av s-hide" id="eb" style="left:106px; background:#3b37e6">B</div>
+          <div class="av s-hide" id="ec" style="left:186px; background:#b8235a">C</div>
+        </div>
+        <div id="cold" class="s-abs s-hide">97 go cold</div>
+
+        <!-- phase 2: the station -->
+        <div id="st" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="tt">pancake station</div>
+          <div class="ck">cooked: <span id="ckbox" data-layout-allow-overlap><span class="ckn" id="k0">0</span><span class="ckn s-hide" id="k1">1</span><span class="ckn s-hide" id="k2">2</span><span class="ckn s-hide" id="k3">3</span></span></div>
+          <div id="grid"><div class="w" id="wait">waiting for orders</div></div>
+        </div>
+        <div id="gen" class="s-abs s-hide">&lt;generator object pancakes ...&gt;</div>
+        <div id="g1" class="s-abs gu s-hide"><div class="bg s-ol"></div><div class="av" style="background:#1f7a5c">A</div><div class="nm">Ana</div><div class="pl s-hide">pancake 1</div></div>
+        <div id="g2" class="s-abs gu s-hide"><div class="bg s-ol"></div><div class="av" style="background:#3b37e6">B</div><div class="nm">Ben</div><div class="pl s-hide">pancake 2</div></div>
+        <div id="g3" class="s-abs gu s-hide"><div class="bg s-ol"></div><div class="av" style="background:#b8235a">C</div><div class="nm">Chloe</div><div class="pl s-hide">pancake 3</div></div>
+        <div id="gp1" class="s-abs gp s-hide"></div>
+        <div id="gp2" class="s-abs gp s-hide"></div>
+        <div id="gp3" class="s-abs gp s-hide"></div>
+        <div id="all3" class="s-abs s-hide">3 asked, 3 cooked, nothing wasted</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl">brunch.py</span></div>
+          <div id="hl"></div>
+          <!-- phase 1 -->
+          <div class="ln" id="A1" style="top:88px"><span class="k">def</span> <span class="f">pancakes</span>(n):</div>
+          <div class="ln" id="A2" style="top:138px">    plates = []</div>
+          <div class="ln" id="A3" style="top:188px">    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(1, n + 1):</div>
+          <div class="ln" id="A4" style="top:238px">        plates.<span class="f">append</span>(<span class="m">f"pancake {i}"</span>)</div>
+          <div class="ln" id="B4" style="top:238px">        <span class="k">yield</span> <span class="m">f"pancake {i}"</span></div>
+          <div class="ln" id="A5" style="top:288px">    <span class="k">return</span> plates</div>
+          <div class="ln" id="A7" style="top:388px">stack = <span class="f">pancakes</span>(100)</div>
+          <!-- phase 2 -->
+          <div class="ln" id="B5" style="top:288px">station = <span class="f">pancakes</span>(100)</div>
+          <div class="ln" id="B6" style="top:338px"><span class="f">next</span>(station)   <span class="c"># Ana</span></div>
+          <div class="ln" id="B7" style="top:388px"><span class="f">next</span>(station)   <span class="c"># Ben</span></div>
+          <div class="ln" id="B8" style="top:438px"><span class="f">next</span>(station)   <span class="c"># Chloe</span></div>
+          <div class="ln" id="B9" style="top:538px"><span class="k">for</span> plate <span class="k">in</span> station:</div>
+          <div class="ln" id="B10" style="top:588px">    <span class="f">print</span>(plate)</div>
+          <div id="pz"><i style="left:20px"></i><i style="left:32px"></i>paused here</div>
+          <div class="s-note warn" id="n-gone" style="left:300px; top:136px">not needed now</div>
+          <div class="s-note" id="n-none" style="left:490px; top:286px">runs nothing yet</div>
+          <div class="s-note ok" id="n-for" style="left:40px; top:688px">asks with next() for you</div>
+          <div class="s-note warn" id="n-out" style="left:40px; top:768px">until the station runs out</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-ret" style="stroke:#ff8fab" />
+          <path id="r-app" style="stroke:#ffc24b" />
+          <path id="r-yield" style="stroke:#7cf0b5" />
+          <path id="r-ck" style="stroke:#1f7a5c" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.615, 1.463, 1.695, 1.846, 2.345, 2.717, 2.937, 3.158, 4.272, 4.551, 4.783, 5.19, 5.468, 5.631, 5.805, 6.444, 6.641, 7.07, 7.175, 7.964, 8.51, 9.358, 9.868, 9.973, 10.089, 10.995, 11.204, 11.447, 11.819, 12.19, 12.539, 13.003, 13.259, 14.327, 15.151, 15.464, 16.173, 16.637, 16.951, 17.798, 18.181, 18.297, 19.075, 19.481, 20.596, 20.898, 21.246, 21.826, 22.14, 22.72, 22.906, 23.057, 23.162, 23.847, 23.974, 24.52, 24.903, 25.089, 26.052, 26.447, 26.912, 27.155, 28.282, 28.444, 28.897, 29.187, 29.454, 29.582, 29.721, 30.371, 30.696, 30.836, 31.393, 31.776, 32.02, 32.6, 32.879, 33.889, 34.365, 34.679, 34.911, 35.642, 35.99, 37.059, 37.233, 37.709, 38.034, 38.231, 38.347, 38.463, 38.788, 39.206, 39.497, 39.706, 39.822, 40.124, 40.716, 40.983, 41.273, 41.459, 42.074, 43.119, 43.467, 44.175, 44.64, 45.336, 46.021, 46.95, 47.287, 47.937, 48.285, 49.179, 49.574, 50.468, 50.677, 50.758, 50.909, 51.188, 51.571, 51.745, 52.268, 52.488, 52.616, 52.72, 53.324, 53.638, 53.754, 54.265, 54.59, 55.472, 55.948, 56.262, 56.505, 56.819, 57.272, 57.527, 58.676, 59.094, 59.292, 59.733, 60.104, 60.488];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      // a token in a code row: text starts at page x 136, centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad) => { const c0 = text.indexOf(sub), c1 = c0 + sub.length; ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28); };
+      tok("r-ret", "    return plates", "return plates", 288, 22);
+      tok("r-app", '        plates.append(f"pancake {i}")', "plates.append", 238, 14);
+      tok("r-yield", '        yield f"pancake {i}"', "yield", 188, 14);
+      ring("r-ck", 1731, 234, 104, 32);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const hlTo = (row, at, d) => tl.to("#hl", { y: row - 88, duration: d || 0.25, ease: "power2.inOut" }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+
+      /* ---- 1. Brunch: up to 100 guests; this recipe cooks them all first ---- */
+      pop("#many", t(4), { from: 0.7 });
+      type("#A1", 0.3, 16, 0.3);
+      type("#A2", 0.65, 15, 0.3);
+      type("#A3", 1.0, 29, 0.4);
+      type("#A4", 1.45, 37, 0.45);
+      type("#A5", 1.95, 17, 0.3);
+      type("#A7", 2.3, 21, 0.35);
+      // cooks them all first: the stack grows and the counter runs to 100
+      const cakes = document.querySelectorAll(".cake");
+      const c0 = t(12), c1 = t(20) + 0.1, step = (c1 - c0) / cakes.length;
+      tl.fromTo("#hl", { opacity: 0 }, { opacity: 1, duration: 0.2, immediateRender: false }, c0 - 0.2);
+      tl.set("#hl", { y: 238 - 88 }, c0 - 0.2);
+      pop("#cooked", c0 - 0.2, { from: 0.7, d: 0.35 });
+      cakes.forEach((c, j) => tl.fromTo(c, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out", immediateRender: false }, c0 + j * step));
+      const cnt = { v: 0 };
+      tl.fromTo(cnt, { v: 0 }, { v: 100, duration: c1 - c0 + 0.15, ease: "none", immediateRender: false, onUpdate: () => { document.getElementById("cn").textContent = String(Math.round(cnt.v)); } }, c0);
+      // returns a list
+      hlTo(288, t(17) - 0.1, 0.2);
+      draw("r-ret", t(17), 0.4);
+      // 100 pancakes, stacked: the stack spills over its space
+      bump("#cooked", t(20) + 0.3, 1.08);
+      tl.to("#space", { borderColor: "#b8235a", duration: 0.3 }, t(21));
+      bump("#plate", t(22), 1.04);
+
+      /* ---- 2. Only 3 guests are hungry. 97 go cold ---- */
+      out(["#r-ret", "#hl"], t(26), 0.2);
+      pop("#eaten", t(29), { from: 0.7, d: 0.35 });
+      const top3 = [cakes[cakes.length - 1], cakes[cakes.length - 2], cakes[cakes.length - 3]];
+      ["#ea", "#eb", "#ec"].forEach((s, k) => {
+        const at = t(30) + k * 0.35;
+        const c = top3[k];
+        const y0 = parseFloat(c.style.top);
+        tl.to(c, { x: 330 + k * 80 - 80, y: 690 - y0, scale: 0.3, duration: 0.45, ease: "power3.in" }, at);
+        tl.to(c, { opacity: 0, duration: 0.1 }, at + 0.42);
+        pop(s, at + 0.4, { from: 0.4, d: 0.3 });
+      });
+      tl.to(Array.from(cakes).slice(0, cakes.length - 3), { backgroundColor: "#c8d3e0", duration: 0.6, stagger: 0.008 }, t(34));
+      pop("#cold", t(34) + 0.1, { from: 1.5, ease: "power3.out", d: 0.3 });
+
+      /* ---- 3. Change one line: append becomes yield ---- */
+      cursorIn(t(37) + 0.2);
+      cursorTo(136 + 16 * 18, 96 + 238 + 42, t(37) + 0.2, 0.5);
+      draw("r-app", t(40), 0.4);
+      out("#r-app", t(43) - 0.1, 0.15);
+      out("#A4", t(43) - 0.05, 0.12);
+      type("#B4", t(44), 28, 0.4);
+      cursorOut(t(44) + 0.3);
+      out(["#space", "#plate", "#cooked", "#eaten", "#cold", "#many"], t(43), 0.3);
+      tl.to(Array.from(cakes), { opacity: 0, duration: 0.3 }, t(43));
+      // the two lines the list needed are left over: tidy them away
+      tl.to(["#A2", "#A5", "#A7"], { opacity: 0.35, duration: 0.2 }, t(44) + 0.4);
+      pop("#n-gone", t(44) + 0.4, { from: 0.7, d: 0.3 });
+      out(["#A2", "#A5", "#A7", "#n-gone"], t(46) - 0.15, 0.2);
+      tl.to(["#A3", "#B4"], { y: -50, duration: 0.35, ease: "power2.inOut" }, t(46) + 0.05);
+      // now calling pancakes runs nothing: you get a generator, a station waiting for orders
+      type("#B5", t(46) + 0.3, 23, 0.35);
+      pop("#n-none", t(48), { from: 0.7 });
+      pop("#gen", t(53), { from: 0.7 });
+      pop("#st", t(55), { from: 0.8 });
+      bump("#wait", t(57), 1.08);
+
+      /* ---- 4. Ana asks with next: run down to the yield, hand out pancake 1, pause ---- */
+      out("#n-none", t(59) - 0.1, 0.2);
+      pop("#g1", t(59), { from: 0.7 });
+      type("#B6", t(61), 21, 0.35);
+      tl.set("#hl", { y: 0 }, t(63) - 0.05);
+      show("#hl", t(63), 0.15);
+      hlTo(138, t(65), 0.2);
+      hlTo(188, t(68), 0.2);
+      draw("r-yield", t(69), 0.35);
+      tl.to("#wait", { opacity: 0, duration: 0.15 }, t(69));
+      pop("#gp1", t(70), { from: 0.5, d: 0.3 });
+      tl.to("#gp1", { x: -220, y: 512, scale: 0.85, duration: 0.6, ease: "power3.inOut" }, t(71));
+      show("#g1 .pl", t(73), 0.2);
+      out("#k0", t(71) + 0.3, 0.1);
+      pop("#k1", t(71) + 0.35, { from: 0.4, d: 0.25 });
+      out("#r-yield", t(75) - 0.2, 0.15);
+      pop("#pz", t(75), { from: 0.6, d: 0.3 });
+      show("#wait", t(75) + 0.1, 0.2);
+      draw("r-ck", t(78), 0.4);
+
+      /* ---- 5. Ben asks: wake up on the same line, round the loop once, pancake 2, pause ---- */
+      out("#r-ck", t(82), 0.2);
+      pop("#g2", t(82), { from: 0.7 });
+      type("#B7", t(83), 21, 0.35);
+      bump("#hl", t(86), 1.03);
+      out("#pz", t(86) + 0.2, 0.2);
+      hlTo(138, t(93), 0.25);
+      hlTo(188, t(96), 0.25);
+      tl.to("#wait", { opacity: 0, duration: 0.15 }, t(96));
+      pop("#gp2", t(98) - 0.1, { from: 0.5, d: 0.3 });
+      tl.to("#gp2", { x: 0, y: 512, scale: 0.85, duration: 0.6, ease: "power3.inOut" }, t(98) + 0.3);
+      show("#g2 .pl", t(101), 0.2);
+      out("#k1", t(98) + 0.6, 0.1);
+      pop("#k2", t(98) + 0.65, { from: 0.4, d: 0.25 });
+      pop("#pz", t(102), { from: 0.6, d: 0.3 });
+      show("#wait", t(102) + 0.1, 0.2);
+
+      /* ---- 6. Chloe asks: pancake 3. Three guests, three pancakes ---- */
+      pop("#g3", t(104), { from: 0.7 });
+      type("#B8", t(104) + 0.2, 23, 0.35);
+      out("#pz", t(105), 0.15);
+      hlTo(138, t(105) + 0.1, 0.2);
+      hlTo(188, t(105) + 0.45, 0.2);
+      tl.to("#wait", { opacity: 0, duration: 0.15 }, t(105) + 0.5);
+      pop("#gp3", t(106) - 0.1, { from: 0.5, d: 0.3 });
+      tl.to("#gp3", { x: 220, y: 512, scale: 0.85, duration: 0.55, ease: "power3.inOut" }, t(106) + 0.25);
+      show("#g3 .pl", t(107) + 0.1, 0.2);
+      out("#k2", t(106) + 0.5, 0.1);
+      pop("#k3", t(106) + 0.55, { from: 0.4, d: 0.25 });
+      pop("#pz", t(107) + 0.4, { from: 0.6, d: 0.3 });
+      show("#wait", t(107) + 0.5, 0.2);
+      bump("#g1", t(108), 1.05);
+      bump("#g2", t(110), 1.05);
+      bump("#g3", t(110) + 0.35, 1.05);
+      pop("#all3", t(112), { from: 0.7 });
+
+      /* ---- 7. A for loop asks for you, one at a time, until the station runs out ---- */
+      type("#B9", t(116), 21, 0.35);
+      type("#B10", t(116) + 0.4, 16, 0.3);
+      pop("#n-for", t(118), { from: 0.7 });
+      out("#pz", t(121) - 0.1, 0.15);
+      hlTo(138, t(121), 0.2);
+      hlTo(188, t(122) + 0.05, 0.2);
+      hlTo(138, t(124), 0.2);
+      hlTo(188, t(124) + 0.35, 0.2);
+      pop("#n-out", t(125), { from: 0.7 });
+      out("#hl", t(129), 0.3);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 55.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,13 @@
+Ben types python3 coach dot py. What happens before he sees one hundred forty five?
+
+First, Python reads the whole card. Every line, before it cooks anything.
+
+The words become a small tree. Return, plus, and under it, protein and thirty.
+
+Then the chef rewrites the tree as tiny numbered steps. This is bytecode. Load protein. Load thirty. Binary op, plus. Return value.
+
+Now the line cook takes over, one step at a time. One hundred fifteen goes on the counter. Thirty goes on top. Plus takes both off, and puts back one hundred forty five. Return hands it to Ben.
+
+Now smudge line five. One comma is missing. The chef starts reading, stops at line five, and rejects the whole card. Nothing is cooked. Not even line one. Syntax error.
+
+Python reads the whole file, turns it into bytecode, then runs it one small step at a time.

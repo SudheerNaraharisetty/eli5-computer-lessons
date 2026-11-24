@@ -1,0 +1,13 @@
+Ana is meal prepping for her half-marathon. She wants Kitchen Coach to say when each recipe starts, and when it ends.
+
+So you copy the same lines into every recipe. Five recipes, ten copies. One copy is wrong, and nobody notices.
+
+Instead, clip a kitchen timer onto the card. timed takes a function, and hands back a new one, the wrapper.
+
+Now call bake. First the timer starts. Then the real recipe cooks. Then the timer stops, and says: bake took zero point two seconds. And the dish comes back out.
+
+That line, bake equals timed of bake, has a shortcut. At timed, right above the def. It means exactly the same.
+
+Careful. If the wrapper forgets to return the result, the dish stays inside. The plate comes out empty. None.
+
+A decorator wraps a function in extra steps. At timed means bake equals timed of bake.

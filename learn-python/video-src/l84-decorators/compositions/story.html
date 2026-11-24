@@ -1,0 +1,364 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .s-hide { opacity: 0; }
+
+    /* top right: heading, Ana and her request */
+    #head { left: 1200px; top: 96px; font: 700 52px/64px "Fraunces", serif; white-space: nowrap; }
+    #ana { left: 1200px; top: 200px; width: 640px; height: 100px; }
+    #ana > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fff; }
+    #ana > .av { position: absolute; left: 22px; top: 20px; width: 60px; height: 60px; border-radius: 50%; background: #b9741a; color: #fff; text-align: center; font: 800 30px/60px "Manrope", sans-serif; box-shadow: 0 0 0 4px #0e0c1d; }
+    #ana > .nm { position: absolute; left: 104px; top: 0; font: 800 32px/100px "Manrope", sans-serif; white-space: nowrap; }
+    #ask { left: 1200px; top: 350px; width: 640px; height: 150px; }
+    #ask > .bg { position: absolute; inset: 0; border-radius: 22px; background: #e6e3ff; box-shadow: 0 0 0 4px #3b37e6; }
+    #ask > .tx { position: absolute; left: 30px; top: 18px; font: 800 34px/56px "Manrope", sans-serif; color: #3b37e6; white-space: nowrap; }
+
+    /* the five recipe cards that all got the same two lines */
+    .rc { left: 1200px; width: 640px; height: 78px; }
+    .rc > .bg { position: absolute; inset: 0; border-radius: 18px; background: #fff; }
+    .rc > .nm { position: absolute; left: 26px; top: 0; font: 700 32px/78px "JetBrains Mono", monospace; white-space: nowrap; }
+    .rc > .tg { position: absolute; right: 22px; top: 15px; height: 48px; padding: 0 18px; border-radius: 999px; background: #fbebd2; color: #7a4708; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; }
+    .rc > .tg.bad { background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; }
+    #c1 { top: 200px; } #c2 { top: 300px; } #c3 { top: 400px; } #c4 { top: 500px; } #c5 { top: 600px; }
+    #copies { left: 1200px; top: 720px; height: 80px; padding: 0 34px; border-radius: 18px; background: #fbebd2; color: #7a4708; font: 700 44px/80px "Fraunces", serif; box-shadow: 0 0 0 5px #b9741a; white-space: nowrap; }
+    #quiet { left: 1200px; top: 840px; height: 60px; padding: 0 26px; border-radius: 999px; background: #ece7df; color: #3e3b52; font: 800 30px/60px "Manrope", sans-serif; white-space: nowrap; }
+
+    /* the call, the wrapper ring with its timer, the recipe card, the plate */
+    #call { left: 1236px; top: 106px; height: 64px; padding: 0 26px; border-radius: 14px; background: #15132b; color: #eceaff; font: 700 30px/64px "JetBrains Mono", monospace; white-space: pre; }
+    #ring { left: 1250px; top: 240px; width: 540px; height: 500px; border-radius: 44px; box-shadow: 0 0 0 14px #3b37e6; background: rgba(59, 55, 230, 0.06); }
+    #wtag { left: 1272px; top: 254px; height: 50px; padding: 0 20px; border-radius: 12px; background: #3b37e6; color: #fff; font: 700 30px/50px "JetBrains Mono", monospace; white-space: nowrap; }
+    .lamp { left: 1440px; width: 160px; height: 56px; border-radius: 999px; background: #fff; color: #3b37e6; text-align: center; font: 800 30px/56px "Manrope", sans-serif; box-shadow: 0 0 0 4px #3b37e6; }
+    #l-start { top: 212px; }
+    #l-stop { top: 712px; }
+    .lamp.on { background: #3b37e6; color: #fff; }
+    #clock { left: 1690px; top: 164px; width: 150px; height: 150px; }
+    #clock > .face { position: absolute; inset: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px #0e0c1d, 0 8px 0 6px #0e0c1d; }
+    #clock > .knob { position: absolute; left: 61px; top: -26px; width: 28px; height: 22px; border-radius: 6px; background: #0e0c1d; }
+    #clock > .rd { position: absolute; left: 0; top: 0; width: 150px; text-align: center; font: 700 34px/150px "JetBrains Mono", monospace; color: #0e0c1d; }
+    #card { left: 1370px; top: 340px; width: 300px; height: 300px; }
+    #card > .bg { position: absolute; inset: 0; border-radius: 20px; background: #fff; }
+    #card > .h { position: absolute; left: 0; width: 300px; top: 18px; text-align: center; font: 700 44px/60px "JetBrains Mono", monospace; color: #0e0c1d; }
+    #card > .rule { position: absolute; left: 30px; top: 92px; width: 240px; height: 4px; background: #0e0c1d; }
+    #card > .l { position: absolute; left: 0; width: 300px; text-align: center; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    #card > .l1 { top: 116px; }
+    #card > .l2 { top: 160px; }
+    #cook { left: 1588px; top: 556px; width: 64px; height: 64px; }
+    #order { left: 1496px; top: 130px; width: 48px; height: 48px; }
+    #plate { left: 1210px; top: 800px; width: 630px; height: 90px; }
+    #plate > .bg { position: absolute; inset: 0; border-radius: 22px; background: #ddefe6; box-shadow: 0 0 0 5px #1f7a5c, 0 10px 0 5px #1f7a5c; }
+    #plate > svg { position: absolute; left: 16px; top: 13px; width: 64px; height: 64px; }
+    #plate > .tx { position: absolute; left: 94px; top: 0; font: 700 32px/90px "JetBrains Mono", monospace; color: #1f7a5c; white-space: pre; }
+    #empty { left: 1210px; top: 800px; width: 630px; height: 90px; }
+    #empty > .bg { position: absolute; inset: 0; border-radius: 22px; background: #fbe0ea; }
+    #empty > svg { position: absolute; left: 16px; top: 13px; width: 64px; height: 64px; }
+    #empty > .tx { position: absolute; left: 94px; top: 0; font: 700 32px/90px "JetBrains Mono", monospace; color: #b8235a; white-space: pre; }
+    #outp { left: 1210px; top: 924px; height: 60px; padding: 0 24px; border-radius: 14px; background: #15132b; color: #7cf0b5; font: 700 30px/60px "JetBrains Mono", monospace; white-space: pre; }
+    #same { left: 1220px; top: 800px; height: 90px; padding: 0 34px; border-radius: 22px; background: #fff; font: 700 32px/90px "JetBrains Mono", monospace; white-space: pre; }
+    #same .a { color: #3b37e6; }
+    #same .e { color: #6f6b80; font-family: "Manrope", sans-serif; font-weight: 800; }
+    .stamp { height: 96px; padding: 0 38px; border-radius: 16px; background: #fbe0ea; color: #b8235a; text-align: center; font: 700 52px/96px "Fraunces", serif; box-shadow: 0 0 0 6px #b8235a; transform: rotate(-5deg); white-space: nowrap; }
+    #none { left: 1560px; top: 870px; }
+
+    /* code panel on the left: rows of 50 px, text at page x 136; 30 px mono = 18 px per char */
+    #s-code { left: 96px; top: 96px; width: 1040px; height: 888px; background: #15132b; border-radius: 24px; overflow: hidden; }
+    #s-bar { position: absolute; left: 0; top: 0; width: 1040px; height: 64px; background: #211e40; }
+    #s-bar > i { position: absolute; top: 23px; width: 18px; height: 18px; border-radius: 50%; background: #ff6b8b; }
+    #s-bar > i:nth-child(2) { background: #ffc24b; }
+    #s-bar > i:nth-child(3) { background: #4bd69b; }
+    .ttl { position: absolute; left: 120px; top: 12px; font: 700 30px/40px "JetBrains Mono", monospace; color: #c9c6ff; }
+    .ln { position: absolute; left: 40px; font: 500 30px/50px "JetBrains Mono", monospace; color: #eceaff; white-space: pre; opacity: 0; }
+    .ln .k { color: #ffc24b; }
+    .ln .f { color: #8fd3ff; }
+    .ln .m { color: #7cf0b5; }
+    .ln .x { color: #ff8fab; }
+    .ln .d { color: #c9c6ff; }
+    #strike { position: absolute; left: 184px; top: 457px; width: 234px; height: 5px; background: #ff8fab; transform-origin: 0 50%; }
+    .s-note { position: absolute; height: 54px; padding: 0 24px; border-radius: 999px; background: #e6e3ff; color: #3b37e6; font: 800 30px/54px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .s-note.ok { background: #ddefe6; color: #1f7a5c; }
+    .s-note.bad { background: #fbe0ea; color: #b8235a; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-marks path.dash { stroke-dasharray: 14 12; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="55.0" data-track-index="1">
+      <div id="s-wrap">
+
+        <!-- right side, beat 1: Ana and her request -->
+        <div id="head" class="s-abs">Kitchen Coach, meal prep</div>
+        <div id="ana" class="s-abs"><div class="bg s-ol"></div><div class="av">A</div><div class="nm">Ana: half-marathon prep</div></div>
+        <div id="ask" class="s-abs s-hide"><div class="bg"></div><div class="tx">Say when each recipe<br />starts, and when it ends.</div></div>
+
+        <!-- beat 2: five cards, two copied lines each -->
+        <div id="c1" class="s-abs rc s-hide"><div class="bg s-ol"></div><div class="nm">soak_oats</div><div class="tg">+2 lines</div></div>
+        <div id="c2" class="s-abs rc s-hide"><div class="bg s-ol"></div><div class="nm">boil_eggs</div><div class="tg" id="c2ok">+2 lines</div><div class="tg bad s-hide" id="c2bad">wrong name</div></div>
+        <div id="c3" class="s-abs rc s-hide"><div class="bg s-ol"></div><div class="nm">cook_rice</div><div class="tg">+2 lines</div></div>
+        <div id="c4" class="s-abs rc s-hide"><div class="bg s-ol"></div><div class="nm">roast_veg</div><div class="tg">+2 lines</div></div>
+        <div id="c5" class="s-abs rc s-hide"><div class="bg s-ol"></div><div class="nm">pack_boxes</div><div class="tg">+2 lines</div></div>
+        <div id="copies" class="s-abs s-hide">10 copies</div>
+        <div id="quiet" class="s-abs s-hide">no error, no warning</div>
+
+        <!-- beat 3 on: the wrapper ring, its timer, the card inside -->
+        <div id="ring" class="s-abs s-hide"></div>
+        <div id="wtag" class="s-abs s-hide">wrapper</div>
+        <div id="l-start" class="s-abs lamp s-hide">start</div>
+        <div id="l-stop" class="s-abs lamp s-hide">stop</div>
+        <div id="card" class="s-abs s-hide">
+          <div class="bg s-ol"></div>
+          <div class="h">bake</div>
+          <div class="rule"></div>
+          <div class="l l1">the real recipe</div>
+          <div class="l l2">dish, minutes</div>
+        </div>
+        <svg id="cook" class="s-abs s-hide" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="32" r="17" fill="#fbebd2" stroke="#0e0c1d" stroke-width="3" /></svg>
+        <div id="clock" class="s-abs s-hide"><div class="knob"></div><div class="face"></div><div class="rd" id="rd0">0.0 s</div><div class="rd s-hide" id="rd1">0.1 s</div><div class="rd s-hide" id="rd2">0.2 s</div></div>
+        <div id="call" class="s-abs s-hide">bake("pasta bake", 35)</div>
+        <svg id="order" class="s-abs s-hide" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#ffc24b" stroke="#0e0c1d" stroke-width="5" /></svg>
+        <div id="plate" class="s-abs s-hide"><div class="bg"></div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#0e0c1d" stroke-width="4" /><circle cx="32" cy="32" r="17" fill="#fbebd2" stroke="#0e0c1d" stroke-width="3" /></svg><div class="tx">"pasta bake, baked 35 min"</div></div>
+        <div id="empty" class="s-abs s-hide"><div class="bg"></div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fff" stroke="#b8235a" stroke-width="4" stroke-dasharray="9 7" /></svg><div class="tx">empty plate</div></div>
+        <div id="outp" class="s-abs s-hide">bake took 0.2 s</div>
+        <div id="same" class="s-abs s-ol s-hide"><span class="a">@timed</span> <span class="e">=</span> bake = timed(bake)</div>
+        <div id="none" class="s-abs stamp s-hide">None</div>
+
+        <!-- the code panel -->
+        <div id="s-code" class="s-abs s-ol">
+          <div id="s-bar"><i style="left:26px"></i><i style="left:56px"></i><i style="left:86px"></i><span class="ttl" id="tt1">meal_prep.py</span><span class="ttl s-hide" id="tt2">coach.py</span></div>
+          <!-- the pain: the same two lines copied into every recipe -->
+          <div class="ln" id="P1" style="top:84px"><span class="k">def</span> <span class="f">soak_oats</span>(grams):</div>
+          <div class="ln" id="P2" style="top:134px">    <span class="f">print</span>(<span class="m">"Starting soak_oats"</span>)</div>
+          <div class="ln" id="P3" style="top:184px">    jars = grams // <span class="k">80</span></div>
+          <div class="ln" id="P4" style="top:234px">    <span class="f">print</span>(<span class="m">"Finished soak_oats"</span>)</div>
+          <div class="ln" id="P5" style="top:284px">    <span class="k">return</span> jars</div>
+          <div class="ln" id="P6" style="top:384px"><span class="k">def</span> <span class="f">boil_eggs</span>(count):</div>
+          <div class="ln" id="P7" style="top:434px">    <span class="f">print</span>(<span class="m">"Starting boil_eggs"</span>)</div>
+          <div class="ln" id="P8" style="top:484px">    note = <span class="m">f"{count} eggs, 9 min"</span></div>
+          <div class="ln" id="P9" style="top:534px">    <span class="f">print</span>(<span class="m">"Finished soak_oats"</span>)</div>
+          <div class="ln" id="P10" style="top:584px">    <span class="k">return</span> note</div>
+          <div class="ln" id="P11" style="top:684px"><span class="d"># ...and 3 more recipes like these</span></div>
+          <!-- the fix: one wrapper -->
+          <div class="ln" id="A0" style="top:84px"><span class="k">import</span> time</div>
+          <div class="ln" id="A1" style="top:134px"><span class="k">def</span> <span class="f">timed</span>(func):</div>
+          <div class="ln" id="A2" style="top:184px">    <span class="k">def</span> <span class="f">wrapper</span>(*args, **kwargs):</div>
+          <div class="ln" id="A3" style="top:234px">        start = time.perf_counter()</div>
+          <div class="ln" id="A4" style="top:284px">        result = func(*args, **kwargs)</div>
+          <div class="ln" id="A5" style="top:334px">        took = time.perf_counter() - start</div>
+          <div class="ln" id="A6" style="top:384px">        <span class="f">print</span>(<span class="m">f"{func.__name__} took {took:.1f} s"</span>)</div>
+          <div class="ln" id="A7" style="top:434px">        <span class="k">return</span> result</div>
+          <div class="ln" id="A8" style="top:484px">    <span class="k">return</span> wrapper</div>
+          <div class="ln" id="DT" style="top:584px"><span class="x">@timed</span></div>
+          <div class="ln" id="D1" style="top:584px"><span class="k">def</span> <span class="f">bake</span>(dish, minutes):</div>
+          <div class="ln" id="D2" style="top:634px">    time.sleep(<span class="k">0.2</span>)</div>
+          <div class="ln" id="D3" style="top:684px">    <span class="k">return</span> <span class="m">f"{dish}, baked {minutes} min"</span></div>
+          <div class="ln" id="B1" style="top:784px">bake = <span class="f">timed</span>(bake)</div>
+          <div class="ln" id="C1" style="top:834px"><span class="f">bake</span>(<span class="m">"pasta bake"</span>, <span class="k">35</span>)</div>
+          <div id="strike" class="s-hide"></div>
+          <div class="s-note bad" id="n-miss" style="left:450px; top:432px">forgot: return result</div>
+        </div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-start" style="stroke:#ffc24b" />
+          <path id="r-fin" style="stroke:#ffc24b" />
+          <path id="r-wrong" class="dash" style="stroke:#ff8fab" />
+          <path id="r-func" style="stroke:#7cf0b5" />
+          <path id="r-ret" style="stroke:#7cf0b5" />
+          <path id="r-a3" style="stroke:#ffc24b" />
+          <path id="r-a4" style="stroke:#ffc24b" />
+          <path id="r-a6" style="stroke:#ffc24b" />
+          <path id="r-a7" style="stroke:#7cf0b5" />
+          <path id="r-b1" style="stroke:#ff9ee0" />
+          <path id="r-dt" style="stroke:#ff9ee0" />
+          <path id="r-miss" class="dash" style="stroke:#ff8fab" />
+        </svg>
+        <svg id="s-cursor" class="s-abs s-hide" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0.0, 0.36, 0.557, 0.859, 1.265, 1.44, 1.649, 3.193, 3.39, 3.669, 4.063, 4.4, 4.551, 4.841, 5.062, 5.364, 5.793, 6.432, 6.664, 6.85, 7.001, 8.208, 8.487, 8.649, 8.975, 9.114, 9.462, 9.915, 10.286, 10.786, 11.668, 12.028, 12.794, 13.189, 14.431, 14.687, 15.023, 15.174, 15.604, 15.836, 16.324, 17.507, 18.39, 18.692, 18.796, 19.214, 19.69, 20.05, 20.178, 21.165, 21.571, 21.908, 22.001, 22.651, 22.894, 23.185, 23.417, 23.521, 23.777, 24.206, 24.381, 25.484, 25.843, 26.122, 27.039, 27.422, 27.55, 27.98, 28.758, 29.048, 29.257, 29.64, 30.093, 30.859, 31.149, 31.277, 31.672, 32.264, 32.554, 33.297, 33.634, 33.947, 34.528, 34.875, 35.224, 36.106, 36.338, 36.478, 36.861, 37.383, 37.743, 38.509, 38.776, 39.334, 39.787, 40.228, 40.576, 40.704, 41.226, 41.435, 41.54, 42.747, 42.968, 43.548, 43.838, 44.105, 44.222, 44.907, 45.069, 45.336, 45.835, 45.963, 46.578, 47.507, 47.693, 47.809, 48.122, 48.494, 48.622, 48.947, 49.063, 49.62, 49.794, 50.061, 50.479, 51.64, 51.791, 52.093, 52.418, 52.685, 53.474, 54.345, 54.508, 55.135, 55.46, 55.576, 56.04, 56.237, 56.702, 57.677, 57.909, 58.316, 58.652, 59.082, 59.57, 60.022, 60.185];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const prep = (p) => { const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = p.classList.contains("dash") ? "" : L; p.style.strokeDashoffset = p.classList.contains("dash") ? 0 : L; };
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); prep(p); };
+      // code rows: text starts at page x 136, row top inside the panel `top`, so centre y = 96 + top + 25
+      const tok = (id, text, sub, top, pad, from) => {
+        const c0 = text.indexOf(sub, from || 0), c1 = c0 + sub.length;
+        ring(id, 136 + ((c0 + c1) / 2) * 18, 96 + top + 25, (sub.length * 18) / 2 + (pad || 14), 28);
+      };
+      tok("r-start", '    print("Starting soak_oats")', 'print("Starting soak_oats")', 134, 14);
+      tok("r-fin", '    print("Finished soak_oats")', 'print("Finished soak_oats")', 234, 14);
+      tok("r-wrong", '    print("Finished soak_oats")', '"Finished soak_oats"', 534, 14);
+      tok("r-func", "def timed(func):", "func", 134, 10);
+      tok("r-ret", "    return wrapper", "return wrapper", 484, 12);
+      tok("r-a3", "        start = time.perf_counter()", "start = time.perf_counter()", 234, 12);
+      tok("r-a4", "        result = func(*args, **kwargs)", "result = func(*args, **kwargs)", 284, 12);
+      tok("r-a6", '        print(f"{func.__name__} took {took:.1f} s")', 'print(f"{func.__name__} took {took:.1f} s")', 384, 12);
+      tok("r-a7", "        return result", "return result", 434, 12);
+      tok("r-b1", "bake = timed(bake)", "bake = timed(bake)", 784, 14);
+      tok("r-dt", "@timed", "@timed", 584, 14);
+      tok("r-miss", "        return result", "return result", 434, 14);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.45, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => {
+        const p = document.getElementById(id);
+        tl.set(p, { opacity: 1 }, at);
+        if (p.classList.contains("dash")) { tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: d || 0.3, immediateRender: false }, at); return; }
+        tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at);
+      };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.06, duration: 0.18, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const type = (sel, at, n, d) => tl.fromTo(sel, { opacity: 1, clipPath: "inset(0% 100% 0% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: d || 0.035 * n, ease: `steps(${n})`, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, at);
+      const cursorIn = (at) => tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, at);
+      const cursorOut = (at) => tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, at);
+      const lampOn = (sel, at) => tl.to(sel, { backgroundColor: "#3b37e6", color: "#ffffff", duration: 0.2 }, at);
+      const lampOff = (sel, at) => tl.to(sel, { backgroundColor: "#ffffff", color: "#3b37e6", duration: 0.2 }, at);
+      // the yellow order dot: its box is 48 px, so centre = left + 24
+      const dot = (x, y, at, d) => tl.to("#order", { x: x - 1520, y: y - 154, duration: d || 0.6, ease: "power2.inOut" }, at);
+
+      tl.set("#s-cursor", { x: 1700, y: 1000 }, 0);
+      tl.set("#order", { x: 120, y: 44 }, 0);
+
+      /* ---- 1. Ana's meal prep: say when each recipe starts and ends ---- */
+      bump("#ana", t(6), 1.05);
+      bump("#ana .av", t(9), 1.2);
+      pop("#ask", t(12), { from: 0.8 });
+      bump("#ask", t(16), 1.04);
+      bump("#ask", t(20), 1.04);
+
+      /* ---- 2. The same two lines copied into every recipe ---- */
+      out(["#ana", "#ask"], t(21) - 0.1, 0.25);
+      type("#P1", t(23), 21, 0.3);
+      type("#P2", t(23) + 0.3, 31, 0.35);
+      type("#P3", t(23) + 0.65, 22, 0.25);
+      type("#P4", t(23) + 0.9, 31, 0.35);
+      type("#P5", t(23) + 1.25, 15, 0.2);
+      type("#P6", t(26), 21, 0.3);
+      type("#P7", t(26) + 0.3, 31, 0.35);
+      type("#P8", t(26) + 0.65, 34, 0.35);
+      type("#P9", t(26) + 1.0, 31, 0.35);
+      type("#P10", t(26) + 1.35, 15, 0.2);
+      type("#P11", t(26) + 1.6, 34, 0.35);
+      draw("r-start", t(24), 0.4);
+      draw("r-fin", t(24) + 0.3, 0.4);
+      ["#c1", "#c2", "#c3", "#c4", "#c5"].forEach((c, k) => pop(c, t(30) + k * 0.14, { from: 0.8, d: 0.35 }));
+      pop("#copies", t(32), { from: 1.4, ease: "power3.out", d: 0.3 });
+      out(["#r-start", "#r-fin"], t(34) - 0.2, 0.2);
+      draw("r-wrong", t(35), 0.3);
+      out("#c2ok", t(37), 0.15);
+      pop("#c2bad", t(37), { from: 0.6 });
+      pop("#quiet", t(39), { from: 0.8 });
+
+      /* ---- 3. Clip a kitchen timer onto the card: timed ---- */
+      out(["#P1", "#P2", "#P3", "#P4", "#P5", "#P6", "#P7", "#P8", "#P9", "#P10", "#P11", "#r-wrong"], t(41) - 0.1, 0.25);
+      out(["#c1", "#c2", "#c3", "#c4", "#c5", "#copies", "#quiet", "#head"], t(41) - 0.1, 0.25);
+      out("#tt1", t(41), 0.15);
+      show("#tt2", t(41) + 0.1, 0.2);
+      pop("#card", t(41) + 0.2, { from: 0.7 });
+      type("#D1", t(41) + 0.2, 23, 0.35);
+      type("#D2", t(41) + 0.55, 19, 0.3);
+      type("#D3", t(41) + 0.85, 37, 0.45);
+      tl.fromTo("#ring", { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)", immediateRender: false }, t(42));
+      pop(["#l-start", "#l-stop"], t(42) + 0.25, { from: 0.6 });
+      pop("#clock", t(45), { from: 0.5 });
+      type("#A0", t(49) - 0.3, 11, 0.15);
+      type("#A1", t(49), 16, 0.25);
+      draw("r-func", t(52), 0.35);
+      type("#A2", t(53), 30, 0.35);
+      type("#A3", t(53) + 0.35, 35, 0.3);
+      type("#A4", t(53) + 0.65, 38, 0.3);
+      type("#A5", t(53) + 0.95, 42, 0.3);
+      type("#A6", t(53) + 1.25, 51, 0.35);
+      type("#A7", t(53) + 1.6, 21, 0.2);
+      type("#A8", t(54) + 0.3, 18, 0.25);
+      draw("r-ret", t(55), 0.4);
+      type("#B1", t(60), 18, 0.3);
+      pop("#wtag", t(60), { from: 0.6 });
+      bump("#ring", t(60), 1.03);
+
+      /* ---- 4. Call bake: timer starts, recipe cooks, timer stops, dish comes out ---- */
+      out(["#r-func", "#r-ret"], t(61) - 0.1, 0.2);
+      type("#C1", t(62), 22, 0.35);
+      pop("#call", t(62), { from: 0.7 });
+      pop("#order", t(63), { from: 0.4 });
+      dot(1640, 240, t(64), 0.5);
+      lampOn("#l-start", t(67) - 0.1);
+      draw("r-a3", t(67), 0.35);
+      bump("#clock", t(67), 1.08);
+      dot(1620, 588, t(68), 0.5);
+      lampOff("#l-start", t(68) + 0.2);
+      out("#r-a3", t(70), 0.2);
+      draw("r-a4", t(70), 0.35);
+      bump("#card", t(72), 1.06);
+      out("#order", t(72) + 0.1, 0.15);
+      pop("#cook", t(72) + 0.1, { from: 0.4 });
+      out("#rd0", t(71), 0.1);
+      show("#rd1", t(71) + 0.05, 0.1);
+      out("#rd1", t(72) + 0.5, 0.1);
+      show("#rd2", t(72) + 0.55, 0.1);
+      // the dish leaves the card and goes down through the stop lamp
+      tl.to("#cook", { x: 20, y: 152, duration: 0.6, ease: "power2.inOut" }, t(73));
+      lampOn("#l-stop", t(76) - 0.1);
+      out("#r-a4", t(76), 0.2);
+      draw("r-a6", t(77), 0.45);
+      pop("#outp", t(79), { from: 0.7 });
+      bump("#clock", t(83), 1.08);
+      draw("r-a7", t(87), 0.35);
+      tl.to("#cook", { y: 260, opacity: 0, duration: 0.4, ease: "power2.in" }, t(88));
+      pop("#plate", t(89), { from: 0.7 });
+      lampOff("#l-stop", t(90));
+
+      /* ---- 5. bake = timed(bake) has a shortcut: @timed ---- */
+      out(["#r-a6", "#r-a7"], t(91) - 0.1, 0.2);
+      out(["#plate", "#outp", "#call"], t(92), 0.3);
+      draw("r-b1", t(93), 0.4);
+      cursorIn(t(100) - 0.4);
+      cursorTo(136 + 9 * 18, 96 + 784 + 34, t(100) - 0.4, 0.45);
+      out(["#B1", "#r-b1"], t(101) - 0.05, 0.2);
+      tl.to(["#D1", "#D2", "#D3"], { y: 50, duration: 0.35, ease: "power2.inOut" }, t(101) - 0.05);
+      tl.to("#s-cursor", { x: 136 + 3 * 18, y: 96 + 584 + 34, duration: 0.4, ease: "power3.inOut" }, t(101) - 0.05);
+      type("#DT", t(101) + 0.3, 6, 0.2);
+      draw("r-dt", t(103), 0.35);
+      cursorOut(t(104));
+      pop("#same", t(108), { from: 0.7 });
+      bump("#same", t(109), 1.05);
+
+      /* ---- 6. Forget return result: the plate comes out empty, None ---- */
+      out(["#same", "#r-dt"], t(112) - 0.1, 0.2);
+      tl.set("#cook", { x: 0, y: 0, opacity: 0 }, t(112));
+      cursorIn(t(115) - 0.3);
+      cursorTo(136 + 8 * 18, 96 + 434 + 18, t(115) - 0.3, 0.45);
+      draw("r-miss", t(116), 0.25);
+      tl.fromTo("#strike", { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, t(118));
+      tl.to("#A7", { opacity: 0.3, duration: 0.25 }, t(118) + 0.2);
+      pop("#n-miss", t(119), { from: 0.7 });
+      cursorOut(t(120));
+      pop("#cook", t(122), { from: 0.4 });
+      bump("#cook", t(124), 1.25);
+      pop("#empty", t(126), { from: 0.7 });
+      pop("#none", t(129) + 0.3, { from: 1.6, ease: "power3.out", d: 0.3 });
+      bump("#none", t(130), 1.08);
+
+      /* ---- hand off to the takeaway ---- */
+      tl.to("#s-wrap", { opacity: 0, duration: 0.15, ease: "power2.in" }, 54.85);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

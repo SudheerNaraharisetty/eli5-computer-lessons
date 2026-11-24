@@ -1,0 +1,47 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-head { left: 110px; font: 700 96px/1.1 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h1 { top: 110px; }
+    #t-h2 { top: 250px; }
+    #t-eq { left: 110px; top: 460px; height: 130px; padding: 0 44px; background: #fff; border-radius: 26px; font: 700 52px/130px "JetBrains Mono", monospace; white-space: pre; opacity: 0; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    #t-eq .a { color: #b8235a; }
+    #t-eq .m { color: #6f6b80; font: 800 44px/130px "Manrope", sans-serif; }
+    #t-eq .f { color: #3b37e6; }
+    #t-c1 { left: 110px; top: 660px; padding: 0 34px; height: 104px; line-height: 104px; background: #ddefe6; color: #1f7a5c; border-radius: 26px; font-size: 40px; white-space: nowrap; opacity: 0; box-shadow: 0 0 0 5px #1f7a5c, 0 10px 0 5px #1f7a5c; }
+    #t-next { left: 110px; top: 860px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="9.0" data-track-index="1">
+      <div id="t-h1" class="t-abs t-head">A <span class="a">decorator</span> wraps a function</div>
+      <div id="t-h2" class="t-abs t-head">in extra steps.</div>
+      <div id="t-eq" class="t-abs"><span class="a">@timed</span>  <span class="m">means</span>  bake = <span class="f">timed</span>(bake)</div>
+      <div id="t-c1" class="t-abs">The wrapper must return the result.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 85: Context managers</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 55.0;
+      const g = { a: 54.945, in: 56.64, at: 58.277, bake: 59.252, end: 60.785 };
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, Math.max(0, g.a - S - 0.1));
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.in - S - 0.1);
+      tl.fromTo("#t-eq", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, g.at - S - 0.05);
+      tl.fromTo("#t-c1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, g.end - S + 0.3);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 1.1);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

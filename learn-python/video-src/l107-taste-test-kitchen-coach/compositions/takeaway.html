@@ -1,0 +1,47 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-row { left: 110px; height: 132px; opacity: 0; }
+    .t-row .w { position: absolute; left: 0; top: 0; font: 700 92px/132px "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; }
+    .t-row .c { position: absolute; left: 900px; top: 22px; height: 88px; padding: 0 34px; background: #15132b; color: #eceaff; border-radius: 20px; font: 500 36px/88px "JetBrains Mono", monospace; white-space: pre; box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .t-row .c .g { color: #7cf0b5; }
+    #t-r1 { top: 90px; }
+    #t-r2 { top: 260px; }
+    #t-r3 { top: 430px; }
+    #t-serve { left: 110px; top: 640px; font: 700 120px/1.1 "Fraunces", serif; letter-spacing: -0.03em; color: #3b37e6; white-space: nowrap; opacity: 0; }
+    #t-next { left: 110px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="6.6" data-track-index="1">
+      <div id="t-r1" class="t-abs t-row"><div class="w">Taste it.</div><div class="c">pytest  <span class="g">11 passed</span></div></div>
+      <div id="t-r2" class="t-abs t-row"><div class="w">Check the labels.</div><div class="c">mypy  <span class="g">no issues found</span></div></div>
+      <div id="t-r3" class="t-abs t-row"><div class="w">Tidy up.</div><div class="c">ruff  <span class="g">All checks passed!</span></div></div>
+      <div id="t-serve" class="t-abs">Then serve.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 108: Final project: Kitchen Coach</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts (global seconds, lead-in included) minus this scene's start.
+      const S = 58.6;
+      const g = { taste: 58.8, check: 59.543, tidy: 60.588, then: 61.471, end: 62.78 };
+      const tl = gsap.timeline({ paused: true });
+      const row = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, at);
+      row("#t-r1", g.taste - S);
+      row("#t-r2", g.check - S);
+      row("#t-r3", g.tidy - S);
+      tl.fromTo("#t-serve", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, g.then - S);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.end - S + 0.1);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>

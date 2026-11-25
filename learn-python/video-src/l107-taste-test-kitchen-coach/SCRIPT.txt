@@ -1,0 +1,11 @@
+Before a dish goes out, the cook tastes it. Kitchen Coach gets taste tests too.
+
+Three pots: models, pantry, planner. The spoon goes down the row. Ben is not allowed the chicken bowl. Tick. A failed take changes nothing. Tick. Ana's plan is 1610 calories. Tick. 11 passed.
+
+Then Ben tidies take into one loop. Run the tests again. The pantry pot turns red. Three bowls need 450 grams of chicken. There is only 300. The take fails, but the rice jar has already dropped from 1000 to 700. Put the two loops back. Check first, then take. Green again.
+
+Next, mypy reads the labels. Plan day promises a list, but one line returns None. Caught, before it ever runs.
+
+Last, ruff sweeps the counter. An unused import, gone. A long line, wrapped. All checks passed.
+
+Taste it. Check the labels. Tidy up. Then serve.

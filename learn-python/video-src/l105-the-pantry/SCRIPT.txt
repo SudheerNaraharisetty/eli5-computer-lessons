@@ -1,0 +1,11 @@
+This is Kitchen Coach's pantry. A shelf of jars, loaded from a file. Rice, one thousand grams. Tofu, two hundred. Chicken, three hundred.
+
+Ben asks for a tofu stir-fry. First, a checker walks the recipe. Tofu, enough. Rice, enough. Soy sauce, enough. Only then do we scoop. Tofu drops to fifty. Rice to nine hundred and twenty-five. Soy sauce to eighty-five.
+
+Now Ana wants three chicken rice bowls. Rice, fine. Chicken? She needs four hundred and fifty grams. There are only three hundred. The checker stops. Nothing is scooped. All or nothing.
+
+The naive way scoops as it goes. The rice is gone before the chicken fails. Three hundred grams, taken for bowls nobody cooks. Wrong.
+
+At night, save the shelf to a page in the notebook. Pantry dot json. Next morning, load it back. Same jars, same grams.
+
+Check everything first, then change. Save what you have, load it tomorrow.

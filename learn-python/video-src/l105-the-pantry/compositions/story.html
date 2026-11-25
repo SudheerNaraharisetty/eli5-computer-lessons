@@ -1,0 +1,264 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+
+    #board { left: 56px; top: 40px; width: 1808px; height: 990px; border-radius: 26px; background: #fff; }
+    #title { left: 120px; top: 70px; font: 700 64px/84px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #title-ul { left: 124px; top: 156px; width: 330px; height: 8px; border-radius: 4px; background: #3b37e6; transform-origin: 0 50%; }
+    .ph { left: 640px; top: 86px; height: 64px; padding: 0 28px; border-radius: 999px; background: #0e0c1d; color: #fff; font: 700 32px/64px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .ph.bad { background: #b8235a; }
+
+    /* the shelf */
+    .lid { top: 292px; width: 220px; height: 44px; border-radius: 12px; background: #0e0c1d; }
+    .jar { top: 336px; width: 260px; height: 374px; border-radius: 34px; background: #fff; overflow: hidden; }
+    .fill { position: absolute; left: 14px; bottom: 14px; width: 232px; height: 300px; border-radius: 22px; opacity: 0.28; transform-origin: 50% 100%; }
+    .nm { position: absolute; left: 0; right: 0; top: 22px; text-align: center; font: 800 38px/52px "Manrope", sans-serif; }
+    .num { top: 456px; width: 260px; height: 76px; }
+    .num .v { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: 700 60px/76px "JetBrains Mono", monospace; opacity: 0; }
+    .num .v small { font-size: 34px; }
+    #plank { left: 90px; top: 710px; width: 1200px; height: 26px; border-radius: 8px; background: #0e0c1d; }
+    .bd { top: 752px; width: 72px; height: 72px; border-radius: 50%; opacity: 0; }
+    .bd.ok { background: #1f7a5c; }
+    .bd.no { background: #b8235a; }
+    .bd svg { position: absolute; left: 14px; top: 14px; width: 44px; height: 44px; }
+
+    /* right panel: cards and notebook pages */
+    .card { left: 1400px; top: 290px; width: 410px; height: 420px; border-radius: 24px; background: #fff; opacity: 0; overflow: hidden; }
+    .card .bar { position: absolute; left: 0; top: 0; width: 410px; height: 16px; }
+    .card .hd { position: absolute; left: 30px; top: 30px; font: 700 46px/60px "Fraunces", serif; white-space: nowrap; }
+    .card .sb { position: absolute; left: 30px; top: 92px; font: 800 30px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .card .r { position: absolute; left: 30px; font: 600 34px/52px "JetBrains Mono", monospace; white-space: pre; }
+    .page { left: 1400px; top: 290px; width: 410px; height: 420px; border-radius: 16px; background: #fbf8f4; opacity: 0; overflow: hidden;
+            background-image: repeating-linear-gradient(#fbf8f4 0 51px, #d9d3c9 51px 53px); }
+    .page .hd { position: absolute; left: 0; top: 0; width: 410px; height: 70px; background: #ece7df; font: 700 34px/70px "JetBrains Mono", monospace; text-align: center; }
+    .page .r { position: absolute; left: 26px; font: 600 32px/52px "JetBrains Mono", monospace; white-space: pre; opacity: 0; }
+    .lbl { height: 56px; padding: 0 22px; border-radius: 999px; background: #e7e6ff; color: #3b37e6; box-shadow: 0 0 0 4px #3b37e6; font: 700 30px/56px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+
+    /* steps along the bottom */
+    .pill { top: 872px; height: 70px; padding: 0 30px; border-radius: 999px; font: 800 36px/70px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.k { background: #0e0c1d; color: #fff; }
+    .pill.g { background: #1f7a5c; color: #fff; }
+    .pill.d { background: #b8235a; color: #fff; }
+    #dash { left: 98px; top: 270px; width: 304px; height: 464px; border-radius: 40px; border: 6px dashed #b8235a; opacity: 0; }
+    #anyway { left: 104px; top: 196px; height: 60px; padding: 0 24px; border-radius: 999px; background: #fbe0ea; color: #b8235a; box-shadow: 0 0 0 4px #b8235a; font: 800 32px/60px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #minus { left: 160px; top: 596px; height: 60px; padding: 0 20px; border-radius: 14px; background: #b8235a; color: #fff; font: 700 36px/60px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    #wrong-w { left: 660px; top: 850px; transform: rotate(-8deg); }
+    #wrong { height: 100px; padding: 0 36px; border-radius: 18px; border: 8px solid #b8235a; background: #fbe0ea; color: #b8235a; font: 700 72px/84px "Fraunces", serif; opacity: 0; }
+
+    #s-rings { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-arrows { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #cursor { left: 0; top: 0; width: 56px; height: 70px; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="61.3" data-track-index="1">
+      <div id="board" class="s-abs s-ol"></div>
+      <div id="title" class="s-abs">The pantry</div>
+      <div id="title-ul" class="s-abs"></div>
+      <div id="ph1" class="s-abs ph">load_pantry(path)</div>
+      <div id="ph2" class="s-abs ph">take(tofu stir-fry)</div>
+      <div id="ph3" class="s-abs ph">take(3 bowls)</div>
+      <div id="ph4" class="s-abs ph bad">naive take(3 bowls)</div>
+      <div id="ph5" class="s-abs ph">save_pantry(pantry, path)</div>
+      <div id="ph6" class="s-abs ph">next morning: load_pantry(path)</div>
+
+      <!-- the shelf: rice, tofu, soy sauce, chicken -->
+      <div class="s-abs lid" style="left:140px"></div>
+      <div class="s-abs lid" style="left:440px"></div>
+      <div class="s-abs lid" style="left:740px"></div>
+      <div class="s-abs lid" style="left:1040px"></div>
+      <div id="j-rice" class="s-abs jar s-ol" style="left:120px"><div id="f-rice" class="fill" style="background:#b9741a"></div><div class="nm">rice</div></div>
+      <div id="j-tofu" class="s-abs jar s-ol" style="left:420px"><div id="f-tofu" class="fill" style="background:#1f7a5c"></div><div class="nm">tofu</div></div>
+      <div id="j-soy" class="s-abs jar s-ol" style="left:720px"><div id="f-soy" class="fill" style="background:#3e3b52"></div><div class="nm">soy sauce</div></div>
+      <div id="j-chk" class="s-abs jar s-ol" style="left:1020px"><div id="f-chk" class="fill" style="background:#b8235a"></div><div class="nm">chicken</div></div>
+      <div id="plank" class="s-abs"></div>
+      <div class="s-abs num" style="left:120px"><div id="rice-a" class="v">1000<small> g</small></div><div id="rice-b" class="v">925<small> g</small></div><div id="rice-c" class="v" style="color:#b8235a">625<small> g</small></div><div id="rice-d" class="v">925<small> g</small></div></div>
+      <div class="s-abs num" style="left:420px"><div id="tofu-a" class="v">200<small> g</small></div><div id="tofu-b" class="v">50<small> g</small></div></div>
+      <div class="s-abs num" style="left:720px"><div id="soy-a" class="v">100<small> g</small></div><div id="soy-b" class="v">85<small> g</small></div></div>
+      <div class="s-abs num" style="left:1020px"><div id="chk-a" class="v">300<small> g</small></div></div>
+
+      <!-- ticks and crosses under the jars -->
+      <div id="k-tofu" class="s-abs bd ok" style="left:514px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-rice" class="s-abs bd ok" style="left:214px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-soy" class="s-abs bd ok" style="left:814px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-rice2" class="s-abs bd ok" style="left:214px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="x-chk" class="s-abs bd no" style="left:1114px"><svg viewBox="0 0 44 44"><path d="M9 9 L35 35 M35 9 L9 35" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div>
+      <div id="x-chk2" class="s-abs bd no" style="left:1114px"><svg viewBox="0 0 44 44"><path d="M9 9 L35 35 M35 9 L9 35" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div>
+      <div id="k-all1" class="s-abs bd ok" style="left:214px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-all2" class="s-abs bd ok" style="left:514px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-all3" class="s-abs bd ok" style="left:814px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div id="k-all4" class="s-abs bd ok" style="left:1114px"><svg viewBox="0 0 44 44"><path d="M6 23 L17 34 L38 9" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+      <!-- right panel -->
+      <div id="p1" class="s-abs page s-ol"><div class="hd">pantry.json</div>
+        <div id="p1a" class="r" style="top:88px">"rice": 1000,</div>
+        <div id="p1b" class="r" style="top:140px">"tofu": 200,</div>
+        <div id="p1c" class="r" style="top:192px">"soy sauce": 100,</div>
+        <div id="p1d" class="r" style="top:244px">"chicken": 300,</div>
+        <div id="p1e" class="r" style="top:296px;color:#6f6b80">...</div>
+      </div>
+      <div id="c1" class="s-abs card s-ol"><div class="bar" style="background:#1f7a5c"></div>
+        <div class="hd">tofu stir-fry</div><div class="sb">for Ben</div>
+        <div class="r" style="top:170px">tofu       150 g</div>
+        <div class="r" style="top:234px">rice        75 g</div>
+        <div class="r" style="top:298px">soy sauce   15 g</div>
+      </div>
+      <div id="c2" class="s-abs card s-ol"><div class="bar" style="background:#3b37e6"></div>
+        <div class="hd">3 bowls</div><div class="sb">chicken rice bowl, for Ana</div>
+        <div class="r" style="top:170px">rice       300 g</div>
+        <div class="r" style="top:234px">chicken    450 g</div>
+      </div>
+      <div id="p2" class="s-abs page s-ol"><div class="hd">pantry.json</div>
+        <div id="p2a" class="r" style="top:88px">"chicken": 300,</div>
+        <div id="p2b" class="r" style="top:140px">"rice": 925,</div>
+        <div id="p2c" class="r" style="top:192px">"soy sauce": 85,</div>
+        <div id="p2d" class="r" style="top:244px">"tofu": 50,</div>
+        <div id="p2e" class="r" style="top:296px;color:#6f6b80">...</div>
+      </div>
+      <div id="l-load" class="s-abs lbl" style="left:1420px;top:752px">← load_pantry</div>
+      <div id="l-save" class="s-abs lbl" style="left:1420px;top:752px">save_pantry →</div>
+      <div id="l-load2" class="s-abs lbl" style="left:1420px;top:752px">← load_pantry</div>
+
+      <!-- steps along the bottom -->
+      <div id="s1" class="s-abs pill k" style="left:120px">1. check every jar</div>
+      <div id="s2" class="s-abs pill k" style="left:560px">2. then scoop</div>
+      <div id="s3" class="s-abs pill d" style="left:120px">chicken short: stop</div>
+      <div id="s4" class="s-abs pill g" style="left:560px">nothing scooped</div>
+      <div id="s5" class="s-abs pill g" style="left:960px">all or nothing</div>
+      <div id="s6" class="s-abs pill d" style="left:120px">scoops as it goes</div>
+      <div id="s7" class="s-abs pill k" style="left:120px">same jars, same grams</div>
+
+      <div id="dash" class="s-abs"></div>
+      <div id="anyway" class="s-abs">taken anyway</div>
+      <div id="minus" class="s-abs">−300 g</div>
+      <div id="wrong-w" class="s-abs"><div id="wrong">WRONG</div></div>
+
+      <svg id="s-rings" class="s-abs" viewBox="0 0 1920 1080"></svg>
+      <svg id="cursor" class="s-abs" viewBox="0 0 56 70"><path d="M6 4 L6 56 L19 44 L28 64 L37 60 L28 41 L46 41 Z" fill="#fff" stroke="#0e0c1d" stroke-width="5" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const W = [0.0, 0.29, 0.464, 0.882, 1.358, 2.31, 2.473, 2.786, 2.937, 3.506, 3.878, 4.063, 4.156, 5.05, 5.573, 5.828, 6.246, 7.07, 7.651, 7.93, 8.684, 9.218, 9.578, 10.507, 10.809, 11.227, 11.389, 11.482, 11.9, 12.957, 13.421, 13.572, 13.99, 14.327, 14.466, 15.116, 15.732, 16.358, 16.8, 17.462, 17.764, 18.193, 19.482, 19.842, 20.144, 20.295, 20.457, 21.235, 21.792, 22.117, 22.326, 23.069, 23.406, 23.615, 23.905, 24.254, 24.381, 25.565, 25.891, 26.227, 26.483, 27.818, 28.096, 28.41, 28.723, 29.095, 29.583, 29.908, 30.593, 31.185, 32.009, 32.984, 33.17, 33.483, 33.774, 34.099, 34.25, 34.633, 35.434, 35.678, 35.875, 36.2, 36.514, 37.234, 37.396, 37.779, 38.441, 38.824, 38.94, 39.556, 39.846, 39.974, 40.682, 40.868, 41.332, 41.576, 42.052, 42.307, 42.447, 43.259, 43.445, 43.747, 43.909, 44.2, 44.502, 44.629, 45.059, 46.022, 46.348, 46.731, 47.346, 47.741, 47.915, 48.403, 48.948, 49.773, 50.829, 51.108, 51.735, 52.083, 52.199, 52.548, 52.722, 52.815, 53.221, 53.325, 53.453, 54.336, 54.881, 55.183, 56.321, 56.657, 57.18, 57.54, 57.691, 58.434, 58.782, 59.421, 59.781, 60.791, 61.104, 61.557, 62.161, 62.521, 63.519, 63.891, 64.065, 64.227, 64.738, 65.063, 65.214];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+
+      const rings = document.getElementById("s-rings");
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 8} ${cy + 6} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 4} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 4} ${cy + ry + 4} ${cx - rx} ${cy - 10}`;
+      const mkRing = (id, d, color) => {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        p.id = id; p.setAttribute("d", d);
+        p.style.stroke = color; p.style.fill = "none"; p.style.strokeWidth = 7; p.style.strokeLinecap = "round";
+        rings.appendChild(p);
+        const L = p.getTotalLength();
+        p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      };
+      const draw = (id, at, d) => tl.fromTo("#" + id, { strokeDashoffset: document.getElementById(id).getTotalLength() }, { strokeDashoffset: 0, duration: d || 0.5, ease: "power2.out", immediateRender: false }, at);
+      mkRing("r-450", ringD(1706, 549, 84, 40), "#b8235a");
+      mkRing("r-300", ringD(1150, 494, 120, 48), "#b8235a");
+      mkRing("r-keep", ringD(250, 494, 120, 48), "#1f7a5c");
+      mkRing("r-json", ringD(1605, 325, 190, 44), "#3b37e6");
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.35, ease: "back.out(1.7)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const rise = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power2.in" }, at);
+      const move = (x, y, at, d) => tl.to("#cursor", { x: x, y: y, duration: d || 0.5, ease: "power2.inOut" }, at);
+      const swap = (a, b, at) => { out(a, at, 0.2); pop(b, at + 0.12, { from: 1.35 }); };
+      const level = (id, g, at, d) => tl.to("#" + id, { scaleY: g / 1000, duration: d || 0.6, ease: "power2.inOut" }, at);
+      const phase = (n, at) => { if (n > 1) out("#ph" + (n - 1), at - 0.2, 0.2); pop("#ph" + n, at); };
+
+      // start: the shelf is there, jars still unlabelled with numbers
+      tl.set("#cursor", { x: 1500, y: 180 }, 0);
+      tl.set("#f-rice", { scaleY: 0 }, 0); tl.set("#f-tofu", { scaleY: 0 }, 0); tl.set("#f-soy", { scaleY: 0 }, 0); tl.set("#f-chk", { scaleY: 0 }, 0);
+      tl.fromTo("#title-ul", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, t(4));
+
+      // loaded from a file
+      phase(1, t(9));
+      rise("#p1", t(9));
+      show("#p1a", t(9) + 0.3, 0.2); show("#p1b", t(9) + 0.45, 0.2); show("#p1c", t(9) + 0.6, 0.2); show("#p1d", t(9) + 0.75, 0.2); show("#p1e", t(9) + 0.9, 0.2);
+      pop("#l-load", t(12));
+      move(260, 520, t(13) - 0.5);
+      pop("#rice-a", t(13)); level("f-rice", 1000, t(13));
+      move(560, 520, t(17) - 0.5);
+      pop("#tofu-a", t(17)); level("f-tofu", 200, t(17));
+      pop("#soy-a", t(17) + 0.5); level("f-soy", 100, t(17) + 0.5);
+      move(1160, 520, t(20) - 0.5);
+      pop("#chk-a", t(20)); level("f-chk", 300, t(20));
+
+      // Ben's tofu stir-fry: check, then scoop
+      out("#p1, #l-load", t(23) - 0.2, 0.3);
+      phase(2, t(23));
+      rise("#c1", t(27));
+      pop("#s1", t(31));
+      move(560, 790, t(35) - 0.5);
+      pop("#k-tofu", t(36));
+      move(260, 790, t(37) - 0.5);
+      pop("#k-rice", t(38));
+      move(860, 790, t(39) - 0.5);
+      pop("#k-soy", t(41));
+      pop("#s2", t(46));
+      move(560, 520, t(47) - 0.4);
+      swap("#tofu-a", "#tofu-b", t(50)); level("f-tofu", 50, t(48));
+      move(260, 520, t(51) - 0.4);
+      swap("#rice-a", "#rice-b", t(53)); level("f-rice", 925, t(53));
+      move(860, 520, t(57) - 0.4);
+      swap("#soy-a", "#soy-b", t(60)); level("f-soy", 85, t(58));
+
+      // Ana's 3 bowls: the checker stops at chicken, nothing is scooped
+      out("#c1, #s1, #s2, #k-tofu, #k-rice, #k-soy", t(61), 0.3);
+      phase(3, t(61));
+      rise("#c2", t(64));
+      move(260, 790, t(68) - 0.5);
+      pop("#k-rice2", t(68));
+      move(1160, 790, t(70) - 0.5);
+      draw("r-450", t(73));
+      draw("r-300", t(81));
+      pop("#x-chk", t(85)); pop("#s3", t(85));
+      move(330, 600, t(86) - 0.5);
+      draw("r-keep", t(86)); pop("#s4", t(88));
+      pop("#s5", t(89));
+
+      // the naive way: rice scooped before chicken fails
+      out("#k-rice2, #x-chk, #s3, #s4, #s5, #r-450, #r-300, #r-keep", t(92) - 0.1, 0.3);
+      phase(4, t(92));
+      pop("#s6", t(95));
+      move(260, 520, t(99) - 0.4);
+      swap("#rice-b", "#rice-c", t(100)); level("f-rice", 625, t(100));
+      move(1160, 790, t(104) - 0.5);
+      pop("#x-chk2", t(106));
+      show("#dash", t(107), 0.3); pop("#anyway", t(107) + 0.2);
+      tl.fromTo("#minus", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, t(110));
+      pop("#wrong", t(115), { from: 1.6 });
+
+      // at night: save the shelf; next morning: load it back
+      out("#wrong, #minus, #dash, #anyway, #s6, #x-chk2, #c2", t(116) - 0.1, 0.3);
+      swap("#rice-c", "#rice-d", t(116)); level("f-rice", 925, t(116));
+      phase(5, t(118));
+      rise("#p2", t(118));
+      show("#p2a", t(120), 0.2); show("#p2b", t(121), 0.2); show("#p2c", t(122), 0.2); show("#p2d", t(124), 0.2); show("#p2e", t(126), 0.2);
+      pop("#l-save", t(118) + 0.3);
+      move(1640, 650, t(127) - 0.5);
+      draw("r-json", t(127));
+      phase(6, t(130));
+      out("#l-save, #r-json", t(132) - 0.2, 0.2);
+      pop("#l-load2", t(132));
+      move(700, 640, t(132));
+      const pulse = (sel, at) => tl.fromTo(sel, { scale: 1 }, { scale: 1.05, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, at);
+      pulse("#j-rice", t(133)); pulse("#j-tofu", t(133) + 0.1); pulse("#j-soy", t(133) + 0.2); pulse("#j-chk", t(133) + 0.3);
+      pop("#s7", t(135));
+      pop("#k-all1", t(136)); pop("#k-all2", t(136) + 0.15); pop("#k-all3", t(137)); pop("#k-all4", t(137) + 0.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

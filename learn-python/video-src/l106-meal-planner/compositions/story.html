@@ -1,0 +1,440 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #s-all, #s-wrap { position: absolute; inset: 0; }
+    .s-abs { position: absolute; }
+    .s-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .h { position: absolute; font: 700 46px/56px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    .sub { position: absolute; font: 800 28px/40px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .pill { position: absolute; height: 46px; padding: 0 18px; border-radius: 23px; font: 800 28px/46px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .pill.ok { background: #ddefe6; color: #1f7a5c; box-shadow: 0 0 0 4px #1f7a5c; }
+
+    /* guest cards */
+    .card { position: absolute; left: 70px; width: 560px; height: 290px; background: #fff; border-radius: 20px; }
+    .card .hd { position: absolute; left: 0; top: 0; width: 560px; height: 76px; border-radius: 20px 20px 0 0; border-bottom: 4px solid #0e0c1d; }
+    .card .nm { position: absolute; left: 24px; top: 8px; font: 700 46px/60px "Fraunces", serif; }
+    .card .rl { position: absolute; right: 20px; top: 16px; height: 44px; padding: 0 16px; border-radius: 22px; background: #fff; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .card .slot { position: absolute; left: 24px; width: 512px; height: 0; border-bottom: 4px dashed #b9b4c6; opacity: 0; }
+    .card .goal, .card .tot { position: absolute; left: 24px; top: 234px; font: 500 28px/44px "JetBrains Mono", monospace; white-space: nowrap; opacity: 0; }
+    .card .goal { color: #5d596e; }
+    .card .short { position: absolute; right: 20px; top: 234px; height: 44px; padding: 0 14px; border-radius: 10px; background: #b8235a; color: #fff; font: 800 28px/44px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .card .act { position: absolute; left: -5px; top: -5px; width: 570px; height: 300px; border-radius: 25px; border: 10px solid #ffc24b; opacity: 0; }
+    .chip { position: absolute; font: 800 30px/44px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+
+    /* the line-up */
+    #lineup { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .row { position: absolute; left: 690px; top: 190px; width: 560px; height: 88px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .row .hl { position: absolute; inset: 0; border-radius: 16px; background: #ffe7b0; opacity: 0; }
+    .row .rn { position: absolute; left: 24px; top: 20px; font: 800 32px/48px "Manrope", sans-serif; white-space: nowrap; }
+    .row .rp { position: absolute; right: 24px; top: 20px; font: 700 32px/48px "JetBrains Mono", monospace; color: #3b37e6; white-space: nowrap; }
+    .row .tk { position: absolute; right: 16px; top: 20px; height: 48px; padding: 0 14px; border-radius: 10px; background: #1f7a5c; color: #fff; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    .row .bad { position: absolute; right: 16px; top: 20px; height: 48px; padding: 0 14px; border-radius: 10px; background: #b8235a; color: #fff; font: 800 28px/48px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #kc { left: 690px; top: 380px; width: 560px; height: 250px; background: #15132b; border-radius: 24px; opacity: 0; }
+    #kc .k1 { position: absolute; left: 0; right: 0; top: 50px; text-align: center; font: 700 64px/76px "Fraunces", serif; color: #fff; }
+    #kc .k2 { position: absolute; left: 0; right: 0; top: 140px; text-align: center; font: 800 36px/48px "Manrope", sans-serif; color: #c9c6ff; }
+
+    /* the pantry */
+    .jar { position: absolute; width: 255px; height: 108px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 4px #0e0c1d; opacity: 0; }
+    .jar .lid { position: absolute; left: 70px; top: -14px; width: 115px; height: 14px; border-radius: 6px 6px 0 0; background: #0e0c1d; }
+    .jar .jn { position: absolute; left: 20px; top: 8px; font: 800 30px/42px "Manrope", sans-serif; color: #3e3b52; }
+    .jar .jv { position: absolute; left: 20px; top: 50px; font: 700 38px/50px "JetBrains Mono", monospace; white-space: nowrap; }
+    #chk { left: 1310px; top: 720px; width: 540px; height: 190px; background: #fff; border-radius: 20px; opacity: 0; }
+    #chk .q { position: absolute; left: 24px; font: 800 32px/48px "Manrope", sans-serif; white-space: nowrap; opacity: 0; }
+    #chk .y { position: absolute; right: 20px; height: 48px; padding: 0 16px; border-radius: 10px; background: #1f7a5c; color: #fff; font: 800 30px/48px "Manrope", sans-serif; opacity: 0; }
+
+    #plan { left: 710px; top: 330px; width: 540px; height: 300px; opacity: 0; }
+    #plan .p1 { position: absolute; left: 0; top: 0; font: 700 68px/80px "Fraunces", serif; letter-spacing: -0.02em; white-space: nowrap; }
+    #plan .p2 { position: absolute; left: 0; top: 110px; font: 800 40px/56px "Manrope", sans-serif; color: #3e3b52; opacity: 0; }
+
+    /* greedy card */
+    #greedy { left: 690px; top: 250px; width: 560px; height: 430px; background: #15132b; border-radius: 24px; opacity: 0; }
+    #greedy .g1 { position: absolute; left: 36px; top: 34px; font: 700 60px/72px "Fraunces", serif; color: #ffc24b; }
+    #greedy .g2, #greedy .g3 { position: absolute; left: 36px; right: 30px; font: 800 38px/52px "Manrope", sans-serif; color: #fff; opacity: 0; }
+    #greedy .g2 { top: 140px; }
+    #greedy .g3 { top: 286px; color: #ff8fab; }
+
+    #s-marks { left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #s-marks path { fill: none; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    #s-cursor { left: 0; top: 0; width: 56px; height: 56px; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="story" data-width="1920" data-height="1080">
+    <div id="s-all" class="clip" data-start="0" data-duration="60.4" data-track-index="1">
+      <div id="s-wrap">
+        
+        <div class="card s-ol" id="c0" style="top:70px">
+          <div class="hd" style="background:#e6e3ff"></div>
+          <div class="nm">Ana</div>
+          <div class="rl" id="c0rl" style="color:#3b37e6; box-shadow:0 0 0 4px #3b37e6">eats everything</div>
+          <div class="slot" id="c0s0" style="top:128px"></div><div class="slot" id="c0s1" style="top:172px"></div><div class="slot" id="c0s2" style="top:216px"></div>
+          <div class="goal" id="c0goal">goal: 100 g protein</div>
+          <div class="tot" id="c0tot">86 / 100 g protein</div>
+          <div class="short" id="c0short">short 14 g</div>
+          <div class="act" id="c0act"></div>
+        </div>
+        <div class="card s-ol" id="c1" style="top:400px">
+          <div class="hd" style="background:#ddefe6"></div>
+          <div class="nm">Ben</div>
+          <div class="rl" id="c1rl" style="color:#1f7a5c; box-shadow:0 0 0 4px #1f7a5c">vegetarian</div>
+          <div class="slot" id="c1s0" style="top:128px"></div><div class="slot" id="c1s1" style="top:172px"></div><div class="slot" id="c1s2" style="top:216px"></div>
+          <div class="goal" id="c1goal">goal: 140 g protein</div>
+          <div class="tot" id="c1tot">60 / 140 g protein</div>
+          <div class="short" id="c1short">short 80 g</div>
+          <div class="act" id="c1act"></div>
+        </div>
+        <div class="card s-ol" id="c2" style="top:730px">
+          <div class="hd" style="background:#fbe0ea"></div>
+          <div class="nm">Chloe</div>
+          <div class="rl" id="c2rl" style="color:#b8235a; box-shadow:0 0 0 4px #b8235a">gluten-free</div>
+          <div class="slot" id="c2s0" style="top:128px"></div><div class="slot" id="c2s1" style="top:172px"></div><div class="slot" id="c2s2" style="top:216px"></div>
+          <div class="goal" id="c2goal">goal: 75 g protein</div>
+          <div class="tot" id="c2tot">73 / 75 g protein</div>
+          <div class="short" id="c2short">short 2 g</div>
+          <div class="act" id="c2act"></div>
+        </div>
+
+        <div id="lineup">
+          <div class="h" id="lt0" style="left:690px; top:64px; opacity:0">Ana's line-up</div>
+          <div class="h" id="lt1" style="left:690px; top:64px; opacity:0">Ben's line-up</div>
+          <div class="h" id="lt2" style="left:690px; top:64px; opacity:0">Chloe's line-up</div>
+          <div class="pill ok" id="pk1" style="left:690px; top:128px">✓ she may eat it</div>
+          <div class="pill ok" id="pk2" style="left:980px; top:128px">✓ pantry has it</div>
+          <div class="sub" id="lsub" style="left:690px; top:130px; opacity:0">most protein first ↓</div>
+          
+        <div class="row" id="r_lentil">
+          <div class="hl" id="r_lentilhl"></div>
+          <div class="rn">lentil soup</div>
+          <div class="rp" id="r_lentilp">18 g</div>
+          <div class="tk" id="r_lentiltk">✓ taken</div>
+          
+        </div>
+        <div class="row" id="r_tofu">
+          <div class="hl" id="r_tofuhl"></div>
+          <div class="rn">tofu stir-fry</div>
+          <div class="rp" id="r_tofup">24 g</div>
+          <div class="tk" id="r_tofutk">✓ taken</div>
+          <div class="bad" id="r_tofubad">needs 150 g tofu</div>
+        </div>
+        <div class="row" id="r_pasta">
+          <div class="hl" id="r_pastahl"></div>
+          <div class="rn">pasta bake</div>
+          <div class="rp" id="r_pastap">22 g</div>
+          <div class="tk" id="r_pastatk">✓ taken</div>
+          
+        </div>
+        <div class="row" id="r_bean">
+          <div class="hl" id="r_beanhl"></div>
+          <div class="rn">bean chili</div>
+          <div class="rp" id="r_beanp">15 g</div>
+          <div class="tk" id="r_beantk">✓ taken</div>
+          
+        </div>
+        <div class="row" id="r_chicken">
+          <div class="hl" id="r_chickenhl"></div>
+          <div class="rn">chicken rice bowl</div>
+          <div class="rp" id="r_chickenp">40 g</div>
+          <div class="tk" id="r_chickentk">✓ taken</div>
+          <div class="bad" id="r_chickenbad">no meat</div>
+        </div>
+        <div class="row" id="r_pudding">
+          <div class="hl" id="r_puddinghl"></div>
+          <div class="rn">rice pudding</div>
+          <div class="rp" id="r_puddingp">8 g</div>
+          <div class="tk" id="r_puddingtk">✓ taken</div>
+          
+        </div>
+        <div class="row" id="r_yogurt">
+          <div class="hl" id="r_yogurthl"></div>
+          <div class="rn">yogurt bowl</div>
+          <div class="rp" id="r_yogurtp">20 g</div>
+          <div class="tk" id="r_yogurttk">✓ taken</div>
+          
+        </div>
+        </div>
+        <div id="kc" class="s-abs s-ol"><div class="k1">Kitchen Coach</div><div class="k2">picks up to 3 meals each</div></div>
+
+        <div class="h" id="pt" style="left:1310px; top:64px">One shared pantry</div>
+        
+        <div class="jar" id="j_chicken" style="left:1310px; top:170px">
+          <div class="lid"></div>
+          <div class="jn">chicken</div>
+          <div class="jv" id="j_chickenv0">300 g</div><div class="jv" id="j_chickenv1" style="opacity:0">150 g</div><div class="jv" id="j_chickenv2" style="opacity:0">0 g</div>
+        </div>
+        <div class="jar" id="j_rice" style="left:1595px; top:170px">
+          <div class="lid"></div>
+          <div class="jn">rice</div>
+          <div class="jv" id="j_ricev0">1000 g</div><div class="jv" id="j_ricev1" style="opacity:0">900 g</div><div class="jv" id="j_ricev2" style="opacity:0">825 g</div><div class="jv" id="j_ricev3" style="opacity:0">725 g</div>
+        </div>
+        <div class="jar" id="j_tofu" style="left:1310px; top:298px">
+          <div class="lid"></div>
+          <div class="jn">tofu</div>
+          <div class="jv" id="j_tofuv0">200 g</div><div class="jv" id="j_tofuv1" style="opacity:0">50 g</div>
+        </div>
+        <div class="jar" id="j_pasta" style="left:1595px; top:298px">
+          <div class="lid"></div>
+          <div class="jn">pasta</div>
+          <div class="jv" id="j_pastav0">500 g</div><div class="jv" id="j_pastav1" style="opacity:0">400 g</div><div class="jv" id="j_pastav2" style="opacity:0">300 g</div>
+        </div>
+        <div class="jar" id="j_cheese" style="left:1310px; top:426px">
+          <div class="lid"></div>
+          <div class="jn">cheese</div>
+          <div class="jv" id="j_cheesev0">200 g</div><div class="jv" id="j_cheesev1" style="opacity:0">160 g</div><div class="jv" id="j_cheesev2" style="opacity:0">120 g</div>
+        </div>
+        <div class="jar" id="j_yogurt" style="left:1595px; top:426px">
+          <div class="lid"></div>
+          <div class="jn">yogurt</div>
+          <div class="jv" id="j_yogurtv0">400 g</div><div class="jv" id="j_yogurtv1" style="opacity:0">200 g</div>
+        </div>
+        <div class="jar" id="j_berries" style="left:1310px; top:554px">
+          <div class="lid"></div>
+          <div class="jn">berries</div>
+          <div class="jv" id="j_berriesv0">150 g</div><div class="jv" id="j_berriesv1" style="opacity:0">70 g</div>
+        </div>
+        <div class="jar" id="j_lentils" style="left:1595px; top:554px">
+          <div class="lid"></div>
+          <div class="jn">lentils</div>
+          <div class="jv" id="j_lentilsv0">400 g</div><div class="jv" id="j_lentilsv1" style="opacity:0">320 g</div><div class="jv" id="j_lentilsv2" style="opacity:0">240 g</div>
+        </div>
+        <div id="chk" class="s-abs s-ol">
+          <div class="q" id="q1" style="top:26px">still in the pantry?</div><div class="y" id="y1" style="top:26px">yes</div>
+          <div class="q" id="q2" style="top:106px">calories fit?</div><div class="y" id="y2" style="top:106px">yes</div>
+        </div>
+
+        <div id="plan" class="s-abs">
+          <div class="p1">← Today's plan</div>
+          <div class="p2" id="p2">3 meals each,<br />from one pantry</div>
+        </div>
+
+        <div id="greedy" class="s-abs s-ol">
+          <div class="g1">A greedy planner</div>
+          <div class="g2" id="g2">takes the best dish it sees right now</div>
+          <div class="g3" id="g3">and never looks back</div>
+        </div>
+
+        <div class="chip" id="ch00" style="left:714px; top:212px" data-dx="-620" data-dy="-54">chicken rice bowl</div><div class="chip" id="ch01" style="left:714px; top:318px" data-dx="-620" data-dy="-116">tofu stir-fry</div><div class="chip" id="ch02" style="left:714px; top:424px" data-dx="-620" data-dy="-178">pasta bake</div>
+        <div class="chip" id="ch10" style="left:714px; top:212px" data-dx="-620" data-dy="276">pasta bake</div><div class="chip" id="ch11" style="left:714px; top:318px" data-dx="-620" data-dy="214">yogurt bowl</div><div class="chip" id="ch12" style="left:714px; top:424px" data-dx="-620" data-dy="152">lentil soup</div>
+        <div class="chip" id="ch20" style="left:714px; top:212px" data-dx="-620" data-dy="606">chicken rice bowl</div><div class="chip" id="ch21" style="left:714px; top:318px" data-dx="-620" data-dy="544">lentil soup</div><div class="chip" id="ch22" style="left:714px; top:424px" data-dx="-620" data-dy="482">bean chili</div>
+
+        <svg id="s-marks" class="s-abs" viewBox="0 0 1920 1080">
+          <path id="r-prot" style="stroke:#3b37e6" />
+          <path id="r-tofu" style="stroke:#b8235a" />
+          <path id="r-tofu2" style="stroke:#b8235a" />
+          <path id="r-ben" style="stroke:#ffc24b" />
+        </svg>
+        <svg id="s-cursor" class="s-abs" viewBox="0 0 48 48"><path d="M4 3 L4 37 L13 29 L20 45 L27 42 L20 26 L33 26 Z" fill="#fff" stroke="#0e0c1d" stroke-width="4" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Word start times from the narration (seconds). The voice starts 0.6 s into the film.
+      const W = [0,0.197,0.639,0.743,1.382,1.556,1.858,2.183,2.299,3.204,3.564,3.994,4.342,4.621,4.748,5.875,6.246,6.583,7.465,7.628,7.988,8.313,8.452,8.963,9.16,9.427,9.892,10.101,10.217,10.681,10.879,11.645,12.04,12.237,12.597,12.806,13.688,14.048,14.571,15.372,15.778,15.964,16.312,16.544,16.684,17.403,17.868,18.228,19.261,19.493,19.574,19.667,20.259,20.875,21.328,21.838,22.477,22.767,23.232,23.661,24.346,24.694,25.379,25.53,25.914,26.181,26.517,26.726,26.958,27.272,27.771,27.992,28.874,29.269,29.547,29.849,30.174,30.906,31.266,31.498,32.206,32.496,33.205,33.541,34.342,34.737,35.039,35.666,35.851,36.223,36.49,37.21,37.813,38.301,39.241,39.404,39.671,39.845,40.124,40.251,40.565,41.203,41.354,41.61,41.842,42.481,43.549,43.769,44.06,44.373,44.779,45.302,45.673,46.033,46.265,46.718,47.554,48.007,48.297,48.471,49.191,49.4,49.574,49.69,49.806,50.689,51.211,51.467,51.652,52.001,52.163,53.011,53.324,53.58,53.951,54.81,55.077,55.553,55.855,56.784,56.97,57.26,57.399,57.69,57.957,58.096,58.502,58.7,58.978,59.269,60,60.65,61.254,61.742,62.717,62.995,63.321,63.959,64.145,64.296,64.679];
+      const t = (i) => W[i] + 0.6;
+      const tl = gsap.timeline({ paused: true });
+      const PITCH = 106;
+
+      const ringD = (cx, cy, rx, ry) => `M${cx - rx + 6} ${cy + 4} C${cx - rx + 2} ${cy - ry} ${cx + rx} ${cy - ry - 3} ${cx + rx} ${cy} C${cx + rx} ${cy + ry} ${cx - rx - 3} ${cy + ry + 3} ${cx - rx} ${cy - 8}`;
+      const ring = (id, cx, cy, rx, ry) => { const p = document.getElementById(id); p.setAttribute("d", ringD(cx, cy, rx, ry)); const L = p.getTotalLength(); p.dataset.len = L; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; };
+      ring("r-prot", 1188, 234, 62, 38);
+      ring("r-tofu", 1437.5, 350, 149.5, 78);
+      ring("r-tofu2", 1437.5, 350, 149.5, 78);
+      ring("r-ben", 518, 656, 112, 36);
+
+      const pop = (sel, at, o) => { o = o || {}; tl.fromTo(sel, { opacity: 0, scale: o.from || 0.6 }, { opacity: 1, scale: 1, duration: o.d || 0.4, ease: o.ease || "back.out(1.6)", immediateRender: false }, at); };
+      const show = (sel, at, d) => tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.3, ease: "power2.out", immediateRender: false }, at);
+      const out = (sel, at, d) => tl.to(sel, { opacity: 0, duration: d || 0.25, ease: "power2.in" }, at);
+      const draw = (id, at, d) => { const p = document.getElementById(id); tl.set(p, { opacity: 1 }, at); tl.fromTo(p, { strokeDashoffset: +p.dataset.len }, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.out", immediateRender: false }, at); };
+      const bump = (sel, at, s) => tl.fromTo(sel, { scale: 1 }, { scale: s || 1.07, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, at);
+      const cursorTo = (x, y, at, d) => tl.to("#s-cursor", { x: x, y: y, duration: d || 0.4, ease: "power3.inOut" }, at);
+      const rowAt = (k) => cursorTo(1020, 236 + k * PITCH, 0, 0);
+
+      // a jar value swaps: the old number fades, the new one pops, the jar bumps
+      const swap = (jar, n, at, bad) => {
+        tl.to("#j_" + jar + "v" + (n - 1), { opacity: 0, duration: 0.15 }, at);
+        tl.fromTo("#j_" + jar + "v" + n, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, at + 0.12);
+        if (bad) tl.set("#j_" + jar + "v" + n, { color: "#b8235a" }, at);
+        bump("#j_" + jar, at + 0.1, 1.06);
+      };
+      // a row is picked: its name flies to the guest's meal slot, the row is marked taken
+      const take = (g, k, key, at, d) => {
+        d = d || 0.55;
+        const c = document.getElementById("ch" + g + k);
+        tl.set(c, { opacity: 1, x: 0, y: 0 }, at);
+        tl.to(c, { x: +c.dataset.dx, y: +c.dataset.dy, duration: d, ease: "power3.inOut" }, at);
+        tl.to("#c" + g + "s" + k, { opacity: 0, duration: 0.15 }, at + d - 0.1);
+        tl.to("#r_" + key + "p", { opacity: 0, duration: 0.15 }, at);
+        pop("#r_" + key + "tk", at + 0.1, { d: 0.3 });
+        tl.to("#r_" + key + "hl", { opacity: 0, duration: 0.2 }, at + 0.2);
+        tl.to("#r_" + key, { opacity: 0.45, duration: 0.3 }, at + d);
+      };
+      // lay the rows out: keys in order get slots 0, 1, 2...; every other row disappears
+      const ALL = ["lentil","tofu","pasta","bean","chicken","pudding","yogurt"];
+      const layout = (keys, at, d) => {
+        ALL.forEach((key) => {
+          const k = keys.indexOf(key);
+          if (k < 0) tl.to("#r_" + key, { opacity: 0, duration: 0.25, ease: "power2.in" }, at);
+          else tl.to("#r_" + key, { y: k * PITCH, opacity: 1, duration: d || 0.5, ease: "power3.inOut" }, at);
+        });
+      };
+      // fresh rows for the next guest: tags off, protein numbers back
+      const reset = (at) => {
+        tl.to(".row .tk, .row .bad, .row .hl", { opacity: 0, duration: 0.2 }, at);
+        tl.to(".row .rp", { opacity: 1, duration: 0.2 }, at);
+      };
+      const hl = (key, at) => show("#r_" + key + "hl", at, 0.2);
+      const active = (g, at) => { [0, 1, 2].forEach((i) => tl.to("#c" + i + "act", { opacity: i === g ? 1 : 0, duration: 0.25 }, at)); };
+
+      tl.set("#s-cursor", { x: 1100, y: 620 }, 0);
+      ALL.forEach((key, i) => tl.set("#r_" + key, { y: i * PITCH }, 0));
+
+      /* ---- 1. The pantry is stocked. The guest cards are written. Kitchen Coach picks the meals ---- */
+      pop("#j_chicken", t(1) - 0.1 + 0.00, { d: 0.35, from: 0.7 });
+      pop("#j_rice", t(1) - 0.1 + 0.09, { d: 0.35, from: 0.7 });
+      pop("#j_tofu", t(1) - 0.1 + 0.18, { d: 0.35, from: 0.7 });
+      pop("#j_pasta", t(1) - 0.1 + 0.27, { d: 0.35, from: 0.7 });
+      pop("#j_cheese", t(1) - 0.1 + 0.36, { d: 0.35, from: 0.7 });
+      pop("#j_yogurt", t(1) - 0.1 + 0.45, { d: 0.35, from: 0.7 });
+      pop("#j_berries", t(1) - 0.1 + 0.54, { d: 0.35, from: 0.7 });
+      pop("#j_lentils", t(1) - 0.1 + 0.63, { d: 0.35, from: 0.7 });
+      show(["#c0rl", "#c1rl", "#c2rl"], t(5), 0.3);
+      show(["#c0goal", "#c1goal", "#c2goal"], t(6), 0.3);
+      bump(["#c0", "#c1", "#c2"], t(8), 1.02);
+      pop("#kc", t(10) - 0.1, { from: 0.85, d: 0.4 });
+      show(".card .slot", t(12), 0.3);
+
+      /* ---- 2. Ana goes first. Keeps what she may eat and the pantry can make. Lines them up ---- */
+      out("#kc", t(15) - 0.25, 0.25);
+      active(0, t(15));
+      show("#lt0", t(15), 0.3);
+      pop("#r_lentil", t(20) + 0.00, { d: 0.3, from: 0.85 });
+      pop("#r_tofu", t(20) + 0.08, { d: 0.3, from: 0.85 });
+      pop("#r_pasta", t(20) + 0.16, { d: 0.3, from: 0.85 });
+      pop("#r_bean", t(20) + 0.24, { d: 0.3, from: 0.85 });
+      pop("#r_chicken", t(20) + 0.32, { d: 0.3, from: 0.85 });
+      pop("#r_pudding", t(20) + 0.40, { d: 0.3, from: 0.85 });
+      pop("#r_yogurt", t(20) + 0.48, { d: 0.3, from: 0.85 });
+      pop("#pk1", t(24), { d: 0.35 });
+      pop("#pk2", t(28), { d: 0.35 });
+      out(["#pk1", "#pk2"], t(31) - 0.1, 0.2);
+      layout(["chicken","tofu","pasta","yogurt","lentil","bean","pudding"], t(33), 0.7);
+      show("#lsub", t(36), 0.3);
+      draw("r-prot", t(37), 0.45);
+      out("#r-prot", t(39) - 0.1, 0.25);
+
+      /* ---- 3. It walks down the line. Chicken rice bowl. Still in the pantry? Calories fit? Take it ---- */
+      tl.set("#s-cursor", { x: 1020, y: 130 }, t(39));
+      tl.to("#s-cursor", { opacity: 1, duration: 0.2 }, t(39));
+      cursorTo(1020, 236, t(41), 0.5);
+      hl("chicken", t(45));
+      pop("#chk", t(48) - 0.15, { from: 0.9, d: 0.3 });
+      show("#q1", t(48), 0.2);
+      bump(["#j_chicken", "#j_rice"], t(51), 1.06);
+      pop("#y1", t(52), { d: 0.3 });
+      show("#q2", t(53), 0.2);
+      pop("#y2", t(55), { d: 0.3 });
+      take(0, 0, "chicken", t(56));
+      swap("chicken", 1, t(56) + 0.3);
+      swap("rice", 1, t(56) + 0.4);
+
+      /* ---- 4. Tofu stir-fry. Take it. The tofu jar drops from 200 g to 50. Pasta bake makes 3 ---- */
+      tl.to(["#y1", "#y2"], { opacity: 0, duration: 0.15 }, t(58) - 0.2);
+      cursorTo(1020, 342, t(58) - 0.2, 0.4);
+      hl("tofu", t(58));
+      pop("#y1", t(59), { d: 0.25 });
+      pop("#y2", t(59) + 0.3, { d: 0.25 });
+      take(0, 1, "tofu", t(60));
+      swap("rice", 2, t(60) + 0.4);
+      draw("r-tofu", t(63), 0.45);
+      bump("#j_tofu", t(67), 1.08);
+      swap("tofu", 1, t(71) - 0.1, true);
+      out("#r-tofu", t(72) - 0.15, 0.25);
+      tl.to(["#y1", "#y2"], { opacity: 0, duration: 0.15 }, t(72) - 0.2);
+      cursorTo(1020, 448, t(72) - 0.2, 0.4);
+      hl("pasta", t(72));
+      pop("#y1", t(73), { d: 0.25 });
+      pop("#y2", t(73) + 0.2, { d: 0.25 });
+      take(0, 2, "pasta", t(74));
+      swap("pasta", 1, t(74) + 0.3);
+      swap("cheese", 1, t(74) + 0.4);
+      bump("#c0", t(75), 1.03);
+      tl.to("#s-cursor", { opacity: 0, duration: 0.2 }, t(77));
+      out("#chk", t(77), 0.25);
+      out("#c0goal", t(78), 0.15);
+      show("#c0tot", t(78) + 0.1, 0.3);
+
+      /* ---- 5. Now Ben. Same pantry. Chicken rice bowl? No meat. Out. Tofu stir-fry? Needs 150. Out ---- */
+      active(1, t(80));
+      out("#lt0", t(80), 0.2);
+      show("#lt1", t(81) - 0.1, 0.3);
+      out("#lsub", t(80), 0.2);
+      reset(t(80));
+      layout(["chicken","tofu","pasta","yogurt","lentil","bean","pudding"], t(80) + 0.1, 0.3);
+      bump("#pt", t(82), 1.06);
+      hl("chicken", t(84));
+      bump("#c1rl", t(88), 1.15);
+      tl.to("#r_chickenp", { opacity: 0, duration: 0.15 }, t(87));
+      pop("#r_chickenbad", t(87), { d: 0.3 });
+      layout(["tofu","pasta","yogurt","lentil","bean","pudding"], t(91), 0.45);
+      hl("tofu", t(92));
+      tl.to("#r_tofup", { opacity: 0, duration: 0.15 }, t(95));
+      pop("#r_tofubad", t(95), { d: 0.3 });
+      draw("r-tofu2", t(102), 0.4);
+      bump("#j_tofu", t(104), 1.08);
+      layout(["pasta","yogurt","lentil","bean","pudding"], t(105), 0.45);
+      out("#r-tofu2", t(106) - 0.1, 0.25);
+      show("#lsub", t(106), 0.2);
+
+      /* ---- 6. So Ben gets pasta bake, yogurt bowl and lentil soup ---- */
+      take(1, 0, "pasta", t(109), 0.5);
+      swap("pasta", 2, t(109) + 0.3);
+      swap("cheese", 2, t(109) + 0.4);
+      take(1, 1, "yogurt", t(111), 0.5);
+      swap("yogurt", 1, t(111) + 0.3);
+      swap("berries", 1, t(111) + 0.4);
+      take(1, 2, "lentil", t(114), 0.5);
+      swap("lentils", 1, t(114) + 0.3);
+      out("#c1goal", t(115) + 0.3, 0.15);
+      show("#c1tot", t(115) + 0.4, 0.3);
+
+      /* ---- 7. Chloe gets her 3. And here is the plan ---- */
+      active(2, t(116));
+      out("#lt1", t(116), 0.15);
+      show("#lt2", t(116) + 0.1, 0.25);
+      reset(t(116));
+      layout(["chicken","lentil","bean","pudding"], t(116) + 0.05, 0.35);
+      take(2, 0, "chicken", t(117), 0.4);
+      swap("chicken", 2, t(117) + 0.25);
+      swap("rice", 3, t(117) + 0.35);
+      take(2, 1, "lentil", t(118), 0.4);
+      swap("lentils", 2, t(118) + 0.25);
+      take(2, 2, "bean", t(119), 0.4);
+      out("#c2goal", t(119) + 0.4, 0.15);
+      show("#c2tot", t(119) + 0.5, 0.3);
+      active(-1, t(120));
+      out("#lineup", t(120), 0.35);
+      tl.fromTo("#plan", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, t(121));
+      show("#p2", t(124), 0.3);
+      bump(["#c0", "#c1", "#c2"], t(124), 1.03);
+
+      /* ---- 8. Everyone ends up short on protein. Ben by 80 grams. Greedy ---- */
+      pop("#c0short", t(128) - 0.1, { d: 0.3 });
+      pop("#c1short", t(128) + 0.1, { d: 0.3 });
+      pop("#c2short", t(128) + 0.3, { d: 0.3 });
+      draw("r-ben", t(131), 0.4);
+      bump("#c1short", t(133), 1.15);
+      out("#r-ben", t(135) - 0.15, 0.25);
+      out("#plan", t(135), 0.25);
+      pop("#greedy", t(136), { from: 0.85, d: 0.4 });
+      show("#g2", t(140), 0.3);
+      show("#g3", t(146) - 0.15, 0.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["story"] = tl;
+    })();
+  </script>
+</template>

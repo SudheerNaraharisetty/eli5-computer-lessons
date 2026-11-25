@@ -1,0 +1,51 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 700; src: url("assets/fonts/fraunces-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; src: url("assets/fonts/manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; src: url("assets/fonts/manrope-800.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; font-family: "Manrope", sans-serif; font-weight: 800; color: #0e0c1d; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    #root * { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
+    #t-all { position: absolute; inset: 0; }
+    .t-abs { position: absolute; }
+    .t-ol { box-shadow: 0 0 0 5px #0e0c1d, 0 10px 0 5px #0e0c1d; }
+    .step { position: absolute; top: 150px; width: 390px; height: 250px; background: #fff; border-radius: 20px; opacity: 0; }
+    .step .n { position: absolute; left: 24px; top: 24px; width: 60px; height: 60px; border-radius: 50%; background: #0e0c1d; color: #fff; font: 800 34px/60px "Manrope", sans-serif; text-align: center; }
+    .step .w { position: absolute; left: 104px; top: 14px; font: 700 68px/80px "Fraunces", serif; color: #3b37e6; }
+    .step .d { position: absolute; left: 24px; right: 16px; top: 150px; font: 800 32px/44px "Manrope", sans-serif; color: #3e3b52; white-space: nowrap; }
+    .t-head { left: 120px; top: 520px; font: 700 78px/1.15 "Fraunces", serif; letter-spacing: -0.03em; white-space: nowrap; opacity: 0; }
+    .t-head .a { color: #3b37e6; }
+    #t-h2 { top: 630px; }
+    #t-next { left: 120px; top: 880px; padding: 8px 30px; background: #0e0c1d; color: #fff; border-radius: 999px; font-size: 36px; line-height: 1.4; opacity: 0; white-space: nowrap; }
+    #t-next b { color: #c9c6ff; }
+  </style>
+
+  <div id="root" data-composition-id="takeaway" data-width="1920" data-height="1080">
+    <div id="t-all" class="clip" data-start="0" data-duration="8.1" data-track-index="1">
+      <div class="step t-ol" id="st0" style="left:120px"><div class="n">1</div><div class="w">Filter</div><div class="d">rules + pantry</div></div>
+      <div class="step t-ol" id="st1" style="left:550px"><div class="n">2</div><div class="w">Sort</div><div class="d">most protein first</div></div>
+      <div class="step t-ol" id="st2" style="left:980px"><div class="n">3</div><div class="w">Pick</div><div class="d">kcal fit, up to 3</div></div>
+      <div class="step t-ol" id="st3" style="left:1410px"><div class="n">4</div><div class="w">Take</div><div class="d">pantry.take()</div></div>
+      <div id="t-h1" class="t-abs t-head">One <span class="a">shared pantry</span>,</div>
+      <div id="t-h2" class="t-abs t-head">so <span class="a">the order</span> matters.</div>
+      <div id="t-next" class="t-abs">Next <b>→</b> Lesson 107: Taste-test Kitchen Coach</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Narration word starts, relative to this scene's start (60.4 s into the film).
+      const g = { filter: 0.2, sort: 0.85, pick: 1.454, take: 1.942, one: 2.917, so: 4.159, matters: 4.879 };
+      const tl = gsap.timeline({ paused: true });
+      const pop = (sel, at) => tl.fromTo(sel, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, at);
+      pop("#st0", g.filter - 0.05);
+      pop("#st1", g.sort - 0.05);
+      pop("#st2", g.pick - 0.05);
+      pop("#st3", g.take - 0.05);
+      tl.fromTo("#t-h1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.one - 0.1);
+      tl.fromTo("#t-h2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, g.so - 0.1);
+      tl.fromTo("#t-next", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, g.matters + 0.9);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["takeaway"] = tl;
+    })();
+  </script>
+</template>
